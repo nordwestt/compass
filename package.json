@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@preact/signals-react": "^2.2.0",
     "@react-navigation/native": "^6.0.2",
     "expo": "~51.0.28",
     "expo-constants": "~16.0.2",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@preact/signals-react-transform": "^0.4.0",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.2.45",
     "@types/react-test-renderer": "^18.0.7",
