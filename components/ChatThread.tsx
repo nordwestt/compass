@@ -133,7 +133,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
       let response;
       switch (selectedModelData.provider.toLowerCase()) {
         case 'ollama':
-          response = await fetch(`${endpoint.endpoint}/api/chat`, {
+          response = await fetch(`http://localhost:11434/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -141,7 +141,6 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
               messages: [{ role: 'user', content: message }],
             }),
           });
-          // ... existing Ollama streaming logic ...
           break;
 
         case 'openai':
@@ -268,3 +267,5 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
     </View>
   );
 }; 
+
+
