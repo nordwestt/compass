@@ -9,7 +9,7 @@ interface APIEndpoint {
   name: string;
   endpoint: string;
   apiKey: string;
-  type: 'anthropic' | 'openai' | 'custom';
+  type: 'anthropic' | 'openai' | 'ollama' | 'custom';
 }
 
 const PREDEFINED_ENDPOINTS = {
@@ -22,6 +22,11 @@ const PREDEFINED_ENDPOINTS = {
     name: 'OpenAI',
     endpoint: 'https://api.openai.com/v1/chat/completions',
     type: 'openai' as const,
+  },
+  ollama: {
+    name: 'Ollama',
+    endpoint: 'http://localhost:11434/api/chat',
+    type: 'ollama' as const,
   },
 };
 
@@ -87,7 +92,9 @@ export default function ExploreScreen() {
                   <Image
                     source={endpoint.type === 'anthropic' 
                       ? require('@/assets/images/anthropic-icon.png')
-                      : require('@/assets/images/openai-icon.png')}
+                      : endpoint.type === 'openai'
+                        ? require('@/assets/images/openai-icon.png')
+                        : require('@/assets/images/ollama-icon.png')}
                     className="!w-[64px] !h-[64px] mr-2"
                   />
                 )}
