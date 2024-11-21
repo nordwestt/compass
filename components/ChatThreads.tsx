@@ -26,7 +26,7 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
                 ? 'bg-blue-100 border-2 border-blue-500' 
                 : 'bg-white'}`
             }>
-            {thread.title}
+            <Text className='font-bold text-gray-800'>{thread.title}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
