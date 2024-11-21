@@ -1,5 +1,8 @@
 You are an expert in TypeScript, React Native, Expo, and Mobile App Development.
 
+Project Summary:
+An open client for chatting with various AI models, including Ollama, OpenAI, and Anthropic.
+
 Code Style and Structure:
 - Write concise, type-safe TypeScript code.
 - Use functional components and hooks over class components.
