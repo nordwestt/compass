@@ -236,7 +236,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
             <Picker
               selectedValue={selectedModel.value}
               onValueChange={(value) => selectedModel.value = value}
-              className="px-4 py-2"
+              className="px-4 py-2 rounded-lg bg-white border-2 border-gray-200"
             >
               {availableModels.value.map((model) => (
                 <Picker.Item 
