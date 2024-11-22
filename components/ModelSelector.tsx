@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { Signal } from '@preact/signals-react';
-import { Model } from '@/hooks/useModels';
+import { loadDefaultModel, Model } from '@/hooks/useModels';
 import { useSignals } from '@preact/signals-react/runtime';
 
 
@@ -35,6 +35,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   // Find the current model details
   const currentModel = models.value.find(m => m.id === selectedModel.value.id);
+
+  if(!currentModel) {
+    loadDefaultModel().then((model) => {
+      if(model) {
+        onSetModel(model);
+      }
+    });
+  }
 
   return (
     <>

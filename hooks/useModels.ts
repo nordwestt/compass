@@ -9,6 +9,18 @@ export interface Model {
   provider: LLMProvider;
 }
 
+export const loadDefaultModel = async (): Promise<Model | null> => {
+  try {
+    const storedDefault = await AsyncStorage.getItem('defaultModel');
+    if (storedDefault) {
+      return JSON.parse(storedDefault);
+    }
+  } catch (error) {
+    console.error('Error loading default model:', error);
+  }
+  return null;
+};
+
 export function useModels() {
   useSignals(); 
   const availableModels = useSignal<Model[]>([]);
