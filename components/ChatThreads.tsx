@@ -22,6 +22,22 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
     }];
   }
 
+  const editThreadTitle = async (threadId: string, currentTitle: string) => {
+    const newTitle = await modalService.prompt({
+      title: "Edit Thread Title",
+      message: "Enter new title for this thread",
+      defaultValue: currentTitle
+    });
+
+    if (newTitle) {
+      threads.value = threads.value.map(thread => 
+        thread.id === threadId 
+          ? { ...thread, title: newTitle }
+          : thread
+      );
+    }
+  };
+
   const deleteThread = async (threadId: string) => {
     const confirmed = await modalService.confirm({
       title: "Delete Thread",
@@ -51,7 +67,8 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
         {threads.value.map((thread) => (
           <View key={thread.id} className="flex-row items-center mb-2">
             <TouchableOpacity 
-              onPress={() => currentThread.value = thread} 
+              onPress={() => currentThread.value = thread}
+              onLongPress={() => editThreadTitle(thread.id, thread.title)}
               className={
                 `flex-1 p-4 rounded-lg ${currentThread.value.id === thread.id 
                   ? 'bg-blue-100 border-2 border-blue-500' 

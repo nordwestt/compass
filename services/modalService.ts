@@ -1,39 +1,53 @@
-import { Signal, signal } from '@preact/signals-react';
+import { signal } from "@preact/signals-react";
 
-interface ModalConfig {
+interface ModalState {
+  isVisible: boolean;
   title: string;
   message: string;
+  defaultValue?: string;
+  type: 'confirm' | 'prompt';
 }
 
-interface ModalState extends ModalConfig {
-  isVisible: boolean;
-  resolve: ((value: boolean) => void) | null;
-}
-
-const initialState: ModalState = {
+export const modalState = signal<ModalState>({
   isVisible: false,
   title: '',
   message: '',
-  resolve: null,
-};
+  type: 'confirm'
+});
 
-export const modalState = signal<ModalState>(initialState);
+let resolveModal: ((value: any) => void) | null = null;
 
 export const modalService = {
-  confirm: (config: ModalConfig): Promise<boolean> => {
-    return new Promise((resolve) => {
-      modalState.value = {
-        ...config,
-        isVisible: true,
-        resolve,
-      };
+  confirm: ({ title, message }: { title: string; message: string }) => {
+    modalState.value = {
+      isVisible: true,
+      title,
+      message,
+      type: 'confirm'
+    };
+    return new Promise<boolean>((resolve) => {
+      resolveModal = resolve;
     });
   },
-  
-  handleResponse: (confirmed: boolean) => {
-    if (modalState.value.resolve) {
-      modalState.value.resolve(confirmed);
-    }
-    modalState.value = initialState;
+
+  prompt: ({ title, message, defaultValue }: { title: string; message: string; defaultValue?: string }) => {
+    modalState.value = {
+      isVisible: true,
+      title,
+      message,
+      defaultValue,
+      type: 'prompt'
+    };
+    return new Promise<string | null>((resolve) => {
+      resolveModal = resolve;
+    });
   },
+
+  handleResponse: (response: boolean | string | null) => {
+    modalState.value = { ...modalState.value, isVisible: false };
+    if (resolveModal) {
+      resolveModal(response);
+      resolveModal = null;
+    }
+  }
 }; 
