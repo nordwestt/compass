@@ -20,10 +20,10 @@ export interface LLMProvider {
 async function sendMessageToProvider(
   messages: ChatMessage[], 
   selectedModel: Model,
-  systemPrompt: Character,
+  character: Character,
 ): Promise<Response> {
   const newMessages = [
-    { role: 'system', content: systemPrompt.content },
+    { role: 'system', content: character.content },
     ...messages.map(message => ({ role: message.isUser ? 'user' : 'assistant', content: message.content }))
   ];
 
@@ -203,7 +203,7 @@ export function useChat(
     try {
       
 
-      const response = await sendMessageToProvider(thread.value.messages, thread.value.selectedModel, thread.value.systemPrompt);
+      const response = await sendMessageToProvider(thread.value.messages, thread.value.selectedModel, thread.value.character);
       await handleStreamResponse(response, thread, threads);
     } catch (error) {
       console.error('Error sending message:', error);
