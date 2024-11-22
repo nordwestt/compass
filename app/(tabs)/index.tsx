@@ -21,7 +21,7 @@ export interface Thread {
 
 export default function HomeScreen() {
   useSignals();
-  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[{content: "Hello, how can I help you today?", isUser: false}], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}, systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}}]);
+  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}, systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}}]);
   const currentThread = useSignal<Thread>(threads.value[0]);
   return (
     <View className="bg-gray-100 flex-1 flex-row">
