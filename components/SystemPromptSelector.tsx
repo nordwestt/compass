@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { Signal } from '@preact/signals-react';
+import { useSystemPrompts } from '@/hooks/useSystemPrompts';
+import { useSignals } from '@preact/signals-react/runtime';
 
 export interface SystemPrompt {
   id: string;
@@ -9,7 +11,7 @@ export interface SystemPrompt {
   image?: any;
 }
 
-const PREDEFINED_PROMPTS: SystemPrompt[] = [
+export const PREDEFINED_PROMPTS: SystemPrompt[] = [
   {
     id: 'default',
     name: 'Default Assistant',
@@ -51,7 +53,9 @@ export const SystemPromptSelector: React.FC<SystemPromptSelectorProps> = ({
   selectedPrompt,
   onSelectPrompt
 }) => {
+  useSignals();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { allPrompts } = useSystemPrompts();
 
   return (
     <>
@@ -86,7 +90,7 @@ export const SystemPromptSelector: React.FC<SystemPromptSelectorProps> = ({
             
             <ScrollView className="p-4">
               <View className="flex-row flex-wrap justify-between">
-                {PREDEFINED_PROMPTS.map((prompt) => (
+                {allPrompts.value.map((prompt) => (
                   <TouchableOpacity
                     key={prompt.id}
                     onPress={() => {

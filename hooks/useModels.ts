@@ -1,6 +1,6 @@
 import { Signal, useSignal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LLMProvider, SelectedModel } from './useChat';
+import { LLMProvider } from './useChat';
 import { useSignals } from '@preact/signals-react/runtime';
 
 export interface Model {
@@ -14,7 +14,7 @@ export function useModels() {
   const availableModels = useSignal<Model[]>([]);
   const isLoadingModels = useSignal(false);
 
-  const setDefaultModel = async (model: SelectedModel) => {
+  const setDefaultModel = async (model: Model) => {
     try {
       if (model) {
         await AsyncStorage.setItem('defaultModel', JSON.stringify(model));
