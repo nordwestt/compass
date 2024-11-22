@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import { Message } from './Message';
-import { ChatInput } from './ChatInput';
+import { ChatInput, ChatInputRef } from './ChatInput';
 import { Thread } from '@/app/(tabs)';
 import { effect, Signal, useSignal, computed, useComputed } from '@preact/signals-react';
 import { ModelSelector } from './ModelSelector';
@@ -20,7 +20,16 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   useSignals();
   
   const scrollViewRef = useRef<ScrollView>(null);
+  const chatInputRef = useRef<ChatInputRef>(null);
   const isGenerating = useSignal(false);
+  const previousThreadId = useRef(thread.value.id);
+  
+  useEffect(() => {
+    if (previousThreadId.current !== thread.value.id) {
+      chatInputRef.current?.focus();
+      previousThreadId.current = thread.value.id;
+    }
+  }, [thread.value.id]);
   
   const selectedModel = useComputed(() => thread.value.selectedModel);
   const availableModels = useSignal<Model[]>([]);
@@ -92,6 +101,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
         ))}
       </ScrollView>
       <ChatInput 
+        ref={chatInputRef}
         onSend={wrappedHandleSend} 
         isGenerating={isGenerating.value}
         onInterrupt={handleInterrupt}

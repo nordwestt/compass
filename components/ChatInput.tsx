@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { View, TextInput, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -8,8 +8,19 @@ interface ChatInputProps {
   onInterrupt?: () => void;
 }
 
-export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isGenerating, onInterrupt }) => {
+export interface ChatInputRef {
+  focus: () => void;
+}
+
+export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isGenerating, onInterrupt }, ref) => {
   const [message, setMessage] = useState('');
+  const inputRef = useRef<TextInput>(null);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current?.focus();
+    }
+  }));
 
   const handleSend = () => {
     if (message.trim()) {
@@ -27,6 +38,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isGenerating, onIn
   return (
     <View className="flex-row items-center p-2 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
       <TextInput
+        ref={inputRef}
         className="flex-1 min-h-[40px] px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full mr-2 text-gray-800 dark:text-gray-200"
         placeholder="Type a message..."
         placeholderTextColor="#9CA3AF"
@@ -53,4 +65,4 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isGenerating, onIn
       )}
     </View>
   );
-}; 
+}); 
