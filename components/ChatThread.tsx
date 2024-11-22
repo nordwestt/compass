@@ -23,7 +23,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   
   const selectedModel = useComputed(() => thread.value.selectedModel);
   const availableModels = useSignal<Model[]>([]);
-  const selectedPrompt = useSignal<SystemPrompt>(thread.value.systemPrompt || {
+  const selectedPrompt = useComputed<SystemPrompt>(() => thread.value.systemPrompt || {
     id: 'default',
     name: 'Default Assistant',
     content: 'You are a helpful AI assistant.',
@@ -54,7 +54,6 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
     if(threadIndex !== -1){
       threads.value[threadIndex] = thread.value;
     }
-    selectedPrompt.value = prompt;
   };
 
   return (
