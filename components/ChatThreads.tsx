@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Thread } from '@/app/(tabs)';
 import { Signal, signal } from '@preact/signals-react';
 import { modalService } from '@/services/modalService';
+import { useColorScheme } from 'nativewind';
 
 export interface ChatThreadsProps {
   threads: Signal<Thread[]>;
@@ -12,6 +13,7 @@ export interface ChatThreadsProps {
 
 export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread }) => {
   const scrollViewRef = useRef<ScrollView>(null);
+  const { colorScheme, toggleColorScheme } = useColorScheme();
 
   const addNewThread = () => {
     threads.value = [...threads.value, {
@@ -59,10 +61,10 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
   };
 
   return (
-    <View className="flex flex-col mb-2">
+    <View className="flex flex-col flex-grow mb-2 bg-gray-50 dark:bg-gray-900">
       <ScrollView
         ref={scrollViewRef}
-        className="flex-1 p-2"
+        className="p-2"
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}>
         {threads.value.map((thread) => (
           <View key={thread.id} className="flex-row items-center mb-2">
@@ -71,23 +73,33 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
               onLongPress={() => editThreadTitle(thread.id, thread.title)}
               className={
                 `flex-1 p-4 rounded-lg ${currentThread.value.id === thread.id 
-                  ? 'bg-blue-100 border-2 border-blue-500' 
-                  : 'bg-white'}`
+                  ? 'bg-blue-100 dark:bg-blue-900 border-2 border-blue-500' 
+                  : 'bg-white dark:bg-gray-800'}`
               }>
-              <Text className="font-bold text-gray-800">{thread.title}</Text>
+              <Text className="font-bold text-gray-800 dark:text-gray-200">{thread.title}</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => deleteThread(thread.id)}
-              className="ml-2 p-2 rounded-full bg-red-100"
+              className="ml-2 p-2 rounded-full bg-red-100 dark:bg-red-900"
             >
-              <Ionicons name="trash-outline" size={20} color="#EF4444" />
+              <Ionicons name="trash-outline" size={20} color={colorScheme === 'dark' ? '#FCA5A5' : '#EF4444'} />
             </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
-      <TouchableOpacity onPress={addNewThread} className="mx-auto rounded-full bg-white">
-        <Ionicons name="add" size={24} className="bg-white" />
-      </TouchableOpacity>
+      <TouchableOpacity onPress={addNewThread} className="mb-2 p-2 rounded-full bg-white dark:bg-gray-800">
+          <Ionicons className='mx-auto' name="add" size={24} color={colorScheme === 'dark' ? '#E5E7EB' : '#374151'} />
+        </TouchableOpacity>
+      <View className="flex-row justify-center space-x-4 mb-2">
+        
+        <TouchableOpacity onPress={toggleColorScheme} className="p-2 rounded-full bg-white dark:bg-gray-800">
+          <Ionicons 
+            name={colorScheme === 'dark' ? 'sunny' : 'moon'} 
+            size={24} 
+            color={colorScheme === 'dark' ? '#E5E7EB' : '#374151'} 
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }; 

@@ -7,6 +7,7 @@ import { effect, Signal, useSignal, computed, useComputed } from '@preact/signal
 import { ModelSelector } from './ModelSelector';
 import { Model, useModels } from '@/hooks/useModels';
 import { SelectedModel, useChat } from '@/hooks/useChat';
+import { useColorScheme } from 'nativewind';
 
 export interface ChatThreadProps {
   thread: Signal<Thread>;
@@ -38,8 +39,8 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   }
 
   return (
-    <View className="flex-1">
-      <View className="p-4 border-b border-gray-200">
+    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+      <View className="p-4 border-b border-gray-200 dark:border-gray-700">
         {selectedModel.value && <ModelSelector 
           models={availableModels}
           selectedModel={selectedModel}
