@@ -15,7 +15,7 @@ export interface ChatThreadProps {
 
 export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   const scrollViewRef = useRef<ScrollView>(null);
-  const { availableModels, selectedModel, isLoadingModels, fetchAvailableModels } = useModels();
+  const { availableModels, selectedModel, isLoadingModels, fetchAvailableModels, setDefaultModel } = useModels();
   const { handleSend } = useChat(thread, threads, selectedModel);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
           isLoading={isLoadingModels.value}
           models={availableModels}
           selectedModel={selectedModel}
+          onSetDefault={setDefaultModel}
         />}
       </View>
 

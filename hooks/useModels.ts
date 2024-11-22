@@ -13,9 +13,31 @@ export function useModels() {
   const selectedModel = useSignal<SelectedModel>();
   const isLoadingModels = useSignal(false);
 
+  const setDefaultModel = async () => {
+    try {
+      if (selectedModel.value) {
+        await AsyncStorage.setItem('defaultModel', JSON.stringify(selectedModel.value));
+      }
+    } catch (error) {
+      console.error('Error saving default model:', error);
+    }
+  };
+
+  const loadDefaultModel = async () => {
+    try {
+      const storedDefault = await AsyncStorage.getItem('defaultModel');
+      if (storedDefault) {
+        selectedModel.value = JSON.parse(storedDefault);
+      }
+    } catch (error) {
+      console.error('Error loading default model:', error);
+    }
+  };
+
   const fetchAvailableModels = async () => {
     isLoadingModels.value = true;
     try {
+      await loadDefaultModel();
       const stored = await AsyncStorage.getItem('apiEndpoints');
       if (!stored) return;
       
@@ -86,6 +108,7 @@ export function useModels() {
     availableModels,
     selectedModel,
     isLoadingModels,
-    fetchAvailableModels
+    fetchAvailableModels,
+    setDefaultModel
   };
 } 
