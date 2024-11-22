@@ -85,31 +85,33 @@ export const SystemPromptSelector: React.FC<SystemPromptSelectorProps> = ({
             </View>
             
             <ScrollView className="p-4">
-              {PREDEFINED_PROMPTS.map((prompt) => (
-                <TouchableOpacity
-                  key={prompt.id}
-                  onPress={() => {
-                    onSelectPrompt(prompt);
-                    setIsModalVisible(false);
-                  }}
-                  className="flex-row items-center p-3 mb-2 rounded-lg bg-gray-50 dark:bg-gray-700"
-                >
-                  {prompt.image && (
-                    <Image
-                      source={prompt.image}
-                      className="!h-[128px] !w-[128px] rounded-full mr-3"
-                    />
-                  )}
-                  <View className="flex-1">
-                    <Text className="font-medium text-black dark:text-white">
-                      {prompt.name}
-                    </Text>
-                    <Text className="text-sm text-gray-500 dark:text-gray-400">
-                      {prompt.content.slice(0, 50)}...
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
+              <View className="flex-row flex-wrap justify-between">
+                {PREDEFINED_PROMPTS.map((prompt) => (
+                  <TouchableOpacity
+                    key={prompt.id}
+                    onPress={() => {
+                      onSelectPrompt(prompt);
+                      setIsModalVisible(false);
+                    }}
+                    className="w-[48%] mb-4 rounded-lg bg-gray-50 dark:bg-gray-700"
+                  >
+                    <View className="items-center p-3">
+                      {prompt.image && (
+                        <Image
+                          source={prompt.image}
+                          className="!h-[100px] !w-[100px] rounded-full mb-2"
+                        />
+                      )}
+                      <Text className="font-medium text-center text-black dark:text-white">
+                        {prompt.name}
+                      </Text>
+                      <Text className="text-sm text-center text-gray-500 dark:text-gray-400">
+                        {prompt.content.slice(0, 30)}...
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </ScrollView>
 
             <TouchableOpacity
