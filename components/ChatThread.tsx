@@ -9,6 +9,7 @@ import { Model, useModels } from '@/hooks/useModels';
 import { SelectedModel, useChat } from '@/hooks/useChat';
 import { useColorScheme } from 'nativewind';
 import { SystemPromptSelector, SystemPrompt } from './SystemPromptSelector';
+import { useSignals } from '@preact/signals-react/runtime';
 
 export interface ChatThreadProps {
   thread: Signal<Thread>;
@@ -16,6 +17,8 @@ export interface ChatThreadProps {
 }
 
 export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
+  useSignals();
+  
   const scrollViewRef = useRef<ScrollView>(null);
   
   const selectedModel = useComputed(() => thread.value.selectedModel);

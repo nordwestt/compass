@@ -2,8 +2,11 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Modal, TextInput, Platform } from 'react-native';
 import { modalState, modalService } from '@/services/modalService';
 import { useSignal } from '@preact/signals-react';
+import { useSignals } from '@preact/signals-react/runtime';
 
 export const ConfirmationModal = () => {
+  useSignals();
+  
   const inputText = useSignal(modalState.value.defaultValue || '');
 
   const Content = () => (

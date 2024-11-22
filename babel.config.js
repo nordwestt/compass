@@ -6,7 +6,7 @@ module.exports = function (api) {
       "nativewind/babel",
     ],
     plugins:[
-      ["module:@preact/signals-react-transform"]
+      
     ]
   };
 };

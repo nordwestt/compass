@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import { useSignal } from '@preact/signals-react';
 import { APIEndpoint } from '@/hooks/useChat';
+import { useSignals } from '@preact/signals-react/runtime';
 
 const PREDEFINED_ENDPOINTS = {
   anthropic: {
@@ -24,6 +25,7 @@ const PREDEFINED_ENDPOINTS = {
 };
 
 export default function ExploreScreen() {
+  useSignals();
   const endpoints = useSignal<APIEndpoint[]>([]);
   const showModal = useSignal(false);
   const editingEndpoint = useSignal<APIEndpoint | null>(null);

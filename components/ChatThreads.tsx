@@ -5,6 +5,7 @@ import { Thread } from '@/app/(tabs)';
 import { Signal, signal } from '@preact/signals-react';
 import { modalService } from '@/services/modalService';
 import { useColorScheme } from 'nativewind';
+import { useSignals } from '@preact/signals-react/runtime';
 
 export interface ChatThreadsProps {
   threads: Signal<Thread[]>;
@@ -12,6 +13,8 @@ export interface ChatThreadsProps {
 }
 
 export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread }) => {
+  useSignals();
+  
   const scrollViewRef = useRef<ScrollView>(null);
   const { colorScheme, toggleColorScheme } = useColorScheme();
 

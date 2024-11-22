@@ -9,6 +9,7 @@ import { ChatMessage, SelectedModel } from '@/hooks/useChat';
 import { ChatThreads } from '@/components/ChatThreads';
 import { useSignal } from '@preact/signals-react';
 import { SystemPrompt } from '@/components/SystemPromptSelector';
+import { useSignals } from '@preact/signals-react/runtime';
 
 export interface Thread {
   id: string;
@@ -19,6 +20,7 @@ export interface Thread {
 }
 
 export default function HomeScreen() {
+  useSignals();
   const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[{content: "Hello, how can I help you today?", isUser: false}], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}, systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}}]);
   const currentThread = useSignal<Thread>(threads.value[0]);
   return (
