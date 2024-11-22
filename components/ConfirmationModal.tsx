@@ -16,7 +16,6 @@ export const ConfirmationModal = () => {
           value={inputText.value}
           onChangeText={(text) => inputText.value = text}
           className="border border-gray-300 rounded-lg p-2 mb-4"
-          defaultValue={modalState.value.defaultValue}
         />
       )}
 
