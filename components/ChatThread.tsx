@@ -6,7 +6,7 @@ import { Thread } from '@/app/(tabs)';
 import { effect, Signal, useSignal, computed, useComputed } from '@preact/signals-react';
 import { ModelSelector } from './ModelSelector';
 import { Model, useModels } from '@/hooks/useModels';
-import { SelectedModel, useChat } from '@/hooks/useChat';
+import { useChat } from '@/hooks/useChat';
 import { useColorScheme } from 'nativewind';
 import { SystemPromptSelector, SystemPrompt } from './SystemPromptSelector';
 import { useSignals } from '@preact/signals-react/runtime';
@@ -38,7 +38,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
     });
   }
 
-  const setSelectedModel = (model: SelectedModel) => {
+  const setSelectedModel = (model: Model) => {
     thread.value = {...thread.value, selectedModel: model};
     // find the thread in threads and update it
     const threadIndex = threads.value.findIndex((t) => t.id === thread.value.id);

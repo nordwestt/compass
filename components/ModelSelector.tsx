@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { Signal } from '@preact/signals-react';
-import { SelectedModel } from '@/hooks/useChat';
 import { Model } from '@/hooks/useModels';
+import { useSignals } from '@preact/signals-react/runtime';
 
 
 // Add provider logos mapping
@@ -15,8 +15,8 @@ const PROVIDER_LOGOS = {
 
 interface ModelSelectorProps {
   models: Signal<Model[]>;
-  selectedModel: Signal<SelectedModel>;
-  onSetModel: (model: SelectedModel) => void;
+  selectedModel: Signal<Model>;
+  onSetModel: (model: Model) => void;
   onSetDefault: () => void;
 }
 
@@ -26,6 +26,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   onSetModel,
   onSetDefault
 }) => {
+  useSignals();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   if (!models.value?.length) {
@@ -71,7 +72,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                 <TouchableOpacity
                   key={model.id}
                   onPress={() => {
-                    onSetModel({ id: model.id, provider: {type: model.provider.type, endpoint: model.provider.endpoint, apiKey: model.provider.apiKey } });
+                    onSetModel(model);
                     setIsModalVisible(false);
                   }}
                   className="flex-row items-center p-3 mb-2 rounded-lg bg-gray-50 dark:bg-gray-700"

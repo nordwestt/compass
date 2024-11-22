@@ -2,6 +2,7 @@ import { Signal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/app/(tabs)';
 import { SystemPrompt } from '@/components/SystemPromptSelector';
+import { Model } from './useModels';
 
 export interface ChatMessage {
   content: string;
@@ -16,14 +17,9 @@ export interface LLMProvider {
   endpoint: string;
 }
 
-export interface SelectedModel {
-  id: string;
-  provider: LLMProvider;
-}
-
 async function sendMessageToProvider(
   message: string, 
-  selectedModel: SelectedModel,
+  selectedModel: Model,
   systemPrompt: SystemPrompt,
 ): Promise<Response> {
   const messages = [

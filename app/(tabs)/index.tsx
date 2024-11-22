@@ -1,24 +1,25 @@
 import { Image, StyleSheet, Platform, View, Text, TouchableOpacity } from 'react-native';
 
 import { ChatThread } from '@/components/ChatThread';
-import { ChatMessage, SelectedModel } from '@/hooks/useChat';
+import { ChatMessage } from '@/hooks/useChat';
 import { ChatThreads } from '@/components/ChatThreads';
 import { useSignal } from '@preact/signals-react';
 import { SystemPrompt } from '@/components/SystemPromptSelector';
 import { useSignals } from '@preact/signals-react/runtime';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Model } from '@/hooks/useModels';
 
 export interface Thread {
   id: string;
   title: string;
   messages: ChatMessage[];
-  selectedModel: SelectedModel;
+  selectedModel: Model;
   systemPrompt: SystemPrompt;
 }
 
 export default function HomeScreen() {
   useSignals();
-  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}, systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}}]);
+  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[], selectedModel: {id: '', name: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}, systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}}]);
   const currentThread = useSignal<Thread>(threads.value[0]);
   const isSidebarVisible = useSignal(true);
   return (
