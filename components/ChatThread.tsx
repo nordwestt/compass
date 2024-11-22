@@ -26,7 +26,8 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   const selectedPrompt = useSignal<SystemPrompt>(thread.value.systemPrompt || {
     id: 'default',
     name: 'Default Assistant',
-    content: 'You are a helpful AI assistant.'
+    content: 'You are a helpful AI assistant.',
+    image: require('../assets/characters/default.png')
   });
 
   const { fetchAvailableModels, setDefaultModel } = useModels();

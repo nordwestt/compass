@@ -19,7 +19,7 @@ export interface Thread {
 
 export default function HomeScreen() {
   useSignals();
-  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[], selectedModel: {id: '', name: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}, systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}}]);
+  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[], selectedModel: {id: '', name: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}, systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.', image: require('@/assets/characters/default.png')}}]);
   const currentThread = useSignal<Thread>(threads.value[0]);
   const isSidebarVisible = useSignal(true);
   return (
