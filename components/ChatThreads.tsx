@@ -22,14 +22,15 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
   const addNewThread = async () => {
     // get default model
     const defaultModel = await AsyncStorage.getItem('defaultModel');
-    console.log('defaultModel', defaultModel);
-    threads.value = [...threads.value, {
+    const newThread = {
       id: Date.now().toString(), 
       title: "New thread", 
       messages: [{content: "Hello, how can I help you today?", isUser: false}], 
       selectedModel: defaultModel ? JSON.parse(defaultModel) : {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}},
       systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}
-    }];
+    };
+    threads.value = [...threads.value, newThread];
+    currentThread.value = newThread;
   }
 
   const editThreadTitle = async (threadId: string, currentTitle: string) => {
