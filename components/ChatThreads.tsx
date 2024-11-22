@@ -6,6 +6,7 @@ import { Signal, signal } from '@preact/signals-react';
 import { modalService } from '@/services/modalService';
 import { useColorScheme } from 'nativewind';
 import { useSignals } from '@preact/signals-react/runtime';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface ChatThreadsProps {
   threads: Signal<Thread[]>;
@@ -18,12 +19,15 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
   const scrollViewRef = useRef<ScrollView>(null);
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
-  const addNewThread = () => {
+  const addNewThread = async () => {
+    // get default model
+    const defaultModel = await AsyncStorage.getItem('defaultModel');
+    console.log('defaultModel', defaultModel);
     threads.value = [...threads.value, {
       id: Date.now().toString(), 
       title: "New thread", 
       messages: [{content: "Hello, how can I help you today?", isUser: false}], 
-      selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}},
+      selectedModel: defaultModel ? JSON.parse(defaultModel) : {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}},
       systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}
     }];
   }

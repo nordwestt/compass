@@ -1,6 +1,7 @@
 import { Signal, useSignal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SelectedModel } from './useChat';
+import { useSignals } from '@preact/signals-react/runtime';
 
 export interface Model {
   id: string;
@@ -8,15 +9,15 @@ export interface Model {
   provider: string;
 }
 
-export function useModels(initialModel?: SelectedModel) {
+export function useModels() {
+  useSignals(); 
   const availableModels = useSignal<Model[]>([]);
-  const selectedModel = useSignal<SelectedModel>(initialModel || {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}});
   const isLoadingModels = useSignal(false);
 
-  const setDefaultModel = async () => {
+  const setDefaultModel = async (model: SelectedModel) => {
     try {
-      if (selectedModel.value) {
-        await AsyncStorage.setItem('defaultModel', JSON.stringify(selectedModel.value));
+      if (model) {
+        await AsyncStorage.setItem('defaultModel', JSON.stringify(model));
       }
     } catch (error) {
       console.error('Error saving default model:', error);
@@ -27,7 +28,7 @@ export function useModels(initialModel?: SelectedModel) {
     try {
       const storedDefault = await AsyncStorage.getItem('defaultModel');
       if (storedDefault) {
-        selectedModel.value = JSON.parse(storedDefault);
+        return storedDefault;
       }
     } catch (error) {
       console.error('Error loading default model:', error);
@@ -107,7 +108,6 @@ export function useModels(initialModel?: SelectedModel) {
 
   return {
     availableModels,
-    selectedModel,
     isLoadingModels,
     fetchAvailableModels,
     setDefaultModel

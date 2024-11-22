@@ -29,7 +29,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
     content: 'You are a helpful AI assistant.'
   });
 
-  const { fetchAvailableModels, setDefaultModel } = useModels(thread.value.selectedModel);
+  const { fetchAvailableModels, setDefaultModel } = useModels();
   const { handleSend } = useChat(thread, threads);
 
   if(availableModels.value.length === 0){
@@ -63,7 +63,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
           models={availableModels}
           selectedModel={selectedModel}
           onSetModel={setSelectedModel}
-          onSetDefault={setDefaultModel}
+          onSetDefault={() => setDefaultModel(selectedModel.value)}
         />}
         <SystemPromptSelector
           selectedPrompt={selectedPrompt}
