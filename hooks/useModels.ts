@@ -10,7 +10,7 @@ interface Model {
 
 export function useModels() {
   const availableModels = useSignal<Model[]>([]);
-  const selectedModel = useSignal<SelectedModel>();
+  const selectedModel = useSignal<SelectedModel>({id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}});
   const isLoadingModels = useSignal(false);
 
   const setDefaultModel = async () => {

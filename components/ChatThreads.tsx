@@ -30,7 +30,7 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <TouchableOpacity onPress={()=>{threads.value = [...threads.value, {id:2, title:"New thread", messages: []}]}} className='mx-auto rounded-full bg-white'>
+      <TouchableOpacity onPress={()=>{threads.value = [...threads.value, {id:2, title:"New thread", messages: [], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}}]}} className='mx-auto rounded-full bg-white'>
         <Ionicons name='add' className='bg-white'></Ionicons>
       </TouchableOpacity>
     </View>

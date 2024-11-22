@@ -7,8 +7,10 @@ export interface ChatMessage {
   isUser: boolean;
 }
 
-interface APIEndpoint {
-  type: 'ollama' | 'openai' | 'anthropic';
+export interface APIEndpoint {
+  id?: string;
+  name?: string;
+  type: 'ollama' | 'openai' | 'anthropic' | 'custom';
   apiKey?: string;
   endpoint: string;
 }

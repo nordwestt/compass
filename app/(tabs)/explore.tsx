@@ -3,14 +3,7 @@ import { View, Text, TouchableOpacity, Image, ScrollView, Modal, TextInput } fro
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import { useSignal } from '@preact/signals-react';
-
-interface APIEndpoint {
-  id: string;
-  name: string;
-  endpoint: string;
-  apiKey: string;
-  type: 'anthropic' | 'openai' | 'ollama' | 'custom';
-}
+import { APIEndpoint } from '@/hooks/useChat';
 
 const PREDEFINED_ENDPOINTS = {
   anthropic: {
@@ -113,7 +106,7 @@ export default function ExploreScreen() {
                   <Ionicons name="pencil" size={20} color="#4B5563" />
                 </TouchableOpacity>
                 <TouchableOpacity 
-                  onPress={() => handleDelete(endpoint.id)}
+                  onPress={() => handleDelete(endpoint.id ?? '')}
                   className="p-2"
                 >
                   <Ionicons name="trash" size={20} color="#EF4444" />
@@ -162,8 +155,8 @@ function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProp
 
   useEffect(() => {
     if (endpoint) {
-      name.value = endpoint.name;
-      apiKey.value = endpoint.apiKey;
+      name.value = endpoint.name ?? '';
+      apiKey.value = endpoint.apiKey ?? '';
       selectedType.value = endpoint.type;
       customEndpoint.value = endpoint.endpoint;
     } else {
