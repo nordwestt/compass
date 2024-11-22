@@ -6,25 +6,11 @@ import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { SystemPrompt, PREDEFINED_PROMPTS } from '@/components/SystemPromptSelector';
 import { modalService } from '@/services/modalService';
-
+import { customPrompts, loadAllPrompts } from '@/hooks/useSystemPrompts';
 export default function CharactersScreen() {
   useSignals();
-  const customPrompts = useSignal<SystemPrompt[]>([]);
   
-  useEffect(() => {
-    loadCustomPrompts();
-  }, []);
-
-  const loadCustomPrompts = async () => {
-    try {
-      const stored = await AsyncStorage.getItem('customPrompts');
-      if (stored) {
-        customPrompts.value = JSON.parse(stored);
-      }
-    } catch (error) {
-      console.error('Error loading custom prompts:', error);
-    }
-  };
+  loadAllPrompts();
 
   const saveCustomPrompts = async (prompts: SystemPrompt[]) => {
     try {

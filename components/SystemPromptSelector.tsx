@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { Signal } from '@preact/signals-react';
-import { useSystemPrompts } from '@/hooks/useSystemPrompts';
 import { useSignals } from '@preact/signals-react/runtime';
+import { allPrompts, loadAllPrompts, loadCustomPrompts } from '@/hooks/useSystemPrompts';
 
 export interface SystemPrompt {
   id: string;
@@ -55,7 +55,10 @@ export const SystemPromptSelector: React.FC<SystemPromptSelectorProps> = ({
 }) => {
   useSignals();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { allPrompts } = useSystemPrompts();
+  if(allPrompts.value.length === 0) {
+    loadAllPrompts();
+  }
+  
 
   return (
     <>

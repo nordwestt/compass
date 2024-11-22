@@ -1,35 +1,27 @@
-import { useSignal, Signal } from '@preact/signals-react';
+import { useSignal, Signal, signal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SystemPrompt, PREDEFINED_PROMPTS } from '@/components/SystemPromptSelector';
-import { useEffect } from 'react';
-import { useSignals } from '@preact/signals-react/runtime';
 
-export function useSystemPrompts() {
-  useSignals();
-  const customPrompts = useSignal<SystemPrompt[]>([]);
-  const allPrompts = useSignal<SystemPrompt[]>([]);
+export const allPrompts = signal<SystemPrompt[]>([]);
+export const customPrompts = signal<SystemPrompt[]>([]);
+let loadedCustomPrompts = false;
 
-  useEffect(() => {
-    loadCustomPrompts();
-  }, []);
+export const loadAllPrompts = async () => {
+    await loadCustomPrompts();
+    allPrompts.value = [...PREDEFINED_PROMPTS, ...customPrompts.value];
+}
 
-  const loadCustomPrompts = async () => {
+export const loadCustomPrompts = async () => {
     try {
-      const stored = await AsyncStorage.getItem('customPrompts');
-      if (stored) {
-        customPrompts.value = JSON.parse(stored);
-        allPrompts.value = [...PREDEFINED_PROMPTS, ...customPrompts.value];
-      } else {
-        allPrompts.value = PREDEFINED_PROMPTS;
-      }
+        if(loadedCustomPrompts) {
+            return;
+        }
+        const stored = await AsyncStorage.getItem('customPrompts');
+        loadedCustomPrompts = true;
+        if (stored) {
+            customPrompts.value = JSON.parse(stored);
+        }
     } catch (error) {
       console.error('Error loading custom prompts:', error);
-      allPrompts.value = PREDEFINED_PROMPTS;
     }
-  };
-
-  return {
-    allPrompts,
-    loadCustomPrompts
-  };
-} 
+};
