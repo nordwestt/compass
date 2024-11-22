@@ -31,6 +31,7 @@ UI and Styling:
 - Use consistent styling, either through `StyleSheet.create()` or Styled Components.
 - Ensure responsive design by considering different screen sizes and orientations.
 - Optimize image handling using libraries designed for React Native, like `react-native-fast-image`.
+- Use nativewind for styling, ensure dark mode is accounted for.
 
 Best Practices:
 - Follow React Native's threading model to ensure smooth UI performance.

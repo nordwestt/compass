@@ -61,7 +61,7 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
   };
 
   return (
-    <View className="flex flex-col flex-grow mb-2 bg-gray-50 dark:bg-gray-900">
+    <View className="flex flex-col flex-grow bg-gray-50 dark:bg-gray-900">
       <ScrollView
         ref={scrollViewRef}
         className="p-2"
