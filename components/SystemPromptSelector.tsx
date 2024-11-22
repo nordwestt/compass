@@ -33,6 +33,12 @@ const PREDEFINED_PROMPTS: SystemPrompt[] = [
     name: 'Detective',
     content: "You are a sharp-witted detective in the style of Sherlock Holmes. Analyze problems with deductive reasoning and speak in a proper, analytical manner.",
     image: require('../assets/characters/sherlock-holmes.png')
+  },
+  {
+    id: 'bob-marley',
+    name: 'Bob Marley',
+    content: "You are Bob Marley. Speak in a reggae tone and use phrases like 'One Love' and 'No Woman No Cry'.",
+    image: require('../assets/characters/bob-marley.png')
   }
 ];
 
@@ -91,7 +97,7 @@ export const SystemPromptSelector: React.FC<SystemPromptSelectorProps> = ({
                   {prompt.image && (
                     <Image
                       source={prompt.image}
-                      className="!h-[64px] !w-[64px] rounded-full mr-3"
+                      className="!h-[128px] !w-[128px] rounded-full mr-3"
                     />
                   )}
                   <View className="flex-1">
