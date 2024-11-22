@@ -18,16 +18,16 @@ export interface LLMProvider {
 }
 
 async function sendMessageToProvider(
-  message: string, 
+  messages: ChatMessage[], 
   selectedModel: Model,
   systemPrompt: SystemPrompt,
 ): Promise<Response> {
-  const messages = [
+  const newMessages = [
     { role: 'system', content: systemPrompt.content },
-    { role: 'user', content: message }
+    ...messages.map(message => ({ role: message.isUser ? 'user' : 'assistant', content: message.content }))
   ];
 
-  console.log(messages);
+  console.log(newMessages);
 
   switch (selectedModel.provider.type) {
     case 'ollama':
@@ -36,7 +36,7 @@ async function sendMessageToProvider(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: selectedModel.id,
-          messages: messages,
+          messages: newMessages,
           stream: true
         }),
       });
@@ -150,7 +150,7 @@ const generateThreadTitle = async (message: string, thread: Signal<Thread>) => {
 Message: ${message}`;
 
   try {
-    const response = await sendMessageToProvider(prompt, thread.value.selectedModel, {
+    const response = await sendMessageToProvider([{content: prompt, isUser: true}], thread.value.selectedModel, {
       id: 'title-generator',
       name: 'Title Generator',
       content: 'You are a helpful assistant that generates concise 3-word titles. Only respond with the title in the format "Word1 Word2 Word3" without quotes or periods.'
@@ -203,7 +203,7 @@ export function useChat(
     try {
       
 
-      const response = await sendMessageToProvider(message, thread.value.selectedModel, thread.value.systemPrompt);
+      const response = await sendMessageToProvider(thread.value.messages, thread.value.selectedModel, thread.value.systemPrompt);
       await handleStreamResponse(response, thread, threads);
     } catch (error) {
       console.error('Error sending message:', error);
