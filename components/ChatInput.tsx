@@ -4,9 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
+  isGenerating?: boolean;
+  onInterrupt?: () => void;
 }
 
-export const ChatInput: React.FC<ChatInputProps> = ({ onSend }) => {
+export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isGenerating, onInterrupt }) => {
   const [message, setMessage] = useState('');
 
   const handleSend = () => {
@@ -32,14 +34,23 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend }) => {
         onChangeText={setMessage}
         onKeyPress={handleKeyPress}
         multiline
-        blurOnSubmit={false}
+        editable={!isGenerating}
       />
-      <Pressable
-        onPress={handleSend}
-        className="w-10 h-10 rounded-full bg-blue-500 dark:bg-blue-600 items-center justify-center"
-      >
-        <Ionicons name="send" size={20} color="white" />
-      </Pressable>
+      {isGenerating ? (
+        <Pressable
+          onPress={onInterrupt}
+          className="w-10 h-10 rounded-full bg-red-500 items-center justify-center"
+        >
+          <Ionicons name="stop" size={20} color="white" />
+        </Pressable>
+      ) : (
+        <Pressable
+          onPress={handleSend}
+          className="w-10 h-10 rounded-full bg-blue-500 dark:bg-blue-600 items-center justify-center"
+        >
+          <Ionicons name="send" size={20} color="white" />
+        </Pressable>
+      )}
     </View>
   );
 }; 

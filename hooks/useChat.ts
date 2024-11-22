@@ -1,4 +1,4 @@
-import { Signal } from '@preact/signals-react';
+import { Signal, useSignal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/app/(tabs)';
 import { Character } from '@/components/CharacterSelector';
@@ -21,6 +21,7 @@ async function sendMessageToProvider(
   messages: ChatMessage[], 
   selectedModel: Model,
   character: Character,
+  signal?: AbortSignal
 ): Promise<Response> {
   const newMessages = [
     { role: 'system', content: character.content },
@@ -39,6 +40,7 @@ async function sendMessageToProvider(
           messages: newMessages,
           stream: true
         }),
+        signal
       });
 
     case 'openai':
@@ -53,6 +55,7 @@ async function sendMessageToProvider(
           messages: messages,
           stream: true
         }),
+        signal
       });
 
     case 'anthropic':
@@ -68,6 +71,7 @@ async function sendMessageToProvider(
           messages: messages,
           stream: true
         }),
+        signal
       });
 
     default:
@@ -187,11 +191,20 @@ Message: ${message}`;
   }
 };
 
-export function useChat(
-  thread: Signal<Thread>, 
-  threads: Signal<Thread[]>
-) {
+export function useChat(thread: Signal<Thread>, threads: Signal<Thread[]>) {
+  const abortController = useSignal<AbortController | null>(null);
+
+  const handleInterrupt = () => {
+    if (abortController.value) {
+      abortController.value.abort();
+      abortController.value = null;
+    }
+  };
+
   const handleSend = async (message: string) => {
+    // Create new abort controller for this request
+    abortController.value = new AbortController();
+
     const newMessage = { content: message, isUser: true };
     const assistantPlaceholder = { content: "", isUser: false };
     
@@ -201,24 +214,42 @@ export function useChat(
     };
 
     try {
-      
-
-      const response = await sendMessageToProvider(thread.value.messages, thread.value.selectedModel, thread.value.character);
+      const response = await sendMessageToProvider(
+        thread.value.messages, 
+        thread.value.selectedModel, 
+        thread.value.character,
+        abortController.value.signal
+      );
       await handleStreamResponse(response, thread, threads);
     } catch (error) {
-      console.error('Error sending message:', error);
-      // Update the placeholder message to show the error
-      const updatedMessages = [...thread.value.messages];
-      const lastMessage = updatedMessages[updatedMessages.length - 1];
-      if (lastMessage && !lastMessage.isUser) {
-        lastMessage.content = "Error: Failed to get response from AI";
-        thread.value = {
-          ...thread.value,
-          messages: updatedMessages
-        };
+      if (error instanceof Error && error.name === 'AbortError') {
+        // Update the placeholder message to show interruption
+        const updatedMessages = [...thread.value.messages];
+        const lastMessage = updatedMessages[updatedMessages.length - 1];
+        if (lastMessage && !lastMessage.isUser) {
+          lastMessage.content += "\n\n[Generation interrupted]";
+          thread.value = {
+            ...thread.value,
+            messages: updatedMessages
+          };
+        }
+      } else {
+        console.error('Error sending message:', error);
+        // Update the placeholder message to show the error
+        const updatedMessages = [...thread.value.messages];
+        const lastMessage = updatedMessages[updatedMessages.length - 1];
+        if (lastMessage && !lastMessage.isUser) {
+          lastMessage.content = "Error: Failed to get response from AI";
+          thread.value = {
+            ...thread.value,
+            messages: updatedMessages
+          };
+        }
       }
+    } finally {
+      abortController.value = null;
     }
   };
 
-  return { handleSend };
+  return { handleSend, handleInterrupt };
 } 

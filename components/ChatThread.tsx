@@ -20,6 +20,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   useSignals();
   
   const scrollViewRef = useRef<ScrollView>(null);
+  const isGenerating = useSignal(false);
   
   const selectedModel = useComputed(() => thread.value.selectedModel);
   const availableModels = useSignal<Model[]>([]);
@@ -31,7 +32,13 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   });
 
   const { fetchAvailableModels, setDefaultModel } = useModels();
-  const { handleSend } = useChat(thread, threads);
+  const { handleSend, handleInterrupt } = useChat(thread, threads);
+
+  const wrappedHandleSend = async (message: string) => {
+    isGenerating.value = true;
+    await handleSend(message);
+    isGenerating.value = false;
+  };
 
   if(availableModels.value.length === 0){
     fetchAvailableModels().then((models) => {
@@ -84,7 +91,11 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
           />
         ))}
       </ScrollView>
-      <ChatInput onSend={handleSend} />
+      <ChatInput 
+        onSend={wrappedHandleSend} 
+        isGenerating={isGenerating.value}
+        onInterrupt={handleInterrupt}
+      />
     </View>
   );
 }; 
