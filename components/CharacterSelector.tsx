@@ -44,12 +44,12 @@ export const PREDEFINED_PROMPTS: Character[] = [
   }
 ];
 
-interface SystemPromptSelectorProps {
+interface CharacterSelectorProps {
   selectedPrompt: Signal<Character>;
   onSelectPrompt: (prompt: Character) => void;
 }
 
-export const SystemPromptSelector: React.FC<SystemPromptSelectorProps> = ({
+export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   selectedPrompt,
   onSelectPrompt
 }) => {

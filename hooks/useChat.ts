@@ -1,7 +1,7 @@
 import { Signal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/app/(tabs)';
-import { Character } from '@/components/SystemPromptSelector';
+import { Character } from '@/components/CharacterSelector';
 import { Model } from './useModels';
 
 export interface ChatMessage {

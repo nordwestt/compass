@@ -1,6 +1,6 @@
 import { useSignal, Signal, signal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Character, PREDEFINED_PROMPTS } from '@/components/SystemPromptSelector';
+import { Character, PREDEFINED_PROMPTS } from '@/components/CharacterSelector';
 
 export const allPrompts = signal<Character[]>([]);
 export const customPrompts = signal<Character[]>([]);

@@ -4,7 +4,7 @@ import { useSignals } from '@preact/signals-react/runtime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Character, PREDEFINED_PROMPTS } from '@/components/SystemPromptSelector';
+import { Character, PREDEFINED_PROMPTS } from '@/components/CharacterSelector';
 import { modalService } from '@/services/modalService';
 import { customPrompts, loadAllPrompts } from '@/hooks/useSystemPrompts';
 export default function CharactersScreen() {

@@ -8,7 +8,7 @@ import { ModelSelector } from './ModelSelector';
 import { Model, useModels } from '@/hooks/useModels';
 import { useChat } from '@/hooks/useChat';
 import { useColorScheme } from 'nativewind';
-import { SystemPromptSelector, Character } from './SystemPromptSelector';
+import { CharacterSelector, Character } from './CharacterSelector';
 import { useSignals } from '@preact/signals-react/runtime';
 
 export interface ChatThreadProps {
@@ -65,7 +65,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
           onSetModel={setSelectedModel}
           onSetDefault={() => setDefaultModel(selectedModel.value)}
         />}
-        <SystemPromptSelector
+        <CharacterSelector
           selectedPrompt={selectedPrompt}
           onSelectPrompt={handleSelectPrompt}
         />
