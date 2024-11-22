@@ -88,11 +88,22 @@ async function handleStreamResponse(
   if (!reader) throw new Error('No reader available from response');
 
   let assistantMessage = '';
+  const isFirstMessage = thread.value.messages.length === 2; // User message + current AI message
 
   try {
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
+        // If this was the first message, generate and set the title
+        if (isFirstMessage) {
+          const title = await generateThreadTitle(assistantMessage, thread);
+          thread.value = { ...thread.value, title };
+          // Update thread in threads array
+          threads.value = threads.value.map(t => 
+            t.id === thread.value.id ? thread.value : t
+          );
+        }
+        
         // Update threads array with the final message
         threads.value = threads.value.map(t => 
           t.id === thread.value.id ? thread.value : t
@@ -136,6 +147,49 @@ async function handleStreamResponse(
     reader.releaseLock();
   }
 }
+
+const generateThreadTitle = async (message: string, thread: Signal<Thread>) => {
+  const prompt = `Based on this first message, generate a concise 3-word title that captures the essence of the conversation. Format: "Word1 Word2 Word3" (no quotes, no periods)
+  
+Message: ${message}`;
+
+  try {
+    const response = await sendMessageToProvider(prompt, thread.value.selectedModel, {
+      id: 'title-generator',
+      name: 'Title Generator',
+      content: 'You are a helpful assistant that generates concise 3-word titles. Only respond with the title in the format "Word1 Word2 Word3" without quotes or periods.'
+    });
+
+    const reader = response?.body?.getReader();
+    if (!reader) throw new Error('No reader available');
+
+    let title = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      
+      const chunk = new TextDecoder().decode(value);
+      const lines = chunk.split('\n');
+      
+      for (const line of lines) {
+        if (line.trim() === '') continue;
+        try {
+          const parsedChunk = JSON.parse(line);
+          const content = parsedChunk.message?.content || 
+                         parsedChunk.choices?.[0]?.delta?.content || 
+                         parsedChunk.delta?.text;
+          if (content) title += content;
+        } catch (e) {
+          console.error('Error parsing chunk:', e);
+        }
+      }
+    }
+    return title.trim();
+  } catch (error) {
+    console.error('Error generating title:', error);
+    return 'New Chat Thread';
+  }
+};
 
 export function useChat(
   thread: Signal<Thread>, 
