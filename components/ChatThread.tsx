@@ -8,6 +8,7 @@ import { ModelSelector } from './ModelSelector';
 import { Model, useModels } from '@/hooks/useModels';
 import { SelectedModel, useChat } from '@/hooks/useChat';
 import { useColorScheme } from 'nativewind';
+import { SystemPromptSelector, SystemPrompt } from './SystemPromptSelector';
 
 export interface ChatThreadProps {
   thread: Signal<Thread>;
@@ -19,6 +20,11 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   
   const selectedModel = useComputed(() => thread.value.selectedModel);
   const availableModels = useSignal<Model[]>([]);
+  const selectedPrompt = useSignal<SystemPrompt>(thread.value.systemPrompt || {
+    id: 'default',
+    name: 'Default Assistant',
+    content: 'You are a helpful AI assistant.'
+  });
 
   const { fetchAvailableModels, setDefaultModel } = useModels(thread.value.selectedModel);
   const { handleSend } = useChat(thread, threads);
@@ -38,15 +44,28 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
     }
   }
 
+  const handleSelectPrompt = (prompt: SystemPrompt) => {
+    thread.value = {...thread.value, systemPrompt: prompt};
+    const threadIndex = threads.value.findIndex((t) => t.id === thread.value.id);
+    if(threadIndex !== -1){
+      threads.value[threadIndex] = thread.value;
+    }
+    selectedPrompt.value = prompt;
+  };
+
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-900">
-      <View className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <View className="p-4 flex-row justify-between border-b border-gray-200 dark:border-gray-700">
         {selectedModel.value && <ModelSelector 
           models={availableModels}
           selectedModel={selectedModel}
           onSetModel={setSelectedModel}
           onSetDefault={setDefaultModel}
         />}
+        <SystemPromptSelector
+          selectedPrompt={selectedPrompt}
+          onSelectPrompt={handleSelectPrompt}
+        />
       </View>
 
       <ScrollView

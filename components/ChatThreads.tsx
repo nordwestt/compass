@@ -20,7 +20,8 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
       id: Date.now().toString(), 
       title: "New thread", 
       messages: [{content: "Hello, how can I help you today?", isUser: false}], 
-      selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}
+      selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}},
+      systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}
     }];
   }
 

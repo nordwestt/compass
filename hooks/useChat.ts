@@ -1,6 +1,7 @@
 import { Signal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/app/(tabs)';
+import { SystemPrompt } from '@/components/SystemPromptSelector';
 
 export interface ChatMessage {
   content: string;
@@ -22,8 +23,15 @@ export interface SelectedModel {
 
 async function sendMessageToProvider(
   message: string, 
-  selectedModel: SelectedModel, 
+  selectedModel: SelectedModel,
+  systemPrompt: SystemPrompt,
 ): Promise<Response> {
+  const messages = [
+    { role: 'system', content: systemPrompt.content },
+    { role: 'user', content: message }
+  ];
+
+  console.log(messages);
 
   switch (selectedModel.provider.type) {
     case 'ollama':
@@ -32,7 +40,7 @@ async function sendMessageToProvider(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: selectedModel.id,
-          messages: [{ role: 'user', content: message }],
+          messages: messages,
           stream: true
         }),
       });
@@ -46,7 +54,7 @@ async function sendMessageToProvider(
         },
         body: JSON.stringify({
           model: selectedModel.id,
-          messages: [{ role: 'user', content: message }],
+          messages: messages,
           stream: true
         }),
       });
@@ -61,7 +69,7 @@ async function sendMessageToProvider(
         },
         body: JSON.stringify({
           model: selectedModel.id,
-          messages: [{ role: 'user', content: message }],
+          messages: messages,
           stream: true
         }),
       });
@@ -145,7 +153,7 @@ export function useChat(
     try {
       
 
-      const response = await sendMessageToProvider(message, thread.value.selectedModel);
+      const response = await sendMessageToProvider(message, thread.value.selectedModel, thread.value.systemPrompt);
       await handleStreamResponse(response, thread, threads);
     } catch (error) {
       console.error('Error sending message:', error);

@@ -29,27 +29,25 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   }
 
   return (
-    <View className="space-y-2 flex-row justify-between">
-      <View className="bg-gray-100 rounded-lg">
-        <Picker
-          selectedValue={selectedModel.value.id}  
-          onValueChange={(value) => {
-            onSetModel({id: value, provider: selectedModel.value.provider});
-          }}
-          className="px-4 py-2 rounded-lg bg-white border-2 border-gray-200"
-        >
-          {models.value.map((model) => (
-            <Picker.Item 
-              key={model.id} 
-              label={`${model.provider} - ${model.name}`} 
-              value={model.id} 
-            />
-          ))}
-        </Picker>
-      </View>
+    <View className="flex-row justify-between">
+    <Picker
+        selectedValue={selectedModel.value.id}  
+        onValueChange={(value) => {
+        onSetModel({id: value, provider: selectedModel.value.provider});
+        }}
+        className="px-4 py-2 rounded-lg bg-white border-2 border-gray-200"
+    >
+        {models.value.map((model) => (
+        <Picker.Item 
+            key={model.id} 
+            label={`${model.provider} - ${model.name}`} 
+            value={model.id} 
+        />
+        ))}
+    </Picker>
       <TouchableOpacity 
         onPress={onSetDefault}
-        className="bg-blue-500 py-2 px-4 rounded-lg self-start"
+        className="bg-blue-500 py-2 px-4 my-auto rounded-lg self-start"
       >
         <Text className="text-white text-sm font-medium">Set as Default</Text>
       </TouchableOpacity>

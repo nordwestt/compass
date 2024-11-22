@@ -8,16 +8,18 @@ import { ChatThread } from '@/components/ChatThread';
 import { ChatMessage, SelectedModel } from '@/hooks/useChat';
 import { ChatThreads } from '@/components/ChatThreads';
 import { useSignal } from '@preact/signals-react';
+import { SystemPrompt } from '@/components/SystemPromptSelector';
 
 export interface Thread {
   id: string;
   title: string;
   messages: ChatMessage[];
   selectedModel: SelectedModel;
+  systemPrompt: SystemPrompt;
 }
 
 export default function HomeScreen() {
-  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[{content: "Hello, how can I help you today?", isUser: false}], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}}]);
+  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[{content: "Hello, how can I help you today?", isUser: false}], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}, systemPrompt: {id: 'default', name: 'Default Assistant', content: 'You are a helpful AI assistant.'}}]);
   const currentThread = useSignal<Thread>(threads.value[0]);
   return (
     <View className="bg-gray-100 flex-1 flex-row">
