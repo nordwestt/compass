@@ -4,7 +4,7 @@ import { ChatThread } from '@/components/ChatThread';
 import { ChatMessage } from '@/hooks/useChat';
 import { ChatThreads } from '@/components/ChatThreads';
 import { useSignal } from '@preact/signals-react';
-import { SystemPrompt } from '@/components/SystemPromptSelector';
+import { Character } from '@/components/SystemPromptSelector';
 import { useSignals } from '@preact/signals-react/runtime';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Model } from '@/hooks/useModels';
@@ -14,7 +14,7 @@ export interface Thread {
   title: string;
   messages: ChatMessage[];
   selectedModel: Model;
-  systemPrompt: SystemPrompt;
+  systemPrompt: Character;
 }
 
 export default function HomeScreen() {

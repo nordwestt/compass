@@ -8,7 +8,7 @@ import { ModelSelector } from './ModelSelector';
 import { Model, useModels } from '@/hooks/useModels';
 import { useChat } from '@/hooks/useChat';
 import { useColorScheme } from 'nativewind';
-import { SystemPromptSelector, SystemPrompt } from './SystemPromptSelector';
+import { SystemPromptSelector, Character } from './SystemPromptSelector';
 import { useSignals } from '@preact/signals-react/runtime';
 
 export interface ChatThreadProps {
@@ -23,7 +23,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   
   const selectedModel = useComputed(() => thread.value.selectedModel);
   const availableModels = useSignal<Model[]>([]);
-  const selectedPrompt = useComputed<SystemPrompt>(() => thread.value.systemPrompt || {
+  const selectedPrompt = useComputed<Character>(() => thread.value.systemPrompt || {
     id: 'default',
     name: 'Default Assistant',
     content: 'You are a helpful AI assistant.',
@@ -48,7 +48,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
     }
   }
 
-  const handleSelectPrompt = (prompt: SystemPrompt) => {
+  const handleSelectPrompt = (prompt: Character) => {
     thread.value = {...thread.value, systemPrompt: prompt};
     const threadIndex = threads.value.findIndex((t) => t.id === thread.value.id);
     if(threadIndex !== -1){

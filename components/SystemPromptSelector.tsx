@@ -4,14 +4,14 @@ import { Signal } from '@preact/signals-react';
 import { useSignals } from '@preact/signals-react/runtime';
 import { allPrompts, loadAllPrompts, loadCustomPrompts } from '@/hooks/useSystemPrompts';
 
-export interface SystemPrompt {
+export interface Character {
   id: string;
   name: string;
   content: string;
   image?: any;
 }
 
-export const PREDEFINED_PROMPTS: SystemPrompt[] = [
+export const PREDEFINED_PROMPTS: Character[] = [
   {
     id: 'default',
     name: 'Default Assistant',
@@ -45,8 +45,8 @@ export const PREDEFINED_PROMPTS: SystemPrompt[] = [
 ];
 
 interface SystemPromptSelectorProps {
-  selectedPrompt: Signal<SystemPrompt>;
-  onSelectPrompt: (prompt: SystemPrompt) => void;
+  selectedPrompt: Signal<Character>;
+  onSelectPrompt: (prompt: Character) => void;
 }
 
 export const SystemPromptSelector: React.FC<SystemPromptSelectorProps> = ({

@@ -4,7 +4,7 @@ import { useSignals } from '@preact/signals-react/runtime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { SystemPrompt, PREDEFINED_PROMPTS } from '@/components/SystemPromptSelector';
+import { Character, PREDEFINED_PROMPTS } from '@/components/SystemPromptSelector';
 import { modalService } from '@/services/modalService';
 import { customPrompts, loadAllPrompts } from '@/hooks/useSystemPrompts';
 export default function CharactersScreen() {
@@ -12,7 +12,7 @@ export default function CharactersScreen() {
   
   loadAllPrompts();
 
-  const saveCustomPrompts = async (prompts: SystemPrompt[]) => {
+  const saveCustomPrompts = async (prompts: Character[]) => {
     try {
       await AsyncStorage.setItem('customPrompts', JSON.stringify(prompts));
       customPrompts.value = prompts;
@@ -21,7 +21,7 @@ export default function CharactersScreen() {
     }
   };
 
-  const handleEdit = async (prompt: SystemPrompt) => {
+  const handleEdit = async (prompt: Character) => {
     const newName = await modalService.prompt({
       title: 'Edit Character',
       message: 'Enter character name:',
@@ -69,7 +69,7 @@ export default function CharactersScreen() {
       });
 
       if (content) {
-        const newPrompt: SystemPrompt = {
+        const newPrompt: Character = {
           id: Date.now().toString(),
           name,
           content,

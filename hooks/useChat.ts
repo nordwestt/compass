@@ -1,7 +1,7 @@
 import { Signal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/app/(tabs)';
-import { SystemPrompt } from '@/components/SystemPromptSelector';
+import { Character } from '@/components/SystemPromptSelector';
 import { Model } from './useModels';
 
 export interface ChatMessage {
@@ -20,7 +20,7 @@ export interface LLMProvider {
 async function sendMessageToProvider(
   messages: ChatMessage[], 
   selectedModel: Model,
-  systemPrompt: SystemPrompt,
+  systemPrompt: Character,
 ): Promise<Response> {
   const newMessages = [
     { role: 'system', content: systemPrompt.content },
