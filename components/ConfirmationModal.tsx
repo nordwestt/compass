@@ -1,41 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, TextInput, Platform } from 'react-native';
 import { modalState, modalService } from '@/services/modalService';
-import { useSignal } from '@preact/signals-react';
 import { useSignals } from '@preact/signals-react/runtime';
 
 export const ConfirmationModal = () => {
   useSignals();
+  const [inputText, setInputText] = useState('');
   
-  const inputText = useSignal(modalState.value.defaultValue || '');
+  // Update local state when modal opens with new defaultValue
+  useEffect(() => {
+    if (modalState.value.isVisible && modalState.value.type === 'prompt') {
+      setInputText(modalState.value.defaultValue || '');
+    }
+  }, [modalState.value.isVisible]);
 
   const Content = () => (
-    <View className="bg-white rounded-lg p-6 m-4 max-w-sm w-full">
-      <Text className="text-xl font-bold mb-2">{modalState.value.title}</Text>
-      <Text className="text-gray-600 mb-4">{modalState.value.message}</Text>
+    <View className="bg-white dark:bg-gray-800 rounded-lg p-6 m-4 max-w-sm w-full">
+      <Text className="text-xl font-bold mb-2 text-black dark:text-white">
+        {modalState.value.title}
+      </Text>
+      <Text className="text-gray-600 dark:text-gray-300 mb-4">
+        {modalState.value.message}
+      </Text>
 
       {modalState.value.type === 'prompt' && (
         <TextInput
-          value={inputText.value}
-          onChangeText={(text) => inputText.value = text}
-          className="border border-gray-300 rounded-lg p-2 mb-4"
+          value={inputText}
+          onChangeText={setInputText}
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 mb-4 text-black dark:text-white"
+          autoFocus={true}
+          blurOnSubmit={false}
+          multiline={false}
+          returnKeyType="done"
+          onSubmitEditing={() => modalService.handleResponse(inputText)}
         />
       )}
 
       <View className="flex-row justify-end space-x-2">
         <TouchableOpacity
           onPress={() => modalService.handleResponse(null)}
-          className="px-4 py-2 rounded-lg bg-gray-200"
+          className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700"
         >
-          <Text>Cancel</Text>
+          <Text className="text-black dark:text-white">Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => modalService.handleResponse(
-            modalState.value.type === 'prompt' ? inputText.value : true
+            modalState.value.type === 'prompt' ? inputText : true
           )}
           className="px-4 py-2 rounded-lg bg-blue-500"
         >
-          <Text className="text-white">{modalState.value.type === 'prompt' ? 'Save' : 'Confirm'}</Text>
+          <Text className="text-white">
+            {modalState.value.type === 'prompt' ? 'Save' : 'Confirm'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
