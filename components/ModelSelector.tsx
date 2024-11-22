@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Signal } from '@preact/signals-react';
 import { SelectedModel } from '@/hooks/useChat';
+import { Thread } from '@/app/(tabs)';
 
 interface Model {
   id: string;
@@ -11,19 +12,19 @@ interface Model {
 }
 
 interface ModelSelectorProps {
-  isLoading: boolean;
   models: Signal<Model[]>;
   selectedModel: Signal<SelectedModel>;
+  onSetModel: (model: SelectedModel) => void;
   onSetDefault: () => void;
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({ 
-  isLoading, 
   models, 
   selectedModel,
-  onSetDefault 
+  onSetModel,
+  onSetDefault
 }) => {
-  if (isLoading) {
+  if (!models.value?.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
   }
 
@@ -32,7 +33,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       <View className="bg-gray-100 rounded-lg">
         <Picker
           selectedValue={selectedModel.value.id}  
-          onValueChange={(value) => selectedModel.value = {id: value, provider: selectedModel.value.provider}}
+          onValueChange={(value) => {
+            onSetModel({id: value, provider: selectedModel.value.provider});
+          }}
           className="px-4 py-2 rounded-lg bg-white border-2 border-gray-200"
         >
           {models.value.map((model) => (

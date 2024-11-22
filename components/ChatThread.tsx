@@ -3,10 +3,10 @@ import { View, ScrollView } from 'react-native';
 import { Message } from './Message';
 import { ChatInput } from './ChatInput';
 import { Thread } from '@/app/(tabs)';
-import { Signal } from '@preact/signals-react';
+import { effect, Signal, useSignal, computed, useComputed } from '@preact/signals-react';
 import { ModelSelector } from './ModelSelector';
-import { useModels } from '@/hooks/useModels';
-import { useChat } from '@/hooks/useChat';
+import { Model, useModels } from '@/hooks/useModels';
+import { SelectedModel, useChat } from '@/hooks/useChat';
 
 export interface ChatThreadProps {
   thread: Signal<Thread>;
@@ -15,20 +15,35 @@ export interface ChatThreadProps {
 
 export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
   const scrollViewRef = useRef<ScrollView>(null);
-  const { availableModels, selectedModel, isLoadingModels, fetchAvailableModels, setDefaultModel } = useModels();
-  const { handleSend } = useChat(thread, threads, selectedModel);
+  
+  const selectedModel = useComputed(() => thread.value.selectedModel);
+  const availableModels = useSignal<Model[]>([]);
 
-  useEffect(() => {
-    fetchAvailableModels();
-  }, []);
+  const { fetchAvailableModels, setDefaultModel } = useModels(thread.value.selectedModel);
+  const { handleSend } = useChat(thread, threads);
+
+  if(availableModels.value.length === 0){
+    fetchAvailableModels().then((models) => {
+      availableModels.value = models ?? [];
+    });
+  }
+
+  const setSelectedModel = (model: SelectedModel) => {
+    thread.value = {...thread.value, selectedModel: model};
+    // find the thread in threads and update it
+    const threadIndex = threads.value.findIndex((t) => t.id === thread.value.id);
+    if(threadIndex !== -1){
+      threads.value[threadIndex] = thread.value;
+    }
+  }
 
   return (
     <View className="flex-1">
       <View className="p-4 border-b border-gray-200">
         {selectedModel.value && <ModelSelector 
-          isLoading={isLoadingModels.value}
           models={availableModels}
           selectedModel={selectedModel}
+          onSetModel={setSelectedModel}
           onSetDefault={setDefaultModel}
         />}
       </View>

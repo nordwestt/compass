@@ -131,8 +131,7 @@ async function handleStreamResponse(
 
 export function useChat(
   thread: Signal<Thread>, 
-  threads: Signal<Thread[]>, 
-  selectedModel: Signal<SelectedModel>
+  threads: Signal<Thread[]>
 ) {
   const handleSend = async (message: string) => {
     const newMessage = { content: message, isUser: true };
@@ -146,7 +145,7 @@ export function useChat(
     try {
       
 
-      const response = await sendMessageToProvider(message, selectedModel.value);
+      const response = await sendMessageToProvider(message, thread.value.selectedModel);
       await handleStreamResponse(response, thread, threads);
     } catch (error) {
       console.error('Error sending message:', error);

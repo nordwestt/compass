@@ -11,6 +11,10 @@ export interface ChatThreadsProps {
 export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread }) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const addNewThread = () => {
+    threads.value = [...threads.value, {id: Date.now().toString(), title:"New thread", messages: [{content: "Hello, how can I help you today?", isUser: false}], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}}]
+  }
+
   return (
     <View className="flex flex-col mb-2">
       <ScrollView
@@ -19,7 +23,7 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}>
         {threads.value.map((thread) => (
           <TouchableOpacity 
-            key={thread.title}
+            key={thread.id}
             onPress={() => currentThread.value = thread} 
             className={
               `p-4 mb-2 rounded-lg' ${currentThread.value.id === thread.id 
@@ -30,7 +34,7 @@ export const ChatThreads: React.FC<ChatThreadsProps> = ({ threads, currentThread
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <TouchableOpacity onPress={()=>{threads.value = [...threads.value, {id:2, title:"New thread", messages: [], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}}]}} className='mx-auto rounded-full bg-white'>
+      <TouchableOpacity onPress={addNewThread} className='mx-auto rounded-full bg-white'>
         <Ionicons name='add' className='bg-white'></Ionicons>
       </TouchableOpacity>
     </View>

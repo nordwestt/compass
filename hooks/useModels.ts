@@ -2,15 +2,15 @@ import { Signal, useSignal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SelectedModel } from './useChat';
 
-interface Model {
+export interface Model {
   id: string;
   name: string;
   provider: string;
 }
 
-export function useModels() {
+export function useModels(initialModel?: SelectedModel) {
   const availableModels = useSignal<Model[]>([]);
-  const selectedModel = useSignal<SelectedModel>({id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}});
+  const selectedModel = useSignal<SelectedModel>(initialModel || {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}});
   const isLoadingModels = useSignal(false);
 
   const setDefaultModel = async () => {
@@ -37,7 +37,7 @@ export function useModels() {
   const fetchAvailableModels = async () => {
     isLoadingModels.value = true;
     try {
-      await loadDefaultModel();
+      //await loadDefaultModel();
       const stored = await AsyncStorage.getItem('apiEndpoints');
       if (!stored) return;
       
@@ -94,9 +94,10 @@ export function useModels() {
       }
 
       availableModels.value = models;
-      if (models.length > 0 && !selectedModel.value) {
-        selectedModel.value = {id: models[0].id, provider: endpoints[0]};
-      }
+      return models;
+    //   if (models.length > 0 && !selectedModel.value) {
+    //     selectedModel.value = {id: models[0].id, provider: endpoints[0]};
+    //   }
     } catch (error) {
       console.error('Error fetching models:', error);
     } finally {

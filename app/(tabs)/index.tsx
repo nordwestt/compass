@@ -10,14 +10,14 @@ import { ChatThreads } from '@/components/ChatThreads';
 import { useSignal } from '@preact/signals-react';
 
 export interface Thread {
-  id: number;
+  id: string;
   title: string;
   messages: ChatMessage[];
   selectedModel: SelectedModel;
 }
 
 export default function HomeScreen() {
-  const threads = useSignal<Thread[]>([{id: 0, title: "First conversation", messages:[{content: "Hello, how can I help you today?", isUser: false}], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}}]);
+  const threads = useSignal<Thread[]>([{id: Date.now().toString(), title: "First conversation", messages:[{content: "Hello, how can I help you today?", isUser: false}], selectedModel: {id: '', provider: {type: 'ollama', endpoint: '', apiKey: ''}}}]);
   const currentThread = useSignal<Thread>(threads.value[0]);
   return (
     <View className="bg-gray-100 flex-1 flex-row">
