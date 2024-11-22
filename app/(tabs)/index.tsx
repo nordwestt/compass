@@ -4,7 +4,8 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { ChatMessage, ChatThread } from '@/components/ChatThread';
+import { ChatThread } from '@/components/ChatThread';
+import { ChatMessage } from '@/hooks/useChat';
 import { ChatThreads } from '@/components/ChatThreads';
 import { useSignal } from '@preact/signals-react';
 
