@@ -8,7 +8,7 @@ export interface ChatMessage {
   isUser: boolean;
 }
 
-export interface APIEndpoint {
+export interface LLMProvider {
   id?: string;
   name?: string;
   type: 'ollama' | 'openai' | 'anthropic' | 'custom';
@@ -18,7 +18,7 @@ export interface APIEndpoint {
 
 export interface SelectedModel {
   id: string;
-  provider: APIEndpoint;
+  provider: LLMProvider;
 }
 
 async function sendMessageToProvider(

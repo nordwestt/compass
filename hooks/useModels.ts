@@ -1,12 +1,12 @@
 import { Signal, useSignal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SelectedModel } from './useChat';
+import { LLMProvider, SelectedModel } from './useChat';
 import { useSignals } from '@preact/signals-react/runtime';
 
 export interface Model {
   id: string;
   name: string;
-  provider: string;
+  provider: LLMProvider;
 }
 
 export function useModels() {
@@ -35,33 +35,33 @@ export function useModels() {
     }
   };
 
-  const fetchAvailableModels = async () => {
+  const fetchAvailableModels = async (): Promise<Model[]> => {
     isLoadingModels.value = true;
     try {
       //await loadDefaultModel();
       const stored = await AsyncStorage.getItem('apiEndpoints');
-      if (!stored) return;
+      if (!stored) return [];
       
-      const endpoints = JSON.parse(stored);
+      const providers = JSON.parse(stored) as LLMProvider[];
       const models: Model[] = [];
 
-      for (const endpoint of endpoints) {
+      for (const provider of providers) {
         try {
-          switch (endpoint.type) {
+          switch (provider.type) {
             case 'ollama':
               const ollamaResponse = await fetch(`http://localhost:11434/api/tags`);
               const ollamaData = await ollamaResponse.json();
               models.push(...ollamaData.models.map((model: any) => ({
                 id: model.name,
                 name: model.name,
-                provider: 'Ollama'
+                provider: provider
               })));
               break;
 
             case 'openai':
               const openaiResponse = await fetch('https://api.openai.com/v1/models', {
                 headers: {
-                  'Authorization': `Bearer ${endpoint.apiKey}`
+                  'Authorization': `Bearer ${provider.apiKey}`
                 }
               });
               const openaiData = await openaiResponse.json();
@@ -70,14 +70,14 @@ export function useModels() {
                 .map((model: any) => ({
                   id: model.id,
                   name: model.id,
-                  provider: 'OpenAI'
+                  provider: provider
                 })));
               break;
 
             case 'anthropic':
               const anthropicResponse = await fetch('https://api.anthropic.com/v1/models', {
                 headers: {
-                  'x-api-key': endpoint.apiKey,
+                  'x-api-key': provider.apiKey,
                   'anthropic-version': '2023-06-01'
                 }
               });
@@ -85,25 +85,23 @@ export function useModels() {
               models.push(...anthropicData.map((model: any) => ({
                 id: model.name,
                 name: model.name,
-                provider: 'Anthropic'
+                provider: provider
               })));
               break;
           }
         } catch (error) {
-          console.error(`Error fetching models for ${endpoint.type}:`, error);
+          console.error(`Error fetching models for ${provider.type}:`, error);
         }
       }
 
       availableModels.value = models;
       return models;
-    //   if (models.length > 0 && !selectedModel.value) {
-    //     selectedModel.value = {id: models[0].id, provider: endpoints[0]};
-    //   }
     } catch (error) {
       console.error('Error fetching models:', error);
     } finally {
       isLoadingModels.value = false;
     }
+    return [];
   };
 
   return {

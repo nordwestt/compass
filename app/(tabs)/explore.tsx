@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image, ScrollView, Modal, TextInput } fro
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import { useSignal } from '@preact/signals-react';
-import { APIEndpoint } from '@/hooks/useChat';
+import { LLMProvider } from '@/hooks/useChat';
 import { useSignals } from '@preact/signals-react/runtime';
 
 const PREDEFINED_ENDPOINTS = {
@@ -26,9 +26,9 @@ const PREDEFINED_ENDPOINTS = {
 
 export default function ExploreScreen() {
   useSignals();
-  const endpoints = useSignal<APIEndpoint[]>([]);
+  const endpoints = useSignal<LLMProvider[]>([]);
   const showModal = useSignal(false);
-  const editingEndpoint = useSignal<APIEndpoint | null>(null);
+  const editingEndpoint = useSignal<LLMProvider | null>(null);
 
   useEffect(() => {
     loadEndpoints();
@@ -45,7 +45,7 @@ export default function ExploreScreen() {
     }
   };
 
-  const saveEndpoints = async (newEndpoints: APIEndpoint[]) => {
+  const saveEndpoints = async (newEndpoints: LLMProvider[]) => {
     try {
       await AsyncStorage.setItem('apiEndpoints', JSON.stringify(newEndpoints));
       endpoints.value = newEndpoints;
@@ -54,7 +54,7 @@ export default function ExploreScreen() {
     }
   };
 
-  const handleSave = async (endpoint: APIEndpoint) => {
+  const handleSave = async (endpoint: LLMProvider) => {
     if (editingEndpoint.value) {
       const updated = endpoints.value.map(e => 
         e.id === editingEndpoint.value?.id ? endpoint : e
@@ -145,14 +145,14 @@ export default function ExploreScreen() {
 interface EndpointModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (endpoint: APIEndpoint) => void;
-  endpoint: APIEndpoint | null;
+  onSave: (endpoint: LLMProvider) => void;
+  endpoint: LLMProvider | null;
 }
 
 function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProps) {
   const name = useSignal(endpoint?.name ?? '');
   const apiKey = useSignal(endpoint?.apiKey ?? '');
-  const selectedType = useSignal<APIEndpoint['type']>(endpoint?.type ?? 'custom');
+  const selectedType = useSignal<LLMProvider['type']>(endpoint?.type ?? 'custom');
   const customEndpoint = useSignal(endpoint?.endpoint ?? '');
 
   useEffect(() => {
