@@ -1,6 +1,4 @@
-import { Signal, useSignal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSignals } from '@preact/signals-react/runtime';
 import { Model, LLMProvider } from '@/types/core';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { availableEndpointsAtom, availableModelsAtom } from '@/hooks/atoms';
@@ -17,7 +15,6 @@ export const loadDefaultModel = async (): Promise<Model | null> => {
 };
 
 export function useModels() {
-  useSignals(); 
 
   const setDefaultModel = async (model: Model) => {
     try {

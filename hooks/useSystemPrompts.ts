@@ -1,4 +1,3 @@
-import { useSignal, Signal, signal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { Character } from '@/types/core';
