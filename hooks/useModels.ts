@@ -1,13 +1,7 @@
 import { Signal, useSignal } from '@preact/signals-react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LLMProvider } from './useChat';
 import { useSignals } from '@preact/signals-react/runtime';
-
-export interface Model {
-  id: string;
-  name: string;
-  provider: LLMProvider;
-}
+import { Model, LLMProvider } from '@/types/core';
 
 export const loadDefaultModel = async (): Promise<Model | null> => {
   try {

@@ -3,13 +3,9 @@ import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-na
 import { Signal } from '@preact/signals-react';
 import { useSignals } from '@preact/signals-react/runtime';
 import { allPrompts, loadAllPrompts, loadCustomPrompts } from '@/hooks/useSystemPrompts';
+import { Character } from '@/types/core';
 
-export interface Character {
-  id: string;
-  name: string;
-  content: string;
-  image?: any;
-}
+
 
 export const PREDEFINED_PROMPTS: Character[] = [
   {
@@ -45,7 +41,7 @@ export const PREDEFINED_PROMPTS: Character[] = [
 ];
 
 interface CharacterSelectorProps {
-  selectedPrompt: Signal<Character>;
+  selectedPrompt: Character;
   onSelectPrompt: (prompt: Character) => void;
 }
 
@@ -66,14 +62,14 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
         onPress={() => setIsModalVisible(true)}
         className="flex-row items-center px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700"
       >
-        {selectedPrompt.value.image && (
+        {selectedPrompt.image && (
           <Image 
-            source={selectedPrompt.value.image} 
+            source={selectedPrompt.image} 
             className="!h-[64px] !w-[64px] rounded-full mr-2"
           />
         )}
         <Text className="flex-1 text-black dark:text-white">
-          {selectedPrompt.value.name}
+          {selectedPrompt.name}
         </Text>
       </TouchableOpacity>
 

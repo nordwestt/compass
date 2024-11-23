@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { Signal } from '@preact/signals-react';
-import { loadDefaultModel, Model } from '@/hooks/useModels';
+import { loadDefaultModel } from '@/hooks/useModels';
+import { Model } from '@/types/core';
 import { useSignals } from '@preact/signals-react/runtime';
 
 
@@ -14,8 +15,8 @@ const PROVIDER_LOGOS = {
 };
 
 interface ModelSelectorProps {
-  models: Signal<Model[]>;
-  selectedModel: Signal<Model>;
+  models: Model[];
+  selectedModel: Model;
   onSetModel: (model: Model) => void;
   onSetDefault: () => void;
 }
@@ -29,12 +30,12 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   useSignals();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  if (!models.value?.length) {
+  if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
   }
 
   // Find the current model details
-  const currentModel = models.value.find(m => m.id === selectedModel.value.id);
+  const currentModel = models.find(m => m.id === selectedModel.id);
 
   if(!currentModel) {
     loadDefaultModel().then((model) => {
@@ -50,9 +51,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         onPress={() => setIsModalVisible(true)}
         className="flex-row items-center px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700"
       >
-        {PROVIDER_LOGOS[selectedModel.value.provider.type as keyof typeof PROVIDER_LOGOS] && (
+        {PROVIDER_LOGOS[selectedModel.provider.type as keyof typeof PROVIDER_LOGOS] && (
           <Image 
-            source={PROVIDER_LOGOS[selectedModel.value.provider.type as keyof typeof PROVIDER_LOGOS]}
+            source={PROVIDER_LOGOS[selectedModel.provider.type as keyof typeof PROVIDER_LOGOS]}
             className="!h-[32px] !w-[32px] rounded-full mr-2"
           />
         )}
@@ -76,7 +77,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
             </View>
             
             <ScrollView className="p-4">
-              {models.value.map((model) => (
+              {models.map((model) => (
                 <TouchableOpacity
                   key={model.id}
                   onPress={() => {
@@ -99,7 +100,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                       {model.provider.name}
                     </Text>
                   </View>
-                  {model.id === selectedModel.value.id && (
+                  {model.id === selectedModel.id && (
                     <View className="bg-blue-500 px-2 py-1 rounded">
                       <Text className="text-white text-sm">Selected</Text>
                     </View>

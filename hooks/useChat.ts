@@ -1,21 +1,7 @@
-import { Signal, useSignal } from '@preact/signals-react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Thread } from '@/app/(tabs)';
-import { Character } from '@/components/CharacterSelector';
-import { Model } from './useModels';
-
-export interface ChatMessage {
-  content: string;
-  isUser: boolean;
-}
-
-export interface LLMProvider {
-  id?: string;
-  name?: string;
-  type: 'ollama' | 'openai' | 'anthropic' | 'custom';
-  apiKey?: string;
-  endpoint: string;
-}
+import { useAtom, useSetAtom } from 'jotai';
+import { currentThreadAtom, threadActionsAtom, ThreadAction } from './atoms';
+import { Thread, ChatMessage, Model, Character } from '@/types/core';
+import { useRef } from 'react';
 
 async function sendMessageToProvider(
   messages: ChatMessage[], 
@@ -81,37 +67,29 @@ async function sendMessageToProvider(
 
 async function handleStreamResponse(
   response: Response,
-  thread: Signal<Thread>,
-  threads: Signal<Thread[]>
+  currentThread: Thread,
+  dispatchThread: (action: ThreadAction) => void
 ) {
   const reader = response?.body?.getReader();
   if (!reader) throw new Error('No reader available from response');
 
   let assistantMessage = '';
-  const isFirstMessage = thread.value.messages.length === 2; // User message + current AI message
+  const isFirstMessage = currentThread.messages.length === 2;
 
   try {
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
-        // If this was the first message, generate and set the title
         if (isFirstMessage) {
-          const title = await generateThreadTitle(assistantMessage, thread);
-          thread.value = { ...thread.value, title };
-          // Update thread in threads array
-          threads.value = threads.value.map(t => 
-            t.id === thread.value.id ? thread.value : t
-          );
+          const title = await generateThreadTitle(assistantMessage, currentThread);
+          dispatchThread({
+            type: 'update',
+            payload: { ...currentThread, title }
+          });
         }
-        
-        // Update threads array with the final message
-        threads.value = threads.value.map(t => 
-          t.id === thread.value.id ? thread.value : t
-        );
         break;
       }
 
-      // Convert the chunk to text and process each line
       const chunk = new TextDecoder().decode(value);
       const lines = chunk.split('\n');
 
@@ -120,22 +98,23 @@ async function handleStreamResponse(
         
         try {
           const parsedChunk = JSON.parse(line);
-          // Extract content based on provider format
-          const content = parsedChunk.message?.content || // Ollama format
-                         parsedChunk.choices?.[0]?.delta?.content || // OpenAI format
-                         parsedChunk.delta?.text; // Anthropic format
+          const content = parsedChunk.message?.content || 
+                          parsedChunk.choices?.[0]?.delta?.content || 
+                          parsedChunk.delta?.text;
           
           if (content) {
             assistantMessage += content;
-            // Update the thread's messages in real-time
-            const updatedMessages = [...thread.value.messages];
+            const updatedMessages = [...currentThread.messages];
             const lastMessage = updatedMessages[updatedMessages.length - 1];
             if (lastMessage && !lastMessage.isUser) {
               lastMessage.content = assistantMessage;
-              thread.value = {
-                ...thread.value,
-                messages: updatedMessages
-              };
+              dispatchThread({
+                type: 'update',
+                payload: {
+                  ...currentThread,
+                  messages: updatedMessages
+                }
+              });
             }
           }
         } catch (e) {
@@ -148,17 +127,21 @@ async function handleStreamResponse(
   }
 }
 
-const generateThreadTitle = async (message: string, thread: Signal<Thread>) => {
+const generateThreadTitle = async (message: string, currentThread: Thread): Promise<string> => {
   const prompt = `Based on this first message, generate a concise 3-word title that captures the essence of the conversation. Format: "Word1 Word2 Word3" (no quotes, no periods)
   
 Message: ${message}`;
 
   try {
-    const response = await sendMessageToProvider([{content: prompt, isUser: true}], thread.value.selectedModel, {
-      id: 'title-generator',
-      name: 'Title Generator',
-      content: 'You are a helpful assistant that generates concise 3-word titles. Only respond with the title in the format "Word1 Word2 Word3" without quotes or periods.'
-    });
+    const response = await sendMessageToProvider(
+      [{content: prompt, isUser: true}], 
+      currentThread.selectedModel,
+      {
+        id: 'title-generator',
+        name: 'Title Generator',
+        content: 'You are a helpful assistant that generates concise 3-word titles. Only respond with the title in the format "Word1 Word2 Word3" without quotes or periods.'
+      }
+    );
 
     const reader = response?.body?.getReader();
     if (!reader) throw new Error('No reader available');
@@ -191,63 +174,56 @@ Message: ${message}`;
   }
 };
 
-export function useChat(thread: Signal<Thread>, threads: Signal<Thread[]>) {
-  const abortController = useSignal<AbortController | null>(null);
+export function useChat() {
+  const [currentThread] = useAtom(currentThreadAtom);
+  const dispatchThread = useSetAtom(threadActionsAtom);
+  const abortController = useRef<AbortController | null>(null);
 
   const handleInterrupt = () => {
-    if (abortController.value) {
-      abortController.value.abort();
-      abortController.value = null;
+    if (abortController.current) {
+      abortController.current.abort();
+      abortController.current = null;
     }
   };
 
   const handleSend = async (message: string) => {
-    // Create new abort controller for this request
-    abortController.value = new AbortController();
+    abortController.current = new AbortController();
 
     const newMessage = { content: message, isUser: true };
     const assistantPlaceholder = { content: "", isUser: false };
     
-    thread.value = {
-      ...thread.value,
-      messages: [...thread.value.messages, newMessage, assistantPlaceholder]
-    };
+    dispatchThread({
+      type: 'update',
+      payload: {
+        ...currentThread,
+        messages: [...currentThread.messages, newMessage, assistantPlaceholder]
+      }
+    });
 
     try {
       const response = await sendMessageToProvider(
-        thread.value.messages, 
-        thread.value.selectedModel, 
-        thread.value.character,
-        abortController.value.signal
+        currentThread.messages, 
+        currentThread.selectedModel, 
+        currentThread.character,
+        abortController.current.signal
       );
-      await handleStreamResponse(response, thread, threads);
+      await handleStreamResponse(response, currentThread, dispatchThread);
     } catch (error) {
+      const updatedMessages = [...currentThread.messages];
       if (error instanceof Error && error.name === 'AbortError') {
-        // Update the placeholder message to show interruption
-        const updatedMessages = [...thread.value.messages];
-        const lastMessage = updatedMessages[updatedMessages.length - 1];
-        if (lastMessage && !lastMessage.isUser) {
-          lastMessage.content += "\n\n[Generation interrupted]";
-          thread.value = {
-            ...thread.value,
-            messages: updatedMessages
-          };
-        }
+        updatedMessages[updatedMessages.length - 1].content += "\n\n[Generation interrupted]";
       } else {
-        console.error('Error sending message:', error);
-        // Update the placeholder message to show the error
-        const updatedMessages = [...thread.value.messages];
-        const lastMessage = updatedMessages[updatedMessages.length - 1];
-        if (lastMessage && !lastMessage.isUser) {
-          lastMessage.content = "Error: Failed to get response from AI";
-          thread.value = {
-            ...thread.value,
-            messages: updatedMessages
-          };
-        }
+        updatedMessages[updatedMessages.length - 1].content = "Error: Failed to get response from AI";
       }
+      dispatchThread({
+        type: 'update',
+        payload: {
+          ...currentThread,
+          messages: updatedMessages
+        }
+      });
     } finally {
-      abortController.value = null;
+      abortController.current = null;
     }
   };
 

@@ -2,87 +2,79 @@ import React, { useRef, useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
-import { Thread } from '@/app/(tabs)';
-import { effect, Signal, useSignal, computed, useComputed } from '@preact/signals-react';
 import { ModelSelector } from './ModelSelector';
-import { Model, useModels } from '@/hooks/useModels';
+import { useModels } from '@/hooks/useModels';
 import { useChat } from '@/hooks/useChat';
-import { useColorScheme } from 'nativewind';
-import { CharacterSelector, Character } from './CharacterSelector';
-import { useSignals } from '@preact/signals-react/runtime';
+import { CharacterSelector } from './CharacterSelector';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { Model, Character } from '@/types/core';
+import { 
+  currentThreadAtom, 
+  threadActionsAtom, 
+  availableModelsAtom,
+  isGeneratingAtom 
+} from '@/hooks/atoms';
 
-export interface ChatThreadProps {
-  thread: Signal<Thread>;
-  threads: Signal<Thread[]>;
-}
-
-export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
-  useSignals();
-  
+export const ChatThread: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
-  const isGenerating = useSignal(false);
-  const previousThreadId = useRef(thread.value.id);
+  const [currentThread] = useAtom(currentThreadAtom);
+  const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
+  const dispatchThread = useSetAtom(threadActionsAtom);
+  const availableModels = useAtomValue(availableModelsAtom);
+  
+  const previousThreadId = useRef(currentThread.id);
   
   useEffect(() => {
-    if (previousThreadId.current !== thread.value.id) {
+    if (previousThreadId.current !== currentThread.id) {
       chatInputRef.current?.focus();
-      previousThreadId.current = thread.value.id;
+      previousThreadId.current = currentThread.id;
     }
-  }, [thread.value.id]);
-  
-  const selectedModel = useComputed(() => thread.value.selectedModel);
-  const availableModels = useSignal<Model[]>([]);
-  const selectedPrompt = useComputed<Character>(() => thread.value.character || {
-    id: 'default',
-    name: 'Default Assistant',
-    content: 'You are a helpful AI assistant.',
-    image: require('../assets/characters/default.png')
-  });
+  }, [currentThread.id]);
 
   const { fetchAvailableModels, setDefaultModel } = useModels();
-  const { handleSend, handleInterrupt } = useChat(thread, threads);
+  const { handleSend, handleInterrupt } = useChat();
 
   const wrappedHandleSend = async (message: string) => {
-    isGenerating.value = true;
+    setIsGenerating(true);
     await handleSend(message);
-    isGenerating.value = false;
+    setIsGenerating(false);
   };
 
-  if(availableModels.value.length === 0){
-    fetchAvailableModels().then((models) => {
-      availableModels.value = models ?? [];
-    });
-  }
-
-  const setSelectedModel = (model: Model) => {
-    thread.value = {...thread.value, selectedModel: model};
-    // find the thread in threads and update it
-    const threadIndex = threads.value.findIndex((t) => t.id === thread.value.id);
-    if(threadIndex !== -1){
-      threads.value[threadIndex] = thread.value;
+  // Fetch models if needed
+  useEffect(() => {
+    if (availableModels.length === 0) {
+      fetchAvailableModels();
     }
-  }
+  }, []);
+
+  const handleSelectModel = (model: Model) => {
+    dispatchThread({
+      type: 'update',
+      payload: { ...currentThread, selectedModel: model }
+    });
+  };
 
   const handleSelectPrompt = (prompt: Character) => {
-    thread.value = {...thread.value, character: prompt};
-    const threadIndex = threads.value.findIndex((t) => t.id === thread.value.id);
-    if(threadIndex !== -1){
-      threads.value[threadIndex] = thread.value;
-    }
+    dispatchThread({
+      type: 'update',
+      payload: { ...currentThread, character: prompt }
+    });
   };
 
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       <View className="p-4 flex-row justify-between border-b border-gray-200 dark:border-gray-700">
-        {selectedModel.value && <ModelSelector 
-          models={availableModels}
-          selectedModel={selectedModel}
-          onSetModel={setSelectedModel}
-          onSetDefault={() => setDefaultModel(selectedModel.value)}
-        />}
+        {currentThread.selectedModel && (
+          <ModelSelector 
+            models={availableModels}
+            selectedModel={currentThread.selectedModel}
+            onSetModel={handleSelectModel}
+            onSetDefault={() => setDefaultModel(currentThread.selectedModel)}
+          />
+        )}
         <CharacterSelector
-          selectedPrompt={selectedPrompt}
+          selectedPrompt={currentThread.character}
           onSelectPrompt={handleSelectPrompt}
         />
       </View>
@@ -92,7 +84,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
         className="flex-1 p-4"
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
       >
-        {thread.value.messages.map((message, index) => (
+        {currentThread.messages.map((message, index) => (
           <Message
             key={index}
             content={message.content}
@@ -100,10 +92,11 @@ export const ChatThread: React.FC<ChatThreadProps> = ({thread, threads}) => {
           />
         ))}
       </ScrollView>
+      
       <ChatInput 
         ref={chatInputRef}
         onSend={wrappedHandleSend} 
-        isGenerating={isGenerating.value}
+        isGenerating={isGenerating}
         onInterrupt={handleInterrupt}
       />
     </View>
