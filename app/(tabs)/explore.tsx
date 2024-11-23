@@ -3,9 +3,8 @@ import { View, Text, TouchableOpacity, Image, ScrollView, Modal, TextInput } fro
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import { useSignal } from '@preact/signals-react';
-import { LLMProvider } from '@/hooks/useChat';
 import { useSignals } from '@preact/signals-react/runtime';
-
+import { LLMProvider } from '@/types/core';
 const PREDEFINED_ENDPOINTS = {
   anthropic: {
     name: 'Anthropic',

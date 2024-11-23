@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-na
 import { Signal } from '@preact/signals-react';
 import { loadDefaultModel } from '@/hooks/useModels';
 import { Model } from '@/types/core';
-import { useSignals } from '@preact/signals-react/runtime';
 
 
 // Add provider logos mapping
@@ -27,7 +26,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   onSetModel,
   onSetDefault
 }) => {
-  useSignals();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   if (!models.length) {
