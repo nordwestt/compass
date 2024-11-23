@@ -1,10 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { View, Text, TouchableOpacity, Image, ScrollView, Modal, TextInput } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect } from 'react';
-import { useSignal } from '@preact/signals-react';
-import { useSignals } from '@preact/signals-react/runtime';
+import { useAtom } from 'jotai';
+import { useEffect, useState } from 'react';
+import { availableEndpointsAtom } from '@/hooks/atoms';
 import { LLMProvider } from '@/types/core';
+
 const PREDEFINED_ENDPOINTS = {
   anthropic: {
     name: 'Anthropic',
@@ -24,51 +24,26 @@ const PREDEFINED_ENDPOINTS = {
 };
 
 export default function ExploreScreen() {
-  useSignals();
-  const endpoints = useSignal<LLMProvider[]>([]);
-  const showModal = useSignal(false);
-  const editingEndpoint = useSignal<LLMProvider | null>(null);
-
-  useEffect(() => {
-    loadEndpoints();
-  }, []);
-
-  const loadEndpoints = async () => {
-    try {
-      const stored = await AsyncStorage.getItem('apiEndpoints');
-      if (stored) {
-        endpoints.value = JSON.parse(stored);
-      }
-    } catch (error) {
-      console.error('Error loading endpoints:', error);
-    }
-  };
-
-  const saveEndpoints = async (newEndpoints: LLMProvider[]) => {
-    try {
-      await AsyncStorage.setItem('apiEndpoints', JSON.stringify(newEndpoints));
-      endpoints.value = newEndpoints;
-    } catch (error) {
-      console.error('Error saving endpoints:', error);
-    }
-  };
+  const [endpoints, setEndpoints] = useAtom(availableEndpointsAtom);
+  const [showModal, setShowModal] = useState(false);
+  const [editingEndpoint, setEditingEndpoint] = useState<LLMProvider | null>(null);
 
   const handleSave = async (endpoint: LLMProvider) => {
-    if (editingEndpoint.value) {
-      const updated = endpoints.value.map(e => 
-        e.id === editingEndpoint.value?.id ? endpoint : e
+    if (editingEndpoint) {
+      const updated = endpoints.map(e => 
+        e.id === editingEndpoint.id ? endpoint : e
       );
-      await saveEndpoints(updated);
+      setEndpoints(updated);
     } else {
-      await saveEndpoints([...endpoints.value, { ...endpoint, id: Date.now().toString() }]);
+      setEndpoints([...endpoints, { ...endpoint, id: Date.now().toString() }]);
     }
-    editingEndpoint.value = null;
-    showModal.value = false;
+    setEditingEndpoint(null);
+    setShowModal(false);
   };
 
   const handleDelete = async (id: string) => {
-    const updated = endpoints.value.filter(e => e.id !== id);
-    await saveEndpoints(updated);
+    const updated = endpoints.filter(e => e.id !== id);
+    setEndpoints(updated);
   };
 
   return (
@@ -78,7 +53,7 @@ export default function ExploreScreen() {
           API Endpoints
         </Text>
         
-        {endpoints.value.map((endpoint) => (
+        {endpoints.map((endpoint) => (
           <View key={endpoint.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-3 shadow-sm">
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center">
@@ -99,8 +74,8 @@ export default function ExploreScreen() {
               <View className="flex-row">
                 <TouchableOpacity 
                   onPress={() => {
-                    editingEndpoint.value = endpoint;
-                    showModal.value = true;
+                    setEditingEndpoint(endpoint);
+                    setShowModal(true);
                   }}
                   className="p-2"
                 >
@@ -120,8 +95,8 @@ export default function ExploreScreen() {
 
       <TouchableOpacity
         onPress={() => {
-          editingEndpoint.value = null;
-          showModal.value = true;
+          setEditingEndpoint(null);
+          setShowModal(true);
         }}
         className="absolute bottom-6 right-6 w-14 h-14 bg-blue-500 rounded-full items-center justify-center shadow-lg"
       >
@@ -129,13 +104,13 @@ export default function ExploreScreen() {
       </TouchableOpacity>
 
       <EndpointModal
-        visible={showModal.value}
+        visible={showModal}
         onClose={() => {
-          showModal.value = false;
-          editingEndpoint.value = null;
+          setShowModal(false);
+          setEditingEndpoint(null);
         }}
         onSave={handleSave}
-        endpoint={editingEndpoint.value}
+        endpoint={editingEndpoint}
       />
     </View>
   );
@@ -149,36 +124,36 @@ interface EndpointModalProps {
 }
 
 function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProps) {
-  const name = useSignal(endpoint?.name ?? '');
-  const apiKey = useSignal(endpoint?.apiKey ?? '');
-  const selectedType = useSignal<LLMProvider['type']>(endpoint?.type ?? 'custom');
-  const customEndpoint = useSignal(endpoint?.endpoint ?? '');
+  const [name, setName] = useState(endpoint?.name ?? '');
+  const [apiKey, setApiKey] = useState(endpoint?.apiKey ?? '');
+  const [selectedType, setSelectedType] = useState<LLMProvider['type']>(endpoint?.type ?? 'custom');
+  const [customEndpoint, setCustomEndpoint] = useState(endpoint?.endpoint ?? '');
 
   useEffect(() => {
     if (endpoint) {
-      name.value = endpoint.name ?? '';
-      apiKey.value = endpoint.apiKey ?? '';
-      selectedType.value = endpoint.type;
-      customEndpoint.value = endpoint.endpoint;
+      setName(endpoint.name ?? '');
+      setApiKey(endpoint.apiKey ?? '');
+      setSelectedType(endpoint.type);
+      setCustomEndpoint(endpoint.endpoint);
     } else {
-      name.value = '';
-      apiKey.value = '';
-      selectedType.value = 'custom';
-      customEndpoint.value = '';
+      setName('');
+      setApiKey('');
+      setSelectedType('custom');
+      setCustomEndpoint('');
     }
   }, [endpoint]);
 
   const handleSave = () => {
-    const endpointUrl = selectedType.value === 'custom' 
-      ? customEndpoint.value 
-      : PREDEFINED_ENDPOINTS[selectedType.value].endpoint;
+    const endpointUrl = selectedType === 'custom' 
+      ? customEndpoint 
+      : PREDEFINED_ENDPOINTS[selectedType].endpoint;
 
     onSave({
       id: endpoint?.id ?? '',
-      name: name.value,
+      name,
       endpoint: endpointUrl,
-      apiKey: apiKey.value,
-      type: selectedType.value,
+      apiKey,
+      type: selectedType,
     });
   };
 
@@ -202,8 +177,8 @@ function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProp
                   Name
                 </Text>
                 <TextInput
-                  value={name.value}
-                  onChangeText={(text) => name.value = text}
+                  value={name}
+                  onChangeText={setName}
                   className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-gray-800 dark:text-gray-200"
                   placeholder="Enter name"
                 />
@@ -214,8 +189,8 @@ function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProp
                   API Key
                 </Text>
                 <TextInput
-                  value={apiKey.value}
-                  onChangeText={(text) => apiKey.value = text}
+                  value={apiKey}
+                  onChangeText={setApiKey}
                   className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-gray-800 dark:text-gray-200"
                   placeholder="Enter API key"
                   secureTextEntry
@@ -230,15 +205,15 @@ function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProp
                   {Object.entries(PREDEFINED_ENDPOINTS).map(([key, value]) => (
                     <TouchableOpacity
                       key={key}
-                      onPress={() => selectedType.value = value.type}
+                      onPress={() => setSelectedType(value.type)}
                       className={`p-3 rounded-lg flex-row items-center ${
-                        selectedType.value === value.type 
+                        selectedType === value.type 
                           ? 'bg-blue-500' 
                           : 'bg-gray-200 dark:bg-gray-700'
                       }`}
                     >
                       <Text className={`${
-                        selectedType.value === value.type 
+                        selectedType === value.type 
                           ? 'text-white' 
                           : 'text-gray-800 dark:text-gray-200'
                       }`}>
@@ -247,15 +222,15 @@ function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProp
                     </TouchableOpacity>
                   ))}
                   <TouchableOpacity
-                    onPress={() => selectedType.value = 'custom'}
+                    onPress={() => setSelectedType('custom')}
                     className={`p-3 rounded-lg ${
-                      selectedType.value === 'custom' 
+                      selectedType === 'custom' 
                         ? 'bg-blue-500' 
                         : 'bg-gray-200 dark:bg-gray-700'
                     }`}
                   >
                     <Text className={`${
-                      selectedType.value === 'custom' 
+                      selectedType === 'custom' 
                         ? 'text-white' 
                         : 'text-gray-800 dark:text-gray-200'
                     }`}>
@@ -265,14 +240,14 @@ function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProp
                 </View>
               </View>
 
-              {selectedType.value === 'custom' && (
+              {selectedType === 'custom' && (
                 <View>
                   <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Endpoint URL
                   </Text>
                   <TextInput
-                    value={customEndpoint.value}
-                    onChangeText={(text) => customEndpoint.value = text}
+                    value={customEndpoint}
+                    onChangeText={setCustomEndpoint}
                     className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-gray-800 dark:text-gray-200"
                     placeholder="Enter endpoint URL"
                   />
