@@ -1,44 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
-import { Signal } from '@preact/signals-react';
-import { useSignals } from '@preact/signals-react/runtime';
-import { allPrompts, loadAllPrompts, loadCustomPrompts } from '@/hooks/useSystemPrompts';
+import { useAtom, useAtomValue } from 'jotai';
+import { allPromptsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
-
-
-
-export const PREDEFINED_PROMPTS: Character[] = [
-  {
-    id: 'default',
-    name: 'Default Assistant',
-    content: 'You are a helpful AI assistant.',
-    image: require('../assets/characters/default.png')
-  },
-  {
-    id: 'pirate',
-    name: 'Pirate',
-    content: "You are a pirate from the Caribbean. Response with 'arr', 'matey' and other funny pirate things and use pirate speech",
-    image: require('../assets/characters/pirate.png')
-  },
-  {
-    id: 'chef',
-    name: 'Master Chief',
-    content: "You are a Master Chief from Halo. Speak in a military tone and use phrases like 'Aye' and 'Halo' and 'Combat Evolved'.",
-    image: require('../assets/characters/master-chief.png')
-  },
-  {
-    id: 'detective',
-    name: 'Detective',
-    content: "You are a sharp-witted detective in the style of Sherlock Holmes. Analyze problems with deductive reasoning and speak in a proper, analytical manner.",
-    image: require('../assets/characters/sherlock-holmes.png')
-  },
-  {
-    id: 'bob-marley',
-    name: 'Bob Marley',
-    content: "You are Bob Marley. Speak in a reggae tone and use phrases like 'One Love' and 'No Woman No Cry'.",
-    image: require('../assets/characters/bob-marley.png')
-  }
-];
+import { PREDEFINED_PROMPTS } from '@/constants/characters';
 
 interface CharacterSelectorProps {
   selectedPrompt: Character;
@@ -49,12 +14,8 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   selectedPrompt,
   onSelectPrompt
 }) => {
-  useSignals();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  if(allPrompts.value.length === 0) {
-    loadAllPrompts();
-  }
-  
+  const allPrompts = useAtomValue(allPromptsAtom);
 
   return (
     <>
@@ -89,7 +50,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
             
             <ScrollView className="p-4">
               <View className="flex-row flex-wrap justify-between">
-                {allPrompts.value.map((prompt) => (
+                {[...PREDEFINED_PROMPTS, ...allPrompts].map((prompt) => (
                   <TouchableOpacity
                     key={prompt.id}
                     onPress={() => {

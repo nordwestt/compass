@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { Model, Thread, ChatMessage } from '@/types/core'
+import { Model, Thread, ChatMessage, Character, LLMProvider } from '@/types/core'
 
 const defaultThread: Thread = {
   id: Date.now().toString(),
@@ -135,3 +135,20 @@ export const chatActionsAtom = atom(
     }
   }
 )
+
+// Add these new atoms
+export const customPromptsAtom = atomWithStorage<Character[]>('customPrompts', [])
+export const allPromptsAtom = atom<Character[]>([])
+export const modalStateAtom = atom<{
+  isVisible: boolean;
+  type: 'confirm' | 'prompt';
+  title: string;
+  message: string;
+  defaultValue?: string;
+}>({
+  isVisible: false,
+  type: 'confirm',
+  title: '',
+  message: ''
+})
+export const availableEndpointsAtom = atomWithStorage<LLMProvider[]>('apiEndpoints', [])
