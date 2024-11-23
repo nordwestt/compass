@@ -1,5 +1,3 @@
-import { signal } from "@preact/signals-react";
-
 interface ModalState {
   isVisible: boolean;
   title: string;
@@ -8,43 +6,59 @@ interface ModalState {
   type: 'confirm' | 'prompt';
 }
 
-export const modalState = signal<ModalState>({
+export const modalState = {
   isVisible: false,
   title: '',
   message: '',
-  type: 'confirm'
-});
+  type: 'confirm' as const
+};
 
 let resolveModal: ((value: any) => void) | null = null;
+let modalUpdateCallback: ((state: ModalState) => void) | null = null;
 
 export const modalService = {
+  setUpdateCallback: (callback: (state: ModalState) => void) => {
+    modalUpdateCallback = callback;
+  },
+
   confirm: ({ title, message }: { title: string; message: string }) => {
-    modalState.value = {
-      isVisible: true,
-      title,
-      message,
-      type: 'confirm'
-    };
+    if (modalUpdateCallback) {
+      modalUpdateCallback({
+        isVisible: true,
+        title,
+        message,
+        type: 'confirm'
+      });
+    }
     return new Promise<boolean>((resolve) => {
       resolveModal = resolve;
     });
   },
 
   prompt: ({ title, message, defaultValue }: { title: string; message: string; defaultValue?: string }) => {
-    modalState.value = {
-      isVisible: true,
-      title,
-      message,
-      defaultValue,
-      type: 'prompt'
-    };
+    if (modalUpdateCallback) {
+      modalUpdateCallback({
+        isVisible: true,
+        title,
+        message,
+        defaultValue,
+        type: 'prompt'
+      });
+    }
     return new Promise<string | null>((resolve) => {
       resolveModal = resolve;
     });
   },
 
   handleResponse: (response: boolean | string | null) => {
-    modalState.value = { ...modalState.value, isVisible: false };
+    if (modalUpdateCallback) {
+      modalUpdateCallback({ 
+        isVisible: false, 
+        title: '', 
+        message: '', 
+        type: 'confirm' 
+      });
+    }
     if (resolveModal) {
       resolveModal(response);
       resolveModal = null;

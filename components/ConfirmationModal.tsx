@@ -1,29 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, TextInput, Platform } from 'react-native';
-import { modalState, modalService } from '@/services/modalService';
-import { useSignals } from '@preact/signals-react/runtime';
+import { modalService } from '@/services/modalService';
+
+interface ModalState {
+  isVisible: boolean;
+  title: string;
+  message: string;
+  defaultValue?: string;
+  type: 'confirm' | 'prompt';
+}
 
 export const ConfirmationModal = () => {
-  useSignals();
+  const [modalState, setModalState] = useState<ModalState>({
+    isVisible: false,
+    title: '',
+    message: '',
+    type: 'confirm'
+  });
   const [inputText, setInputText] = useState('');
   
-  // Update local state when modal opens with new defaultValue
   useEffect(() => {
-    if (modalState.value.isVisible && modalState.value.type === 'prompt') {
-      setInputText(modalState.value.defaultValue || '');
+    modalService.setUpdateCallback(setModalState);
+    return () => modalService.setUpdateCallback(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (modalState.isVisible && modalState.type === 'prompt') {
+      setInputText(modalState.defaultValue || '');
     }
-  }, [modalState.value.isVisible]);
+  }, [modalState.isVisible]);
 
   const Content = () => (
     <View className="bg-white dark:bg-gray-800 rounded-lg p-6 m-4 max-w-sm w-full">
       <Text className="text-xl font-bold mb-2 text-black dark:text-white">
-        {modalState.value.title}
+        {modalState.title}
       </Text>
       <Text className="text-gray-600 dark:text-gray-300 mb-4">
-        {modalState.value.message}
+        {modalState.message}
       </Text>
 
-      {modalState.value.type === 'prompt' && (
+      {modalState.type === 'prompt' && (
         <TextInput
           value={inputText}
           onChangeText={setInputText}
@@ -45,12 +61,12 @@ export const ConfirmationModal = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => modalService.handleResponse(
-            modalState.value.type === 'prompt' ? inputText : true
+            modalState.type === 'prompt' ? inputText : true
           )}
           className="px-4 py-2 rounded-lg bg-blue-500"
         >
           <Text className="text-white">
-            {modalState.value.type === 'prompt' ? 'Save' : 'Confirm'}
+            {modalState.type === 'prompt' ? 'Save' : 'Confirm'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -58,7 +74,7 @@ export const ConfirmationModal = () => {
   );
 
   if (Platform.OS === 'web') {
-    if (!modalState.value.isVisible) return null;
+    if (!modalState.isVisible) return null;
     return (
       <View className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <Content />
@@ -68,7 +84,7 @@ export const ConfirmationModal = () => {
 
   return (
     <Modal
-      visible={modalState.value.isVisible}
+      visible={modalState.isVisible}
       transparent={true}
       animationType="fade"
     >

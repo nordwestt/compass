@@ -3,7 +3,7 @@ import { View, ScrollView } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
 import { ModelSelector } from './ModelSelector';
-import { useModels } from '@/hooks/useModels';
+import { fetchAvailableModelsV2, useModels } from '@/hooks/useModels';
 import { useChat } from '@/hooks/useChat';
 import { CharacterSelector } from './CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
@@ -12,7 +12,8 @@ import {
   currentThreadAtom, 
   threadActionsAtom, 
   availableModelsAtom,
-  isGeneratingAtom 
+  isGeneratingAtom,
+  availableEndpointsAtom
 } from '@/hooks/atoms';
 
 export const ChatThread: React.FC = () => {
@@ -22,6 +23,8 @@ export const ChatThread: React.FC = () => {
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const availableModels = useAtomValue(availableModelsAtom);
+  const [endpoints] = useAtom(availableEndpointsAtom);
+  const setAvailableModels = useSetAtom(availableModelsAtom);
   
   const previousThreadId = useRef(currentThread.id);
   
@@ -44,9 +47,12 @@ export const ChatThread: React.FC = () => {
   // Fetch models if needed
   useEffect(() => {
     if (availableModels.length === 0) {
-      fetchAvailableModels();
+      console.log('fetching available models');
+      fetchAvailableModelsV2(endpoints, setAvailableModels).then(() => {
+        console.log('availableModels', availableModels);
+      });
     }
-  }, []);
+  }, [endpoints]);
 
   const handleSelectModel = (model: Model) => {
     dispatchThread({
@@ -67,7 +73,6 @@ export const ChatThread: React.FC = () => {
       <View className="p-4 flex-row justify-between border-b border-gray-200 dark:border-gray-700">
         {currentThread.selectedModel && (
           <ModelSelector 
-            models={availableModels}
             selectedModel={currentThread.selectedModel}
             onSetModel={handleSelectModel}
             onSetDefault={() => setDefaultModel(currentThread.selectedModel)}

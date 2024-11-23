@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-na
 import { Signal } from '@preact/signals-react';
 import { loadDefaultModel } from '@/hooks/useModels';
 import { Model } from '@/types/core';
+import { useAtomValue } from 'jotai';
+import { availableModelsAtom } from '@/hooks/atoms';
 
 
 // Add provider logos mapping
@@ -14,27 +16,25 @@ const PROVIDER_LOGOS = {
 };
 
 interface ModelSelectorProps {
-  models: Model[];
   selectedModel: Model;
   onSetModel: (model: Model) => void;
   onSetDefault: () => void;
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({ 
-  models, 
   selectedModel,
   onSetModel,
   onSetDefault
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const models = useAtomValue(availableModelsAtom);
+  console.log('models', models);
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
   }
 
   // Find the current model details
   const currentModel = models.find(m => m.id === selectedModel.id);
-
   if(!currentModel) {
     loadDefaultModel().then((model) => {
       if(model) {
