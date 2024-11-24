@@ -28,7 +28,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const models = useAtomValue(availableModelsAtom);
-  console.log('models', models);
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
   }

@@ -42,7 +42,6 @@ export function useModels() {
     try {
       const [endpoints, setEndpoints] = useAtom(availableEndpointsAtom);
       const setAvailableModels = useSetAtom(availableModelsAtom);
-      console.log('endpoints', endpoints);
 
       const models: Model[] = [];
 

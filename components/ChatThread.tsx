@@ -47,9 +47,8 @@ export const ChatThread: React.FC = () => {
   // Fetch models if needed
   useEffect(() => {
     if (availableModels.length === 0) {
-      console.log('fetching available models');
       fetchAvailableModelsV2(endpoints, setAvailableModels).then(() => {
-        console.log('availableModels', availableModels);
+        
       });
     }
   }, [endpoints]);

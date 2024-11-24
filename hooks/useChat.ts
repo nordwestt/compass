@@ -14,8 +14,6 @@ async function sendMessageToProvider(
     ...messages.map(message => ({ role: message.isUser ? 'user' : 'assistant', content: message.content }))
   ];
 
-  console.log(newMessages);
-
   switch (selectedModel.provider.type) {
     case 'ollama':
       return fetch(`http://localhost:11434/api/chat`, {
@@ -191,23 +189,26 @@ export function useChat() {
 
     const newMessage = { content: message, isUser: true };
     const assistantPlaceholder = { content: "", isUser: false };
-    
+
+    const updatedMessages = [...currentThread.messages, newMessage, assistantPlaceholder];
+    const updatedThread = {
+      ...currentThread,
+      messages: updatedMessages
+    };
+
     dispatchThread({
       type: 'update',
-      payload: {
-        ...currentThread,
-        messages: [...currentThread.messages, newMessage, assistantPlaceholder]
-      }
+      payload: updatedThread
     });
 
     try {
       const response = await sendMessageToProvider(
-        currentThread.messages, 
+        updatedMessages, 
         currentThread.selectedModel, 
         currentThread.character,
         abortController.current.signal
       );
-      await handleStreamResponse(response, currentThread, dispatchThread);
+      await handleStreamResponse(response, updatedThread, dispatchThread);
     } catch (error) {
       const updatedMessages = [...currentThread.messages];
       if (error instanceof Error && error.name === 'AbortError') {
