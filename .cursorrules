@@ -22,7 +22,7 @@ TypeScript Usage:
 
 Performance Optimization:
 - Minimize `useEffect`, `useState`, and heavy computations inside render methods.
-- Use preact signals instead of useState
+- Use Jotai instead of useState, you can find the atoms in atoms.ts
 - Optimize FlatLists with props like `removeClippedSubviews`, `maxToRenderPerBatch`, and `windowSize`.
 - Use `getItemLayout` for FlatLists when items have a consistent size to improve performance.
 - Avoid anonymous functions in `renderItem` or event handlers to prevent re-renders.

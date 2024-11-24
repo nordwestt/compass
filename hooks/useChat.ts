@@ -2,6 +2,8 @@ import { useAtom, useSetAtom } from 'jotai';
 import { currentThreadAtom, threadActionsAtom, ThreadAction } from './atoms';
 import { Thread, ChatMessage, Model, Character } from '@/types/core';
 import { useRef } from 'react';
+import { MentionedCharacter } from '@/components/ChatInput';
+
 
 async function sendMessageToProvider(
   messages: ChatMessage[], 
@@ -184,12 +186,11 @@ export function useChat() {
     }
   };
 
-  const handleSend = async (message: string) => {
+  const handleSend = async (message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
 
     const newMessage = { content: message, isUser: true };
     const assistantPlaceholder = { content: "", isUser: false };
-
     const updatedMessages = [...currentThread.messages, newMessage, assistantPlaceholder];
     const updatedThread = {
       ...currentThread,
@@ -202,13 +203,29 @@ export function useChat() {
     });
 
     try {
+      // First get the main response
       const response = await sendMessageToProvider(
-        updatedMessages, 
-        currentThread.selectedModel, 
+        updatedMessages,
+        currentThread.selectedModel,
         currentThread.character,
         abortController.current.signal
       );
       await handleStreamResponse(response, updatedThread, dispatchThread);
+
+      // Then handle any mentioned characters
+      for (const mention of mentionedCharacters) {
+        const lastMessage = currentThread.messages[currentThread.messages.length - 2];
+        const contextMessage = `${currentThread.character.name} just said: "${lastMessage.content}". What do you think about that?`;
+        
+        const mentionResponse = await sendMessageToProvider(
+          [{ content: contextMessage, isUser: true }],
+          currentThread.selectedModel,
+          mention.character,
+          abortController.current.signal
+        );
+        
+        await handleStreamResponse(mentionResponse, updatedThread, dispatchThread);
+      }
     } catch (error) {
       const updatedMessages = [...currentThread.messages];
       if (error instanceof Error && error.name === 'AbortError') {
