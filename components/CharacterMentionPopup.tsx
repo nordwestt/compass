@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { Character } from '@/types/core';
+import { useAtomValue } from 'jotai';
+import { currentThreadAtom } from '@/hooks/atoms';
 
 interface CharacterMentionPopupProps {
   characters: Character[];
@@ -15,8 +17,11 @@ export const CharacterMentionPopup: React.FC<CharacterMentionPopupProps> = ({
   searchText,
   selectedIndex
 }) => {
+  const currentThread = useAtomValue(currentThreadAtom);
+
   const filteredCharacters = characters.filter(char => 
-    char.name.toLowerCase().includes(searchText.toLowerCase())
+    char.name.toLowerCase().includes(searchText.toLowerCase()) && 
+    char.id !== currentThread.character.id
   );
 
   if (filteredCharacters.length === 0) return null;
