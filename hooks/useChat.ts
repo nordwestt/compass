@@ -196,10 +196,16 @@ export function useChat() {
 
     let messagesToSend = [] as ChatMessage[];
     if (mentionedCharacters.length > 0) {
-      const userLastMessage = currentThread.messages[currentThread.messages.length - 2];
-      const assistantLastMessage = currentThread.messages[currentThread.messages.length - 1];
-      const contextMessage = `I told ${currentThread.character.name} "${userLastMessage.content}" and they responded with "${assistantLastMessage.content}"\n\nUser: "${newMessage.content}"`;
-      assistantPlaceholder = { content: ``, isUser: false, character: mentionedCharacters[0].character };
+      let contextMessage = `User: "${newMessage.content}"`;
+      
+      // Only add previous context if there are at least 2 previous messages
+      if (currentThread.messages.length >= 2) {
+        const userLastMessage = currentThread.messages[currentThread.messages.length - 2];
+        const assistantLastMessage = currentThread.messages[currentThread.messages.length - 1];
+        contextMessage = `I told ${currentThread.character.name} "${userLastMessage.content}" and they responded with "${assistantLastMessage.content}"\n\nUser: "${newMessage.content}"`;
+      }
+      
+      assistantPlaceholder = { content: '', isUser: false, character: mentionedCharacters[0].character };
       messagesToSend = [
         { content: contextMessage, isUser: true },
         assistantPlaceholder
