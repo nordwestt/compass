@@ -46,4 +46,4 @@ You can run the app using:
 
 ## Contributing
 
-We welcome contributions! Feel free to submit issues, feature requests, or pull requests.
+I don't currently accept contributions since I'm still working on the core functionality, but I welcome feedback and suggestions for now!
