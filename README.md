@@ -33,6 +33,7 @@ Compass is a modern, open-source Large Language Model (LLM) client designed to p
 2. Start the app
 
    ```bash
+   nvm use 18.19.0
    npx expo start
    ```
 
