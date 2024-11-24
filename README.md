@@ -1,8 +1,28 @@
-# Welcome to your Expo app 👋
+# Welcome to Compass
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Compass is a modern, open-source Large Language Model (LLM) client designed to provide a seamless AI chat experience across multiple platforms. Built with React Native and Expo, it offers a rich set of features while maintaining high performance and user experience.
 
-## Get started
+![Compass Chat Interface Screenshot](/assets/screenshots/first.png)
+
+## Features
+
+- 🌐 **Cross-Platform**: Available on iOS, Android, and Web
+- 🤖 **Multiple LLM Providers**: Support for OpenAI, Anthropic, Ollama, and more
+- 👥 **Character System**: Built-in characters and support for custom character creation
+- 💬 **Chat History**: Persistent conversation tracking and management
+- 🎨 **Modern UI**: Clean, responsive interface with dark mode support
+
+## Roadmap
+
+- 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses
+- 🎤 **Speech-to-Text (STT)**: Voice input capabilities
+- 📞 **Voice Calls**: Real-time voice conversations with AI
+- 🤝 **Inter-Character Communication**: Tag (@) characters in chats for multi-agent interactions
+- 📸 **Vision Integration**: Camera support for vision model capabilities
+- 🔍 **RAG Support**: Document analysis and web search integration
+- ⚙️ **Custom Filters**: Self-programmable filters and data processing pipes
+
+## Get Started
 
 1. Install dependencies
 
@@ -13,38 +33,16 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 2. Start the app
 
    ```bash
-    npx expo start
+   npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+You can run the app using:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- [Development Build](https://docs.expo.dev/develop/development-builds/introduction/) - Full feature access
+- [Android Emulator](https://docs.expo.dev/workflow/android-studio-emulator/) - For Android development
+- [iOS Simulator](https://docs.expo.dev/workflow/ios-simulator/) - For iOS development
+- [Expo Go](https://expo.dev/go) - Quick testing and development
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Contributing
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+We welcome contributions! Feel free to submit issues, feature requests, or pull requests.
