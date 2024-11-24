@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { Signal } from '@preact/signals-react';
-import { fetchAvailableModelsV2, loadDefaultModel, useModelFetching } from '@/hooks/useModels';
+import {  useModelFetching } from '@/hooks/useModels';
 import { Model } from '@/types/core';
 import { useAtom, useAtomValue } from 'jotai';
 import { availableEndpointsAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
@@ -28,21 +28,28 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const models = useModelFetching(endpoints);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
 
+  // Add useEffect to handle initial model selection
+  React.useEffect(() => {
+    if (!models.length) return;
+    
+    const currentModel = models.find(m => m.id === selectedModel.id);
+    if (!currentModel) {
+      if (defaultModel?.id) {
+        onSetModel(defaultModel);
+      } else {
+        onSetModel(models[0]);
+      }
+    }
+  }, [models, selectedModel.id, defaultModel, onSetModel]);
+
   if(!endpoints.length) return null;
   
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
   }
 
-  // Find the current model details
+  // Remove the model selection logic from render phase
   const currentModel = models.find(m => m.id === selectedModel.id);
-  if(!currentModel) {
-    loadDefaultModel().then((model) => {
-      if(model) {
-        onSetModel(model);
-      }
-    });
-  }
 
   return (
     <>

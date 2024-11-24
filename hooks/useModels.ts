@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Model, LLMProvider } from '@/types/core';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { availableEndpointsAtom, availableModelsAtom } from '@/hooks/atoms';
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useMemo } from 'react';
 
 export const loadDefaultModel = async (): Promise<Model | null> => {
   try {
@@ -113,13 +113,11 @@ export function useModels() {
 
 let isLoadingModels = false;
 export const fetchAvailableModelsV2 = async (
-  endpoints: LLMProvider[],
-  setAvailableModels: (models: Model[]) => void
+  endpoints: LLMProvider[]
 ): Promise<Model[]> => {
   isLoadingModels = true;
   try {
-    if (!endpoints) {
-      setAvailableModels([]);
+    if (!endpoints?.length) {
       return [];
     }
     console.log('fetching models from endpoints', endpoints);
@@ -175,7 +173,7 @@ export const fetchAvailableModelsV2 = async (
       }
     }
 
-    setAvailableModels(models);
+    return models; 
   } catch (error) {
     console.error('Error fetching models:', error);
   } finally {
@@ -188,24 +186,32 @@ export function useModelFetching(endpoints: LLMProvider[]) {
   const [models, setAvailableModels] = useAtom(availableModelsAtom);
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const lastFetchTimeRef = useRef<number>(0);
-  const FETCH_COOLDOWN = 5000; // 5 seconds cooldown between fetches
+  const initialFetchDoneRef = useRef(false);
+  const FETCH_COOLDOWN = 5000;
 
-  const fetchModels = useCallback(async () => {
+  const fetchModels = useCallback(async (isInitialFetch = false) => {
     const now = Date.now();
-    if (now - lastFetchTimeRef.current < FETCH_COOLDOWN) {
+    if (!isInitialFetch && now - lastFetchTimeRef.current < FETCH_COOLDOWN) {
       return;
     }
 
-    lastFetchTimeRef.current = now;
-    await fetchAvailableModelsV2(endpoints, setAvailableModels);
-  }, [endpoints, setAvailableModels]);
+    if (endpoints.length > 0) {
+      lastFetchTimeRef.current = now;
+      const newModels = await fetchAvailableModelsV2(endpoints);
+      
+      if (JSON.stringify(newModels) !== JSON.stringify(models)) {
+        setAvailableModels(newModels);
+      }
+    }
+  }, [endpoints, models, setAvailableModels]);
 
   useEffect(() => {
-    // Initial fetch
-    fetchModels();
+    if (endpoints.length > 0 && !initialFetchDoneRef.current) {
+      initialFetchDoneRef.current = true;
+      fetchModels(true);
+    }
 
-    // Set up periodic refresh every 30 seconds
-    const intervalId = setInterval(fetchModels, 30000);
+    const intervalId = setInterval(() => fetchModels(false), 30000);
 
     return () => {
       clearInterval(intervalId);
@@ -213,7 +219,7 @@ export function useModelFetching(endpoints: LLMProvider[]) {
         clearTimeout(fetchTimeoutRef.current);
       }
     };
-  }, [fetchModels]);
+  }, [fetchModels, endpoints]);
 
-  return models;
+  return useMemo(() => models, [models]);
 }

@@ -3,7 +3,7 @@ import { View, ScrollView } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
 import { ModelSelector } from './ModelSelector';
-import { fetchAvailableModelsV2, useModels } from '@/hooks/useModels';
+import { useModels } from '@/hooks/useModels';
 import { useChat } from '@/hooks/useChat';
 import { CharacterSelector } from './CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
