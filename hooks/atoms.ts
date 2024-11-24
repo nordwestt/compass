@@ -154,6 +154,6 @@ export const modalStateAtom = atom<{
   title: '',
   message: ''
 })
-export const availableEndpointsAtom = atomWithStorage<Provider[]>('apiEndpoints', [])
+export const availableProvidersAtom = atomWithStorage<Provider[]>('providers', [])
 
 export const defaultModelAtom = atomWithStorage<Model>('defaultModel', defaultThread.selectedModel);

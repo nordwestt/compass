@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Model, Provider } from '@/types/core';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { availableEndpointsAtom, availableModelsAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, availableModelsAtom } from '@/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
 
 export const loadDefaultModel = async (): Promise<Model | null> => {
@@ -42,7 +42,7 @@ export function useModels() {
   const fetchAvailableModels = async (): Promise<Model[]> => {
     isLoadingModels = true;
     try {
-      const [endpoints, setEndpoints] = useAtom(availableEndpointsAtom);
+      const [endpoints, setEndpoints] = useAtom(availableProvidersAtom);
       const setAvailableModels = useSetAtom(availableModelsAtom);
 
       const models: Model[] = [];

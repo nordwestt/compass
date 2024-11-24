@@ -13,7 +13,7 @@ import {
   threadActionsAtom, 
   availableModelsAtom,
   isGeneratingAtom,
-  availableEndpointsAtom
+  availableProvidersAtom
 } from '@/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 export const ChatThread: React.FC = () => {
@@ -23,7 +23,7 @@ export const ChatThread: React.FC = () => {
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const availableModels = useAtomValue(availableModelsAtom);
-  const [endpoints] = useAtom(availableEndpointsAtom);
+  const [providers] = useAtom(availableProvidersAtom);
   const setAvailableModels = useSetAtom(availableModelsAtom);
   
   const previousThreadId = useRef(currentThread.id);
@@ -39,6 +39,10 @@ export const ChatThread: React.FC = () => {
   const { handleSend, handleInterrupt } = useChat();
 
   const wrappedHandleSend = async (message: string, mentionedCharacters: MentionedCharacter[]) => {
+    if(!providers.length) {
+      return;
+    }
+
     setIsGenerating(true);
     await handleSend(message, mentionedCharacters);
     setIsGenerating(false);

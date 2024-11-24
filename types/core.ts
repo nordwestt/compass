@@ -29,7 +29,7 @@ export interface Thread {
     id?: string;
     name?: string;
     source: 'ollama' | 'openai' | 'anthropic' | 'custom';
-    type: {
+    type?: {
       llm: boolean,
       tts: boolean,
       stt: boolean

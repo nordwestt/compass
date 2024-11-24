@@ -4,7 +4,7 @@ import { Signal } from '@preact/signals-react';
 import {  useModelFetching } from '@/hooks/useModels';
 import { Model } from '@/types/core';
 import { useAtom, useAtomValue } from 'jotai';
-import { availableEndpointsAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
 
 // Add provider logos mapping
 const PROVIDER_LOGOS = {
@@ -24,7 +24,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   onSetModel,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const endpoints = useAtomValue(availableEndpointsAtom);
+  const endpoints = useAtomValue(availableProvidersAtom);
   const models = useModelFetching(endpoints);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
 
@@ -42,7 +42,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     }
   }, [models, selectedModel.id, defaultModel, onSetModel]);
 
-  if(!endpoints.length) return null;
+  if(!endpoints.length) return <Text className="text-gray-500">No providers configured</Text>;
   
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
