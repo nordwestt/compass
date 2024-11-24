@@ -4,6 +4,8 @@ import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
 import { Character } from '@/types/core';
 import { Text } from 'react-native';
+import { currentThreadAtom } from '@/hooks/atoms';
+import { useAtomValue } from 'jotai';
 
 interface MessageProps {
   content: string;
@@ -13,6 +15,7 @@ interface MessageProps {
 
 export const Message: React.FC<MessageProps> = ({ content, isUser, character }) => {
   const { colorScheme } = useColorScheme();
+  const currentThread = useAtomValue(currentThreadAtom);
   const isDark = colorScheme === 'dark';
 
   const markdownStyles = {
@@ -38,14 +41,14 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
 
   return (
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
-      {character && !isUser && (
+      {!isUser && (
         <View className="mr-2 items-center my-auto">
           <Image 
-            source={character.image } 
+            source={character?.image ||currentThread.character?.image} 
             className="!w-[32px] !h-[32px] rounded-full"
           />
           <Text className="text-xs mt-1 text-gray-600 dark:text-gray-400 font-bold">
-            {character.name}
+            {character?.name || currentThread.character?.name}
           </Text>
         </View>
       )}

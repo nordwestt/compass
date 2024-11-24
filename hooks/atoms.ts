@@ -18,8 +18,8 @@ const defaultThread: Thread = {
   },
   character: {
     id: 'default',
-    name: 'Default Assistant',
-    content: 'You are a helpful AI assistant.',
+    name: 'Robot',
+    content: 'Your name is Robot. You are a helpful AI assistant.',
     image: require('@/assets/characters/default.png')
   }
 }
