@@ -80,6 +80,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
 
     if (nativeEvent.key === 'Enter' && nativeEvent.ctrlKey) {
       handleSend();
+      return;
     }
 
     const filteredCharacters = allCharacters.filter(char => 

@@ -92,7 +92,6 @@ async function handleStreamResponse(
       }
 
       const chunk = new TextDecoder().decode(value);
-      console.log(chunk);
       const lines = chunk.split('\n');
       
 
@@ -208,7 +207,6 @@ export function useChat() {
     } else {
       messagesToSend = [newMessage, assistantPlaceholder];
     }
-    console.log(mentionedCharacters)
 
     const updatedThread = {
       ...currentThread, 
@@ -223,7 +221,6 @@ export function useChat() {
     });
 
     try {
-      console.log('sending main message', messagesToSend, characterToSend.name);
       
       let historyToSend: ChatMessage[] = [];
 
