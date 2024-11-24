@@ -10,6 +10,7 @@ Compass is a modern, open-source Large Language Model (LLM) client designed to p
 - 🤖 **Multiple LLM Providers**: Support for OpenAI, Anthropic, Ollama, and more
 - 👥 **Character System**: Built-in characters and support for custom character creation
 - 💬 **Chat History**: Persistent conversation tracking and management
+- 🤝 **Inter-Character Communication**: Tag (@) characters in chats for multi-agent interactions
 - 🎨 **Modern UI**: Clean, responsive interface with dark mode support
 
 ## Roadmap
@@ -17,7 +18,6 @@ Compass is a modern, open-source Large Language Model (LLM) client designed to p
 - 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses
 - 🎤 **Speech-to-Text (STT)**: Voice input capabilities
 - 📞 **Voice Calls**: Real-time voice conversations with AI
-- 🤝 **Inter-Character Communication**: Tag (@) characters in chats for multi-agent interactions
 - 📸 **Vision Integration**: Camera support for vision model capabilities
 - 🔍 **RAG Support**: Document analysis and web search integration
 - ⚙️ **Custom Filters**: Self-programmable filters and data processing pipes
