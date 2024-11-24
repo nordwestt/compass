@@ -23,7 +23,7 @@ export const ChatThreads: React.FC = () => {
       messages: [],
       selectedModel: defaultModel ? JSON.parse(defaultModel) : {
         id: '',
-        provider: { type: 'ollama', endpoint: '', apiKey: '' }
+        provider: { source: 'ollama', endpoint: '', apiKey: '' }
       },
       character: {
         id: 'default',

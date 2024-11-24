@@ -15,7 +15,7 @@ export interface Thread {
   export interface Model {
     id: string;
     name: string;
-    provider: LLMProvider;
+    provider: Provider;
   }
 
   export interface Character {
@@ -25,10 +25,15 @@ export interface Thread {
     image?: any;
   }
 
-  export interface LLMProvider {
+  export interface Provider {
     id?: string;
     name?: string;
-    type: 'ollama' | 'openai' | 'anthropic' | 'custom';
+    source: 'ollama' | 'openai' | 'anthropic' | 'custom';
+    type: {
+      llm: boolean,
+      tts: boolean,
+      stt: boolean
+    };
     apiKey?: string;
     endpoint: string;
   }

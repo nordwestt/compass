@@ -1,27 +1,27 @@
 import { View, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
-import { LLMProvider } from '@/types/core';
+import { Provider } from '@/types/core';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 import { ProviderFormFields } from './ProviderFormFields';
 
 interface EndpointModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (provider: LLMProvider) => void;
-  provider: LLMProvider | null;
+  onSave: (provider: Provider) => void;
+  provider: Provider | null;
 }
 
 export function EndpointModal({ visible, onClose, onSave, provider }: EndpointModalProps) {
   const [name, setName] = useState(provider?.name ?? '');
   const [apiKey, setApiKey] = useState(provider?.apiKey ?? '');
-  const [selectedType, setSelectedType] = useState<LLMProvider['type']>(provider?.type ?? 'custom');
+  const [selectedType, setSelectedType] = useState<Provider['source']>(provider?.source ?? 'custom');
   const [customEndpoint, setCustomEndpoint] = useState(provider?.endpoint ?? '');
 
   useEffect(() => {
     if (provider) {
       setName(provider.name ?? '');
       setApiKey(provider.apiKey ?? '');
-      setSelectedType(provider.type);
+      setSelectedType(provider.source);
       setCustomEndpoint(provider.endpoint);
     } else {
       setName('');
@@ -41,7 +41,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
       name,
       endpoint: endpointUrl,
       apiKey,
-      type: selectedType,
+      source: selectedType,
     });
   };
 

@@ -57,14 +57,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         onPress={() => setIsModalVisible(true)}
         className="flex-row items-center px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700"
       >
-        {PROVIDER_LOGOS[selectedModel.provider.type as keyof typeof PROVIDER_LOGOS] && (
+        {PROVIDER_LOGOS[selectedModel.provider.source as keyof typeof PROVIDER_LOGOS] && (
           <Image 
-            source={PROVIDER_LOGOS[selectedModel.provider.type as keyof typeof PROVIDER_LOGOS]}
+            source={PROVIDER_LOGOS[selectedModel.provider.source as keyof typeof PROVIDER_LOGOS]}
             className="!h-[32px] !w-[32px] rounded-full mr-2"
           />
         )}
         <Text className="flex-1 text-black dark:text-white">
-          {currentModel ? `${currentModel.provider.type} - ${currentModel.name}` : 'Select Model'}
+          {currentModel ? `${currentModel.provider.source} - ${currentModel.name}` : 'Select Model'}
         </Text>
       </TouchableOpacity>
 
@@ -92,9 +92,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                   }}
                   className="flex-row items-center p-3 mb-2 rounded-lg bg-gray-50 dark:bg-gray-700"
                 >
-                  {PROVIDER_LOGOS[model.provider.type as keyof typeof PROVIDER_LOGOS] && (
+                  {PROVIDER_LOGOS[model.provider.source as keyof typeof PROVIDER_LOGOS] && (
                     <Image
-                      source={PROVIDER_LOGOS[model.provider.type as keyof typeof PROVIDER_LOGOS]}
+                      source={PROVIDER_LOGOS[model.provider.source as keyof typeof PROVIDER_LOGOS]}
                       className="!h-[48px] !w-[48px] rounded-full mr-3"
                     />
                   )}

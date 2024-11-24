@@ -1,10 +1,10 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { LLMProvider } from '@/types/core';
+import { Provider } from '@/types/core';
 
 interface ProviderCardProps {
-  provider: LLMProvider;
-  onEdit: (provider: LLMProvider) => void;
+  provider: Provider;
+  onEdit: (provider: Provider) => void;
   onDelete: (id: string) => void;
 }
 
@@ -13,12 +13,12 @@ export function ProviderCard({ provider, onEdit, onDelete }: ProviderCardProps) 
     <View key={provider.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-3 shadow-sm">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
-          {provider.type !== 'custom' && (
+          {provider.source !== 'custom' && (
             <Image
               source={
-                provider.type === 'anthropic'
+                provider.source === 'anthropic'
                   ? require('@/assets/images/anthropic-icon.png')
-                  : provider.type === 'openai'
+                  : provider.source === 'openai'
                   ? require('@/assets/images/openai-icon.png')
                   : require('@/assets/images/ollama-icon.png')
               }

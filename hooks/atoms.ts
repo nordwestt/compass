@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { Model, Thread, ChatMessage, Character, LLMProvider } from '@/types/core'
+import { Model, Thread, ChatMessage, Character, Provider } from '@/types/core'
 import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
 const defaultThread: Thread = {
@@ -11,7 +11,7 @@ const defaultThread: Thread = {
     id: '',
     name: '',
     provider: {
-      type: 'ollama',
+      source: 'ollama',
       endpoint: '',
       apiKey: ''
     }
@@ -154,6 +154,6 @@ export const modalStateAtom = atom<{
   title: '',
   message: ''
 })
-export const availableEndpointsAtom = atomWithStorage<LLMProvider[]>('apiEndpoints', [])
+export const availableEndpointsAtom = atomWithStorage<Provider[]>('apiEndpoints', [])
 
 export const defaultModelAtom = atomWithStorage<Model>('defaultModel', defaultThread.selectedModel);

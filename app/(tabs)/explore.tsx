@@ -5,14 +5,14 @@ import { availableEndpointsAtom } from '@/hooks/atoms';
 import { ProviderCard } from '@/src/components/providers/ProviderCard';
 import { EndpointModal } from '@/src/components/providers/EndpointModal';
 import { useState } from 'react';
-import { LLMProvider } from '@/types/core';
+import { Provider } from '@/types/core';
 
 export default function ExploreScreen() {
   const [providers, setProviders] = useAtom(availableEndpointsAtom);
   const [showModal, setShowModal] = useState(false);
-  const [editingProvider, setEditingProvider] = useState<LLMProvider | null>(null);
+  const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
 
-  const handleSave = async (provider: LLMProvider) => {
+  const handleSave = async (provider: Provider) => {
     if (editingProvider) {
       const updated = providers.map((e) => (e.id === editingProvider.id ? provider : e));
       setProviders(updated);
@@ -28,7 +28,7 @@ export default function ExploreScreen() {
     setProviders(updated);
   };
 
-  const handleEdit = (provider: LLMProvider) => {
+  const handleEdit = (provider: Provider) => {
     setEditingProvider(provider);
     setShowModal(true);
   };

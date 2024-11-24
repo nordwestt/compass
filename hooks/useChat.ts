@@ -16,7 +16,7 @@ async function sendMessageToProvider(
     ...messages.map(message => ({ role: message.isUser ? 'user' : 'assistant', content: message.content }))
   ];
 
-  switch (selectedModel.provider.type) {
+  switch (selectedModel.provider.source) {
     case 'ollama':
       return fetch(`http://localhost:11434/api/chat`, {
         method: 'POST',
@@ -61,7 +61,7 @@ async function sendMessageToProvider(
       });
 
     default:
-      throw new Error(`Unsupported provider: ${selectedModel.provider.type}`);
+      throw new Error(`Unsupported provider: ${selectedModel.provider.source}`);
   }
 }
 

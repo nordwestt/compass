@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Model, LLMProvider } from '@/types/core';
+import { Model, Provider } from '@/types/core';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { availableEndpointsAtom, availableModelsAtom } from '@/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
@@ -49,7 +49,7 @@ export function useModels() {
 
       for (const provider of endpoints) {
         try {
-          switch (provider.type) {
+          switch (provider.source) {
             case 'ollama':
               const ollamaResponse = await fetch(`http://localhost:11434/api/tags`);
               const ollamaData = await ollamaResponse.json();
@@ -92,7 +92,7 @@ export function useModels() {
               break;
           }
         } catch (error) {
-          console.error(`Error fetching models for ${provider.type}:`, error);
+          console.error(`Error fetching models for ${provider.source}:`, error);
         }
       }
 
@@ -113,7 +113,7 @@ export function useModels() {
 
 let isLoadingModels = false;
 export const fetchAvailableModelsV2 = async (
-  endpoints: LLMProvider[]
+  endpoints: Provider[]
 ): Promise<Model[]> => {
   isLoadingModels = true;
   try {
@@ -126,7 +126,7 @@ export const fetchAvailableModelsV2 = async (
 
     for (const provider of endpoints) {
       try {
-        switch (provider.type) {
+        switch (provider.source) {
           case 'ollama':
             const ollamaResponse = await fetch(`http://localhost:11434/api/tags`);
             const ollamaData = await ollamaResponse.json();
@@ -169,7 +169,7 @@ export const fetchAvailableModelsV2 = async (
             break;
         }
       } catch (error) {
-        console.error(`Error fetching models for ${provider.type}:`, error);
+        console.error(`Error fetching models for ${provider.source}:`, error);
       }
     }
 
@@ -182,7 +182,7 @@ export const fetchAvailableModelsV2 = async (
   return [];
 };
 
-export function useModelFetching(endpoints: LLMProvider[]) {
+export function useModelFetching(endpoints: Provider[]) {
   const [models, setAvailableModels] = useAtom(availableModelsAtom);
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const lastFetchTimeRef = useRef<number>(0);

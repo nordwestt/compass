@@ -1,11 +1,11 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
-import { LLMProvider } from '@/types/core';
+import { Provider } from '@/types/core';
 
 interface ProviderTypeSelectorProps {
   className?: string;
-  selectedType: LLMProvider['type'];
-  onTypeSelect: (type: LLMProvider['type']) => void;
+  selectedType: Provider['source'];
+  onTypeSelect: (type: Provider['source']) => void;
 }
 
 export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: ProviderTypeSelectorProps) {

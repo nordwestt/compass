@@ -1,14 +1,14 @@
 import { View, Text, TextInput } from 'react-native';
 import { ProviderTypeSelector } from './ProviderTypeSelector';
-import { LLMProvider } from '@/types/core';
+import { Provider } from '@/types/core';
 
 interface ProviderFormFieldsProps {
   name: string;
   setName: (value: string) => void;
   apiKey: string;
   setApiKey: (value: string) => void;
-  selectedType: LLMProvider['type'];
-  setSelectedType: (type: LLMProvider['type']) => void;
+  selectedType: Provider['source'];
+  setSelectedType: (type: Provider['source']) => void;
   customEndpoint: string;
   setCustomEndpoint: (value: string) => void;
 }
