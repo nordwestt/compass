@@ -35,7 +35,7 @@ export const ChatThread: React.FC = () => {
     }
   }, [currentThread.id]);
 
-  const { fetchAvailableModels, setDefaultModel } = useModels();
+  const { fetchAvailableModels } = useModels();
   const { handleSend, handleInterrupt } = useChat();
 
   const wrappedHandleSend = async (message: string, mentionedCharacters: MentionedCharacter[]) => {
@@ -44,14 +44,6 @@ export const ChatThread: React.FC = () => {
     setIsGenerating(false);
   };
 
-  // Fetch models if needed
-  useEffect(() => {
-    if (availableModels.length === 0) {
-      fetchAvailableModelsV2(endpoints, setAvailableModels).then(() => {
-        
-      });
-    }
-  }, [endpoints]);
 
   const handleSelectModel = (model: Model) => {
     dispatchThread({
@@ -74,7 +66,6 @@ export const ChatThread: React.FC = () => {
           <ModelSelector 
             selectedModel={currentThread.selectedModel}
             onSetModel={handleSelectModel}
-            onSetDefault={() => setDefaultModel(currentThread.selectedModel)}
           />
         )}
         <CharacterSelector

@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Model, LLMProvider } from '@/types/core';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { availableEndpointsAtom, availableModelsAtom } from '@/hooks/atoms';
+import { useEffect, useCallback, useRef } from 'react';
+
 export const loadDefaultModel = async (): Promise<Model | null> => {
   try {
     const storedDefault = await AsyncStorage.getItem('defaultModel');
@@ -120,6 +122,7 @@ export const fetchAvailableModelsV2 = async (
       setAvailableModels([]);
       return [];
     }
+    console.log('fetching models from endpoints', endpoints);
 
     const models: Model[] = [];
 
@@ -180,3 +183,37 @@ export const fetchAvailableModelsV2 = async (
   }
   return [];
 };
+
+export function useModelFetching(endpoints: LLMProvider[]) {
+  const [models, setAvailableModels] = useAtom(availableModelsAtom);
+  const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const lastFetchTimeRef = useRef<number>(0);
+  const FETCH_COOLDOWN = 5000; // 5 seconds cooldown between fetches
+
+  const fetchModels = useCallback(async () => {
+    const now = Date.now();
+    if (now - lastFetchTimeRef.current < FETCH_COOLDOWN) {
+      return;
+    }
+
+    lastFetchTimeRef.current = now;
+    await fetchAvailableModelsV2(endpoints, setAvailableModels);
+  }, [endpoints, setAvailableModels]);
+
+  useEffect(() => {
+    // Initial fetch
+    fetchModels();
+
+    // Set up periodic refresh every 30 seconds
+    const intervalId = setInterval(fetchModels, 30000);
+
+    return () => {
+      clearInterval(intervalId);
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+    };
+  }, [fetchModels]);
+
+  return models;
+}

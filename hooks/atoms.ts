@@ -155,3 +155,5 @@ export const modalStateAtom = atom<{
   message: ''
 })
 export const availableEndpointsAtom = atomWithStorage<LLMProvider[]>('apiEndpoints', [])
+
+export const defaultModelAtom = atomWithStorage<Model>('defaultModel', defaultThread.selectedModel);

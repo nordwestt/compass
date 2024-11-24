@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { Signal } from '@preact/signals-react';
-import { loadDefaultModel } from '@/hooks/useModels';
+import { fetchAvailableModelsV2, loadDefaultModel, useModelFetching } from '@/hooks/useModels';
 import { Model } from '@/types/core';
-import { useAtomValue } from 'jotai';
-import { availableModelsAtom } from '@/hooks/atoms';
-
+import { useAtom, useAtomValue } from 'jotai';
+import { availableEndpointsAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
 
 // Add provider logos mapping
 const PROVIDER_LOGOS = {
@@ -18,16 +17,19 @@ const PROVIDER_LOGOS = {
 interface ModelSelectorProps {
   selectedModel: Model;
   onSetModel: (model: Model) => void;
-  onSetDefault: () => void;
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({ 
   selectedModel,
   onSetModel,
-  onSetDefault
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const models = useAtomValue(availableModelsAtom);
+  const endpoints = useAtomValue(availableEndpointsAtom);
+  const models = useModelFetching(endpoints);
+  const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
+
+  if(!endpoints.length) return null;
+  
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
   }
@@ -79,7 +81,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                   key={model.id}
                   onPress={() => {
                     onSetModel(model);
-                    setIsModalVisible(false);
+                    //setIsModalVisible(false);
                   }}
                   className="flex-row items-center p-3 mb-2 rounded-lg bg-gray-50 dark:bg-gray-700"
                 >
@@ -117,7 +119,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  onSetDefault();
+                  setDefaultModel(selectedModel);
                   setIsModalVisible(false);
                 }}
                 className="flex-1 ml-2 bg-blue-500 py-2 px-4 rounded-lg"
