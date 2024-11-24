@@ -3,11 +3,13 @@ import { useAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { modalStateAtom, customPromptsAtom } from '@/hooks/atoms';
+import { modalStateAtom, customPromptsAtom, allPromptsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
+import { modalService } from '@/services/modalService';
 
 export default function CharactersScreen() {
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
+  const [allPrompts] = useAtom(allPromptsAtom);
   const [, setModalState] = useAtom(modalStateAtom);
 
   const saveCustomPrompts = async (prompts: Character[]) => {
@@ -20,27 +22,17 @@ export default function CharactersScreen() {
   };
 
   const handleEdit = async (prompt: Character) => {
-    const newName = await new Promise<string | null>((resolve) => {
-      setModalState({
-        isVisible: true,
-        type: 'prompt',
-        title: 'Edit Character',
-        message: 'Enter character name:',
-        defaultValue: prompt.name
-      });
-      // Add logic to handle response
+    const newName = await modalService.prompt({
+      title: 'Edit Character',
+      message: 'Enter character name:',
+      defaultValue: prompt.name
     });
 
     if (newName) {
-      const newContent = await new Promise<string | null>((resolve) => {
-        setModalState({
-          isVisible: true,
-          type: 'prompt',
-          title: 'Edit Prompt',
-          message: 'Enter character prompt:',
-          defaultValue: prompt.content
-        });
-        // Add logic to handle response
+      const newContent = await modalService.prompt({
+        title: 'Edit Prompt',
+        message: 'Enter character prompt:',
+        defaultValue: prompt.content
       });
 
       if (newContent) {
@@ -53,14 +45,9 @@ export default function CharactersScreen() {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmed = await new Promise<boolean>((resolve) => {
-      setModalState({
-        isVisible: true,
-        type: 'confirm',
-        title: 'Delete Character',
-        message: 'Are you sure you want to delete this character?'
-      });
-      // Add logic to handle response
+    const confirmed = await modalService.confirm({
+      title: 'Delete Character',
+      message: 'Are you sure you want to delete this character?'
     });
 
     if (confirmed) {
@@ -70,25 +57,15 @@ export default function CharactersScreen() {
   };
 
   const handleAdd = async () => {
-    const name = await new Promise<string | null>((resolve) => {
-      setModalState({
-        isVisible: true,
-        type: 'prompt',
-        title: 'New Character',
-        message: 'Enter character name:'
-      });
-      // Add logic to handle response
+    const name = await modalService.prompt({
+      title: 'New Character',
+      message: 'Enter character name:'
     });
 
     if (name) {
-      const content = await new Promise<string | null>((resolve) => {
-        setModalState({
-          isVisible: true,
-          type: 'prompt',
-          title: 'Character Prompt',
-          message: 'Enter character prompt:'
-        });
-        // Add logic to handle response
+      const content = await modalService.prompt({
+        title: 'Character Prompt',
+        message: 'Enter character prompt:'
       });
 
       if (content) {

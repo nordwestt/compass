@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { Model, Thread, ChatMessage, Character, LLMProvider } from '@/types/core'
+import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
 const defaultThread: Thread = {
   id: Date.now().toString(),
@@ -138,7 +139,9 @@ export const chatActionsAtom = atom(
 
 // Add these new atoms
 export const customPromptsAtom = atomWithStorage<Character[]>('customPrompts', [])
-export const allPromptsAtom = atom<Character[]>([])
+export const allPromptsAtom = atom(
+  (get) => [...PREDEFINED_PROMPTS, ...get(customPromptsAtom)]
+)
 export const modalStateAtom = atom<{
   isVisible: boolean;
   type: 'confirm' | 'prompt';

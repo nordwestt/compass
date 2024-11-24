@@ -17,6 +17,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const allPrompts = useAtomValue(allPromptsAtom);
 
+
   return (
     <>
       <TouchableOpacity 
@@ -50,7 +51,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
             
             <ScrollView className="p-4">
               <View className="flex-row flex-wrap justify-between">
-                {[...PREDEFINED_PROMPTS, ...allPrompts].map((prompt) => (
+                {allPrompts.map((prompt) => (
                   <TouchableOpacity
                     key={prompt.id}
                     onPress={() => {
