@@ -30,6 +30,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   const [cursorPosition, setCursorPosition] = useState(0);
   const inputRef = useRef<TextInput>(null);
   const allCharacters = useAtomValue(allPromptsAtom);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -41,10 +42,11 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
     setMessage(text);
     const lastAtSymbol = text.lastIndexOf('@');
     
-    if (lastAtSymbol !== -1 && lastAtSymbol < cursorPosition) {
-      const searchText = text.slice(lastAtSymbol + 1, cursorPosition);
+    if (lastAtSymbol !== -1) {
+      const searchText = text.slice(lastAtSymbol + 1);
       setMentionSearch(searchText);
       setShowMentionPopup(true);
+      setSelectedIndex(0);
     } else {
       setShowMentionPopup(false);
     }
@@ -75,8 +77,31 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   };
 
   const handleKeyPress = ({ nativeEvent }: { nativeEvent: { key: string, ctrlKey?: boolean } }) => {
+
     if (nativeEvent.key === 'Enter' && nativeEvent.ctrlKey) {
       handleSend();
+    }
+
+    const filteredCharacters = allCharacters.filter(char => 
+      char.name.toLowerCase().includes(mentionSearch.toLowerCase())
+    );
+
+    switch (nativeEvent.key) {
+      case 'ArrowUp':
+        setSelectedIndex(prev => 
+          prev > 0 ? prev - 1 : filteredCharacters.length - 1
+        );
+        break;
+      case 'ArrowDown':
+        setSelectedIndex(prev => 
+          prev < filteredCharacters.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'Enter':
+        if (filteredCharacters.length > 0) {
+          handleSelectCharacter(filteredCharacters[selectedIndex]);
+        }
+        break;
     }
   };
 
@@ -87,6 +112,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
           characters={allCharacters}
           onSelect={handleSelectCharacter}
           searchText={mentionSearch}
+          selectedIndex={selectedIndex}
         />
       )}
       <TextInput
@@ -96,12 +122,12 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
         placeholderTextColor="#9CA3AF"
         value={message}
         onChangeText={handleChangeText}
+        onKeyPress={handleKeyPress}
         onSelectionChange={(event) => {
           setCursorPosition(event.nativeEvent.selection.start);
         }}
         multiline
         editable={!isGenerating}
-        onKeyPress={handleKeyPress}
       />
       {isGenerating ? (
         <Pressable

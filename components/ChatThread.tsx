@@ -15,7 +15,7 @@ import {
   isGeneratingAtom,
   availableEndpointsAtom
 } from '@/hooks/atoms';
-
+import { MentionedCharacter } from './ChatInput';
 export const ChatThread: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
@@ -38,9 +38,9 @@ export const ChatThread: React.FC = () => {
   const { fetchAvailableModels, setDefaultModel } = useModels();
   const { handleSend, handleInterrupt } = useChat();
 
-  const wrappedHandleSend = async (message: string) => {
+  const wrappedHandleSend = async (message: string, mentionedCharacters: MentionedCharacter[]) => {
     setIsGenerating(true);
-    await handleSend(message);
+    await handleSend(message, mentionedCharacters);
     setIsGenerating(false);
   };
 

@@ -72,14 +72,15 @@ async function handleStreamResponse(
 ) {
   const reader = response?.body?.getReader();
   if (!reader) throw new Error('No reader available from response');
+  let assistantMessage = currentThread.messages[currentThread.messages.length - 1].content;
 
-  let assistantMessage = '';
   const isFirstMessage = currentThread.messages.length === 2;
 
   try {
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
+
         if (isFirstMessage) {
           const title = await generateThreadTitle(assistantMessage, currentThread);
           dispatchThread({
@@ -91,7 +92,9 @@ async function handleStreamResponse(
       }
 
       const chunk = new TextDecoder().decode(value);
+      console.log(chunk);
       const lines = chunk.split('\n');
+      
 
       for (const line of lines) {
         if (line.trim() === '') continue;
@@ -190,12 +193,29 @@ export function useChat() {
     abortController.current = new AbortController();
 
     const newMessage = { content: message, isUser: true };
-    const assistantPlaceholder = { content: "", isUser: false };
-    const updatedMessages = [...currentThread.messages, newMessage, assistantPlaceholder];
+    let assistantPlaceholder: ChatMessage = { content: "", isUser: false };
+
+    let messagesToSend = [] as ChatMessage[];
+    if (mentionedCharacters.length > 0) {
+      const userLastMessage = currentThread.messages[currentThread.messages.length - 2];
+      const assistantLastMessage = currentThread.messages[currentThread.messages.length - 1];
+      const contextMessage = `I told ${currentThread.character.name} "${userLastMessage.content}" and they responded with "${assistantLastMessage.content}"\n\nUser: "${newMessage.content}"`;
+      assistantPlaceholder = { content: ``, isUser: false, character: mentionedCharacters[0].character };
+      messagesToSend = [
+        { content: contextMessage, isUser: true },
+        assistantPlaceholder
+      ];
+    } else {
+      messagesToSend = [newMessage, assistantPlaceholder];
+    }
+    console.log(mentionedCharacters)
+
     const updatedThread = {
-      ...currentThread,
-      messages: updatedMessages
+      ...currentThread, 
+      messages: [...currentThread.messages, newMessage, assistantPlaceholder]
     };
+
+    const characterToSend = mentionedCharacters.length > 0 ? mentionedCharacters[0].character : currentThread.character;
 
     dispatchThread({
       type: 'update',
@@ -203,29 +223,30 @@ export function useChat() {
     });
 
     try {
+      console.log('sending main message', messagesToSend, characterToSend.name);
+      
+      let historyToSend: ChatMessage[] = [];
+
+      // any character messages should be merged with the user's last message
+      for (let i = 0; i < currentThread.messages.length; i++) {
+        const message = currentThread.messages[i];
+        if (message.character) {
+          historyToSend[historyToSend.length - 1].content += `\n\n${[message.character.name]} responded: "${message.content}"`;
+        } else {
+          historyToSend.push(message);
+        }
+      }
+
       // First get the main response
       const response = await sendMessageToProvider(
-        updatedMessages,
+        mentionedCharacters.length > 0 ? messagesToSend : [...historyToSend, ...messagesToSend], // include history if no mentions
         currentThread.selectedModel,
-        currentThread.character,
+        characterToSend,
         abortController.current.signal
       );
       await handleStreamResponse(response, updatedThread, dispatchThread);
 
-      // Then handle any mentioned characters
-      for (const mention of mentionedCharacters) {
-        const lastMessage = currentThread.messages[currentThread.messages.length - 2];
-        const contextMessage = `${currentThread.character.name} just said: "${lastMessage.content}". What do you think about that?`;
-        
-        const mentionResponse = await sendMessageToProvider(
-          [{ content: contextMessage, isUser: true }],
-          currentThread.selectedModel,
-          mention.character,
-          abortController.current.signal
-        );
-        
-        await handleStreamResponse(mentionResponse, updatedThread, dispatchThread);
-      }
+
     } catch (error) {
       const updatedMessages = [...currentThread.messages];
       if (error instanceof Error && error.name === 'AbortError') {
