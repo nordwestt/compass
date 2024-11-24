@@ -26,7 +26,7 @@ export function ProviderCard({ provider, onEdit, onDelete }: ProviderCardProps) 
             />
           )}
           <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-            {provider.name}
+            {provider.name || provider.source}
           </Text>
         </View>
         <View className="flex-row">

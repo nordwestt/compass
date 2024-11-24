@@ -11,7 +11,6 @@ import { Model, Character } from '@/types/core';
 import { 
   currentThreadAtom, 
   threadActionsAtom, 
-  availableModelsAtom,
   isGeneratingAtom,
   availableProvidersAtom
 } from '@/hooks/atoms';
@@ -22,9 +21,7 @@ export const ChatThread: React.FC = () => {
   const [currentThread] = useAtom(currentThreadAtom);
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
-  const availableModels = useAtomValue(availableModelsAtom);
   const [providers] = useAtom(availableProvidersAtom);
-  const setAvailableModels = useSetAtom(availableModelsAtom);
   
   const previousThreadId = useRef(currentThread.id);
   
