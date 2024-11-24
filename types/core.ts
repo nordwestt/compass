@@ -28,8 +28,8 @@ export interface Thread {
   export interface Provider {
     id?: string;
     name?: string;
-    source: 'ollama' | 'openai' | 'anthropic' | 'custom';
-    type?: {
+    source: 'ollama' | 'openai' | 'anthropic' | 'elevenlabs' | 'custom';
+    capabilities?: {
       llm: boolean,
       tts: boolean,
       stt: boolean

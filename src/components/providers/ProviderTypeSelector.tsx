@@ -18,16 +18,16 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
         {Object.entries(PREDEFINED_PROVIDERS).map(([key, value]) => (
           <TouchableOpacity
             key={key}
-            onPress={() => onTypeSelect(value.type)}
+            onPress={() => onTypeSelect(value.source)}
             className={`p-3 rounded-lg flex-row items-center ${
-              selectedType === value.type 
+              selectedType === value.source 
                 ? 'bg-blue-500' 
                 : 'bg-gray-200 dark:bg-gray-700'
             }`}
           >
             <Text 
               className={`${
-                selectedType === value.type 
+                selectedType === value.source 
                   ? 'text-white' 
                   : 'text-gray-800 dark:text-gray-200'
               }`}
