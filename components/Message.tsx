@@ -1,14 +1,17 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
+import { Character } from '@/types/core';
+import { Text } from 'react-native';
 
 interface MessageProps {
   content: string;
   isUser: boolean;
+  character?: Character;
 }
 
-export const Message: React.FC<MessageProps> = ({ content, isUser }) => {
+export const Message: React.FC<MessageProps> = ({ content, isUser, character }) => {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -35,6 +38,17 @@ export const Message: React.FC<MessageProps> = ({ content, isUser }) => {
 
   return (
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
+      {character && !isUser && (
+        <View className="mr-2 items-center my-auto">
+          <Image 
+            source={character.image } 
+            className="!w-[32px] !h-[32px] rounded-full"
+          />
+          <Text className="text-xs mt-1 text-gray-600 dark:text-gray-400 font-bold">
+            {character.name}
+          </Text>
+        </View>
+      )}
       <View 
         className={`px-4 py-2 rounded-2xl max-w-[80%] ${
           isUser ? "bg-blue-500 rounded-tr-none" : "bg-gray-200 dark:bg-gray-800 rounded-tl-none"

@@ -93,6 +93,7 @@ export const ChatThread: React.FC = () => {
             key={index}
             content={message.content}
             isUser={message.isUser}
+            character={message.character}
           />
         ))}
       </ScrollView>
