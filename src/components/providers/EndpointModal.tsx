@@ -1,8 +1,10 @@
-import { View, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Provider } from '@/types/core';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 import { ProviderFormFields } from './ProviderFormFields';
+import { PROVIDER_LOGOS } from '@/src/constants/logos';
+
 
 interface EndpointModalProps {
   visible: boolean;
@@ -54,9 +56,17 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
     >
       <View className="flex-1 justify-end">
         <View className="bg-white dark:bg-gray-800 rounded-t-xl p-6 h-4/5">
-          <Text className="text-xl font-bold mb-6 text-gray-800 dark:text-gray-200">
-            {provider ? 'Edit API Provider' : 'Add API Provider'}
-          </Text>
+          <View className="flex-row items-center mb-6">
+            {selectedType !== 'custom' && PROVIDER_LOGOS[selectedType as keyof typeof PROVIDER_LOGOS] && (
+              <Image
+                source={PROVIDER_LOGOS[selectedType as keyof typeof PROVIDER_LOGOS]}
+                className="!w-[48px] !h-[48px] rounded-full mr-3"
+              />
+            )}
+            <Text className="text-xl font-bold text-gray-800 dark:text-gray-200">
+              {provider ? 'Edit API Provider' : 'Add API Provider'}
+            </Text>
+          </View>
 
           <ScrollView className="flex-1 mb-6">
             <ProviderFormFields
