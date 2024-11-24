@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { availableEndpointsAtom } from '@/hooks/atoms';
 import { LLMProvider } from '@/types/core';
 
-const PREDEFINED_ENDPOINTS = {
+const PREDEFINED_PROVIDERS = {
   anthropic: {
     name: 'Anthropic',
     endpoint: 'https://api.anthropic.com/v1/messages',
@@ -24,57 +24,57 @@ const PREDEFINED_ENDPOINTS = {
 };
 
 export default function ExploreScreen() {
-  const [endpoints, setEndpoints] = useAtom(availableEndpointsAtom);
+  const [providers, setProviders] = useAtom(availableEndpointsAtom);
   const [showModal, setShowModal] = useState(false);
-  const [editingEndpoint, setEditingEndpoint] = useState<LLMProvider | null>(null);
+  const [editingProvider, setEditingProvider] = useState<LLMProvider | null>(null);
 
-  const handleSave = async (endpoint: LLMProvider) => {
-    if (editingEndpoint) {
-      const updated = endpoints.map(e => 
-        e.id === editingEndpoint.id ? endpoint : e
+  const handleSave = async (provider: LLMProvider) => {
+    if (editingProvider) {
+      const updated = providers.map(e => 
+        e.id === editingProvider.id ? provider : e
       );
-      setEndpoints(updated);
+      setProviders(updated);
     } else {
-      setEndpoints([...endpoints, { ...endpoint, id: Date.now().toString() }]);
+      setProviders([...providers, { ...provider, id: Date.now().toString() }]);
     }
-    setEditingEndpoint(null);
+    setEditingProvider(null);
     setShowModal(false);
   };
 
   const handleDelete = async (id: string) => {
-    const updated = endpoints.filter(e => e.id !== id);
-    setEndpoints(updated);
+    const updated = providers.filter(e => e.id !== id);
+    setProviders(updated);
   };
 
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       <ScrollView className="flex-1 p-4">
         <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
-          API Endpoints
+          API Providers
         </Text>
         
-        {endpoints.map((endpoint) => (
-          <View key={endpoint.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-3 shadow-sm">
+        {providers.map((provider) => (
+          <View key={provider.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-3 shadow-sm">
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center">
-                {endpoint.type !== 'custom' && (
+                {provider.type !== 'custom' && (
                   <Image
-                    source={endpoint.type === 'anthropic' 
+                    source={provider.type === 'anthropic' 
                       ? require('@/assets/images/anthropic-icon.png')
-                      : endpoint.type === 'openai'
+                      : provider.type === 'openai'
                         ? require('@/assets/images/openai-icon.png')
                         : require('@/assets/images/ollama-icon.png')}
                     className="!w-[64px] !h-[64px] mr-2"
                   />
                 )}
                 <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  {endpoint.name}
+                  {provider.name}
                 </Text>
               </View>
               <View className="flex-row">
                 <TouchableOpacity 
                   onPress={() => {
-                    setEditingEndpoint(endpoint);
+                    setEditingProvider(provider);
                     setShowModal(true);
                   }}
                   className="p-2"
@@ -82,7 +82,7 @@ export default function ExploreScreen() {
                   <Ionicons name="pencil" size={20} color="#4B5563" />
                 </TouchableOpacity>
                 <TouchableOpacity 
-                  onPress={() => handleDelete(endpoint.id ?? '')}
+                  onPress={() => handleDelete(provider.id ?? '')}
                   className="p-2"
                 >
                   <Ionicons name="trash" size={20} color="#EF4444" />
@@ -95,7 +95,7 @@ export default function ExploreScreen() {
 
       <TouchableOpacity
         onPress={() => {
-          setEditingEndpoint(null);
+          setEditingProvider(null);
           setShowModal(true);
         }}
         className="absolute bottom-6 right-6 w-14 h-14 bg-blue-500 rounded-full items-center justify-center shadow-lg"
@@ -107,10 +107,10 @@ export default function ExploreScreen() {
         visible={showModal}
         onClose={() => {
           setShowModal(false);
-          setEditingEndpoint(null);
+          setEditingProvider(null);
         }}
         onSave={handleSave}
-        endpoint={editingEndpoint}
+        provider={editingProvider}
       />
     </View>
   );
@@ -119,37 +119,37 @@ export default function ExploreScreen() {
 interface EndpointModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (endpoint: LLMProvider) => void;
-  endpoint: LLMProvider | null;
+  onSave: (provider: LLMProvider) => void;
+  provider: LLMProvider | null;
 }
 
-function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProps) {
-  const [name, setName] = useState(endpoint?.name ?? '');
-  const [apiKey, setApiKey] = useState(endpoint?.apiKey ?? '');
-  const [selectedType, setSelectedType] = useState<LLMProvider['type']>(endpoint?.type ?? 'custom');
-  const [customEndpoint, setCustomEndpoint] = useState(endpoint?.endpoint ?? '');
+function EndpointModal({ visible, onClose, onSave, provider: provider }: EndpointModalProps) {
+  const [name, setName] = useState(provider?.name ?? '');
+  const [apiKey, setApiKey] = useState(provider?.apiKey ?? '');
+  const [selectedType, setSelectedType] = useState<LLMProvider['type']>(provider?.type ?? 'custom');
+  const [customEndpoint, setCustomEndpoint] = useState(provider?.endpoint ?? '');
 
   useEffect(() => {
-    if (endpoint) {
-      setName(endpoint.name ?? '');
-      setApiKey(endpoint.apiKey ?? '');
-      setSelectedType(endpoint.type);
-      setCustomEndpoint(endpoint.endpoint);
+    if (provider) {
+      setName(provider.name ?? '');
+      setApiKey(provider.apiKey ?? '');
+      setSelectedType(provider.type);
+      setCustomEndpoint(provider.endpoint);
     } else {
       setName('');
       setApiKey('');
       setSelectedType('custom');
       setCustomEndpoint('');
     }
-  }, [endpoint]);
+  }, [provider]);
 
   const handleSave = () => {
     const endpointUrl = selectedType === 'custom' 
       ? customEndpoint 
-      : PREDEFINED_ENDPOINTS[selectedType].endpoint;
+      : PREDEFINED_PROVIDERS[selectedType].endpoint;
 
     onSave({
-      id: endpoint?.id ?? '',
+      id: provider?.id ?? '',
       name,
       endpoint: endpointUrl,
       apiKey,
@@ -167,7 +167,7 @@ function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProp
       <View className="flex-1 justify-end">
         <View className="bg-white dark:bg-gray-800 rounded-t-xl p-6 h-4/5">
           <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
-            {endpoint ? 'Edit API Endpoint' : 'Add API Endpoint'}
+            {provider ? 'Edit API Provider' : 'Add API Provider'}
           </Text>
 
           <ScrollView className="flex-1">
@@ -202,7 +202,7 @@ function EndpointModal({ visible, onClose, onSave, endpoint }: EndpointModalProp
                   Type
                 </Text>
                 <View className="flex-row space-x-2">
-                  {Object.entries(PREDEFINED_ENDPOINTS).map(([key, value]) => (
+                  {Object.entries(PREDEFINED_PROVIDERS).map(([key, value]) => (
                     <TouchableOpacity
                       key={key}
                       onPress={() => setSelectedType(value.type)}
