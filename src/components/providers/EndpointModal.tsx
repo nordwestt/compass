@@ -54,11 +54,11 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
     >
       <View className="flex-1 justify-end">
         <View className="bg-white dark:bg-gray-800 rounded-t-xl p-6 h-4/5">
-          <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+          <Text className="text-xl font-bold mb-6 text-gray-800 dark:text-gray-200">
             {provider ? 'Edit API Provider' : 'Add API Provider'}
           </Text>
 
-          <ScrollView className="flex-1">
+          <ScrollView className="flex-1 mb-6">
             <ProviderFormFields
               name={name}
               setName={setName}
@@ -71,10 +71,10 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
             />
           </ScrollView>
 
-          <View className="flex-row space-x-3 mt-4">
+          <View className="flex-row space-x-4 mt-6">
             <TouchableOpacity
               onPress={onClose}
-              className="flex-1 p-3 rounded-lg bg-gray-200 dark:bg-gray-700"
+              className="flex-1 p-4 rounded-lg bg-gray-200 dark:bg-gray-700"
             >
               <Text className="text-center text-gray-800 dark:text-gray-200">
                 Cancel
@@ -82,7 +82,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
-              className="flex-1 p-3 rounded-lg bg-blue-500"
+              className="flex-1 p-4 rounded-lg bg-blue-500"
             >
               <Text className="text-center text-white">
                 Save

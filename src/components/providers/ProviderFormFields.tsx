@@ -24,9 +24,9 @@ export function ProviderFormFields({
   setCustomEndpoint,
 }: ProviderFormFieldsProps) {
   return (
-    <View className="space-y-4">
-      <View>
-        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</Text>
+    <View className="m-4">
+      <View className="mb-4">
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</Text>
         <TextInput
           value={name}
           onChangeText={setName}
@@ -35,8 +35,8 @@ export function ProviderFormFields({
         />
       </View>
 
-      <View>
-        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">API Key</Text>
+      <View className="mb-4">
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API Key</Text>
         <TextInput
           value={apiKey}
           onChangeText={setApiKey}
@@ -46,11 +46,11 @@ export function ProviderFormFields({
         />
       </View>
 
-      <ProviderTypeSelector selectedType={selectedType} onTypeSelect={setSelectedType} />
+      <ProviderTypeSelector className="mb-4" selectedType={selectedType} onTypeSelect={setSelectedType} />
 
       {selectedType === 'custom' && (
-        <View>
-          <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <View className="mb-4">
+          <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Endpoint URL
           </Text>
           <TextInput

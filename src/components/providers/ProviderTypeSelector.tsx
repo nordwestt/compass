@@ -3,13 +3,14 @@ import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 import { LLMProvider } from '@/types/core';
 
 interface ProviderTypeSelectorProps {
+  className?: string;
   selectedType: LLMProvider['type'];
   onTypeSelect: (type: LLMProvider['type']) => void;
 }
 
-export function ProviderTypeSelector({ selectedType, onTypeSelect }: ProviderTypeSelectorProps) {
+export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: ProviderTypeSelectorProps) {
   return (
-    <View>
+    <View className={className}>
       <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
         Type
       </Text>
