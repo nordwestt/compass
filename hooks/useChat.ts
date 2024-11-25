@@ -18,7 +18,7 @@ async function sendMessageToProvider(
 
   switch (selectedModel.provider.source) {
     case 'ollama':
-      return fetch(`http://localhost:11434/api/chat`, {
+      return fetch(`${selectedModel.provider.endpoint}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

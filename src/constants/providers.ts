@@ -23,7 +23,7 @@ export const PREDEFINED_PROVIDERS = {
   } as Provider,
   ollama: {
     name: 'Ollama',
-    endpoint: 'http://localhost:11434/api/chat',
+    endpoint: 'http://localhost:11434',
     source: 'ollama' as const,
     capabilities: {
       llm: true,

@@ -39,74 +39,8 @@ export function useModels() {
     }
   };
 
-  const fetchAvailableModels = async (): Promise<Model[]> => {
-    isLoadingModels = true;
-    try {
-      const [endpoints, setEndpoints] = useAtom(availableProvidersAtom);
-      const setAvailableModels = useSetAtom(availableModelsAtom);
-
-      const models: Model[] = [];
-
-      for (const provider of endpoints) {
-        try {
-          switch (provider.source) {
-            case 'ollama':
-              const ollamaResponse = await fetch(`http://localhost:11434/api/tags`);
-              const ollamaData = await ollamaResponse.json();
-              models.push(...ollamaData.models.map((model: any) => ({
-                id: model.name,
-                name: model.name,
-                provider: provider
-              })));
-              break;
-
-            case 'openai':
-              const openaiResponse = await fetch('https://api.openai.com/v1/models', {
-                headers: {
-                  'Authorization': `Bearer ${provider.apiKey}`
-                }
-              });
-              const openaiData = await openaiResponse.json();
-              models.push(...openaiData.data
-                .filter((model: any) => model.id.includes('gpt'))
-                .map((model: any) => ({
-                  id: model.id,
-                  name: model.id,
-                  provider: provider
-                })));
-              break;
-
-            case 'anthropic':
-              const anthropicResponse = await fetch('https://api.anthropic.com/v1/models', {
-                headers: {
-                  'x-api-key': provider.apiKey,
-                  'anthropic-version': '2023-06-01'
-                }
-              });
-              const anthropicData = await anthropicResponse.json();
-              models.push(...anthropicData.map((model: any) => ({
-                id: model.name,
-                name: model.name,
-                provider: provider
-              })));
-              break;
-          }
-        } catch (error) {
-          console.error(`Error fetching models for ${provider.source}:`, error);
-        }
-      }
-
-      setAvailableModels(models);
-    } catch (error) {
-      console.error('Error fetching models:', error);
-    } finally {
-      isLoadingModels = false;
-    }
-    return [];
-  };
 
   return {
-    fetchAvailableModels,
     setDefaultModel
   };
 } 
@@ -128,7 +62,7 @@ export const fetchAvailableModelsV2 = async (
       try {
         switch (provider.source) {
           case 'ollama':
-            const ollamaResponse = await fetch(`http://localhost:11434/api/tags`);
+            const ollamaResponse = await fetch(`${provider.endpoint}/api/tags`);
             const ollamaData = await ollamaResponse.json();
             models.push(...ollamaData.models.map((model: any) => ({
               id: model.name,
@@ -169,7 +103,7 @@ export const fetchAvailableModelsV2 = async (
             break;
         }
       } catch (error) {
-        console.error(`Error fetching models for ${provider.source}:`, error);
+        console.error(`Error fetching models for ${provider.endpoint} (${provider.source}):`, error);
       }
     }
 
