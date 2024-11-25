@@ -35,7 +35,7 @@ export default function Providers() {
 
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-900">
-      <ScrollView className="flex-1 p-4">
+      <ScrollView className="p-4" contentContainerStyle={{ flexGrow: 0 }}>
         <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
           API Providers
         </Text>
@@ -48,17 +48,18 @@ export default function Providers() {
             onDelete={handleDelete}
           />
         ))}
+        <TouchableOpacity
+          onPress={() => {
+            setEditingProvider(null);
+          setShowModal(true);
+          }}
+          className="w-14 h-14 mx-auto bg-blue-500 rounded-full items-center justify-center shadow-lg"
+        >
+          <Ionicons name="add" size={30} color="white" />
+        </TouchableOpacity>
       </ScrollView>
 
-      <TouchableOpacity
-        onPress={() => {
-          setEditingProvider(null);
-          setShowModal(true);
-        }}
-        className="absolute bottom-6 right-6 w-14 h-14 bg-blue-500 rounded-full items-center justify-center shadow-lg"
-      >
-        <Ionicons name="add" size={30} color="white" />
-      </TouchableOpacity>
+      
 
       <EndpointModal
         visible={showModal}

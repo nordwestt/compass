@@ -1,6 +1,5 @@
 import { View } from 'react-native';
   
-import { Provider } from '@/types/core';
 import Providers from '@/src/components/providers/providers';
 
 export default function SettingsScreen() {
