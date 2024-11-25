@@ -25,7 +25,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
       fontFamily: preferences.fontFamily,
       fontSize: preferences.fontSize,
       lineHeight: preferences.lineHeight,
-      letterSpacing: preferences.letterSpacing,
+      letterSpacing: preferences.letterSpacing
     },
     code_block: {
       backgroundColor: isUser ? '#1e40af' : (isDark ? '#374151' : '#f3f4f6'),

@@ -6,9 +6,9 @@ import { FontSelector } from '@/src/components/settings/FontSelector';
 export default function SettingsScreen() {
   
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900">
-      <Providers />
-      <FontSelector />
+    <ScrollView className="flex-1 bg-gray-200 dark:bg-gray-900">
+      <Providers className="shadow-lg m-2 rounded-lg" />
+      <FontSelector className="shadow-lg m-2 rounded-lg" />
     </ScrollView>
   );
 }

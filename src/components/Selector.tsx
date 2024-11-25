@@ -22,19 +22,19 @@ export function Selector<T>({
   const containerProps = horizontal ? { horizontal: true, showsHorizontalScrollIndicator: false } : {};
 
   return (
-    <View className="mb-6">
+    <View className="">
       {title && (
         <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {title}
         </Text>
       )}
       <Container {...containerProps}>
-        <View className={`${horizontal ? 'flex-row gap-2' : 'flex-row flex-wrap gap-2'} ${className}`}>
+        <View className={`${horizontal ? 'flex-row' : 'flex-row flex-wrap'} ${className} p-2 rounded-lg`}>
           {options.map((option) => (
             <TouchableOpacity
               key={String(option.value)}
               onPress={() => onChange(option.value)}
-              className={`px-4 py-2 rounded-lg ${
+              className={`mr-2 px-4 py-2 rounded-lg ${
                 value === option.value
                   ? 'bg-blue-500'
                   : 'bg-gray-200 dark:bg-gray-700'

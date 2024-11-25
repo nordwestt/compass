@@ -7,7 +7,11 @@ import { EndpointModal } from '@/src/components/providers/EndpointModal';
 import { useState } from 'react';
 import { Provider } from '@/types/core';
 
-export default function Providers() {
+interface ProvidersProps {
+  className?: string;
+}
+
+export default function Providers({ className }: ProvidersProps) {
   const [providers, setProviders] = useAtom(availableProvidersAtom);
   const [showModal, setShowModal] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
@@ -34,9 +38,9 @@ export default function Providers() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className={`flex-1 bg-gray-50 dark:bg-gray-900 ${className}`}>
       <ScrollView className="p-4" contentContainerStyle={{ flexGrow: 0 }}>
-        <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+        <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
           API Providers
         </Text>
 
