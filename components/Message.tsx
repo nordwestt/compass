@@ -4,7 +4,7 @@ import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
 import { Character } from '@/types/core';
 import { Text } from 'react-native';
-import { currentThreadAtom } from '@/hooks/atoms';
+import { currentThreadAtom, fontPreferencesAtom } from '@/hooks/atoms';
 import { useAtomValue } from 'jotai';
 
 interface MessageProps {
@@ -16,15 +16,16 @@ interface MessageProps {
 export const Message: React.FC<MessageProps> = ({ content, isUser, character }) => {
   const { colorScheme } = useColorScheme();
   const currentThread = useAtomValue(currentThreadAtom);
+  const preferences = useAtomValue(fontPreferencesAtom);
   const isDark = colorScheme === 'dark';
 
   const markdownStyles = {
     body: {
       color: isUser ? '#fff' : (isDark ? '#fff' : '#1f2937'),
-      fontFamily: 'Caveat-Medium',
-      fontSize: 18,
-      lineHeight: 24,
-      letterSpacing: 0.8,
+      fontFamily: preferences.fontFamily,
+      fontSize: preferences.fontSize,
+      lineHeight: preferences.lineHeight,
+      letterSpacing: preferences.letterSpacing,
     },
     code_block: {
       backgroundColor: isUser ? '#1e40af' : (isDark ? '#374151' : '#f3f4f6'),

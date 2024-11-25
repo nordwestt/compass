@@ -157,3 +157,11 @@ export const modalStateAtom = atom<{
 export const availableProvidersAtom = atomWithStorage<Provider[]>('providers', [])
 
 export const defaultModelAtom = atomWithStorage<Model>('defaultModel', defaultThread.selectedModel);
+
+export const fontPreferencesAtom = atom({
+  fontFamily: 'Caveat-Medium',
+  fontSize: 18,
+  lineHeight: 24,
+  letterSpacing: 0.8,
+  messageGap: 2,
+});
