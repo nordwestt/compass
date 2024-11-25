@@ -87,6 +87,10 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       char.name.toLowerCase().includes(mentionSearch.toLowerCase())
     );
 
+    if(filteredCharacters.length === 0) {
+      return;
+    }
+
     switch (nativeEvent.key) {
       case 'ArrowUp':
         setSelectedIndex(prev => 
