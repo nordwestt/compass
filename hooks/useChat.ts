@@ -18,6 +18,7 @@ async function sendMessageToProvider(
 
   switch (selectedModel.provider.source) {
     case 'ollama':
+      console.log('sending message to ollama', selectedModel.provider.endpoint);
       return fetch(`${selectedModel.provider.endpoint}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,8 +71,15 @@ async function handleStreamResponse(
   currentThread: Thread,
   dispatchThread: (action: ThreadAction) => void
 ) {
-  const reader = response?.body?.getReader();
-  if (!reader) throw new Error('No reader available from response');
+  if (!response.body) {
+    throw new Error('Response stream not available');
+  }
+
+  const reader = response.body.getReader();
+  if (!reader) {
+    throw new Error('Stream reader not available');
+  }
+
   let assistantMessage = currentThread.messages[currentThread.messages.length - 1].content;
 
   const isFirstMessage = currentThread.messages.length === 2;
@@ -92,6 +100,7 @@ async function handleStreamResponse(
       }
 
       const chunk = new TextDecoder().decode(value);
+      console.log('chunk', chunk);
       const lines = chunk.split('\n');
       
 
@@ -233,7 +242,7 @@ export function useChat() {
       // any character messages should be merged with the user's last message
       for (let i = 0; i < currentThread.messages.length; i++) {
         const message = currentThread.messages[i];
-        if (message.character) {
+        if (message.character && historyToSend.length > 0) {
           historyToSend[historyToSend.length - 1].content += `\n\n${[message.character.name]} responded: "${message.content}"`;
         } else {
           historyToSend.push(message);
@@ -252,10 +261,13 @@ export function useChat() {
 
     } catch (error) {
       const updatedMessages = [...currentThread.messages];
+      
       if (error instanceof Error && error.name === 'AbortError') {
-        updatedMessages[updatedMessages.length - 1].content += "\n\n[Generation interrupted]";
+        console.log('Generation interrupted');
+        //updatedMessages[updatedMessages.length - 1].content += "\n\n[Generation interrupted]";
       } else {
-        updatedMessages[updatedMessages.length - 1].content = "Error: Failed to get response from AI";
+        console.log('Generation failed', error);
+        //updatedMessages[updatedMessages.length - 1].content = "Error: Failed to get response from AI";
       }
       dispatchThread({
         type: 'update',
