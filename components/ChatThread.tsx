@@ -35,6 +35,7 @@ export const ChatThread: React.FC = () => {
     if (previousThreadId.current !== currentThread.id) {
       chatInputRef.current?.focus();
       previousThreadId.current = currentThread.id;
+      setIsGenerating(false);
     }
   }, [currentThread.id]);
 
@@ -56,8 +57,13 @@ export const ChatThread: React.FC = () => {
     }
 
     setIsGenerating(true);
-    await handleSend(message, mentionedCharacters);
-    setIsGenerating(false);
+    try{
+      await handleSend(message, mentionedCharacters);
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
 
