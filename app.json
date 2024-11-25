@@ -7,6 +7,11 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "fonts": {
+      "Caveat-Regular": "./assets/fonts/Caveat-Regular.ttf",
+      "Caveat-Medium": "./assets/fonts/Caveat-Medium.ttf",
+      "Caveat-Bold": "./assets/fonts/Caveat-Bold.ttf"
+    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",

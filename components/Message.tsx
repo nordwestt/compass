@@ -21,21 +21,28 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
   const markdownStyles = {
     body: {
       color: isUser ? '#fff' : (isDark ? '#fff' : '#1f2937'),
+      fontFamily: 'Caveat-Medium',
+      fontSize: 18,
+      lineHeight: 24,
+      letterSpacing: 0.8,
     },
     code_block: {
       backgroundColor: isUser ? '#1e40af' : (isDark ? '#374151' : '#f3f4f6'),
       padding: 8,
       borderRadius: 8,
+      fontFamily: 'monospace',
     },
     code_inline: {
       backgroundColor: isUser ? '#1e40af' : (isDark ? '#374151' : '#f3f4f6'),
       padding: 4,
       borderRadius: 4,
+      fontFamily: 'monospace',
     },
     fence: {
       backgroundColor: isUser ? '#1e40af' : (isDark ? '#374151' : '#f3f4f6'),
       padding: 8,
       borderRadius: 8,
+      fontFamily: 'monospace',
     },
   };
 

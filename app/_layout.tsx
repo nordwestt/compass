@@ -14,6 +14,9 @@ export default function RootLayout() {
   const { colorScheme } = useColorSchemeInit();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'Caveat-Regular': require('../assets/fonts/Caveat-Regular.ttf'),
+    'Caveat-Medium': require('../assets/fonts/Caveat-Medium.ttf'),
+    'Caveat-Bold': require('../assets/fonts/Caveat-Bold.ttf'),
   });
 
   useEffect(() => {
