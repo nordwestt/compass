@@ -7,6 +7,8 @@ import { modalService } from '@/services/modalService';
 import { useColorScheme } from 'nativewind';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/types/core';
+import { createDefaultThread } from '@/hooks/atoms';
+import { PREDEFINED_PROMPTS } from '@/constants/characters';
 
 export const ChatThreads: React.FC = () => {
   const [threads] = useAtom(threadsAtom);
@@ -17,20 +19,12 @@ export const ChatThreads: React.FC = () => {
 
   const addNewThread = async () => {
     const defaultModel = await AsyncStorage.getItem('defaultModel');
-    const newThread: Thread = {
-      id: Date.now().toString(),
-      title: "New thread",
-      messages: [],
-      selectedModel: defaultModel ? JSON.parse(defaultModel) : {
-        id: '',
-        provider: { source: 'ollama', endpoint: '', apiKey: '' }
-      },
-      character: {
-        id: 'default',
-        name: 'Robot',
-        content: 'Your name is Robot. You are a helpful AI assistant.'
-      }
+    const newThread = createDefaultThread();
+    newThread.selectedModel = defaultModel ? JSON.parse(defaultModel) : {
+      id: '',
+      provider: { source: 'ollama', endpoint: '', apiKey: '' }
     };
+    
     dispatchThread({ type: 'add', payload: newThread });
   };
 

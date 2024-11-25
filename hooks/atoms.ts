@@ -3,30 +3,28 @@ import { atomWithStorage } from 'jotai/utils'
 import { Model, Thread, ChatMessage, Character, Provider } from '@/types/core'
 import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
-const defaultThread: Thread = {
-  id: Date.now().toString(),
-  title: "New thread",
-  messages: [],
-  selectedModel: {
+export const createDefaultThread = (): Thread => {
+  return {
+    id: Date.now().toString(),
+    title: "New thread",
+    messages: [],
+    selectedModel: {
     id: '',
     name: '',
     provider: {
-      source: 'ollama',
-      endpoint: '',
-      apiKey: ''
-    }
-  },
-  character: {
-    id: 'default',
-    name: 'Robot',
-    content: 'Your name is Robot. You are a helpful AI assistant.',
-    image: require('@/assets/characters/default.png')
+        source: 'ollama',
+        endpoint: '',
+        apiKey: ''
+      }
+    },
+    character: PREDEFINED_PROMPTS[0]
   }
 }
 
+
 // Core atoms
-export const threadsAtom = atomWithStorage<Thread[]>('threads', [defaultThread])
-export const currentThreadAtom = atom<Thread>(defaultThread)
+export const threadsAtom = atomWithStorage<Thread[]>('threads', [createDefaultThread()])
+export const currentThreadAtom = atom<Thread>(createDefaultThread())
 export const sidebarVisibleAtom = atom(true)
 
 // Derived atoms
@@ -72,7 +70,7 @@ export const threadActionsAtom = atom(
           if(newThreads.length > 0) {
             set(currentThreadAtom, newThreads[newThreads.length - 1])
           } else {
-            set(currentThreadAtom, defaultThread)
+            set(currentThreadAtom, createDefaultThread())
           }
         }
         
@@ -161,7 +159,7 @@ export const modalStateAtom = atom<{
 })
 export const availableProvidersAtom = atomWithStorage<Provider[]>('providers', [])
 
-export const defaultModelAtom = atomWithStorage<Model>('defaultModel', defaultThread.selectedModel);
+export const defaultModelAtom = atomWithStorage<Model>('defaultModel', createDefaultThread().selectedModel);
 
 export const fontPreferencesAtom = atom({
   fontFamily: 'Caveat-Medium',
