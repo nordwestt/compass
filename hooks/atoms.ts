@@ -5,7 +5,7 @@ import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
 const defaultThread: Thread = {
   id: Date.now().toString(),
-  title: "First conversation",
+  title: "New thread",
   messages: [],
   selectedModel: {
     id: '',
@@ -65,12 +65,15 @@ export const threadActionsAtom = atom(
       case 'delete':
         const newThreads = threads.filter(t => t.id !== action.payload)
         set(threadsAtom, newThreads)
-        if (newThreads.length > 0) {
-          set(currentThreadAtom, newThreads[0])
-        } else {
-          set(threadsAtom, [defaultThread])
-          set(currentThreadAtom, defaultThread)
+        
+        if(get(currentThreadAtom).id === action.payload) {
+          if(newThreads.length > 0) {
+            set(currentThreadAtom, newThreads[newThreads.length - 1])
+          } else {
+            set(currentThreadAtom, defaultThread)
+          }
         }
+        
         break
         
       case 'setCurrent':
