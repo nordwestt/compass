@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
 import { threadsAtom, currentThreadAtom, threadActionsAtom } from '@/hooks/atoms';
@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/types/core';
 import { createDefaultThread } from '@/hooks/atoms';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
+import { router } from 'expo-router';
 
 export const ChatThreads: React.FC = () => {
   const [threads] = useAtom(threadsAtom);
@@ -54,6 +55,15 @@ export const ChatThreads: React.FC = () => {
     }
   };
 
+  const handleThreadSelect = (thread: Thread) => {
+    if (Platform.OS === 'web' && window.innerWidth >= 768) {
+      dispatchThread({ type: 'setCurrent', payload: thread });
+    } else {
+      dispatchThread({ type: 'setCurrent', payload: thread });
+      router.push(`/thread/${thread.id}`);
+    }
+  };
+
   return (
     <View className="flex flex-col flex-grow bg-gray-50 dark:bg-gray-900">
       <ScrollView
@@ -64,7 +74,7 @@ export const ChatThreads: React.FC = () => {
         {threads.map((thread) => (
           <View key={thread.id} className="flex-row items-center mb-2">
             <TouchableOpacity 
-              onPress={() => dispatchThread({ type: 'setCurrent', payload: thread })}
+              onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
               className={`flex-1 p-4 rounded-lg ${
                 currentThread.id === thread.id 

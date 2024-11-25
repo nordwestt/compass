@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Platform } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
 import { ModelSelector } from './ModelSelector';
@@ -8,6 +8,8 @@ import { useChat } from '@/hooks/useChat';
 import { CharacterSelector } from './CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Model, Character } from '@/types/core';
+import { router } from 'expo-router';
+import { HeaderBackButton } from '@react-navigation/elements';
 
 import { 
   currentThreadAtom, 
@@ -74,6 +76,9 @@ export const ChatThread: React.FC = () => {
     });
   };
 
+  const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
+
+  
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       <View className="p-4 flex-row justify-between border-b border-gray-200 dark:border-gray-700">
