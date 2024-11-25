@@ -118,6 +118,8 @@ export const fetchAvailableModelsV2 = async (
 
 export function useModelFetching(endpoints: Provider[]) {
   const [models, setAvailableModels] = useAtom(availableModelsAtom);
+  const [providers, setProviders] = useAtom(availableProvidersAtom);
+
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const lastFetchTimeRef = useRef<number>(0);
   const initialFetchDoneRef = useRef(false);
@@ -129,9 +131,27 @@ export function useModelFetching(endpoints: Provider[]) {
       return;
     }
 
+    if(endpoints.length === 0) {
+      console.log('no endpoints, scanning for ollama instances');
+      const ollamaEndpoints = await scanForOllamaInstances();
+      
+      setProviders(ollamaEndpoints.map((endpoint) => ({
+        endpoint,
+        name: "Ollama",
+        source: 'ollama',
+        apiKey: '', // assume no api key
+        capabilities: {
+          llm: true,
+          tts: false,
+          stt: false
+        }
+      } as Provider)));
+    }
+
     if (endpoints.length > 0) {
       lastFetchTimeRef.current = now;
       const newModels = await fetchAvailableModelsV2(endpoints);
+
       
       if (JSON.stringify(newModels) !== JSON.stringify(models)) {
         setAvailableModels(newModels);
@@ -156,4 +176,57 @@ export function useModelFetching(endpoints: Provider[]) {
   }, [fetchModels, endpoints]);
 
   return useMemo(() => models, [models]);
+}
+
+async function scanForOllamaInstances(): Promise<string[]> {
+  const endpoints: string[] = [];
+  
+  // Common local network patterns
+  const networkPatterns = [
+    'http://localhost:11434',
+    'http://127.0.0.1:11434',
+  ];
+
+  // Generate IP range for 192.168.1.x
+  // for (let i = 1; i <= 254; i++) {
+  //   networkPatterns.push(`http://192.168.1.${i}:11434`);
+  // }
+  networkPatterns.push('http://192.168.1.76:11434');
+
+  // Generate IP range for 192.168.0.x
+  // for (let i = 1; i <= 254; i++) {
+  //   networkPatterns.push(`http://192.168.0.${i}:11434`);
+  // }
+
+  // Test each endpoint with a timeout
+  const testEndpoint = async (endpoint: string) => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 500); // 500ms timeout
+
+      const response = await fetch(`${endpoint}`, {
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        endpoints.push(endpoint);
+      }
+    } catch (error) {
+      // Ignore connection errors
+      console.log('error', error);
+    }
+  };
+
+  // Run all tests concurrently with Promise.all
+  await Promise.all(networkPatterns.map(testEndpoint));
+
+  console.log('networkPatterns', networkPatterns);
+  console.log('endpoints', endpoints);
+
+  // register the endpoints
+  
+  
+  return endpoints;
 }
