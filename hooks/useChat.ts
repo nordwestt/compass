@@ -16,18 +16,23 @@ async function sendMessageToProvider(
     ...messages.map(message => ({ role: message.isUser ? 'user' : 'assistant', content: message.content }))
   ];
 
+  const fetchOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    signal,
+    reactNative: { textStreaming: true }
+  };
+
   switch (selectedModel.provider.source) {
     case 'ollama':
       console.log('sending message to ollama', selectedModel.provider.endpoint);
       return fetch(`${selectedModel.provider.endpoint}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        ...fetchOptions,
         body: JSON.stringify({
           model: selectedModel.id,
           messages: newMessages,
           stream: true
         }),
-        signal
       });
 
     case 'openai':
