@@ -39,7 +39,6 @@ export const ChatThread: React.FC = () => {
   }, [currentThread.id]);
 
 
-  const { fetchAvailableModels } = useModels();
   const { handleSend, handleInterrupt } = useChat();
 
   const wrappedHandleSend = async (message: string, mentionedCharacters: MentionedCharacter[]) => {

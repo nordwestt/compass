@@ -16,7 +16,7 @@ interface EndpointModalProps {
 export function EndpointModal({ visible, onClose, onSave, provider }: EndpointModalProps) {
   const [name, setName] = useState(provider?.name ?? '');
   const [apiKey, setApiKey] = useState(provider?.apiKey ?? '');
-  const [selectedType, setSelectedType] = useState<Provider['source']>(provider?.source ?? 'custom');
+  const [selectedType, setSelectedType] = useState<Provider['source']>(provider?.source ?? 'ollama');
   const [customEndpoint, setCustomEndpoint] = useState(provider?.endpoint ?? '');
 
   useEffect(() => {
