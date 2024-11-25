@@ -8,6 +8,7 @@ import { useChat } from '@/hooks/useChat';
 import { CharacterSelector } from './CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Model, Character } from '@/types/core';
+
 import { 
   currentThreadAtom, 
   threadActionsAtom, 
@@ -18,7 +19,7 @@ import { MentionedCharacter } from './ChatInput';
 export const ChatThread: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
-  const [currentThread] = useAtom(currentThreadAtom);
+  const [currentThread, setCurrentThread] = useAtom(currentThreadAtom);
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const [providers] = useAtom(availableProvidersAtom);
@@ -26,11 +27,13 @@ export const ChatThread: React.FC = () => {
   const previousThreadId = useRef(currentThread.id);
   
   useEffect(() => {
+
     if (previousThreadId.current !== currentThread.id) {
       chatInputRef.current?.focus();
       previousThreadId.current = currentThread.id;
     }
   }, [currentThread.id]);
+
 
   const { fetchAvailableModels } = useModels();
   const { handleSend, handleInterrupt } = useChat();
@@ -38,6 +41,15 @@ export const ChatThread: React.FC = () => {
   const wrappedHandleSend = async (message: string, mentionedCharacters: MentionedCharacter[]) => {
     if(!providers.length) {
       return;
+    }
+
+    if (currentThread.messages.length === 0) {
+
+      dispatchThread({ 
+        type: 'add', 
+        payload: currentThread 
+      });
+
     }
 
     setIsGenerating(true);
