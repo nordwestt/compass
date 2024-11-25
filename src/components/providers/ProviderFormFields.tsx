@@ -48,7 +48,7 @@ export function ProviderFormFields({
         />
       </View>
 
-      {selectedType === 'custom' && (
+      {(selectedType === 'custom' || selectedType === 'ollama') && (
         <View className="mb-4">
           <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Endpoint URL
