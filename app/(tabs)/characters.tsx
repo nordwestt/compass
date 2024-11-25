@@ -3,14 +3,12 @@ import { useAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { modalStateAtom, customPromptsAtom, allPromptsAtom } from '@/hooks/atoms';
+import { customPromptsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { modalService } from '@/services/modalService';
 
 export default function CharactersScreen() {
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
-  const [allPrompts] = useAtom(allPromptsAtom);
-  const [, setModalState] = useAtom(modalStateAtom);
 
   const saveCustomPrompts = async (prompts: Character[]) => {
     try {

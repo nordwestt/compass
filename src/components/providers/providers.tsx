@@ -7,7 +7,7 @@ import { EndpointModal } from '@/src/components/providers/EndpointModal';
 import { useState } from 'react';
 import { Provider } from '@/types/core';
 
-export default function ExploreScreen() {
+export default function Providers() {
   const [providers, setProviders] = useAtom(availableProvidersAtom);
   const [showModal, setShowModal] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
