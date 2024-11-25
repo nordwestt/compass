@@ -12,6 +12,7 @@ import { Model, Character } from '@/types/core';
 import { 
   currentThreadAtom, 
   threadActionsAtom, 
+  threadsAtom,
   isGeneratingAtom,
   availableProvidersAtom
 } from '@/hooks/atoms';
@@ -20,6 +21,7 @@ export const ChatThread: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
   const [currentThread, setCurrentThread] = useAtom(currentThreadAtom);
+  const threads = useAtomValue(threadsAtom);
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const [providers] = useAtom(availableProvidersAtom);
@@ -43,7 +45,7 @@ export const ChatThread: React.FC = () => {
       return;
     }
 
-    if (currentThread.messages.length === 0) {
+    if (currentThread.messages.length === 0 && threads.filter(t => t.id === currentThread.id).length === 0) {
 
       dispatchThread({ 
         type: 'add', 

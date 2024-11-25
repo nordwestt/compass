@@ -59,7 +59,9 @@ export const threadActionsAtom = atom(
           t.id === action.payload.id ? action.payload : t
         )
         set(threadsAtom, updatedThreads)
-        set(currentThreadAtom, action.payload)
+        if(get(currentThreadAtom).id === action.payload.id) {
+          set(currentThreadAtom, action.payload)
+        }
         break
       
       case 'delete':
