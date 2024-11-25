@@ -68,7 +68,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
             </Text>
           </View>
 
-          <ScrollView className="flex-1 mb-6">
+          <ScrollView>
             <ProviderFormFields
               name={name}
               setName={setName}
