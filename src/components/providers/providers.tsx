@@ -6,6 +6,8 @@ import { ProviderCard } from '@/src/components/providers/ProviderCard';
 import { EndpointModal } from '@/src/components/providers/EndpointModal';
 import { useState } from 'react';
 import { Provider } from '@/types/core';
+import NetInfo from '@react-native-community/netinfo';
+
 interface ProvidersProps {
   className?: string;
 }
@@ -100,54 +102,62 @@ export default function Providers({ className }: ProvidersProps) {
 }
 
 async function scanForOllamaInstances(): Promise<string[]> {
-  const endpoints: string[] = [];
-  
-  // Common local network patterns
-  const networkPatterns = [
+  // Get network info
+  const networkState = await NetInfo.fetch();
+  const networkPatterns: string[] = [
     'http://localhost:11434',
     'http://127.0.0.1:11434',
   ];
 
-  // Generate IP range for 192.168.1.x
-  // for (let i = 1; i <= 254; i++) {
-  //   networkPatterns.push(`http://192.168.1.${i}:11434`);
-  // }
-  networkPatterns.push('http://192.168.1.76:11434');
+  if (networkState.type === 'wifi' && networkState.details?.ipAddress && networkState.details?.subnet) {
+    // Extract subnet from IP and subnet mask
+    const subnet = networkState.details.ipAddress.split('.').slice(0, 3).join('.');
+    // Generate IPs only for the detected subnet
+    for (let i = 1; i <= 254; i++) {
+      networkPatterns.push(`http://${subnet}.${i}:11434`);
+    }
+  } else {
+    // Fallback to checking common subnets if we can't determine the current network
+    for (let i = 1; i <= 254; i++) {
+      networkPatterns.push(`http://192.168.0.${i}:11434`);
+    }
+    for (let i = 1; i <= 254; i++) {
+      networkPatterns.push(`http://192.168.1.${i}:11434`);
+    }
+  }
 
-  // Generate IP range for 192.168.0.x
-  // for (let i = 1; i <= 254; i++) {
-  //   networkPatterns.push(`http://192.168.0.${i}:11434`);
-  // }
+  // Batch size of concurrent requests
+  const BATCH_SIZE = 25;
+  const TIMEOUT_MS = 500;
 
-  // Test each endpoint with a timeout
-  const testEndpoint = async (endpoint: string) => {
+  // Modified test endpoint function that resolves as soon as a valid endpoint is found
+  const testEndpoint = async (endpoint: string): Promise<string | null> => {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 500); // 500ms timeout
+      const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
       const response = await fetch(`${endpoint}`, {
         signal: controller.signal
       });
 
       clearTimeout(timeoutId);
-
-      if (response.ok) {
-        endpoints.push(endpoint);
-      }
+      return response.ok ? endpoint : null;
     } catch (error) {
-      // Ignore connection errors
-      console.log('error', error);
+      return null;
     }
   };
 
-  // Run all tests concurrently with Promise.all
-  await Promise.all(networkPatterns.map(testEndpoint));
+  // Process endpoints in batches
+  for (let i = 0; i < networkPatterns.length; i += BATCH_SIZE) {
+    const batch = networkPatterns.slice(i, i + BATCH_SIZE);
+    const results = await Promise.all(batch.map(testEndpoint));
+    
+    // Find first successful result
+    const foundEndpoint = results.find(result => result !== null);
+    if (foundEndpoint) {
+      return [foundEndpoint];
+    }
+  }
 
-  console.log('networkPatterns', networkPatterns);
-  console.log('endpoints', endpoints);
-
-  // register the endpoints
-  
-  
-  return endpoints;
+  return [];
 }
