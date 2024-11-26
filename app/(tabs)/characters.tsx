@@ -6,8 +6,10 @@ import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { customPromptsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { modalService } from '@/services/modalService';
+import { useRouter } from 'expo-router';
 
 export default function CharactersScreen() {
+  const router = useRouter();
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
 
   const saveCustomPrompts = async (prompts: Character[]) => {
@@ -19,27 +21,8 @@ export default function CharactersScreen() {
     }
   };
 
-  const handleEdit = async (prompt: Character) => {
-    const newName = await modalService.prompt({
-      title: 'Edit Character',
-      message: 'Enter character name:',
-      defaultValue: prompt.name
-    });
-
-    if (newName) {
-      const newContent = await modalService.prompt({
-        title: 'Edit Prompt',
-        message: 'Enter character prompt:',
-        defaultValue: prompt.content
-      });
-
-      if (newContent) {
-        const updated = customPrompts.map(p => 
-          p.id === prompt.id ? { ...p, name: newName, content: newContent } : p
-        );
-        await saveCustomPrompts(updated);
-      }
-    }
+  const handleEdit = (prompt: Character) => {
+    router.push(`/edit-character?id=${prompt.id}`);
   };
 
   const handleDelete = async (id: string) => {
@@ -54,28 +37,8 @@ export default function CharactersScreen() {
     }
   };
 
-  const handleAdd = async () => {
-    const name = await modalService.prompt({
-      title: 'New Character',
-      message: 'Enter character name:'
-    });
-
-    if (name) {
-      const content = await modalService.prompt({
-        title: 'Character Prompt',
-        message: 'Enter character prompt:'
-      });
-
-      if (content) {
-        const newPrompt: Character = {
-          id: Date.now().toString(),
-          name,
-          content,
-          image: require('@/assets/characters/default.png')
-        };
-        await saveCustomPrompts([...customPrompts, newPrompt]);
-      }
-    }
+  const handleAdd = () => {
+    router.push('/edit-character');
   };
 
   return (
