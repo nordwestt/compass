@@ -79,10 +79,10 @@ export const ChatThreads: React.FC = () => {
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`flex-1 p-4 rounded-lg ${
+              className={`flex-1 p-4 rounded-lg bg-white dark:bg-gray-800 ${
                 currentThread.id === thread.id 
-                  ? 'bg-blue-100 dark:bg-blue-900 border-2 border-blue-500' 
-                  : 'bg-white dark:bg-gray-800'
+                  ? 'web:border-2 web:border-blue-500' 
+                  : ''
               }`}
             >
               <Text className="font-bold text-gray-800 dark:text-gray-200">
