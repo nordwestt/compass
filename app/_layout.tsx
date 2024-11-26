@@ -1,17 +1,16 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import "@/global.css";
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { useColorSchemeInit } from '@/hooks/useColorSchemeInit';
+import { ThemeProvider } from '@/components/ThemeProvider';
 import { ConfirmationModal } from '@/components/ConfirmationModal';
+import { colorScheme } from 'nativewind';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { colorScheme } = useColorSchemeInit();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     'Caveat-Regular': require('../assets/fonts/Caveat-Regular.ttf'),
@@ -30,7 +29,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
