@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
@@ -6,6 +6,7 @@ import { Character } from '@/types/core';
 import { Text } from 'react-native';
 import { currentThreadAtom, fontPreferencesAtom } from '@/hooks/atoms';
 import { useAtomValue } from 'jotai';
+import { InteractionManager } from 'react-native';
 
 interface MessageProps {
   content: string;
@@ -47,6 +48,14 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
     },
   };
 
+  const [displayContent, setDisplayContent] = useState('');
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setDisplayContent(content);
+    });
+  }, [content]);
+
   return (
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
       {!isUser && (
@@ -66,7 +75,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
         }`}
       >
         <Markdown style={markdownStyles}>
-          {content}
+          {displayContent}
         </Markdown>
       </View>
     </View>
