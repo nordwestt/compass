@@ -29,6 +29,7 @@ export const ChatThreads: React.FC = () => {
     };
     
     dispatchThread({ type: 'add', payload: newThread });
+    router.push(`/thread/${newThread.id}`);
   };
 
   const editThreadTitle = async (thread: Thread) => {
