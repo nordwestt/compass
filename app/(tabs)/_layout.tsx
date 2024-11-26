@@ -14,6 +14,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: !isDesktop,
+        tabBarShowLabel: Platform.OS === 'web',
       }}>
       <Tabs.Screen
         name="index"
