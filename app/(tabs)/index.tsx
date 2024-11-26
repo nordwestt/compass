@@ -4,7 +4,10 @@ import { ChatThreads } from '@/components/ChatThreads';
 import { useAtom } from 'jotai';
 import { sidebarVisibleAtom } from '@/hooks/atoms';
 import { ThreadsSidebar } from '@/components/ThreadsSidebar';
-import { useWindowDimensions } from 'react-native';
+import { useWindowDimensions, Text } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const MIN_DESKTOP_WIDTH = 768;
 
@@ -12,6 +15,11 @@ export default function HomeScreen() {
   const [isSidebarVisible, setIsSidebarVisible] = useAtom(sidebarVisibleAtom);
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width >= MIN_DESKTOP_WIDTH;
+
+  const navigation = useNavigation();
+  navigation.setOptions({
+    headerShown: false,
+  });
 
   if (isDesktop) {
     return (
@@ -25,8 +33,12 @@ export default function HomeScreen() {
   }
 
   return (
-    <View className="bg-gray-100 flex-1">
-      <ChatThreads />
-    </View>
+    <SafeAreaView className="bg-gray-100 flex-1">
+        <View className="flex-row items-center p-4">
+        <Ionicons name="compass" size={36} color="black" />
+        <Text className="ms-2 text-2xl font-bold">Compass</Text>
+        </View>
+        <ChatThreads />
+    </SafeAreaView>
   );
 }

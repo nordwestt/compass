@@ -12,6 +12,9 @@ module.exports = {
         text: 'var(--text)',
         border: 'var(--border)',
       },
+      backgroundColor: {
+        primary: 'var(--primary)',
+      }
     },
   },
   plugins: [],
