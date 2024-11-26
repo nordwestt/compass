@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
 import { threadsAtom, currentThreadAtom, threadActionsAtom } from '@/hooks/atoms';
 import { modalService } from '@/services/modalService';
-import { useColorScheme } from 'nativewind';
+import { useTheme } from '@/hooks/useTheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/types/core';
 import { createDefaultThread } from '@/hooks/atoms';
@@ -12,11 +12,13 @@ import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { router } from 'expo-router';
 
 export const ChatThreads: React.FC = () => {
+  const { theme, setTheme } = useTheme();
   const [threads] = useAtom(threadsAtom);
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const scrollViewRef = useRef<ScrollView>(null);
-  const { colorScheme, toggleColorScheme } = useColorScheme();
+  
+  const isDarkMode = ['dark', 'dim'].includes(theme.id);
 
   const addNewThread = async () => {
     const defaultModel = await AsyncStorage.getItem('defaultModel');
@@ -93,7 +95,7 @@ export const ChatThreads: React.FC = () => {
               <Ionicons 
                 name="trash-outline" 
                 size={20} 
-                color={colorScheme === 'dark' ? '#FCA5A5' : '#EF4444'} 
+                color={isDarkMode ? '#FCA5A5' : '#EF4444'} 
               />
             </TouchableOpacity>
           </View>
@@ -107,18 +109,18 @@ export const ChatThreads: React.FC = () => {
           className='mx-auto' 
           name="add" 
           size={24} 
-          color={colorScheme === 'dark' ? '#E5E7EB' : '#374151'} 
+          color={theme.colors.text} 
         />
       </TouchableOpacity>
       <View className="flex-row justify-center space-x-4 mb-2">
         <TouchableOpacity 
-          onPress={toggleColorScheme} 
-          className="p-2 rounded-full bg-white dark:bg-gray-800"
+          onPress={() => setTheme(isDarkMode ? 'light' : 'dark')} 
+          className="p-2 rounded-full bg-surface"
         >
           <Ionicons 
-            name={colorScheme === 'dark' ? 'sunny' : 'moon'} 
+            name={isDarkMode ? 'sunny' : 'moon'} 
             size={24} 
-            color={colorScheme === 'dark' ? '#E5E7EB' : '#374151'} 
+            color={theme.colors.text} 
           />
         </TouchableOpacity>
       </View>
