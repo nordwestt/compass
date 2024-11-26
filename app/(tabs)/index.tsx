@@ -33,10 +33,10 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView className="bg-gray-100 flex-1">
-        <View className="flex-row items-center p-4">
-        <Ionicons name="compass" size={36} color="black" />
-        <Text className="ms-2 text-2xl font-bold">Compass</Text>
+    <SafeAreaView className="bg-gray-100 flex-1 dark:bg-gray-900">
+        <View className="flex-row items-center p-4 bg-white dark:bg-gray-800">
+        <Ionicons name="compass" size={36} className='!text-black dark:!text-white' />
+        <Text className="ms-2 text-2xl font-bold text-black dark:text-white">Compass</Text>
         </View>
         <ChatThreads />
     </SafeAreaView>

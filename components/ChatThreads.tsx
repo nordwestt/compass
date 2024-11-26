@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
@@ -67,6 +67,13 @@ export const ChatThreads: React.FC = () => {
     }
   };
 
+  const toggleTheme = useCallback(() => {
+    const newTheme = ['dark', 'dim'].includes(theme.id) ? 'light' : 'dark';
+    requestAnimationFrame(() => {
+      setTheme(newTheme);
+    });
+  }, [theme.id, setTheme]);
+
   return (
     <View className="flex flex-col flex-grow bg-gray-50 dark:bg-gray-900">
       <ScrollView
@@ -115,7 +122,7 @@ export const ChatThreads: React.FC = () => {
       </TouchableOpacity>
       <View className="flex-row justify-center space-x-4 mb-2">
         <TouchableOpacity 
-          onPress={() => setTheme(isDarkMode ? 'light' : 'dark')} 
+          onPress={toggleTheme}
           className="p-2 rounded-full bg-surface"
         >
           <Ionicons 
