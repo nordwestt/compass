@@ -105,7 +105,7 @@ async function handleStreamResponse(
       }
 
       const chunk = new TextDecoder().decode(value);
-      console.log('chunk', chunk);
+      console.log('got chunk', new Date().toISOString().split('T')[1].split('.')[0]);
       const lines = chunk.split('\n');
       
 

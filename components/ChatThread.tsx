@@ -19,8 +19,9 @@ import {
   availableProvidersAtom
 } from '@/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
+import { FlashList } from '@shopify/flash-list';
 export const ChatThread: React.FC = () => {
-  const scrollViewRef = useRef<ScrollView>(null);
+  const flatListRef = useRef<FlashList<any>>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
   const [currentThread, setCurrentThread] = useAtom(currentThreadAtom);
   const threads = useAtomValue(threadsAtom);
@@ -81,6 +82,14 @@ export const ChatThread: React.FC = () => {
     });
   };
 
+  const renderItem = ({ item: message }: { item: any }) => (
+    <Message
+      content={message.content}
+      isUser={message.isUser}
+      character={message.character}
+    />
+  );
+
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
 
   
@@ -99,20 +108,16 @@ export const ChatThread: React.FC = () => {
         />
       </View>
 
-      <ScrollView
-        ref={scrollViewRef}
-        className="flex-1 p-4"
-        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-      >
-        {currentThread.messages.map((message, index) => (
-          <Message
-            key={index}
-            content={message.content}
-            isUser={message.isUser}
-            character={message.character}
-          />
-        ))}
-      </ScrollView>
+      <FlashList
+        ref={flatListRef}
+        data={currentThread.messages}
+        renderItem={renderItem}
+        estimatedItemSize={100} // Adjust based on your average message height
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+        keyExtractor={(_, index) => index.toString()}
+        className="flex-1"
+        contentContainerStyle={{ padding: 16 }}
+      />
       
       <ChatInput 
         ref={chatInputRef}

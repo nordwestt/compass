@@ -45,7 +45,8 @@
     "tailwindcss": "^3.4.14",
     "text-encoding": "^0.7.0",
     "web-streams-polyfill": "^4.0.0",
-    "@react-native-community/netinfo": "11.3.1"
+    "@react-native-community/netinfo": "11.3.1",
+    "@shopify/flash-list": "1.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
