@@ -111,7 +111,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   };
 
   return (
-    <View className="relative flex-row items-center p-2 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+    <View className="relative flex-row items-center p-2 bg-background border-t border-gray-200 dark:border-gray-700">
       {showMentionPopup && (
         <CharacterMentionPopup
           characters={allCharacters}

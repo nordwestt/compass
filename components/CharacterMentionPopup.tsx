@@ -27,7 +27,7 @@ export const CharacterMentionPopup: React.FC<CharacterMentionPopupProps> = ({
   if (filteredCharacters.length === 0) return null;
 
   return (
-    <View className="absolute bottom-full left-0 mb-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-40 w-64 overflow-hidden">
+    <View className="absolute bottom-full left-0 mb-2 bg-background rounded-lg shadow-lg max-h-40 w-64 overflow-hidden">
       <ScrollView>
         {filteredCharacters.map((character, index) => {
           const isSelected = index === selectedIndex;

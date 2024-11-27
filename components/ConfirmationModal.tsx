@@ -31,7 +31,7 @@ export const ConfirmationModal = () => {
   }, [modalState.isVisible]);
 
   const Content = () => (
-    <View className="bg-white dark:bg-gray-800 rounded-lg p-6 m-4 max-w-sm w-full">
+    <View className="bg-background rounded-lg p-6 m-4 max-w-sm w-full">
       <Text className="text-xl font-bold mb-2 text-black dark:text-white">
         {modalState.title}
       </Text>

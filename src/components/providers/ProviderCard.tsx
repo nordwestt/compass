@@ -10,7 +10,7 @@ interface ProviderCardProps {
 
 export function ProviderCard({ provider, onEdit, onDelete }: ProviderCardProps) {
   return (
-    <View key={provider.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-3 shadow-sm mb-2">
+    <View key={provider.id} className="bg-background rounded-lg p-4 mb-3 shadow-sm mb-2">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
           {provider.source !== 'custom' && (

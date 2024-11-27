@@ -55,7 +55,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-end">
-        <View className="bg-white dark:bg-gray-800 rounded-t-xl p-6 h-4/5">
+        <View className="bg-background rounded-t-xl p-6 h-4/5">
           <View className="flex-row items-center mb-6">
             {selectedType !== 'custom' && PROVIDER_LOGOS[selectedType as keyof typeof PROVIDER_LOGOS] && (
               <Image

@@ -49,7 +49,7 @@ export default function CharactersScreen() {
         </Text>
         <View className="flex-row flex-wrap justify-between mb-8">
           {PREDEFINED_PROMPTS.map((prompt) => (
-            <View key={prompt.id} className="w-[48%] mb-4 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+            <View key={prompt.id} className="w-[48%] mb-4 bg-background rounded-lg p-4 shadow-sm">
               <View className="items-center">
                 <Image source={prompt.image} className="!h-[80px] !w-[80px] rounded-full mb-2" />
                 <Text className="font-medium text-center text-gray-800 dark:text-gray-200">
@@ -76,7 +76,7 @@ export default function CharactersScreen() {
         </View>
 
         {customPrompts.map((prompt) => (
-          <View key={prompt.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4 shadow-sm">
+          <View key={prompt.id} className="bg-background rounded-lg p-4 mb-4 shadow-sm">
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center flex-1">
                 <Image source={prompt.image} className="!h-[64px] !w-[64px] rounded-full mr-3" />

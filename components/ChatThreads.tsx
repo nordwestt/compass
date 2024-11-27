@@ -75,7 +75,7 @@ export const ChatThreads: React.FC = () => {
   }, [theme.id, setTheme]);
 
   return (
-    <View className="flex flex-col flex-grow bg-gray-50 dark:bg-gray-900">
+    <View className="flex flex-col flex-grow bg-background">
       <ScrollView
         ref={scrollViewRef}
         className="p-2"
@@ -86,7 +86,7 @@ export const ChatThreads: React.FC = () => {
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`flex-1 p-4 rounded-lg bg-white dark:bg-gray-800 ${
+              className={`flex-1 p-4 rounded-lg bg-background ${
                 currentThread.id === thread.id 
                   ? 'web:border-2 web:border-blue-500' 
                   : ''
@@ -111,7 +111,7 @@ export const ChatThreads: React.FC = () => {
       </ScrollView>
       <TouchableOpacity 
         onPress={addNewThread} 
-        className="mb-2 p-2 rounded-full bg-white dark:bg-gray-800"
+        className="mb-2 p-2 rounded-full bg-background"
       >
         <Ionicons 
           className='mx-auto' 

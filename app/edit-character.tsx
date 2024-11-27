@@ -70,7 +70,7 @@ export default function EditCharacterScreen() {
               value={name}
               onChangeText={setName}
               placeholder="Enter character name"
-              className="bg-white dark:bg-gray-800 p-4 rounded-lg text-gray-800 dark:text-gray-200"
+              className="bg-background p-4 rounded-lg text-gray-800 dark:text-gray-200"
               placeholderTextColor="#9CA3AF"
             />
           </View>
@@ -86,7 +86,7 @@ export default function EditCharacterScreen() {
               multiline
               numberOfLines={6}
               textAlignVertical="top"
-              className="bg-white dark:bg-gray-800 p-4 rounded-lg text-gray-800 dark:text-gray-200"
+              className="bg-background p-4 rounded-lg text-gray-800 dark:text-gray-200"
               placeholderTextColor="#9CA3AF"
             />
           </View>

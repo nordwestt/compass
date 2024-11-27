@@ -22,7 +22,7 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
     <>
       <TouchableOpacity 
         onPress={() => setIsModalVisible(true)}
-        className={`flex-row items-center px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 ${className}`}
+        className={`flex-row items-center px-4 py-2 rounded-lg bg-background border-2 border-gray-200 dark:border-gray-700 ${className}`}
       >
         {selectedType !== 'custom' && PROVIDER_LOGOS[selectedType as keyof typeof PROVIDER_LOGOS] && (
           <Image 
@@ -55,7 +55,7 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
         onRequestClose={() => setIsModalVisible(false)}
       >
         <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-white dark:bg-gray-800 rounded-t-xl max-h-[70%]">
+          <View className="bg-background rounded-t-xl max-h-[70%]">
             <View className="p-4 border-b border-gray-200 dark:border-gray-700">
               <Text className="text-lg font-bold text-center text-black dark:text-white">
                 Select Provider Type
