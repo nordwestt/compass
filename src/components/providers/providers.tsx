@@ -43,6 +43,7 @@ export default function Providers({ className }: ProvidersProps) {
     scanForOllamaInstances().then((ollamaEndpoints) => {
       setProviders(ollamaEndpoints.map((endpoint) => ({
         endpoint,
+        id: Date.now().toString(),
         name: "Ollama",
         source: 'ollama',
         capabilities: {
