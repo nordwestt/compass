@@ -8,6 +8,7 @@ import { useWindowDimensions, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLayoutEffect } from 'react';
 
 const MIN_DESKTOP_WIDTH = 768;
 
@@ -15,11 +16,13 @@ export default function HomeScreen() {
   const [isSidebarVisible, setIsSidebarVisible] = useAtom(sidebarVisibleAtom);
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width >= MIN_DESKTOP_WIDTH;
-
   const navigation = useNavigation();
-  navigation.setOptions({
-    headerShown: false,
-  });
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
 
   if (isDesktop) {
     return (
@@ -34,11 +37,11 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="bg-gray-100 flex-1 dark:bg-gray-900">
-        <View className="flex-row items-center p-4 bg-background">
+      <View className="flex-row items-center p-4 bg-background">
         <Ionicons name="compass" size={36} className='!text-black dark:!text-white' />
         <Text className="ms-2 text-2xl font-bold text-black dark:text-white">Compass</Text>
-        </View>
-        <ChatThreads />
+      </View>
+      <ChatThreads />
     </SafeAreaView>
   );
 }
