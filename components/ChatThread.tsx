@@ -8,8 +8,6 @@ import { useChat } from '@/hooks/useChat';
 import { CharacterSelector } from './CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Model, Character } from '@/types/core';
-import { router } from 'expo-router';
-import { HeaderBackButton } from '@react-navigation/elements';
 
 import { 
   currentThreadAtom, 
@@ -116,9 +114,9 @@ export const ChatThread: React.FC = () => {
         onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
         keyExtractor={(_, index) => index.toString()}
         className="flex-1"
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={{ padding: 16, paddingBottom:100 }}
       />
-      
+
       <ChatInput 
         ref={chatInputRef}
         onSend={wrappedHandleSend} 

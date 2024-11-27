@@ -87,8 +87,8 @@ async function handleStreamResponse(
 
   let assistantMessage = currentThread.messages[currentThread.messages.length - 1].content;
 
+  let decoder = new TextDecoder();
   const isFirstMessage = currentThread.messages.length === 2;
-
   try {
     while (true) {
       const { done, value } = await reader.read();
@@ -104,8 +104,7 @@ async function handleStreamResponse(
         break;
       }
 
-      const chunk = new TextDecoder().decode(value);
-      console.log('got chunk', new Date().toISOString().split('T')[1].split('.')[0]);
+      const chunk = decoder.decode(value, { stream: true });
       const lines = chunk.split('\n');
       
 
