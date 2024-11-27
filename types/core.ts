@@ -26,7 +26,7 @@ export interface Thread {
   }
 
   export interface Provider {
-    id?: string;
+    id: string;
     name?: string;
     source: 'ollama' | 'openai' | 'anthropic' | 'elevenlabs' | 'custom';
     capabilities?: {

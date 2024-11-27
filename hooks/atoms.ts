@@ -12,6 +12,7 @@ export const createDefaultThread = (): Thread => {
     id: '',
     name: '',
     provider: {
+        id: '',
         source: 'ollama',
         endpoint: '',
         apiKey: ''
