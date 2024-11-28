@@ -93,8 +93,8 @@ export const ChatThread: React.FC = () => {
   const messages = currentThread?.messages || [];
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
-      <View className="p-4 flex-row justify-between border-b border-gray-200 dark:border-gray-700">
+    <View className="flex-1 bg-background">
+      <View className="p-4 flex-row justify-between border-b border-border bg-white shadow-2xl">
         {currentThread.selectedModel && (
           <ModelSelector 
             selectedModel={currentThread.selectedModel}
@@ -118,7 +118,7 @@ export const ChatThread: React.FC = () => {
           }
         }}
         keyExtractor={(_, index) => index.toString()}
-        className="flex-1"
+        className="flex-1 -mt-4"
         contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center p-4">
