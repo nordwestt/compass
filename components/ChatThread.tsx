@@ -90,7 +90,8 @@ export const ChatThread: React.FC = () => {
 
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
 
-  
+  const messages = currentThread?.messages || [];
+
   return (
     <View className="flex-1 bg-gray-50 dark:bg-gray-900">
       <View className="p-4 flex-row justify-between border-b border-gray-200 dark:border-gray-700">
@@ -108,13 +109,22 @@ export const ChatThread: React.FC = () => {
 
       <FlashList
         ref={flatListRef}
-        data={currentThread.messages}
+        data={messages}
         renderItem={renderItem}
-        estimatedItemSize={100} // Adjust based on your average message height
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+        estimatedItemSize={100}
+        onContentSizeChange={() => {
+          if (messages.length > 0) {
+            flatListRef.current?.scrollToEnd({ animated: true })
+          }
+        }}
         keyExtractor={(_, index) => index.toString()}
         className="flex-1"
-        contentContainerStyle={{ padding: 16, paddingBottom:100 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+        ListEmptyComponent={
+          <View className="flex-1 items-center justify-center p-4">
+            {/* Optional: Add an empty state message */}
+          </View>
+        }
       />
 
       <ChatInput 
