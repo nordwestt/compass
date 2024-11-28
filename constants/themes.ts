@@ -4,8 +4,8 @@ export const rawThemes = {
   default: {
     light: {
       primary: '#ff7ea4',
-      secondary: '#4B5563',
-      background: '#ffffff',
+      secondary: '#8B95A3',
+      background: '#efefef',
       surface: '#f9fafb',
       text: '#111827',
       border: '#e5e7eb',

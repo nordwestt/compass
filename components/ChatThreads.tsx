@@ -90,7 +90,7 @@ export const ChatThreads: React.FC = () => {
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`flex-1 p-4 rounded-lg bg-background border-2 border-primary ${
+              className={`shadow-md flex-1 p-4 rounded-lg bg-surface ${
                 currentThread.id === thread.id 
                   ? 'web:border-primary' 
                   : ''
@@ -126,7 +126,7 @@ export const ChatThreads: React.FC = () => {
       <View className="flex-row justify-center space-x-4 mb-2">
         <TouchableOpacity 
           onPress={toggleDark}
-          className="p-2 rounded-full bg-surface"
+          className="p-2 rounded-full bg-secondary"
         >
           <Ionicons 
             name={isDarkMode ? 'sunny' : 'moon'} 

@@ -59,6 +59,7 @@ export default function TabLayout() {
   return (
     <SafeAreaView className="flex-1">
     <TabView className='!bg-primary'
+    tabBarPosition='bottom'
       navigationState={{ index, routes }}
       renderScene={renderScene}
         onIndexChange={setIndex}

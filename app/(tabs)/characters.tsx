@@ -42,14 +42,14 @@ export default function CharactersScreen() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
-        <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+        <Text className="text-2xl font-bold mb-4 text-primary">
           Default Characters
         </Text>
         <View className="flex-row flex-wrap justify-between mb-8">
           {PREDEFINED_PROMPTS.map((prompt) => (
-            <View key={prompt.id} className="w-[48%] mb-4 bg-background rounded-lg p-4 shadow-sm">
+            <View key={prompt.id} className="w-[48%] mb-4 bg-surface rounded-lg p-4 shadow-md">
               <View className="items-center">
                 <Image source={prompt.image} className="!h-[80px] !w-[80px] rounded-full mb-2" />
                 <Text className="font-medium text-center text-gray-800 dark:text-gray-200">

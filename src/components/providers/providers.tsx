@@ -58,7 +58,7 @@ export default function Providers({ className }: ProvidersProps) {
   };
 
   return (
-    <View className={`flex-1 bg-gray-50 dark:bg-gray-900 ${className}`}>
+    <View className={`flex-1 ${className}`}>
       <ScrollView className="p-4" contentContainerStyle={{ flexGrow: 0 }}>
         <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
           API Providers
