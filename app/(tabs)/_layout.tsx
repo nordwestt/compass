@@ -3,6 +3,7 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Platform } from 'react-native';
 import { useColorScheme } from 'nativewind';
+import colors from "tailwindcss/colors";
 
 export default function TabLayout() {
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
@@ -19,9 +20,19 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: 'var(--surface)',
           borderTopColor: 'var(--border)',
+          borderTopWidth: 1,
+          elevation: 0,
+          shadowOpacity: 0,
         },
         headerStyle: {
           backgroundColor: 'var(--surface)',
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: 'var(--border)',
+        },
+        headerTitleStyle: {
+          color: 'var(--text)',
         },
         headerTintColor: 'var(--text)',
       }}>
@@ -29,8 +40,11 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Chat',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'chatbubble' : 'chatbubble-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon 
+              name={focused ? 'chatbubble' : 'chatbubble-outline'} 
+              className='!text-primary' 
+            />
           ),
         }}
       />
@@ -38,8 +52,11 @@ export default function TabLayout() {
         name="characters"
         options={{
           title: 'Characters',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'people' : 'people-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon 
+              name={focused ? 'people' : 'people-outline'} 
+              className='!text-primary' 
+            />
           ),
         }}
       />
@@ -47,8 +64,11 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon 
+              name={focused ? 'settings' : 'settings-outline'} 
+              className='!text-primary' 
+            />
           ),
         }}
       />

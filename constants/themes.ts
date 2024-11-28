@@ -3,9 +3,9 @@ import { vars } from 'nativewind';
 export const themes = {
   default: {
     light: vars({
-      '--primary': '#0a7ea4',
+      '--primary': '#ff7ea4',
       '--secondary': '#4B5563',
-      '--background': '#ff00ff',
+      '--background': '#ffffff',
       '--surface': '#f9fafb',
       '--text': '#111827',
       '--border': '#e5e7eb',

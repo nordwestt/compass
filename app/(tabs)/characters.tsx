@@ -69,7 +69,7 @@ export default function CharactersScreen() {
           </Text>
           <TouchableOpacity
             onPress={handleAdd}
-            className="bg-blue-500 p-2 rounded-full"
+            className="bg-primary p-2 rounded-full"
           >
             <Ionicons name="add" size={24} color="white" />
           </TouchableOpacity>

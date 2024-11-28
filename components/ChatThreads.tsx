@@ -90,9 +90,9 @@ export const ChatThreads: React.FC = () => {
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`flex-1 p-4 rounded-lg bg-background ${
+              className={`flex-1 p-4 rounded-lg bg-background border-2 border-primary ${
                 currentThread.id === thread.id 
-                  ? 'web:border-2 web:border-primary' 
+                  ? 'web:border-primary' 
                   : ''
               }`}
             >
