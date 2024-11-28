@@ -92,7 +92,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
-              className="flex-1 p-4 rounded-lg bg-blue-500"
+              className="flex-1 p-4 rounded-lg bg-primary"
             >
               <Text className="text-center text-white">
                 Save

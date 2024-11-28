@@ -63,7 +63,7 @@ export const ConfirmationModal = () => {
           onPress={() => modalService.handleResponse(
             modalState.type === 'prompt' ? inputText : true
           )}
-          className="px-4 py-2 rounded-lg bg-blue-500"
+          className="px-4 py-2 rounded-lg bg-primary"
         >
           <Text className="text-white">
             {modalState.type === 'prompt' ? 'Save' : 'Confirm'}

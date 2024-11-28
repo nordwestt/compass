@@ -96,7 +96,7 @@ export default function EditCharacterScreen() {
       <View className="p-4 border-t border-gray-200 dark:border-gray-700">
         <TouchableOpacity
           onPress={saveCharacter}
-          className="bg-blue-500 p-4 rounded-lg flex-row items-center justify-center"
+          className="bg-primary p-4 rounded-lg flex-row items-center justify-center"
         >
           <Ionicons name="save-outline" size={20} color="white" className="mr-2" />
           <Text className="text-white font-medium text-base">

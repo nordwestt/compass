@@ -107,7 +107,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                     </Text>
                   </View>
                   {model.id === selectedModel.id && (
-                    <View className="bg-blue-500 px-2 py-1 rounded">
+                    <View className="bg-primary px-2 py-1 rounded">
                       <Text className="text-white text-sm">Selected</Text>
                     </View>
                   )}
@@ -129,7 +129,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                   setDefaultModel(selectedModel);
                   setIsModalVisible(false);
                 }}
-                className="flex-1 ml-2 bg-blue-500 py-2 px-4 rounded-lg"
+                className="flex-1 ml-2 bg-primary py-2 px-4 rounded-lg"
               >
                 <Text className="text-center text-white font-medium">
                   Set as Default

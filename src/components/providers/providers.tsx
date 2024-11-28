@@ -63,7 +63,7 @@ export default function Providers({ className }: ProvidersProps) {
         <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
           API Providers
         </Text>
-        <TouchableOpacity className="bg-blue-500 rounded-lg p-2 mb-4" onPress={autoScanForOllama}>
+        <TouchableOpacity className="bg-primary rounded-lg p-2 mb-4" onPress={autoScanForOllama}>
           <Text className="text-white">Scan for Ollama</Text>
           {scanning && <ActivityIndicator size="small" color="white" />}
         </TouchableOpacity>
@@ -81,7 +81,7 @@ export default function Providers({ className }: ProvidersProps) {
             setEditingProvider(null);
           setShowModal(true);
           }}
-          className="w-14 h-14 mx-auto bg-blue-500 rounded-full items-center justify-center shadow-lg"
+          className="w-14 h-14 mx-auto bg-primary rounded-full items-center justify-center shadow-lg"
         >
           <Ionicons name="add" size={30} color="white" />
         </TouchableOpacity>

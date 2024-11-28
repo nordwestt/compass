@@ -36,7 +36,7 @@ export function Selector<T>({
               onPress={() => onChange(option.value)}
               className={`mr-2 px-4 py-2 rounded-lg ${
                 value === option.value
-                  ? 'bg-blue-500'
+                  ? 'bg-primary'
                   : 'bg-gray-200 dark:bg-gray-700'
               }`}
             >
