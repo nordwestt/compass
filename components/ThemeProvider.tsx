@@ -1,31 +1,31 @@
 import { PropsWithChildren } from 'react';
 import { View } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
 import { useColorScheme } from 'nativewind';
-import { Platform } from 'react-native';
-import { useEffect } from 'react';
+import { themes } from '@/constants/themes';
+import { useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
+import type { ThemePreset } from '@/constants/themes';
+
+const themePresetAtom = atomWithStorage<ThemePreset>('theme-preset', 'default');
 
 export function ThemeProvider({ children }: PropsWithChildren) {
-  const { theme } = useTheme();
-  const { setColorScheme } = useColorScheme();
-  const isDarkMode = ['dark', 'dim'].includes(theme.id);
+  const [themePreset] = useAtom(themePresetAtom);
+  const { colorScheme } = useColorScheme();
   
-  // Sync our theme with NativeWind's color scheme
-  useEffect(() => {
-    setColorScheme(isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
-
-  // Set CSS variables for web platform only
-  if (Platform.OS === 'web' && typeof document !== 'undefined') {
-    const root = document.documentElement;
-    Object.entries(theme.colors).forEach(([key, value]) => {
-      root.style.setProperty(`--${key}`, value);
-    });
-  }
-
   return (
-    <View className={`flex-1 ${isDarkMode ? 'dark' : ''}`}>
-      {children}
+    <View style={themes[themePreset][colorScheme ?? 'light']} className="flex-1">
+      <View className={`flex-1 ${colorScheme === 'dark' ? 'dark' : ''}`}>
+        {children}
+      </View>
     </View>
   );
+}
+
+export function useThemePreset() {
+  const [themePreset, setThemePreset] = useAtom(themePresetAtom);
+  return {
+    themePreset,
+    setThemePreset,
+    availableThemes: Object.keys(themes) as ThemePreset[],
+  };
 }

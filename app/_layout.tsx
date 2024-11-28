@@ -6,13 +6,10 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { ConfirmationModal } from '@/components/ConfirmationModal';
-import { colorScheme } from 'nativewind';
-import { useTheme } from "@/hooks/useTheme";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { theme } = useTheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     'Caveat-Regular': require('../assets/fonts/Caveat-Regular.ttf'),
@@ -34,9 +31,9 @@ export default function RootLayout() {
     <ThemeProvider>
       <Stack screenOptions={{
             headerStyle: {
-              backgroundColor: theme.colors.surface,
+              backgroundColor: 'var(--surface)',
             },
-            headerTintColor: theme.colors.text,
+            headerTintColor: 'var(--text)',
             headerShadowVisible: false,
             headerBackTitleVisible: false,
           }}>

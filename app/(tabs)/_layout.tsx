@@ -2,28 +2,28 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Platform } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
+import { useColorScheme } from 'nativewind';
 
 export default function TabLayout() {
-  const { theme } = useTheme();
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
-  const isDarkMode = ['dark', 'dim'].includes(theme.id);
+  const { colorScheme } = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.secondary,
+        tabBarActiveTintColor: 'var(--primary)',
+        tabBarInactiveTintColor: 'var(--secondary)',
         headerShown: !isDesktop,
         tabBarShowLabel: Platform.OS === 'web',
         tabBarStyle: {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.border,
+          backgroundColor: 'var(--surface)',
+          borderTopColor: 'var(--border)',
         },
         headerStyle: {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: 'var(--surface)',
         },
-        headerTintColor: theme.colors.text,
+        headerTintColor: 'var(--text)',
       }}>
       <Tabs.Screen
         name="index"

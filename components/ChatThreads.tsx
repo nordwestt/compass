@@ -4,21 +4,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
 import { threadsAtom, currentThreadAtom, threadActionsAtom } from '@/hooks/atoms';
 import { modalService } from '@/services/modalService';
-import { useTheme } from '@/hooks/useTheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/types/core';
 import { createDefaultThread } from '@/hooks/atoms';
-import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { router } from 'expo-router';
+import { useThemePreset } from '@/components/ThemeProvider';
+import { useColorScheme } from 'nativewind';
 
 export const ChatThreads: React.FC = () => {
-  const { theme, setTheme } = useTheme();
   const [threads] = useAtom(threadsAtom);
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const scrollViewRef = useRef<ScrollView>(null);
-  
-  const isDarkMode = ['dark', 'dim'].includes(theme.id);
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const { themePreset, setThemePreset } = useThemePreset();
 
   const addNewThread = async () => {
     const defaultModel = await AsyncStorage.getItem('defaultModel');
@@ -31,6 +31,17 @@ export const ChatThreads: React.FC = () => {
     dispatchThread({ type: 'add', payload: newThread });
     router.push(`/thread/${newThread.id}`);
   };
+
+  // const toggleTheme = useCallback(() => {
+  //   if (themePreset === 'default') {
+  //     setThemePreset('default');
+  //   } else {
+  //     setThemePreset('default');
+  //   }
+  // }, [themePreset, setThemePreset]);
+  const toggleDark = useCallback(() => {
+    toggleColorScheme();
+  }, [toggleColorScheme]);
 
   const editThreadTitle = async (thread: Thread) => {
     const newTitle = await modalService.prompt({
@@ -67,13 +78,6 @@ export const ChatThreads: React.FC = () => {
     }
   };
 
-  const toggleTheme = useCallback(() => {
-    const newTheme = ['dark', 'dim'].includes(theme.id) ? 'light' : 'dark';
-    requestAnimationFrame(() => {
-      setTheme(newTheme);
-    });
-  }, [theme.id, setTheme]);
-
   return (
     <View className="flex flex-col flex-grow bg-background">
       <ScrollView
@@ -88,11 +92,11 @@ export const ChatThreads: React.FC = () => {
               onLongPress={() => editThreadTitle(thread)}
               className={`flex-1 p-4 rounded-lg bg-background ${
                 currentThread.id === thread.id 
-                  ? 'web:border-2 web:border-blue-500' 
+                  ? 'web:border-2 web:border-primary' 
                   : ''
               }`}
             >
-              <Text className="font-bold text-gray-800 dark:text-gray-200">
+              <Text className="font-bold text-text">
                 {thread.title}
               </Text>
             </TouchableOpacity>
@@ -103,7 +107,7 @@ export const ChatThreads: React.FC = () => {
               <Ionicons 
                 name="trash-outline" 
                 size={20} 
-                color={isDarkMode ? '#FCA5A5' : '#EF4444'} 
+                className="text-red-500 dark:text-red-300"
               />
             </TouchableOpacity>
           </View>
@@ -114,21 +118,20 @@ export const ChatThreads: React.FC = () => {
         className="mb-2 p-2 rounded-full bg-background"
       >
         <Ionicons 
-          className='mx-auto' 
+          className="mx-auto text-text" 
           name="add" 
-          size={24} 
-          color={theme.colors.text} 
+          size={24}
         />
       </TouchableOpacity>
       <View className="flex-row justify-center space-x-4 mb-2">
         <TouchableOpacity 
-          onPress={toggleTheme}
+          onPress={toggleDark}
           className="p-2 rounded-full bg-surface"
         >
           <Ionicons 
             name={isDarkMode ? 'sunny' : 'moon'} 
-            size={24} 
-            color={theme.colors.text} 
+            size={24}
+            className="text-text"
           />
         </TouchableOpacity>
       </View>

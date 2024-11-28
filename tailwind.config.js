@@ -11,9 +11,6 @@ module.exports = {
         surface: 'var(--surface)',
         text: 'var(--text)',
         border: 'var(--border)',
-      },
-      backgroundColor: {
-        primary: 'var(--primary)',
       }
     },
   },

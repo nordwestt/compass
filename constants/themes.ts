@@ -1,41 +1,42 @@
-import { ThemeConfig } from '@/types/theme';
+import { vars } from 'nativewind';
 
-export const THEME_PRESETS: ThemeConfig[] = [
-  {
-    id: 'light',
-    name: 'Light',
-    colors: {
-      primary: '#0a7ea4',
-      secondary: '#4B5563',
-      background: '#ffffff',
-      surface: '#f9fafb',
-      text: '#111827',
-      border: '#e5e7eb',
-    }
+export const themes = {
+  default: {
+    light: vars({
+      '--primary': '#0a7ea4',
+      '--secondary': '#4B5563',
+      '--background': '#ff00ff',
+      '--surface': '#f9fafb',
+      '--text': '#111827',
+      '--border': '#e5e7eb',
+    }),
+    dark: vars({
+      '--primary': '#60a5fa',
+      '--secondary': '#9CA3AF',
+      '--background': '#111827',
+      '--surface': '#1F2937',
+      '--text': '#F3F4F6',
+      '--border': '#374151',
+    }),
   },
-  {
-    id: 'dark',
-    name: 'Dark',
-    colors: {
-      primary: '#60a5fa',
-      secondary: '#9CA3AF',
-      background: '#111827',
-      surface: '#1F2937',
-      text: '#F3F4F6',
-      border: '#374151',
-    }
+  mossy: {
+    light: vars({
+      '--primary': '#2d5a27',
+      '--secondary': '#4a5c47',
+      '--background': '#f5f7f4',
+      '--surface': '#e8ede7',
+      '--text': '#1a2419',
+      '--border': '#d1ddd0',
+    }),
+    dark: vars({
+      '--primary': '#7ca677',
+      '--secondary': '#9ab497',
+      '--background': '#1a2419',
+      '--surface': '#243122',
+      '--text': '#e8ede7',
+      '--border': '#384936',
+    }),
   },
-  {
-    id: 'dim',
-    name: 'Dim',
-    colors: {
-      primary: '#60a5fa',
-      secondary: '#9CA3AF',
-      background: '#15202B',
-      surface: '#1E2732',
-      text: '#F3F4F6',
-      border: '#38444D',
-    }
-  },
-  // Add more themes as needed
-]; 
+};
+
+export type ThemePreset = keyof typeof themes; 
