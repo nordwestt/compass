@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
 import { threadsAtom, currentThreadAtom, threadActionsAtom } from '@/hooks/atoms';
@@ -9,12 +9,13 @@ import { Thread } from '@/types/core';
 import { createDefaultThread } from '@/hooks/atoms';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
+import { FlatList } from 'react-native';
 
 export const ChatThreads: React.FC = () => {
   const [threads] = useAtom(threadsAtom);
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<FlatList>(null);
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
@@ -78,14 +79,12 @@ export const ChatThreads: React.FC = () => {
 
   return (
     <View className="flex flex-col flex-grow bg-background">
-      <ScrollView
+      <FlatList
         ref={scrollViewRef}
-        contentContainerStyle={{ justifyContent: 'flex-end', flexGrow: 1 }}
-        className="p-2"
-        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-      >
-        {threads.map((thread) => (
-          <View key={thread.id} className="flex-row items-center mb-2">
+        data={threads}
+        keyExtractor={(thread) => thread.id}
+        renderItem={({ item: thread }) => (
+          <View className="flex-row items-center mb-2">
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
@@ -110,8 +109,13 @@ export const ChatThreads: React.FC = () => {
               />
             </TouchableOpacity>
           </View>
-        ))}
-      </ScrollView>
+        )}
+        contentContainerStyle={{ justifyContent: 'flex-end', flexGrow: 1 }}
+        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+      />
       <TouchableOpacity 
         onPress={addNewThread} 
         className="mb-2 p-2 rounded-full bg-background"
