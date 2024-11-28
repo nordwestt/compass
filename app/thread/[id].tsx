@@ -17,6 +17,9 @@ export default function ThreadScreen() {
     // Set the header title based on the current thread
     navigation.setOptions({
       headerTitle: currentThread ? currentThread.title : 'Thread',
+      headerStyle: {
+        backgroundColor: 'white',
+      },
       headerLeft: () => (
         <TouchableOpacity 
           onPress={() => router.back()}
