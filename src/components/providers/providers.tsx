@@ -63,10 +63,6 @@ export default function Providers({ className }: ProvidersProps) {
         <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
           API Providers
         </Text>
-        <TouchableOpacity className="bg-primary rounded-lg p-2 mb-4" onPress={autoScanForOllama}>
-          <Text className="text-white">Scan for Ollama</Text>
-          {scanning && <ActivityIndicator size="small" color="white" />}
-        </TouchableOpacity>
 
         {providers.map((provider) => (
           <ProviderCard
@@ -86,6 +82,32 @@ export default function Providers({ className }: ProvidersProps) {
           <Ionicons name="add" size={30} color="white" />
         </TouchableOpacity>
       </ScrollView>
+      <View className="bg-primary/10 dark:bg-primary/20 rounded-lg p-4 mb-6">
+          <TouchableOpacity 
+            className="flex-row items-center justify-center bg-primary rounded-lg p-4" 
+            onPress={autoScanForOllama}
+          >
+            <Ionicons 
+              name="scan-outline" 
+              size={24} 
+              color="white" 
+              style={{ marginRight: 8 }} 
+            />
+            <Text className="text-white text-lg font-semibold">
+              {scanning ? 'Scanning for Ollama...' : 'Auto-detect Ollama'}
+            </Text>
+            {scanning && (
+              <ActivityIndicator 
+                size="small" 
+                color="white" 
+                style={{ marginLeft: 8 }} 
+              />
+            )}
+          </TouchableOpacity>
+          <Text className="text-xs text-gray-600 dark:text-gray-400 mt-2 text-center">
+            Automatically detect Ollama instances running on your network
+          </Text>
+        </View>
 
       
 
