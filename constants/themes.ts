@@ -37,6 +37,60 @@ export const rawThemes = {
       border: '#384936',
     },
   },
+  seaside: {
+    light: {
+      primary: '#00aaff',
+      secondary: '#005f73',
+      background: '#e0f7fa',
+      surface: '#b2ebf2',
+      text: '#004d40',
+      border: '#80deea',
+    },
+    dark: {
+      primary: '#0077b6',
+      secondary: '#023e8a',
+      background: '#03045e',
+      surface: '#0077b6',
+      text: '#caf0f8',
+      border: '#90e0ef',
+    },
+  },
+  pinkBubbleGum: {
+    light: {
+      primary: '#ff69b4',
+      secondary: '#ff1493',
+      background: '#ffe4e1',
+      surface: '#ffb6c1',
+      text: '#8b008b',
+      border: '#ff69b4',
+    },
+    dark: {
+      primary: '#c71585',
+      secondary: '#db7093',
+      background: '#2c001e',
+      surface: '#8b008b',
+      text: '#ffb6c1',
+      border: '#ff69b4',
+    },
+  },
+  commodore64: {
+    light: {
+      primary: '#d8a657', // muted yellow
+      secondary: '#a9b665', // soft green
+      background: '#fbf1c7', // light beige
+      surface: '#ebdbb2', // slightly darker beige
+      text: '#3c3836', // dark brown
+      border: '#d5c4a1', // light brown
+    },
+    dark: {
+      primary: '#fabd2f', // bright yellow
+      secondary: '#b8bb26', // vibrant green
+      background: '#282828', // dark gray
+      surface: '#3c3836', // dark brown
+      text: '#ebdbb2', // light beige
+      border: '#504945', // medium brown
+    },
+  }
 } as const;
 
 export type ThemePresetRaw = keyof typeof rawThemes;
