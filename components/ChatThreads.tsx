@@ -118,7 +118,7 @@ export const ChatThreads: React.FC = () => {
         className="mb-2 p-2 rounded-full bg-background"
       >
         <Ionicons 
-          className="mx-auto text-text" 
+          className="mx-auto !text-text" 
           name="add" 
           size={24}
         />
@@ -131,7 +131,7 @@ export const ChatThreads: React.FC = () => {
           <Ionicons 
             name={isDarkMode ? 'sunny' : 'moon'} 
             size={24}
-            className="text-text"
+            className="!text-text"
           />
         </TouchableOpacity>
       </View>

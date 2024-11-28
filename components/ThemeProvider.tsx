@@ -1,18 +1,18 @@
 import { PropsWithChildren, useEffect } from 'react';
 import { View } from 'react-native';
 import { useColorScheme, vars } from 'nativewind';
-import { themes, rawThemes } from '@/constants/themes';
+import { rawThemes } from '@/constants/themes';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import type { ThemePreset, ThemePresetRaw } from '@/constants/themes';
+import type { ThemePresetRaw } from '@/constants/themes';
 
-const themePresetAtom = atomWithStorage<ThemePreset>('theme-preset', 'default');
+const themePresetAtom = atomWithStorage<ThemePresetRaw>('theme-preset', 'default');
 
 export function ThemeProvider({ children }: PropsWithChildren) {
   const [themePreset] = useAtom(themePresetAtom);
   const { colorScheme } = useColorScheme();
 
-  const actualTheme = vars(rawThemes['default'][colorScheme ?? 'light']);
+  const actualTheme = vars(rawThemes[themePreset][colorScheme ?? 'light']);
   
   
   return (
@@ -29,6 +29,6 @@ export function useThemePreset() {
   return {
     themePreset,
     setThemePreset,
-    availableThemes: Object.keys(themes) as ThemePreset[],
+    availableThemes: Object.keys(rawThemes) as ThemePresetRaw[],
   };
 }
