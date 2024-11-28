@@ -88,8 +88,6 @@ export const ChatThread: React.FC = () => {
     />
   );
 
-  const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
-
   const messages = currentThread?.messages || [];
 
   return (

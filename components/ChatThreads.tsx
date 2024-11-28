@@ -80,6 +80,7 @@ export const ChatThreads: React.FC = () => {
     <View className="flex flex-col flex-grow bg-background">
       <ScrollView
         ref={scrollViewRef}
+        contentContainerStyle={{ justifyContent: 'flex-end', flexGrow: 1 }}
         className="p-2"
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
       >
