@@ -32,10 +32,7 @@ export default function TabLayout() {
   const [index, setIndex] = React.useState(0);
 
   const { themePreset } = useThemePreset();
-  //console.log(rawThemes, themePreset, colorScheme);
-  
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
-  //console.log(theme);
 
   const renderTabBar = (props: any) => (
     <TabBar

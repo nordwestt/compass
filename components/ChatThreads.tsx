@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/types/core';
 import { createDefaultThread } from '@/hooks/atoms';
 import { router } from 'expo-router';
-import { useThemePreset } from '@/components/ThemeProvider';
 import { useColorScheme } from 'nativewind';
 
 export const ChatThreads: React.FC = () => {
@@ -18,7 +17,6 @@ export const ChatThreads: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-  const { themePreset, setThemePreset } = useThemePreset();
 
   const addNewThread = async () => {
     const defaultModel = await AsyncStorage.getItem('defaultModel');

@@ -4,12 +4,19 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider, useThemePreset } from '@/components/ThemeProvider';
 import { ConfirmationModal } from '@/components/ConfirmationModal';
+import { rawThemes } from '@/constants/themes';
+import { useColorScheme } from 'nativewind';
+
+
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { themePreset } = useThemePreset();
+  const { colorScheme } = useColorScheme();
+  const theme = rawThemes[themePreset][colorScheme ?? 'light'];
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     'Caveat-Regular': require('../assets/fonts/Caveat-Regular.ttf'),
@@ -31,9 +38,9 @@ export default function RootLayout() {
     <ThemeProvider>
       <Stack screenOptions={{
             headerStyle: {
-              backgroundColor: 'var(--surface)',
+              backgroundColor: theme.surface,
             },
-            headerTintColor: 'var(--text)',
+            headerTintColor: theme.text,
             headerShadowVisible: false,
             headerBackTitleVisible: false,
           }}>
