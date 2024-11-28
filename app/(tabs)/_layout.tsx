@@ -19,9 +19,9 @@ const renderScene = SceneMap({
 });
 
 const routes = [
-  { key: 'index', title: 'Chat' },
-  { key: 'characters', title: 'Characters' },
-  { key: 'settings', title: 'Settings' },
+  { key: 'index', title: 'Chat', icon: 'chatbubble' },
+  { key: 'characters', title: 'Characters', icon: 'people' },
+  { key: 'settings', title: 'Settings', icon: 'settings' },
 ];
 
 export default function TabLayout() {
@@ -55,79 +55,20 @@ export default function TabLayout() {
   
   return (
     <SafeAreaView className="flex-1 bg-background">
-    <TabView className='!bg-primary'
-    tabBarPosition='bottom'
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
+      <TabView className='!bg-primary'
+        tabBarPosition='bottom'
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
+        commonOptions={{
+          icon: ({ route, focused, color }) => {
+            return <TabBarIcon name={route.icon as any} size={22} className='!text-primary' />;
+          },
+        }}
       />
     </SafeAreaView>
   );
 
-  // return (
-  //   <Tabs
-  //     screenOptions={{
-  //       tabBarActiveTintColor: 'var(--primary)',
-  //       tabBarInactiveTintColor: 'var(--secondary)',
-  //       headerShown: !isDesktop,
-  //       tabBarShowLabel: Platform.OS === 'web',
-  //       tabBarStyle: {
-  //         backgroundColor: 'var(--surface)',
-  //         borderTopColor: 'var(--border)',
-  //         borderTopWidth: 1,
-  //         elevation: 0,
-  //         shadowOpacity: 0,
-  //       },
-  //       headerStyle: {
-  //         backgroundColor: 'var(--surface)',
-  //         elevation: 0,
-  //         shadowOpacity: 0,
-  //         borderBottomWidth: 1,
-  //         borderBottomColor: 'var(--border)',
-  //       },
-  //       headerTitleStyle: {
-  //         color: 'var(--text)',
-  //       },
-  //       headerTintColor: 'var(--text)',
-  //     }}>
-  //     <Tabs.Screen
-  //       name="index"
-  //       options={{
-  //         title: 'Chat',
-  //         tabBarIcon: ({ focused }) => (
-  //           <TabBarIcon 
-  //             name={focused ? 'chatbubble' : 'chatbubble-outline'} 
-  //             className='!text-primary' 
-  //           />
-  //         ),
-  //       }}
-  //     />
-  //     <Tabs.Screen
-  //       name="characters"
-  //       options={{
-  //         title: 'Characters',
-  //         tabBarIcon: ({ focused }) => (
-  //           <TabBarIcon 
-  //             name={focused ? 'people' : 'people-outline'} 
-  //             className='!text-primary' 
-  //           />
-  //         ),
-  //       }}
-  //     />
-  //     <Tabs.Screen
-  //       name="settings"
-  //       options={{
-  //         title: 'Settings',
-  //         tabBarIcon: ({ focused }) => (
-  //           <TabBarIcon 
-  //             name={focused ? 'settings' : 'settings-outline'} 
-  //             className='!text-primary' 
-  //           />
-  //         ),
-  //       }}
-  //     />
-  //   </Tabs>
-  // );
 }
