@@ -1,19 +1,22 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { View } from 'react-native';
-import { useColorScheme } from 'nativewind';
-import { themes } from '@/constants/themes';
+import { useColorScheme, vars } from 'nativewind';
+import { themes, rawThemes } from '@/constants/themes';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import type { ThemePreset } from '@/constants/themes';
+import type { ThemePreset, ThemePresetRaw } from '@/constants/themes';
 
 const themePresetAtom = atomWithStorage<ThemePreset>('theme-preset', 'default');
 
 export function ThemeProvider({ children }: PropsWithChildren) {
   const [themePreset] = useAtom(themePresetAtom);
   const { colorScheme } = useColorScheme();
+
+  const actualTheme = vars(rawThemes['default'][colorScheme ?? 'light']);
+  
   
   return (
-    <View style={themes[themePreset][colorScheme ?? 'light']} className="flex-1">
+    <View style={actualTheme} className="flex-1">
       <View className={`flex-1 ${colorScheme === 'dark' ? 'dark' : ''}`}>
         {children}
       </View>
