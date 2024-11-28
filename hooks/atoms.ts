@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithAsyncStorage } from './storage'
 import { Model, Thread, ChatMessage, Character, Provider } from '@/types/core'
 import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
@@ -24,7 +24,7 @@ export const createDefaultThread = (): Thread => {
 
 
 // Core atoms
-export const threadsAtom = atomWithStorage<Thread[]>('threads', [createDefaultThread()])
+export const threadsAtom = atomWithAsyncStorage<Thread[]>('threads', [createDefaultThread()])
 export const currentThreadAtom = atom<Thread>(createDefaultThread())
 export const sidebarVisibleAtom = atom(true)
 
@@ -44,8 +44,8 @@ export type ThreadAction =
 // Update the threadActionsAtom with the proper type
 export const threadActionsAtom = atom(
   null,
-  (get, set, action: ThreadAction) => {
-    const threads = get(threadsAtom)
+  async (get, set, action: ThreadAction) => {
+    const threads = await get(threadsAtom)
     
     switch (action.type) {
       case 'add':
@@ -118,8 +118,8 @@ export const currentCharacterAtom = atom(
 // Helper atom for chat actions
 export const chatActionsAtom = atom(
   null,
-  (get, set, action: { type: 'send' | 'interrupt', payload?: any }) => {
-    const currentThread = get(currentThreadAtom)
+  async (get, set, action: { type: 'send' | 'interrupt', payload?: any }) => {
+    const currentThread = await get(currentThreadAtom)
     
     switch (action.type) {
       case 'send':
@@ -142,9 +142,9 @@ export const chatActionsAtom = atom(
 )
 
 // Add these new atoms
-export const customPromptsAtom = atomWithStorage<Character[]>('customPrompts', [])
+export const customPromptsAtom = atomWithAsyncStorage<Character[]>('customPrompts', [])
 export const allPromptsAtom = atom(
-  (get) => [...PREDEFINED_PROMPTS, ...get(customPromptsAtom)]
+  async (get) => [...PREDEFINED_PROMPTS, ...(await get(customPromptsAtom))]
 )
 export const modalStateAtom = atom<{
   isVisible: boolean;
@@ -158,9 +158,9 @@ export const modalStateAtom = atom<{
   title: '',
   message: ''
 })
-export const availableProvidersAtom = atomWithStorage<Provider[]>('providers', [])
+export const availableProvidersAtom = atomWithAsyncStorage<Provider[]>('providers', [])
 
-export const defaultModelAtom = atomWithStorage<Model>('defaultModel', createDefaultThread().selectedModel);
+export const defaultModelAtom = atomWithAsyncStorage<Model>('defaultModel', createDefaultThread().selectedModel);
 
 export const fontPreferencesAtom = atom({
   fontFamily: 'Caveat-Medium',
