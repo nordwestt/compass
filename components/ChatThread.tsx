@@ -92,7 +92,7 @@ export const ChatThread: React.FC = () => {
 
   return (
     <View className="flex-1 bg-background">
-      <View className="p-4 flex-row justify-between border-b border-border bg-white shadow-2xl">
+      <View className="p-4 flex-row justify-between border-b border-border bg-surface shadow-2xl">
         {currentThread.selectedModel && (
           <ModelSelector 
             selectedModel={currentThread.selectedModel}
@@ -112,7 +112,10 @@ export const ChatThread: React.FC = () => {
         estimatedItemSize={100}
         onContentSizeChange={() => {
           if (messages.length > 0) {
-            flatListRef.current?.scrollToEnd({ animated: true })
+            // wait for 100 ms before scrolling to end
+            setTimeout(() => {
+              flatListRef.current?.scrollToEnd({ animated: true })
+            }, 100);
           }
         }}
         keyExtractor={(_, index) => index.toString()}
