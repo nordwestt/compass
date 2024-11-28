@@ -5,7 +5,6 @@ import { useAtomValue } from 'jotai';
 import { threadsAtom } from '@/hooks/atoms';
 import { useEffect, useLayoutEffect } from 'react';
 import { router } from 'expo-router';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function ThreadScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -16,18 +15,7 @@ export default function ThreadScreen() {
   useLayoutEffect(() => {
     // Set the header title based on the current thread
     navigation.setOptions({
-      headerTitle: currentThread ? currentThread.title : 'Thread',
-      headerStyle: {
-        backgroundColor: 'white',
-      },
-      headerLeft: () => (
-        <TouchableOpacity 
-          onPress={() => router.back()}
-          className="ml-2"
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-      ),
+      headerTitle: currentThread ? currentThread.title : 'Thread'
     });
   }, [navigation, currentThread]);
 
