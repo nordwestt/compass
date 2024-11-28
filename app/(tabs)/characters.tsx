@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { customPromptsAtom } from '@/hooks/atoms';
+import { createDefaultThread, customPromptsAtom, threadActionsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { modalService } from '@/services/modalService';
 import { useRouter } from 'expo-router';
@@ -11,6 +11,7 @@ import { useRouter } from 'expo-router';
 export default function CharactersScreen() {
   const router = useRouter();
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
+  const dispatchThread = useSetAtom(threadActionsAtom);
 
   const saveCustomPrompts = async (prompts: Character[]) => {
     try {
@@ -41,6 +42,24 @@ export default function CharactersScreen() {
     router.push('/edit-character');
   };
 
+  const startChat = async (prompt: Character) => {
+    
+    const defaultModel = await AsyncStorage.getItem('defaultModel');
+    const newThread = createDefaultThread();
+    newThread.selectedModel = defaultModel ? JSON.parse(defaultModel) : {
+      id: '',
+      provider: { source: 'ollama', endpoint: '', apiKey: '' }
+    };
+    newThread.character = prompt;
+    
+    dispatchThread({ type: 'add', payload: newThread });
+
+    // wait for 100 ms before pushing to thread to allow propagation
+    setTimeout(() => {
+      router.push(`/thread/${newThread.id}`);
+    }, 100);
+  };
+
   return (
     <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
@@ -49,7 +68,7 @@ export default function CharactersScreen() {
         </Text>
         <View className="flex-row flex-wrap justify-between mb-8">
           {PREDEFINED_PROMPTS.map((prompt) => (
-            <View key={prompt.id} className="w-[48%] mb-4 bg-surface rounded-lg p-4 shadow-md">
+            <TouchableOpacity onPress={() => startChat(prompt)} onLongPress={() => handleEdit(prompt)} key={prompt.id} className="w-[48%] mb-4 bg-surface rounded-lg p-4 shadow-md">
               <View className="items-center">
                 <Image source={prompt.image} className="!h-[80px] !w-[80px] rounded-full mb-2" />
                 <Text className="font-medium text-center text-gray-800 dark:text-gray-200">
@@ -59,7 +78,7 @@ export default function CharactersScreen() {
                   {prompt.content.slice(0, 50)}...
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
 
