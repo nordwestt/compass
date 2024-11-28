@@ -4,6 +4,6 @@ import { ThemeSelector } from '@/components/ThemeSelector';
 export default function ThemeSettingScreen() {
   
   return (
-    <ThemeSelector className="shadow-lg m-2 rounded-lg bg-surface" />
+    <ThemeSelector className="shadow-lg" />
   );
 }

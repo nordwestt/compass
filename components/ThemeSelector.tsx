@@ -9,7 +9,7 @@ export function ThemeSelector({ className }: ThemeSelectorProps) {
   const { themePreset, setThemePreset, availableThemes } = useThemePreset();
   
   return (
-    <View className={`p-4 bg-background ${className}`}>
+    <View className={`p-4 flex-1 bg-background ${className}`}>
       <Text className="text-lg font-bold text-text mb-4">Theme</Text>
       <View className="flex-row flex-wrap gap-2">
         {availableThemes.map((t) => (
