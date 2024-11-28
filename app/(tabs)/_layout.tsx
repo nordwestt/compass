@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Platform,useWindowDimensions } from 'react-native';
+import { Platform,useWindowDimensions, View } from 'react-native';
 import { useColorScheme, vars } from 'nativewind';
 import colors from "tailwindcss/colors";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
@@ -11,6 +11,7 @@ import SettingsRoute from './settings';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemePreset } from '@/components/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
+import { WebSidebar } from '@/components/navigation/WebSidebar';
 //import { useThemeValue } from '@/constants/themes';
 const renderScene = SceneMap({
   index: IndexRoute,
@@ -27,7 +28,6 @@ const routes = [
 export default function TabLayout() {
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
   const { colorScheme } = useColorScheme();
-  const isDarkMode = colorScheme === 'dark';
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
 
@@ -52,10 +52,26 @@ export default function TabLayout() {
       }}
     />
   );
+
+  if (isDesktop) {
+    const CurrentScene = [IndexRoute, CharactersRoute, SettingsRoute][index];
+    return (
+      <SafeAreaView className="flex-1 bg-background flex-row">
+        <WebSidebar
+          routes={routes}
+          currentIndex={index}
+          onIndexChange={setIndex}
+        />
+        <View className="flex-1">
+          <CurrentScene />
+        </View>
+      </SafeAreaView>
+    );
+  }
   
   return (
     <SafeAreaView className="flex-1 bg-background">
-      <TabView className='!bg-primary'
+      <TabView
         tabBarPosition='bottom'
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -70,5 +86,4 @@ export default function TabLayout() {
       />
     </SafeAreaView>
   );
-
 }
