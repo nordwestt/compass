@@ -19,16 +19,16 @@ export const ThreadsSidebar = () => {
   }
 
   return (
-    <View className="w-64 border-r-2 border-gray-200 dark:border-gray-700">
-      <View className="flex-row justify-between items-center p-4 bg-gray-200 dark:bg-gray-700">
-        <Text className="text-center text-lg font-bold text-black dark:text-white">
+    <View className="w-64 border-r-2 border-border">
+      <View className="flex-row justify-between items-center p-4 bg-background">
+        <Text className="text-center text-lg font-bold text-text">
           Threads
         </Text>
         <TouchableOpacity 
           onPress={() => setIsSidebarVisible(false)} 
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+          className="p-2 rounded-full bg-surface"
         >
-          <Ionicons name="chevron-back" size={24} className="text-black dark:text-white" />
+          <Ionicons name="chevron-back" size={24} className="text-text" />
         </TouchableOpacity>
       </View>
       <ChatThreads />
