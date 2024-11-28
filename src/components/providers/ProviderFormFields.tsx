@@ -28,21 +28,21 @@ export function ProviderFormFields({
       <ProviderTypeSelector className="mb-4" selectedType={selectedType} onTypeSelect={setSelectedType} />
 
       {selectedType == 'custom' && <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</Text>
+        <Text className="text-sm font-medium text-text mb-2">Name</Text>
         <TextInput
           value={name}
           onChangeText={setName}
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-gray-800 dark:text-gray-200"
+          className="border border-border rounded-lg p-3 bg-white"
           placeholder="Enter name"
         />
       </View>}
 
       <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API Key</Text>
+        <Text className="text-sm font-medium text-text mb-2">API Key</Text>
         <TextInput
           value={apiKey}
           onChangeText={setApiKey}
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-gray-800 dark:text-gray-200"
+          className="border border-border rounded-lg p-3 bg-white"
           placeholder="Enter API key, if required"
           secureTextEntry
         />
@@ -50,13 +50,13 @@ export function ProviderFormFields({
 
       {(selectedType === 'custom' || selectedType === 'ollama') && (
         <View className="mb-4">
-          <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <Text className="text-sm font-medium text-text mb-2">
             Endpoint URL
           </Text>
           <TextInput
             value={customEndpoint}
             onChangeText={setCustomEndpoint}
-            className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-gray-800 dark:text-gray-200"
+            className="border border-border rounded-lg p-3 bg-white"
             placeholder="Enter endpoint URL"
           />
         </View>
