@@ -3,7 +3,7 @@ import { useColorScheme, vars } from 'nativewind';
 export const rawThemes = {
   default: {
     light: {
-      primary: '#ff7ea4',
+      primary: '#60a5fa',
       secondary: '#8B95A3',
       background: '#efefef',
       surface: '#f9fafb',
@@ -12,7 +12,7 @@ export const rawThemes = {
     },
     dark: {
       primary: '#60a5fa',
-      secondary: '#9CA3AF',
+      secondary: '#8B95A3',
       background: '#111827',
       surface: '#1F2937',
       text: '#F3F4F6',
