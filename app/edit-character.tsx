@@ -49,34 +49,34 @@ export default function EditCharacterScreen() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
         <View className="items-center mb-8">
           <Image 
             source={character?.image} 
             className="h-32 w-32 rounded-full mb-4"
           />
-          <Text className="text-sm text-gray-500 dark:text-gray-400">
+          <Text className="text-sm text-text">
             Character Avatar
           </Text>
         </View>
 
         <View className="space-y-6">
           <View>
-            <Text className="text-base font-medium mb-2 text-gray-700 dark:text-gray-300">
+            <Text className="text-base font-medium mb-2 text-text">
               Character Name
             </Text>
             <TextInput
               value={name}
               onChangeText={setName}
               placeholder="Enter character name"
-              className="bg-background p-4 rounded-lg text-gray-800 dark:text-gray-200"
+              className="bg-background p-4 rounded-lg text-text border-2 border-border"
               placeholderTextColor="#9CA3AF"
             />
           </View>
 
           <View>
-            <Text className="text-base font-medium mb-2 text-gray-700 dark:text-gray-300">
+            <Text className="text-base font-medium mb-2 text-text">
               Character Prompt
             </Text>
             <TextInput
@@ -86,14 +86,14 @@ export default function EditCharacterScreen() {
               multiline
               numberOfLines={6}
               textAlignVertical="top"
-              className="bg-background p-4 rounded-lg text-gray-800 dark:text-gray-200"
+              className="bg-background p-4 rounded-lg text-text border-2 border-border"
               placeholderTextColor="#9CA3AF"
             />
           </View>
         </View>
       </ScrollView>
 
-      <View className="p-4 border-t border-gray-200 dark:border-gray-700">
+      <View className="p-4 border-t border-border">
         <TouchableOpacity
           onPress={saveCharacter}
           className="bg-primary p-4 rounded-lg flex-row items-center justify-center"
