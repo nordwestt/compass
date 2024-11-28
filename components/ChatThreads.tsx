@@ -90,7 +90,7 @@ export const ChatThreads: React.FC = () => {
               onLongPress={() => editThreadTitle(thread)}
               className={`shadow-md flex-1 p-4 rounded-lg bg-surface ${
                 currentThread.id === thread.id 
-                  ? 'web:border-primary' 
+                  ? 'web:border-primary web:border-2' 
                   : ''
               }`}
             >
@@ -110,7 +110,7 @@ export const ChatThreads: React.FC = () => {
             </TouchableOpacity>
           </View>
         )}
-        contentContainerStyle={{ justifyContent: 'flex-end', flexGrow: 1 }}
+        contentContainerStyle={{ justifyContent: 'flex-end', flexGrow: 1, padding:10 }}
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
         removeClippedSubviews={true}
         maxToRenderPerBatch={10}

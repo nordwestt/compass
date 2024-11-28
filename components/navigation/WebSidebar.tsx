@@ -35,10 +35,10 @@ export function WebSidebar({ routes, currentIndex, onIndexChange }: WebSidebarPr
           <TabBarIcon 
             name={route.icon as any} 
             size={22} 
-            className={currentIndex === index ? '!text-primary' : '!text-secondary'} 
+            className={currentIndex === index ? '!text-secondary' : '!text-primary'} 
           />
           <Text 
-            className={currentIndex === index ? 'text-primary' : 'text-secondary'}
+            className={currentIndex === index ? 'text-secondary' : 'text-primary'}
           >
             {route.title}
           </Text>

@@ -11,9 +11,9 @@ export const ThreadsSidebar = () => {
     return (
       <TouchableOpacity 
         onPress={() => setIsSidebarVisible(true)} 
-        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-surface"
       >
-        <Ionicons name="chevron-forward" size={24} className="text-black dark:text-white" />
+        <Ionicons name="chevron-forward" size={24} className="!text-text" />
       </TouchableOpacity>
     );
   }
@@ -28,7 +28,7 @@ export const ThreadsSidebar = () => {
           onPress={() => setIsSidebarVisible(false)} 
           className="p-2 rounded-full bg-surface"
         >
-          <Ionicons name="chevron-back" size={24} className="text-text" />
+          <Ionicons name="chevron-back" size={24} className="!text-text" />
         </TouchableOpacity>
       </View>
       <ChatThreads />
