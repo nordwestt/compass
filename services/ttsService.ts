@@ -32,76 +32,68 @@ class TTSService {
   private audioQueue: Uint8Array[] = [];
   private isProcessingAudio = false;
   private nextAudioTime = 0;
+  private hasScheduledNextAudio = false;
   private constructor() {
     this.isWeb = Platform.OS === 'web';
     
-    if (this.isWeb && typeof window !== 'undefined') {
-      this.initializeAudio();
-    }
   }
 
-  private async playSoundArray(soundArray: Uint8Array) :Promise<void> {
-    console.log('Loading Sound');
+  private async processNextAudio(force: boolean = false) :Promise<void> {
+    if ((this.isProcessingQueue || this.audioQueue.length === 0) && !force) {
+        console.log('processNextAudio returned', this.isPlaying, this.isProcessingQueue, this.audioQueue.length);
+        return;
+    }
+    this.isProcessingQueue = true;
+    this.hasScheduledNextAudio = false;
+
+    //console.log('Loading Sound');
     if(this.isWeb){
 
-        return new Promise(async (resolve, reject) => {
-            // create a blob url from the audio chunk
-            const audioBlob = new Blob([soundArray], { type: 'audio/mpeg' });
-            const url = URL.createObjectURL(audioBlob);
+        
+        const soundArray = this.audioQueue.shift()!;
+        // create a blob url from the audio chunk
+        const audioBlob = new Blob([soundArray], { type: 'audio/mpeg' });
+        const url = URL.createObjectURL(audioBlob);
 
-            // create AVPlaybackSource from the url
-            const source: AVPlaybackSource = { uri: url };
-            const { sound } = await Audio.Sound.createAsync(source);
+        // create AVPlaybackSource from the url
+        const source: AVPlaybackSource = { uri: url };
+        const { sound } = await Audio.Sound.createAsync(source);
+        
+        // Set up playback status handler
+        sound.setOnPlaybackStatusUpdate((status) => {
+            if(status.isLoaded && status.isPlaying){
+                if(status.durationMillis && status.positionMillis && !this.hasScheduledNextAudio){
+                    this.hasScheduledNextAudio = true;
+                    const futureTime = (status.durationMillis) - 130;
+                    //console.log('futureTime', futureTime, 'for', status.durationMillis, status.positionMillis);
+                    //console.log('current time', new Date().getTime());
+                    setTimeout(() => {
+                        if (this.audioQueue.length > 0 ) {
+                            this.isProcessingQueue = false;
+                            this.processNextAudio(true);
+                        }
+                    }, futureTime);  // Start next chunk 100ms before current ends
+                } 
+            }
             
-            // Set up playback status handler
-            sound.setOnPlaybackStatusUpdate((status) => {
-                if(status.isLoaded && status.isPlaying){
-                    if(status.durationMillis && status.positionMillis){
-                        this.nextAudioTime = new Date().getTime() + (status.durationMillis - status.positionMillis) - 100;
-                    } else{
-                        // set max time to ensure await finished before where duration is not available
-                        this.nextAudioTime = new Date().getTime() + 999999;
-                    }
+            if (status.isLoaded &&status.didJustFinish) {
+                sound.unloadAsync(); // Clean up
+                URL.revokeObjectURL(url); // Clean up blob URL
+                // Process next audio in queue if available
+                this.isProcessingQueue = false;
+                if (this.audioQueue.length === 0) {
+                    this.isProcessingQueue = false;
+                    this.currentHandler?.onFinish?.();
                 }
-                
-                if (status.isLoaded &&status.didJustFinish) {
-                    sound.unloadAsync(); // Clean up
-                    URL.revokeObjectURL(url); // Clean up blob URL
-                    resolve();
-                }
-            });
-
-            console.log('Playing Sound');
-            await sound.playAsync();
+        }
         });
+
+        console.log('Playing Sound');
+        await sound.playAsync();
     }
     else{
       throw new Error('TTS is not supported on this platform');
     }
-  }
-
-  async processAudioQueue() {
-    if (this.isProcessingAudio || this.audioQueue.length === 0) {
-      return;
-    }
-
-    this.isProcessingAudio = true;
-    try {
-      while (this.audioQueue.length > 0) {
-        const soundArray = this.audioQueue.shift()!;
-        await this.playSoundArray(soundArray);
-      }
-    } catch (error) {
-      console.error('Error processing audio queue:', error);
-      this.currentHandler?.onError?.(error as Error);
-    } finally {
-      //this.isPlaying = false;
-      this.isProcessingAudio = false;
-    }
-  }
-
-  private async initializeAudio() {
-    
   }
 
   private async processMessageQueue() {
@@ -141,7 +133,8 @@ class TTSService {
 
   private async queueAudio(audioChunks: Uint8Array) {
     if (audioChunks.length === 0) {
-      return;
+        console.log('queueAudio returned', audioChunks.length);
+        return;
     }
 
     try {
@@ -150,7 +143,7 @@ class TTSService {
       
       // Start processing the queue if it's not already running
       if (!this.isProcessingAudio) {
-        await this.processAudioQueue();
+        this.processNextAudio();
       }
     } catch (error) {
       console.error('Error preparing audio:', error);
