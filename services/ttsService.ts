@@ -229,7 +229,7 @@ class TTSService {
 
     this.isConnecting = true;
     this.connectionPromise = new Promise((resolve, reject) => {
-      const wsUrl = `wss://api.elevenlabs.io/v1/text-to-speech/Xb7hH8MSUJpSbSDYk0k2/stream-input?model_id=eleven_turbo_v2`;
+      const wsUrl = `wss://api.elevenlabs.io/v1/text-to-speech/${options.voiceId}/stream-input?model_id=eleven_turbo_v2`;
       
       try {
         this.websocket = new WebSocket(wsUrl);
