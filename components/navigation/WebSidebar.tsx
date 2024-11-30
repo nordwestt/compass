@@ -4,6 +4,9 @@ import { TabBarIcon } from './TabBarIcon';
 import { useThemePreset } from '@/components/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import { useColorScheme } from 'nativewind';
+import { routes } from '@/app/(tabs)/_layout';
+import { currentIndexAtom } from '@/hooks/atoms';
+import { useAtom, useAtomValue } from 'jotai';
 
 interface Route {
   key: string;
@@ -11,23 +14,19 @@ interface Route {
   icon: string;
 }
 
-interface WebSidebarProps {
-  routes: Route[];
-  currentIndex: number;
-  onIndexChange: (index: number) => void;
-}
 
-export function WebSidebar({ routes, currentIndex, onIndexChange }: WebSidebarProps) {
+export function WebSidebar({ className }: { className?: string }) {
+  const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
   const { colorScheme } = useColorScheme();
   const { themePreset } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
 
   return (
-    <View className="h-full border-r border-border bg-background">
+    <View className={`h-full border-r border-border bg-background ${className}`}>
       {routes.map((route, index) => (
         <Pressable
           key={route.key}
-          onPress={() => onIndexChange(index)}
+          onPress={() => setCurrentIndex(index)}
           className={`flex-row items-center p-4 space-x-3 ${
             currentIndex === index ? 'bg-primary/10' : ''
           }`}

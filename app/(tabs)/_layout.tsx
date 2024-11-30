@@ -12,6 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemePreset } from '@/components/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import { WebSidebar } from '@/components/navigation/WebSidebar';
+import { currentIndexAtom } from '@/hooks/atoms';
+import { useAtom } from 'jotai';
 //import { useThemeValue } from '@/constants/themes';
 const renderScene = SceneMap({
   index: IndexRoute,
@@ -19,7 +21,7 @@ const renderScene = SceneMap({
   settings: SettingsRoute,
 });
 
-const routes = [
+export const routes = [
   { key: 'index', title: 'Chat', icon: 'chatbubble' },
   { key: 'characters', title: 'Characters', icon: 'people' },
   { key: 'settings', title: 'Settings', icon: 'settings' },
@@ -29,7 +31,7 @@ export default function TabLayout() {
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
   const { colorScheme } = useColorScheme();
   const layout = useWindowDimensions();
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = useAtom(currentIndexAtom);
 
   const { themePreset } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
@@ -55,17 +57,9 @@ export default function TabLayout() {
 
   if (isDesktop) {
     const CurrentScene = [IndexRoute, CharactersRoute, SettingsRoute][index];
+    console.log(CurrentScene);
     return (
-      <SafeAreaView className="flex-1 bg-background flex-row">
-        <WebSidebar
-          routes={routes}
-          currentIndex={index}
-          onIndexChange={setIndex}
-        />
-        <View className="flex-1">
-          <CurrentScene />
-        </View>
-      </SafeAreaView>
+      <CurrentScene />
     );
   }
   

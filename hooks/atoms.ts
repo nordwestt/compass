@@ -102,6 +102,8 @@ export const threadActionsAtom = atom(
 // For managing generation state
 export const isGeneratingAtom = atom(false)
 
+export const currentIndexAtom = atom(0)
+
 // For managing models
 export const availableModelsAtom = atom<Model[]>([])
 

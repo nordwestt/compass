@@ -9,6 +9,9 @@ import { ConfirmationModal } from '@/components/ConfirmationModal';
 import { rawThemes } from '@/constants/themes';
 import { useColorScheme } from 'nativewind';
 import { Toast } from "@/components/Toast";
+import { Platform, View } from "react-native";
+import { WebSidebar } from "@/components/navigation/WebSidebar";
+import { routes } from "./(tabs)/_layout";
 
 
 
@@ -18,6 +21,8 @@ export default function RootLayout() {
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
+  const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
+
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     'Caveat-Regular': require('../assets/fonts/Caveat-Regular.ttf'),
@@ -37,6 +42,8 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
+      <View className="flex-row flex-1">
+      {isDesktop && <WebSidebar className="w-32 border-r border-border" />}
       <Stack screenOptions={{
             headerStyle: {
               backgroundColor: theme.surface,
@@ -48,6 +55,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
+      </View>
       <ConfirmationModal />
       <Toast />
     </ThemeProvider>
