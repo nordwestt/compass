@@ -169,3 +169,5 @@ export const fontPreferencesAtom = atom({
   letterSpacing: 0.8,
   messageGap: 2,
 });
+
+export const ttsEnabledAtom = atomWithAsyncStorage<boolean>('ttsEnabled', false);

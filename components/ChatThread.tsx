@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform, TouchableOpacity } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
 import { ModelSelector } from './ModelSelector';
@@ -14,10 +14,13 @@ import {
   threadActionsAtom, 
   threadsAtom,
   isGeneratingAtom,
-  availableProvidersAtom
+  availableProvidersAtom,
+  ttsEnabledAtom
 } from '@/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
+import { Ionicons } from '@expo/vector-icons';
+
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlashList<any>>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
@@ -26,6 +29,7 @@ export const ChatThread: React.FC = () => {
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const [providers] = useAtom(availableProvidersAtom);
+  const [ttsEnabled, setTtsEnabled] = useAtom(ttsEnabledAtom);
   
   const previousThreadId = useRef(currentThread.id);
   
@@ -92,13 +96,29 @@ export const ChatThread: React.FC = () => {
 
   return (
     <View className="flex-1 bg-background">
-      <View className="p-4 flex-row justify-between border-b border-border bg-surface shadow-2xl">
-        {currentThread.selectedModel && (
-          <ModelSelector 
-            selectedModel={currentThread.selectedModel}
-            onSetModel={handleSelectModel}
-          />
-        )}
+      <View className="p-4 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl">
+        <View className="flex-row items-center gap-2">
+          {currentThread.selectedModel && (
+            <ModelSelector 
+              selectedModel={currentThread.selectedModel}
+              onSetModel={handleSelectModel}
+            />
+          )}
+          <TouchableOpacity
+            onPress={() => {
+              if(providers.find(p => p.source === 'elevenlabs')){
+                setTtsEnabled(!ttsEnabled);
+              }
+            }}
+            className={`p-2 rounded-full ${ttsEnabled ? 'bg-primary/10' : 'bg-gray-100 dark:bg-gray-800'}`}
+          >
+            <Ionicons 
+              name={ttsEnabled ? "volume-high" : "volume-mute"} 
+              size={20} 
+              className={`${ttsEnabled ? '!text-primary' : '!text-secondary'}`}
+            />
+          </TouchableOpacity>
+        </View>
         <CharacterSelector
           selectedPrompt={currentThread.character}
           onSelectPrompt={handleSelectPrompt}

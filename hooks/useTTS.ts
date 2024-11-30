@@ -1,11 +1,12 @@
 import { useCallback, useRef } from 'react';
 import { useAtomValue } from 'jotai';
 import { Platform } from 'react-native';
-import { availableProvidersAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, ttsEnabledAtom } from '@/hooks/atoms';
 import { ttsService, TTSOptions } from '@/services/ttsService';
 
 export function useTTS() {
   const providers = useAtomValue(availableProvidersAtom);
+  const ttsEnabled = useAtomValue(ttsEnabledAtom);
   const isStreamingRef = useRef(false);
   const isWeb = Platform.OS === 'web';
 
@@ -14,7 +15,7 @@ export function useTTS() {
   }, [providers]);
 
   const streamText = useCallback(async (text: string) => {
-    if (!isWeb) {
+    if (!isWeb || !ttsEnabled) {
       return;
     }
 
@@ -51,7 +52,7 @@ export function useTTS() {
       console.error('Failed to start TTS streaming:', error);
       isStreamingRef.current = false;
     }
-  }, [getElevenLabsProvider, isWeb]);
+  }, [getElevenLabsProvider, isWeb, ttsEnabled]);
 
   const stopStreaming = useCallback(() => {
     if (isStreamingRef.current && isWeb) {
