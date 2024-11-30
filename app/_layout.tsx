@@ -8,6 +8,7 @@ import { ThemeProvider, useThemePreset } from '@/components/ThemeProvider';
 import { ConfirmationModal } from '@/components/ConfirmationModal';
 import { rawThemes } from '@/constants/themes';
 import { useColorScheme } from 'nativewind';
+import { Toast } from "@/components/Toast";
 
 
 
@@ -48,6 +49,7 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <ConfirmationModal />
+      <Toast />
     </ThemeProvider>
   );
 }

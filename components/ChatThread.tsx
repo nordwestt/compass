@@ -20,6 +20,7 @@ import {
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';
+import { toastService } from '@/services/toastService';
 
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlashList<any>>(null);
@@ -107,8 +108,20 @@ export const ChatThread: React.FC = () => {
           <TouchableOpacity
             onPress={() => {
               if(providers.find(p => p.source === 'elevenlabs')){
+                toastService.success({
+                  title: `TTS ${ttsEnabled ? 'disabled' : 'enabled'}`,
+                  description: ttsEnabled ? 'Your messages will not be read aloud' : 'You can now hear your messages'
+                });
                 setTtsEnabled(!ttsEnabled);
               }
+              else {
+                toastService.info({
+                  title: 'TTS not available',
+                  description: 'Please select an ElevenLabs provider to enable TTS'
+                });
+              }
+              
+              
             }}
             className={`p-2 rounded-full ${ttsEnabled ? 'bg-primary/10' : 'bg-gray-100 dark:bg-gray-800'}`}
           >
