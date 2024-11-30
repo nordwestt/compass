@@ -31,6 +31,7 @@ class TTSService {
   private isProcessingQueue = false;
   private audioQueue: Uint8Array[] = [];
   private isProcessingAudio = false;
+  private nextAudioTime = 0;
   private constructor() {
     this.isWeb = Platform.OS === 'web';
     
@@ -51,12 +52,22 @@ class TTSService {
             // create AVPlaybackSource from the url
             const source: AVPlaybackSource = { uri: url };
             const { sound } = await Audio.Sound.createAsync(source);
+            
             // Set up playback status handler
             sound.setOnPlaybackStatusUpdate((status) => {
+                if(status.isLoaded && status.isPlaying){
+                    if(status.durationMillis && status.positionMillis){
+                        this.nextAudioTime = new Date().getTime() + (status.durationMillis - status.positionMillis) - 100;
+                    } else{
+                        // set max time to ensure await finished before where duration is not available
+                        this.nextAudioTime = new Date().getTime() + 999999;
+                    }
+                }
+                
                 if (status.isLoaded &&status.didJustFinish) {
-                sound.unloadAsync(); // Clean up
-                URL.revokeObjectURL(url); // Clean up blob URL
-                resolve();
+                    sound.unloadAsync(); // Clean up
+                    URL.revokeObjectURL(url); // Clean up blob URL
+                    resolve();
                 }
             });
 
@@ -66,6 +77,26 @@ class TTSService {
     }
     else{
       throw new Error('TTS is not supported on this platform');
+    }
+  }
+
+  async processAudioQueue() {
+    if (this.isProcessingAudio || this.audioQueue.length === 0) {
+      return;
+    }
+
+    this.isProcessingAudio = true;
+    try {
+      while (this.audioQueue.length > 0) {
+        const soundArray = this.audioQueue.shift()!;
+        await this.playSoundArray(soundArray);
+      }
+    } catch (error) {
+      console.error('Error processing audio queue:', error);
+      this.currentHandler?.onError?.(error as Error);
+    } finally {
+      //this.isPlaying = false;
+      this.isProcessingAudio = false;
     }
   }
 
@@ -106,25 +137,7 @@ class TTSService {
     }
   }
 
-  async processAudioQueue() {
-    if (this.isProcessingAudio || this.audioQueue.length === 0) {
-      return;
-    }
-
-    this.isProcessingAudio = true;
-    try {
-      while (this.audioQueue.length > 0) {
-        const soundArray = this.audioQueue.shift()!;
-        await this.playSoundArray(soundArray);
-      }
-    } catch (error) {
-      console.error('Error processing audio queue:', error);
-      this.currentHandler?.onError?.(error as Error);
-    } finally {
-      //this.isPlaying = false;
-      this.isProcessingAudio = false;
-    }
-  }
+  
 
   private async queueAudio(audioChunks: Uint8Array) {
     if (audioChunks.length === 0) {
