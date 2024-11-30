@@ -3,6 +3,7 @@ import { currentThreadAtom, threadActionsAtom, ThreadAction } from './atoms';
 import { Thread, ChatMessage, Model, Character } from '@/types/core';
 import { useRef } from 'react';
 import { MentionedCharacter } from '@/components/ChatInput';
+import { useTTS } from './useTTS';
 
 
 async function sendMessageToProvider(
@@ -71,76 +72,6 @@ async function sendMessageToProvider(
   }
 }
 
-async function handleStreamResponse(
-  response: Response,
-  currentThread: Thread,
-  dispatchThread: (action: ThreadAction) => void
-) {
-  if (!response.body) {
-    throw new Error('Response stream not available');
-  }
-
-  const reader = response.body.getReader();
-  if (!reader) {
-    throw new Error('Stream reader not available');
-  }
-
-  let assistantMessage = currentThread.messages[currentThread.messages.length - 1].content;
-
-  let decoder = new TextDecoder();
-  const isFirstMessage = currentThread.messages.length === 2;
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-
-        if (isFirstMessage) {
-          const title = await generateThreadTitle(assistantMessage, currentThread);
-          dispatchThread({
-            type: 'update',
-            payload: { ...currentThread, title }
-          });
-        }
-        break;
-      }
-
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split('\n');
-      
-
-      for (const line of lines) {
-        if (line.trim() === '') continue;
-        
-        try {
-          const parsedChunk = JSON.parse(line);
-          const content = parsedChunk.message?.content || 
-                          parsedChunk.choices?.[0]?.delta?.content || 
-                          parsedChunk.delta?.text;
-          
-          if (content) {
-            assistantMessage += content;
-            const updatedMessages = [...currentThread.messages];
-            const lastMessage = updatedMessages[updatedMessages.length - 1];
-            if (lastMessage && !lastMessage.isUser) {
-              lastMessage.content = assistantMessage;
-              dispatchThread({
-                type: 'update',
-                payload: {
-                  ...currentThread,
-                  messages: updatedMessages
-                }
-              });
-            }
-          }
-        } catch (e) {
-          console.error('Error parsing chunk:', e);
-        }
-      }
-    }
-  } finally {
-    reader.releaseLock();
-  }
-}
 
 const generateThreadTitle = async (message: string, currentThread: Thread): Promise<string> => {
   const prompt = `Based on this first message, generate a concise 3-word title that captures the essence of the conversation. Format: "Word1 Word2 Word3" (no quotes, no periods)
@@ -193,12 +124,14 @@ export function useChat() {
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const abortController = useRef<AbortController | null>(null);
+  const tts = useTTS();
 
   const handleInterrupt = () => {
     if (abortController.current) {
       abortController.current.abort();
       abortController.current = null;
     }
+    tts.stopStreaming();
   };
 
   const handleSend = async (message: string, mentionedCharacters: MentionedCharacter[] = []) => {
@@ -284,6 +217,86 @@ export function useChat() {
       abortController.current = null;
     }
   };
+
+  async function handleStreamResponse(
+    response: Response,
+    currentThread: Thread,
+    dispatchThread: (action: ThreadAction) => void
+  ) {
+    if (!response.body) {
+      throw new Error('Response stream not available');
+    }
+  
+    const reader = response.body.getReader();
+    if (!reader) {
+      throw new Error('Stream reader not available');
+    }
+  
+    let assistantMessage = currentThread.messages[currentThread.messages.length - 1].content;
+  
+    let decoder = new TextDecoder();
+    const isFirstMessage = currentThread.messages.length === 2;
+    let chunkCount = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          if(tts.isSupported) {
+            await tts.streamText("");
+          }
+  
+          if (isFirstMessage) {
+            const title = await generateThreadTitle(assistantMessage, currentThread);
+            dispatchThread({
+              type: 'update',
+              payload: { ...currentThread, title }
+            });
+          }
+          break;
+        }
+  
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+        
+  
+        for (const line of lines) {
+          if (line.trim() === '') continue;
+          
+          try {
+            const parsedChunk = JSON.parse(line);
+            const content = parsedChunk.message?.content || 
+                            parsedChunk.choices?.[0]?.delta?.content || 
+                            parsedChunk.delta?.text;
+            
+            if (content) {
+              chunkCount++;
+              assistantMessage += content;
+              if(tts.isSupported) {
+                if(chunkCount==1) await tts.streamText(" ");
+                tts.streamText(content);
+              }
+              const updatedMessages = [...currentThread.messages];
+              const lastMessage = updatedMessages[updatedMessages.length - 1];
+              if (lastMessage && !lastMessage.isUser) {
+                lastMessage.content = assistantMessage;
+                dispatchThread({
+                  type: 'update',
+                  payload: {
+                    ...currentThread,
+                    messages: updatedMessages
+                  }
+                });
+              }
+            }
+          } catch (e) {
+            console.error('Error parsing chunk:', e);
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  }
 
   return { handleSend, handleInterrupt };
 } 
