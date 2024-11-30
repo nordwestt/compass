@@ -176,3 +176,5 @@ export const ttsEnabledAtom = atomWithAsyncStorage<boolean>('ttsEnabled', false)
 
 // Add with other atoms
 export const availableVoicesAtom = atom<Voice[]>([]);
+
+export const defaultVoiceAtom = atomWithAsyncStorage<Voice | null>('defaultVoice', null);

@@ -38,12 +38,17 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
       ? customEndpoint 
       : PREDEFINED_PROVIDERS[selectedType].endpoint;
 
+    const capabilities = selectedType === 'custom' 
+      ? undefined 
+      : PREDEFINED_PROVIDERS[selectedType].capabilities;
+
     onSave({
       id: provider?.id ?? '',
       name,
       endpoint: endpointUrl,
       apiKey,
       source: selectedType,
+      capabilities
     });
   };
 

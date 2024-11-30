@@ -57,7 +57,6 @@ export default function TabLayout() {
 
   if (isDesktop) {
     const CurrentScene = [IndexRoute, CharactersRoute, SettingsRoute][index];
-    console.log(CurrentScene);
     return (
       <CurrentScene />
     );

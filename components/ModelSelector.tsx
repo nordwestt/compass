@@ -75,7 +75,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         onRequestClose={() => setIsModalVisible(false)}
       >
         <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-background rounded-t-xl max-h-[70%]">
+          <View className="rounded-t-xl max-h-[70%] bg-white">
             <View className="p-4 border-b border-gray-200 dark:border-gray-700">
               <Text className="text-lg font-bold text-center text-black dark:text-white">
                 Select Model

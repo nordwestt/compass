@@ -15,12 +15,14 @@ import {
   threadsAtom,
   isGeneratingAtom,
   availableProvidersAtom,
-  ttsEnabledAtom
+  ttsEnabledAtom,
+  defaultVoiceAtom
 } from '@/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';
 import { toastService } from '@/services/toastService';
+import { VoiceSelector } from './VoiceSelector';
 
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlashList<any>>(null);
@@ -31,6 +33,7 @@ export const ChatThread: React.FC = () => {
   const dispatchThread = useSetAtom(threadActionsAtom);
   const [providers] = useAtom(availableProvidersAtom);
   const [ttsEnabled, setTtsEnabled] = useAtom(ttsEnabledAtom);
+  const [selectedVoice, setSelectedVoice] = useAtom(defaultVoiceAtom);
   
   const previousThreadId = useRef(currentThread.id);
   
@@ -131,6 +134,12 @@ export const ChatThread: React.FC = () => {
               className={`${ttsEnabled ? '!text-primary' : '!text-secondary'}`}
             />
           </TouchableOpacity>
+          {ttsEnabled && (
+            <VoiceSelector
+              selectedVoice={selectedVoice}
+              onSelectVoice={setSelectedVoice}
+            />
+          )}
         </View>
         <CharacterSelector
           selectedPrompt={currentThread.character}

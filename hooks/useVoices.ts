@@ -49,7 +49,7 @@ export function useVoices() {
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const lastFetchTimeRef = useRef<number>(0);
   const initialFetchDoneRef = useRef(false);
-  const FETCH_COOLDOWN = 10000;
+  const FETCH_COOLDOWN = 1000;
 
   const fetchVoices = useCallback(async (isInitialFetch = false) => {
     const now = Date.now();
@@ -58,7 +58,8 @@ export function useVoices() {
     }
 
     // Only fetch from providers that support TTS
-    const ttsProviders = providers.filter(p => p.capabilities?.tts);
+    const ttsProviders = providers.filter(p => p.capabilities?.tts || p.source === 'elevenlabs');
+    console.log('ttsProviders', ttsProviders);
     
     if (ttsProviders.length === 0) {
       return;
