@@ -93,6 +93,19 @@ class TTSService {
     }
     else{
       throw new Error('TTS is not supported on this platform');
+        // const soundArray = this.audioQueue.shift()!;
+        // const base64Data = Buffer.from(soundArray).toString('base64');
+        // const fileUri = FileSystem.documentDirectory + `temp_audio_${new Date().getTime()}.mp3`;
+        
+        // await FileSystem.writeAsStringAsync(fileUri, base64Data, {
+        // encoding: FileSystem.EncodingType.Base64,
+        // });
+        
+        // const { sound } = await Audio.Sound.createAsync({ uri: fileUri });
+        // await sound.playAsync();
+        
+        // // Cleanup temp file after playing
+        // await FileSystem.deleteAsync(fileUri, { idempotent: true });
     }
   }
 
@@ -199,7 +212,6 @@ class TTSService {
     this.audioQueue = []; // Clear the audio queue
     this.messageQueue = [];
     this.isPlaying = false;
-    console.log('stop was CALLED');
     this.isProcessingQueue = false;
     this.isProcessingAudio = false;
   }
