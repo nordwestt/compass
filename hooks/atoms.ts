@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithAsyncStorage } from './storage'
-import { Model, Thread, ChatMessage, Character, Provider } from '@/types/core'
+import { Model, Thread, ChatMessage, Character, Provider, Voice } from '@/types/core'
 import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
 export const createDefaultThread = (): Thread => {
@@ -173,3 +173,6 @@ export const fontPreferencesAtom = atom({
 });
 
 export const ttsEnabledAtom = atomWithAsyncStorage<boolean>('ttsEnabled', false);
+
+// Add with other atoms
+export const availableVoicesAtom = atom<Voice[]>([]);

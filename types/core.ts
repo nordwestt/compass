@@ -25,6 +25,14 @@ export interface Thread {
     image?: any;
   }
 
+  export interface Voice {
+    id: string;
+    name: string;
+    previewUrl: string;
+    description: string;
+    provider: Provider;
+  }
+
   export interface Provider {
     id: string;
     name?: string;

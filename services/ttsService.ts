@@ -35,7 +35,6 @@ class TTSService {
   private hasScheduledNextAudio = false;
   private constructor() {
     this.isWeb = Platform.OS === 'web';
-    
   }
 
   private async processNextAudio(force: boolean = false) :Promise<void> {
@@ -141,8 +140,6 @@ class TTSService {
       this.isProcessingQueue = false;
     }
   }
-
-  
 
   private async queueAudio(audioChunks: Uint8Array) {
     if (audioChunks.length === 0) {
@@ -272,6 +269,26 @@ class TTSService {
     return this.connectionPromise;
   }
 
+  async getVoiceList() : Promise<Voice[]> {
+    return [{
+        id: 'pFZP5JQG7iQjIQuC4Bku',
+        name: 'Lily',
+        previewUrl: 'https://storage.googleapis.com/eleven-public-prod/premade/voices/pFZP5JQG7iQjIQuC4Bku/89b68b35-b3dd-4348-a84a-a3c13a3c2b30.mp3',
+        description: 'British, warm, middle-aged female narration'
+    },{
+        id: 'jsCqWAovK2LkecY7zXl4',
+        name: 'Freya',
+        previewUrl: 'https://storage.googleapis.com/eleven-public-prod/premade/voices/jsCqWAovK2LkecY7zXl4/8e1f5240-556e-4fd5-892c-25df9ea3b593.mp3',
+        description: 'American, expressive, young female characters'
+    },
+    {
+        id: 'yoZ06aMxZJJ28mfd3POQ',
+        name: 'Sam',
+        previewUrl: 'https://storage.googleapis.com/eleven-public-prod/premade/voices/yoZ06aMxZJJ28mfd3POQ/b017ad02-8d18-4456-ad92-55c85ecf6363.mp3',
+        description: 'American, raspy, young male narration'
+    }];
+  }
+
   static getInstance(): TTSService {
     if (!TTSService.instance) {
       TTSService.instance = new TTSService();
@@ -281,3 +298,53 @@ class TTSService {
 }
 
 export const ttsService = TTSService.getInstance(); 
+
+
+
+
+export interface Voice{
+    id: string;
+    name: string;
+    previewUrl: string;
+    description: string;
+}
+
+
+
+// ELEVEN LABS INTERFACES
+
+interface ElevenLabsVoice {
+    public_owner_id: string;
+    voice_id: string;
+    date_unix: number;
+    name: string;
+    accent: string;
+    gender: 'male' | 'female' | string;
+    age: string;
+    descriptive: string;
+    use_case: string;
+    category: string;
+    language: string;
+    description: string;
+    preview_url: string;
+    usage_character_count_1y: number;
+    usage_character_count_7d: number;
+    play_api_usage_character_count_1y: number;
+    cloned_by_count: number;
+    rate: number;
+    free_users_allowed: boolean;
+    live_moderation_enabled: boolean;
+    featured: boolean;
+    notice_period: number;
+    instagram_username: string | null;
+    twitter_username: string | null;
+    youtube_username: string | null;
+    tiktok_username: string | null;
+    image_url: string;
+  }
+  
+interface ElevenLabsVoicesResponse {
+    voices: ElevenLabsVoice[];
+    has_more: boolean;
+    last_sort_id: string | null;
+  }

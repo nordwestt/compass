@@ -122,7 +122,7 @@ export function useModelFetching(providers: Provider[]) {
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const lastFetchTimeRef = useRef<number>(0);
   const initialFetchDoneRef = useRef(false);
-  const FETCH_COOLDOWN = 5000;
+  const FETCH_COOLDOWN = 10000;
 
   const fetchModels = useCallback(async (isInitialFetch = false) => {
     const now = Date.now();
