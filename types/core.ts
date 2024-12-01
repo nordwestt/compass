@@ -23,6 +23,7 @@ export interface Thread {
     name: string;
     content: string;
     image?: any;
+    voice?: Voice;
   }
 
   export interface Voice {
