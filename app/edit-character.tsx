@@ -6,15 +6,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Character } from '@/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
+import { PREDEFINED_PROMPTS } from '@/constants/characters';
 
 export default function EditCharacterScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
   
-  const character = id 
+  let character = id 
     ? customPrompts.find(p => p.id === id) 
     : { name: '', content: '', image: require('@/assets/characters/default.png') };
+
+  if(id){
+    character = customPrompts.find(p => p.id === id);
+    if(!character){
+      character = PREDEFINED_PROMPTS.find(p => p.id === id);
+    }
+  }
+  else{
+    character = { name: '', content: '', image: require('@/assets/characters/default.png') };
+  }
 
   const [name, setName] = useState(character?.name || '');
   const [content, setContent] = useState(character?.content || '');
@@ -54,7 +65,7 @@ export default function EditCharacterScreen() {
         <View className="items-center mb-8">
           <Image 
             source={character?.image} 
-            className="h-32 w-32 rounded-full mb-4"
+            className="!h-[80px] !w-[80px] rounded-full mb-4"
           />
           <Text className="text-sm text-text">
             Character Avatar
