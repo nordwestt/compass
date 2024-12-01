@@ -1,7 +1,7 @@
 import { Model } from '@/types/core';
 import { ChatProvider } from '@/src/types/chat';
 import { OllamaProvider } from './providers/OllamaProvider';
-//import { OpenAIProvider } from './providers/OpenAIProvider';
+import { OpenAIProvider } from './providers/OpenAIProvider';
 //import { AnthropicProvider } from './providers/AnthropicProvider';
 
 export class ChatProviderFactory {
@@ -9,8 +9,8 @@ export class ChatProviderFactory {
     switch (model.provider.source) {
       case 'ollama':
         return new OllamaProvider();
-      //case 'openai':
-      //  return new OpenAIProvider();
+      case 'openai':
+        return new OpenAIProvider();
       //case 'anthropic':
       //  return new AnthropicProvider();
       default:
