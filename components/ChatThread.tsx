@@ -108,32 +108,7 @@ export const ChatThread: React.FC = () => {
               onSetModel={handleSelectModel}
             />
           )}
-          <TouchableOpacity
-            onPress={() => {
-              if(providers.find(p => p.source === 'elevenlabs')){
-                toastService.success({
-                  title: `TTS ${ttsEnabled ? 'disabled' : 'enabled'}`,
-                  description: ttsEnabled ? 'Your messages will not be read aloud' : 'You can now hear your messages'
-                });
-                setTtsEnabled(!ttsEnabled);
-              }
-              else {
-                toastService.info({
-                  title: 'TTS not available',
-                  description: 'Please select an ElevenLabs provider to enable TTS'
-                });
-              }
-              
-              
-            }}
-            className={`p-2 rounded-full ${ttsEnabled ? 'bg-primary/10' : 'bg-gray-100 dark:bg-gray-800'}`}
-          >
-            <Ionicons 
-              name={ttsEnabled ? "volume-high" : "volume-mute"} 
-              size={20} 
-              className={`${ttsEnabled ? '!text-primary' : '!text-secondary'}`}
-            />
-          </TouchableOpacity>
+          
           {ttsEnabled && (
             <VoiceSelector
               selectedVoice={selectedVoice}

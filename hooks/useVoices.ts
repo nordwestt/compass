@@ -59,7 +59,6 @@ export function useVoices() {
 
     // Only fetch from providers that support TTS
     const ttsProviders = providers.filter(p => p.capabilities?.tts || p.source === 'elevenlabs');
-    console.log('ttsProviders', ttsProviders);
     
     if (ttsProviders.length === 0) {
       return;

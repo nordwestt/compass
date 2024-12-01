@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { useVoices } from '@/hooks/useVoices';
 import { Voice } from '@/types/core';
-import { useAtom } from 'jotai';
-import { defaultVoiceAtom } from '@/hooks/atoms';
+import { useAtom, useAtomValue } from 'jotai';
+import { availableProvidersAtom, defaultVoiceAtom, ttsEnabledAtom } from '@/hooks/atoms';
 import { Ionicons } from '@expo/vector-icons';
+import { toastService } from '@/services/toastService';
 
 interface VoiceSelectorProps {
   selectedVoice: Voice | null;
@@ -16,24 +17,58 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
   onSelectVoice,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+
   const voices = useVoices();
   const [defaultVoice, setDefaultVoice] = useAtom(defaultVoiceAtom);
+  const [ttsEnabled, setTtsEnabled] = useAtom(ttsEnabledAtom);
 
-  if (!voices.length) {
-    return <Text className="text-gray-500">Loading voices...</Text>;
+  const providers = useAtomValue(availableProvidersAtom);
+  const ttsProviders = () =>providers.filter(p => p.capabilities?.tts || p.source === 'elevenlabs');
+  
+
+  const showTTSDisabledToast = () => {
+    toastService.info({
+      title: 'TTS not available',
+      description: 'Please select an ElevenLabs provider to enable TTS'
+    });
+    setDefaultVoice(null);
   }
+
 
   return (
     <>
+    <View className="flex-row items-center justify-between border border-border rounded-lg">
       <TouchableOpacity 
-        onPress={() => setIsModalVisible(true)}
-        className="flex-row items-center px-4 py-2 rounded-lg bg-background border-2 border-border"
+        onPress={() => ttsProviders().length ? setIsModalVisible(true) : showTTSDisabledToast()}
+        className="flex-row items-center px-4 py-2 bg-background rounded-l-lg h-10 border-r border-border"
       >
-        <Ionicons name="mic" size={20} className="mr-2 text-gray-600 dark:text-gray-400" />
-        <Text className="flex-1 text-black dark:text-white">
-          {selectedVoice ? selectedVoice.name : 'Select Voice'}
-        </Text>
-      </TouchableOpacity>
+            <Ionicons name="mic" size={20} className="mr-2 text-gray-600 dark:text-gray-400" />
+            <Text className="flex-1 text-black dark:text-white">
+            {selectedVoice ? selectedVoice.name : 'Select Voice'}
+            </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => {
+              if(ttsProviders().length){
+                toastService.success({
+                  title: `TTS ${ttsEnabled ? 'disabled' : 'enabled'}`,
+                  description: ttsEnabled ? 'Your messages will not be read aloud' : 'You can now hear your messages'
+                });
+                setTtsEnabled(!ttsEnabled);
+              }
+              else {
+                showTTSDisabledToast();
+              }
+            }}
+            className={`w-10 h-10 rounded-r-lg bg-background items-center justify-center`}
+          >
+            <Ionicons 
+              name={ttsEnabled ? "volume-high" : "volume-mute"} 
+              size={20} 
+              className="!text-text"
+            />
+          </TouchableOpacity>
+      </View>
 
       <Modal
         visible={isModalVisible}
