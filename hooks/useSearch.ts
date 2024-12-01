@@ -18,12 +18,14 @@ export function useSearch() {
       const searchProvider = providers.find(p => p.capabilities?.search);
       
       if (!searchProvider) {
+        console.error('No search provider configured');
         throw new Error('No search provider configured');
       }
 
       const searchService = createSearchService(searchProvider);
       
       if (!searchService || !searchService.isConfigured()) {
+        console.error('Search service not properly configured');
         throw new Error('Search service not properly configured');
       }
 

@@ -6,12 +6,14 @@ import { useTTS } from './useTTS';
 import { CharacterContextManager } from '@/src/services/chat/CharacterContextManager';
 import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
+import { useSearch } from './useSearch';
 
 export function useChat() {
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const [searchEnabled] = useAtom(searchEnabledAtom);
   const abortController = useRef<AbortController | null>(null);
+  const { search } = useSearch();
   const tts = useTTS();
 
   const contextManager = new CharacterContextManager();
@@ -47,7 +49,13 @@ export function useChat() {
     if(searchEnabled) {
       const searchRequired = await isSearchRequired(message);
       console.log(searchRequired);
-      
+      if(searchRequired.searchRequired) {
+        console.log('searching...');
+        const searchResponse = await search(searchRequired.query);
+        searchResponse?.results?.forEach(result => {
+          console.log(result);
+        });
+      }
     }
 
 
