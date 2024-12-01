@@ -24,4 +24,33 @@ export class OpenAIProvider implements ChatProvider {
       }),
     });
   }
+
+  async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
+    let response = await fetch(`${model.provider.endpoint}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: model.id,
+        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: message }],
+        stream: false
+      }),
+    });
+    let data = await response.json();
+    return data.choices[0].message.content;
+  }
+
+  async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<string>{
+    let response = await fetch(`${model.provider.endpoint}/v1/chat/completions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: model.id,
+          messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: message }],
+          stream: false,
+          response_format: { type: 'json_object' }
+        }),
+      });
+    let data = await response.json();
+    return JSON.parse(data.response);
+  }
 } 

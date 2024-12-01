@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from 'jotai';
-import { currentThreadAtom, threadActionsAtom, ThreadAction } from './atoms';
+import { currentThreadAtom, threadActionsAtom, ThreadAction, searchEnabledAtom } from './atoms';
 import { useRef } from 'react';
 import { MentionedCharacter } from '@/components/ChatInput';
 import { useTTS } from './useTTS';
@@ -10,6 +10,7 @@ import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 export function useChat() {
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
+  const [searchEnabled] = useAtom(searchEnabledAtom);
   const abortController = useRef<AbortController | null>(null);
   const tts = useTTS();
 
@@ -24,8 +25,30 @@ export function useChat() {
     tts.stopStreaming();
   };
 
+  const isSearchRequired = async (message: string) : Promise<{query: string, searchRequired: boolean}> => {
+    const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
+
+    const systemPrompt = `
+    Your name is SearchAssistantBot, and you identify if the user's message requires a search on the internet.
+    If the user's message requires a search, return the query to be searched and set "searchRequired" to true. 
+    If the user's message does not require a search, simply return an empty string and set "searchRequired" to false.
+    Examples:
+    - "What is the weather in Tokyo?" -> {"query": "weather in Tokyo", "searchRequired": true}
+    - "What is the capital of France?" -> {"query": "", "searchRequired": false}
+    `;
+
+    let jsonResponse = await provider.sendJSONMessage(message, currentThread.selectedModel, systemPrompt);
+    return jsonResponse;
+  }
+
   const handleSend = async (message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
+
+    if(searchEnabled) {
+      const searchRequired = await isSearchRequired(message);
+      console.log(searchRequired);
+      
+    }
 
 
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);

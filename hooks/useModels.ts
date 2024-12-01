@@ -54,7 +54,6 @@ export const fetchAvailableModelsV2 = async (
     if (!endpoints?.length) {
       return [];
     }
-    console.log('fetching models from endpoints', endpoints);
 
     const models: Model[] = [];
 

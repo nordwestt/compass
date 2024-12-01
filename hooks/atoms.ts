@@ -173,6 +173,7 @@ export const fontPreferencesAtom = atom({
 });
 
 export const ttsEnabledAtom = atomWithAsyncStorage<boolean>('ttsEnabled', false);
+export const searchEnabledAtom = atomWithAsyncStorage<boolean>('searchEnabled', false);
 
 // Add with other atoms
 export const availableVoicesAtom = atom<Voice[]>([]);

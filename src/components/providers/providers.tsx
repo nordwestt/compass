@@ -49,7 +49,8 @@ export default function Providers({ className }: ProvidersProps) {
         capabilities: {
           llm: true,
           tts: false,
-          stt: false
+          stt: false,
+          search: false
         }
       })));
     }).finally(() => {
