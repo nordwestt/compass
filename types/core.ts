@@ -37,11 +37,12 @@ export interface Thread {
   export interface Provider {
     id: string;
     name?: string;
-    source: 'ollama' | 'openai' | 'anthropic' | 'elevenlabs' | 'custom';
+    source: 'ollama' | 'openai' | 'anthropic' | 'elevenlabs' | 'serper' | 'searxng' | 'custom';
     capabilities?: {
       llm: boolean,
       tts: boolean,
-      stt: boolean
+      stt: boolean,
+      search: boolean
     };
     apiKey?: string;
     endpoint: string;

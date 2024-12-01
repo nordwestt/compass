@@ -41,5 +41,16 @@ export const PREDEFINED_PROVIDERS = {
       stt: false
     }
   } as Provider,
+  searxng: {
+    name: 'SearXNG',
+    endpoint: 'https://baresearch.org',
+    source: 'searxng' as const,
+    capabilities: {
+      llm: false,
+      tts: false,
+      stt: false,
+      search: true
+    }
+  } as Provider,
   
 } as const; 
