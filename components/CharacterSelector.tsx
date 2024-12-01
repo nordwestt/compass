@@ -4,6 +4,9 @@ import { useAtom, useAtomValue } from 'jotai';
 import { allPromptsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
+import { rawThemes } from '@/constants/themes';
+import { useThemePreset } from './ThemeProvider';
+import { useColorScheme } from 'nativewind';
 
 interface CharacterSelectorProps {
   selectedPrompt: Character;
@@ -16,6 +19,10 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const allPrompts = useAtomValue(allPromptsAtom);
+  const { themePreset } = useThemePreset();
+  const { colorScheme } = useColorScheme();
+  const theme = rawThemes[themePreset][colorScheme ?? 'light'];
+
 
 
   return (
@@ -42,7 +49,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
         onRequestClose={() => setIsModalVisible(false)}
       >
         <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-background rounded-t-xl max-h-[70%]">
+          <View className="rounded-t-xl max-h-[70%]" style={{ backgroundColor: theme.background }}>
             <View className="p-4 border-b border-gray-200 dark:border-gray-700">
               <Text className="text-lg font-bold text-center text-black dark:text-white">
                 Select Character
@@ -58,7 +65,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
                       onSelectPrompt(prompt);
                       setIsModalVisible(false);
                     }}
-                    className="w-[48%] mb-4 rounded-lg bg-gray-50 dark:bg-gray-700"
+                    className="w-[48%] mb-4 rounded-lg bg-white"
                   >
                     <View className="items-center p-3">
                       {prompt.image && (
