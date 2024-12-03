@@ -29,7 +29,7 @@ export const ChatThreads: React.FC = () => {
     
     dispatchThread({ type: 'add', payload: newThread });
     
-    if(Platform.OS != 'web'){
+    if(Platform.OS != 'web' || window.innerWidth < 768){
     // wait 100 ms before pushing to allow for thread to be added to state
       setTimeout(() => {
         router.push(`/thread/${newThread.id}`);
