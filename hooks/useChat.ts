@@ -7,6 +7,7 @@ import { CharacterContextManager } from '@/src/services/chat/CharacterContextMan
 import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
+import { current } from 'tailwindcss/colors';
 
 export function useChat() {
   const [currentThread] = useAtom(currentThreadAtom);
@@ -46,18 +47,7 @@ export function useChat() {
   const handleSend = async (message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
 
-    if(searchEnabled) {
-      const searchRequired = await isSearchRequired(message);
-      console.log(searchRequired);
-      if(searchRequired.searchRequired) {
-        console.log('searching...');
-        const searchResponse = await search(searchRequired.query);
-        searchResponse?.results?.forEach(result => {
-          console.log(result);
-        });
-      }
-    }
-
+    
 
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
 
@@ -70,6 +60,16 @@ export function useChat() {
       type: 'update',
       payload: updatedThread
     });
+
+    if(searchEnabled) {
+      const searchRequired = await isSearchRequired(message);
+      if(searchRequired.searchRequired) {
+        const searchResponse = await search(searchRequired.query);
+        if(searchResponse?.results?.length && searchResponse?.results?.length > 0) {
+          context.messagesToSend.push({content: `Web search results: ${searchResponse?.results.slice(0,3)?.map(result => result.content).join('\n')}`, isSystem: true, isUser: false});
+        }
+      }
+    }
 
     try {
       const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);

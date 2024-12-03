@@ -1,12 +1,7 @@
-export interface SearchResult {
-  title: string;
-  snippet: string;
-  url: string;
-  position: number;
-}
+
 
 export interface SearchResponse {
-  results: SearchResult[];
+  results: {url:string, content:string}[];
   totalResults?: number;
   searchTime?: number;
 }

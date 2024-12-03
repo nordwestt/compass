@@ -8,7 +8,7 @@ export class OllamaProvider implements ChatProvider {
     const newMessages = [
       { role: 'system', content: character.content },
       ...messages.map(message => ({ 
-        role: message.isUser ? 'user' : 'assistant', 
+        role: message.isUser ? 'user' : message.isSystem ? 'system' : 'assistant', 
         content: message.content 
       }))
     ];

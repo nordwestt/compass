@@ -9,6 +9,7 @@ export interface Thread {
   export interface ChatMessage {
     content: string;
     isUser: boolean;
+    isSystem?: boolean;
     character?: Character;
   }
 
