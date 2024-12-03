@@ -28,10 +28,13 @@ export const ChatThreads: React.FC = () => {
     };
     
     dispatchThread({ type: 'add', payload: newThread });
+    
+    if(Platform.OS != 'web'){
     // wait 100 ms before pushing to allow for thread to be added to state
-    setTimeout(() => {
-      router.push(`/thread/${newThread.id}`);
-    }, 100);
+      setTimeout(() => {
+        router.push(`/thread/${newThread.id}`);
+      }, 100);
+    }
   };
 
   // const toggleTheme = useCallback(() => {
