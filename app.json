@@ -28,7 +28,8 @@
       "permissions": [
         "android.permission.ACCESS_NETWORK_STATE",
         "android.permission.INTERNET"
-      ]
+      ],
+      "package": "com.nordwestt.compass"
     },
     "web": {
       "bundler": "metro",
@@ -40,6 +41,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "e28f4a02-e075-4df2-bae7-70377e12c360"
+      }
     }
   }
 }
