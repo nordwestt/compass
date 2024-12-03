@@ -136,7 +136,7 @@ export const ChatThread: React.FC = () => {
           }
         }}
         keyExtractor={(_, index) => index.toString()}
-        className="flex-1 -mt-4"
+        className="flex-1 -mt-4 pt-4"
         contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center p-4">
