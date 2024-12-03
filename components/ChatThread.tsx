@@ -100,7 +100,7 @@ export const ChatThread: React.FC = () => {
 
   return (
     <View className="flex-1 bg-background">
-      <View className="p-4 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl">
+      <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl">
         <View className="flex-row items-center gap-2">
           {currentThread.selectedModel && (
             <ModelSelector 

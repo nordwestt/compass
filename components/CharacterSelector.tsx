@@ -23,21 +23,19 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
 
-
-
   return (
     <>
       <TouchableOpacity 
         onPress={() => setIsModalVisible(true)}
-        className="flex-row items-center px-4 py-2 rounded-lg bg-background border-2 border-border"
+        className="flex-row items-center px-4 py-2 rounded-lg bg-background border border-border"
       >
         {selectedPrompt.image && (
           <Image 
             source={selectedPrompt.image} 
-            className="!h-[64px] !w-[64px] rounded-full mr-2"
+            className="!h-[32px] !w-[32px] rounded-full"
           />
         )}
-        <Text className="flex-1 text-black dark:text-white">
+        <Text className="ml-2 text-black dark:text-white">
           {selectedPrompt.name}
         </Text>
       </TouchableOpacity>

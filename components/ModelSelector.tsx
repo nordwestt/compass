@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, Image, ScrollView, Platform } from 'react-native';
 import { Signal } from '@preact/signals-react';
 import {  useModelFetching } from '@/hooks/useModels';
 import { Model } from '@/types/core';
@@ -55,17 +55,19 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     <>
       <TouchableOpacity 
         onPress={() => setIsModalVisible(true)}
-        className="flex-row items-center px-4 py-2 rounded-lg bg-background border-2 border-border"
+        className="flex-row items-center px-2 py-2 rounded-lg bg-background border border-border"
       >
         {PROVIDER_LOGOS[selectedModel.provider.source as keyof typeof PROVIDER_LOGOS] && (
           <Image 
             source={PROVIDER_LOGOS[selectedModel.provider.source as keyof typeof PROVIDER_LOGOS]}
-            className="!h-[32px] !w-[32px] rounded-full mr-2"
+            className="!h-[32px] !w-[32px] rounded-full"
           />
         )}
-        <Text className="flex-1 text-black dark:text-white">
-          {currentModel ? `${currentModel.provider.source} - ${currentModel.name}` : 'Select Model'}
-        </Text>
+        {Platform.OS == 'web' && (
+          <Text className="ml-2 text-black dark:text-white">
+            {currentModel ? `${currentModel.name}` : 'Select Model'}
+          </Text>
+        )}
       </TouchableOpacity>
 
       <Modal
