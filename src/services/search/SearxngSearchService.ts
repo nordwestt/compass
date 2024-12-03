@@ -1,4 +1,5 @@
 import { SearchResponse, SearchService } from '@/src/types/search';
+import { Platform } from 'react-native';
 
 export class SearxngSearchService implements SearchService {
   private endpoint: string;
@@ -28,13 +29,24 @@ export class SearxngSearchService implements SearchService {
     });
   
     try {
-      const response = await fetch('https://proxy.cors.sh/'+this.endpoint+'/search', {
-        method: 'POST',
-        headers: {
+      const url = Platform.OS === 'web' 
+        ? `https://proxy.cors.sh/${this.endpoint}/search` 
+        : `${this.endpoint}/search`;
+
+      const headers : HeadersInit = Platform.OS === 'web' 
+      ? {
           'x-cors-api-key': 'temp_57b2078bb750441fd533a8e9b0a8b768',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8',
           'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        }
+      : {
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        };
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
         body: params.toString()
       });
   
