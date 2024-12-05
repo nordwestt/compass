@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Model, Provider } from '@/types/core';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { availableProvidersAtom, availableModelsAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, availableModelsAtom, logsAtom } from '@/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
 
 export const loadDefaultModel = async (): Promise<Model | null> => {
@@ -46,74 +46,7 @@ export function useModels() {
 } 
 
 let isLoadingModels = false;
-export const fetchAvailableModelsV2 = async (
-  endpoints: Provider[]
-): Promise<Model[]> => {
-  isLoadingModels = true;
-  try {
-    if (!endpoints?.length) {
-      return [];
-    }
 
-    const models: Model[] = [];
-
-    for (const provider of endpoints) {
-      try {
-        switch (provider.source) {
-          case 'ollama':
-            const ollamaResponse = await fetch(`${provider.endpoint}/api/tags`);
-            const ollamaData = await ollamaResponse.json();
-            models.push(...ollamaData.models.map((model: any) => ({
-              id: model.name,
-              name: model.name,
-              provider: provider
-            })));
-            break;
-
-          case 'openai':
-            const openaiResponse = await fetch('https://api.openai.com/v1/models', {
-              headers: {
-                'Authorization': `Bearer ${provider.apiKey}`
-              }
-            });
-            const openaiData = await openaiResponse.json();
-            models.push(...openaiData.data
-              .filter((model: any) => model.id.includes('gpt'))
-              .map((model: any) => ({
-                id: model.id,
-                name: model.id,
-                provider: provider
-              })));
-            break;
-
-          case 'anthropic':
-            const anthropicResponse = await fetch('https://api.anthropic.com/v1/models', {
-              headers: {
-                'x-api-key': provider.apiKey,
-                'anthropic-version': '2023-06-01'
-              }
-            });
-            const anthropicData = await anthropicResponse.json();
-            models.push(...anthropicData.map((model: any) => ({
-              id: model.name,
-              name: model.name,
-              provider: provider
-            })));
-            break;
-        }
-      } catch (error) {
-        console.error(`Error fetching models for ${provider.endpoint} (${provider.source}):`, error);
-      }
-    }
-
-    return models; 
-  } catch (error) {
-    console.error('Error fetching models:', error);
-  } finally {
-    isLoadingModels = false;
-  }
-  return [];
-};
 
 export function useModelFetching(providers: Provider[]) {
   const [models, setAvailableModels] = useAtom(availableModelsAtom);
@@ -121,7 +54,78 @@ export function useModelFetching(providers: Provider[]) {
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const lastFetchTimeRef = useRef<number>(0);
   const initialFetchDoneRef = useRef(false);
+  const [logs, setLogs] = useAtom(logsAtom);
   const FETCH_COOLDOWN = 10000;
+
+  const fetchAvailableModelsV2 = async (
+    endpoints: Provider[]
+  ): Promise<Model[]> => {
+    isLoadingModels = true;
+    try {
+      if (!endpoints?.length) {
+        return [];
+      }
+  
+      const models: Model[] = [];
+  
+      for (const provider of endpoints) {
+        try {
+          switch (provider.source) {
+            case 'ollama':
+              const ollamaResponse = await fetch(`${provider.endpoint}/api/tags`);
+              const ollamaData = await ollamaResponse.json();
+              models.push(...ollamaData.models.map((model: any) => ({
+                id: model.name,
+                name: model.name,
+                provider: provider
+              })));
+              break;
+  
+            case 'openai':
+              const openaiResponse = await fetch('https://api.openai.com/v1/models', {
+                headers: {
+                  'Authorization': `Bearer ${provider.apiKey}`
+                }
+              });
+              const openaiData = await openaiResponse.json();
+              models.push(...openaiData.data
+                .filter((model: any) => model.id.includes('gpt'))
+                .map((model: any) => ({
+                  id: model.id,
+                  name: model.id,
+                  provider: provider
+                })));
+              break;
+  
+            case 'anthropic':
+              const anthropicResponse = await fetch('https://api.anthropic.com/v1/models', {
+                headers: {
+                  'x-api-key': provider.apiKey,
+                  'anthropic-version': '2023-06-01'
+                }
+              });
+              const anthropicData = await anthropicResponse.json();
+              models.push(...anthropicData.map((model: any) => ({
+                id: model.name,
+                name: model.name,
+                provider: provider
+              })));
+              break;
+          }
+        } catch (error) {
+          console.error(`Error fetching models for ${provider.endpoint} (${provider.source}):`, error);
+          setLogs([...logs, {component: 'providers', function: 'fetchAvailableModelsV2', date: new Date().toISOString(), message: `Error fetching models for ${provider.endpoint} (${provider.source}): ${error}`}]);
+        }
+      }
+  
+      return models; 
+    } catch (error) {
+      console.error('Error fetching models:', error);
+    } finally {
+      isLoadingModels = false;
+    }
+    return [];
+  };
 
   const fetchModels = useCallback(async (isInitialFetch = false) => {
     const now = Date.now();

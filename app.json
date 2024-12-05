@@ -18,7 +18,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "This app needs access to network to discover Ollama instances on your local network",
+        "NSBonjourServices": ["_ollama._tcp"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +31,10 @@
       },
       "permissions": [
         "android.permission.ACCESS_NETWORK_STATE",
-        "android.permission.INTERNET"
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.CHANGE_WIFI_STATE",
+        "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.nordwestt.compass"
     },

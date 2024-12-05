@@ -56,6 +56,13 @@ export default function SettingsScreen() {
           onPress={() => router.push('/settings/theme')}
         />
 
+        <SettingItem
+          title="Logs"
+          description="View application logs"
+          icon="list"
+          onPress={() => router.push('/settings/logs')}
+        />
+
         {/* <SettingItem
           title="About"
           description="Version information and credits"
