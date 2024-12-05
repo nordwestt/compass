@@ -180,4 +180,4 @@ export const availableVoicesAtom = atom<Voice[]>([]);
 
 export const defaultVoiceAtom = atomWithAsyncStorage<Voice | null>('defaultVoice', null);
 
-export const logsAtom = atomWithAsyncStorage<{component: string, function: string, date: string, message: string}[]>('logs', []);
+export const logsAtom = atomWithAsyncStorage<{component: string, function: string, date: string, message: string, level: 'error' | 'info' | 'warn' | 'debug'}[]>('logs', []);

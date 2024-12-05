@@ -7,6 +7,7 @@ import { EndpointModal } from '@/src/components/providers/EndpointModal';
 import { useState } from 'react';
 import { Provider } from '@/types/core';
 import NetInfo from '@react-native-community/netinfo';
+import LogService from '@/utils/LogService';
 
 interface ProvidersProps {
   className?: string;
@@ -171,8 +172,8 @@ export default function Providers({ className }: ProvidersProps) {
   
         clearTimeout(timeoutId);
         return response.ok ? endpoint : null;
-      } catch (error) {
-        setLogs([...logs, {component: 'providers', function: 'scanForOllamaInstances', date: new Date().toISOString(), message: `Error testing endpoint ${endpoint}: ${error}`}]);
+      } catch (error: any) {
+        LogService.log(error, {component: 'providers', function: 'scanForOllamaInstances'}, 'error');
         return null;
       }
     };

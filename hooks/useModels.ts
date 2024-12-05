@@ -3,6 +3,7 @@ import { Model, Provider } from '@/types/core';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, logsAtom } from '@/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
+import LogService from '@/utils/LogService';
 
 export const loadDefaultModel = async (): Promise<Model | null> => {
   try {
@@ -54,7 +55,6 @@ export function useModelFetching(providers: Provider[]) {
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const lastFetchTimeRef = useRef<number>(0);
   const initialFetchDoneRef = useRef(false);
-  const [logs, setLogs] = useAtom(logsAtom);
   const FETCH_COOLDOWN = 10000;
 
   const fetchAvailableModelsV2 = async (
@@ -112,15 +112,14 @@ export function useModelFetching(providers: Provider[]) {
               })));
               break;
           }
-        } catch (error) {
-          console.error(`Error fetching models for ${provider.endpoint} (${provider.source}):`, error);
-          setLogs([...logs, {component: 'providers', function: 'fetchAvailableModelsV2', date: new Date().toISOString(), message: `Error fetching models for ${provider.endpoint} (${provider.source}): ${error}`}]);
+        } catch (error: any) {
+          LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
         }
       }
   
       return models; 
-    } catch (error) {
-      console.error('Error fetching models:', error);
+    } catch (error: any) {
+      LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
     } finally {
       isLoadingModels = false;
     }
