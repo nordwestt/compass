@@ -34,13 +34,9 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
   }, [provider]);
 
   const handleSave = () => {
-    const endpointUrl = selectedType === 'custom' 
-      ? customEndpoint 
-      : PREDEFINED_PROVIDERS[selectedType].endpoint;
+    const endpointUrl = customEndpoint;
 
-    const capabilities = selectedType === 'custom' 
-      ? undefined 
-      : PREDEFINED_PROVIDERS[selectedType].capabilities;
+    const capabilities = PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS].capabilities;
 
     onSave({
       id: provider?.id ?? '',

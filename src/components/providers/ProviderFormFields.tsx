@@ -1,6 +1,7 @@
 import { View, Text, TextInput } from 'react-native';
 import { ProviderTypeSelector } from './ProviderTypeSelector';
 import { Provider } from '@/types/core';
+import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 
 interface ProviderFormFieldsProps {
   name: string;
@@ -25,7 +26,10 @@ export function ProviderFormFields({
 }: ProviderFormFieldsProps) {
   return (
     <View className="m-4">
-      <ProviderTypeSelector className="mb-4" selectedType={selectedType} onTypeSelect={setSelectedType} />
+      <ProviderTypeSelector className="mb-4" selectedType={selectedType} onTypeSelect={(type) => {
+        setSelectedType(type);
+        setCustomEndpoint(PREDEFINED_PROVIDERS[type as keyof typeof PREDEFINED_PROVIDERS].endpoint);
+        }} />
 
       {selectedType == 'custom' && <View className="mb-4">
         <Text className="text-sm font-medium text-text mb-2">Name</Text>
