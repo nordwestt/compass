@@ -21,7 +21,9 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSLocalNetworkUsageDescription": "This app needs access to network to discover Ollama instances on your local network",
-        "NSBonjourServices": ["_ollama._tcp"]
+        "NSBonjourServices": [
+          "_ollama._tcp"
+        ]
       }
     },
     "android": {
@@ -39,7 +41,8 @@
         "android.permission.INTERNET",
         "android.permission.ACCESS_WIFI_STATE",
         "android.permission.CHANGE_WIFI_STATE",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.NEARBY_WIFI_DEVICES"
       ],
       "package": "com.nordwestt.compass",
       "networkSecurityConfig": {
@@ -57,7 +60,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      ["expo-build-properties",{
+        "android": {
+          "usesCleartextTraffic": true
+        }
+      }
+    ]
     ],
     "experiments": {
       "typedRoutes": true
