@@ -16,12 +16,20 @@ class LogService {
         throw new Error('logsAtom must return an array');
     }
 
+    let msg = "";
+
+    if(message instanceof Error) {
+      msg = JSON.stringify({message: message.message, stack: message.stack?.slice(0,100), cause: message.cause});
+    } else {
+      msg = message;
+    }
+
     const logEntry = {
       level,
       component: context.component,
       function: context.function,
       date: new Date().toISOString(),
-      message: message instanceof Error ? message.message : message,
+      message: msg,
     };
 
     store.set(logsAtom, [...logs, logEntry]);

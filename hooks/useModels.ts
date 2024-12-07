@@ -72,13 +72,28 @@ export function useModelFetching(providers: Provider[]) {
         try {
           switch (provider.source) {
             case 'ollama':
-              const ollamaResponse = await fetch(`${provider.endpoint}/api/tags`);
+              const ollamaResponse = await fetch(`${provider.endpoint}/api/tags`, {
+                headers: {
+                  'Accept': 'application/json',
+                }
+              });
               const ollamaData = await ollamaResponse.json();
-              models.push(...ollamaData.models.map((model: any) => ({
-                id: model.name,
-                name: model.name,
-                provider: provider
-              })));
+              
+              if (ollamaData && Array.isArray(ollamaData.models)) {
+                models.push(...ollamaData.models
+                  .filter((model: any) => model && typeof model.name === 'string')
+                  .map((model: any) => ({
+                    id: model.name,
+                    name: model.name,
+                    provider: provider
+                  })));
+              } else {
+                LogService.log(
+                  `Invalid Ollama response structure: ${JSON.stringify(ollamaData)}`,
+                  {component: 'useModelFetching', function: 'fetchAvailableModelsV2'},
+                  'error'
+                );
+              }
               break;
   
             case 'openai':
@@ -113,12 +128,14 @@ export function useModelFetching(providers: Provider[]) {
               break;
           }
         } catch (error: any) {
+          
           LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
         }
       }
   
       return models; 
     } catch (error: any) {
+
       LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
     } finally {
       isLoadingModels = false;

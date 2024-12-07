@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, PermissionsAndroid } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAtom } from 'jotai';
 import { availableProvidersAtom, logsAtom } from '@/hooks/atoms';
@@ -19,6 +19,7 @@ export default function Providers({ className }: ProvidersProps) {
   const [showModal, setShowModal] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
   const [scanning, setScanning] = useState(false);
+  
   const handleSave = async (provider: Provider) => {
     if (editingProvider) {
       const updated = providers.map((e) => (e.id === editingProvider.id ? provider : e));
@@ -40,7 +41,26 @@ export default function Providers({ className }: ProvidersProps) {
     setShowModal(true);
   };
 
-  const autoScanForOllama = () => {
+  const autoScanForOllama = async () => {
+
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Fine Location Permission',
+        message:
+          'Compass needs access to your location ' +
+          'so it can scan for Ollama instances on your network.',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Location permission granted');
+    } else {
+      console.log('Location permission denied');
+    }
+
     setScanning(true);
     try{
     scanForOllamaInstances().then((ollamaEndpoints) => {
@@ -167,13 +187,19 @@ export default function Providers({ className }: ProvidersProps) {
         const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
   
         const response = await fetch(`${endpoint}`, {
+          headers:{
+            'Accept': 'application/text',
+          },
           signal: controller.signal
         });
   
         clearTimeout(timeoutId);
         return response.ok ? endpoint : null;
       } catch (error: any) {
-        LogService.log(error, {component: 'providers', function: 'scanForOllamaInstances'}, 'error');
+        // if not AbortError, log it
+        if (error?.message != 'Aborted') {
+          LogService.log(error, {component: 'providers', function: `scanForOllamaInstances: ${endpoint}`}, 'error');
+        }
         return null;
       }
     };
