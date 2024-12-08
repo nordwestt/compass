@@ -4,6 +4,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, logsAtom } from '@/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
 import LogService from '@/utils/LogService';
+import axios from 'axios';
 
 export const loadDefaultModel = async (): Promise<Model | null> => {
   try {
@@ -72,12 +73,11 @@ export function useModelFetching(providers: Provider[]) {
         try {
           switch (provider.source) {
             case 'ollama':
-              const ollamaResponse = await fetch(`${provider.endpoint}/api/tags`, {
+              const { data: ollamaData } = await axios.get(`${provider.endpoint}/api/tags`, {
                 headers: {
                   'Accept': 'application/json',
                 }
               });
-              const ollamaData = await ollamaResponse.json();
               
               if (ollamaData && Array.isArray(ollamaData.models)) {
                 models.push(...ollamaData.models
@@ -97,12 +97,11 @@ export function useModelFetching(providers: Provider[]) {
               break;
   
             case 'openai':
-              const openaiResponse = await fetch('https://api.openai.com/v1/models', {
+              const { data: openaiData } = await axios.get('https://api.openai.com/v1/models', {
                 headers: {
                   'Authorization': `Bearer ${provider.apiKey}`
                 }
               });
-              const openaiData = await openaiResponse.json();
               models.push(...openaiData.data
                 .filter((model: any) => model.id.includes('gpt'))
                 .map((model: any) => ({
@@ -113,13 +112,12 @@ export function useModelFetching(providers: Provider[]) {
               break;
   
             case 'anthropic':
-              const anthropicResponse = await fetch('https://api.anthropic.com/v1/models', {
+              const { data: anthropicData } = await axios.get('https://api.anthropic.com/v1/models', {
                 headers: {
                   'x-api-key': provider.apiKey,
                   'anthropic-version': '2023-06-01'
                 }
               });
-              const anthropicData = await anthropicResponse.json();
               models.push(...anthropicData.map((model: any) => ({
                 id: model.name,
                 name: model.name,

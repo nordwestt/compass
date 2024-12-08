@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Provider } from '@/types/core';
 import NetInfo from '@react-native-community/netinfo';
 import LogService from '@/utils/LogService';
+import axios from 'axios';
 
 interface ProvidersProps {
   className?: string;
@@ -183,21 +184,21 @@ export default function Providers({ className }: ProvidersProps) {
     // Modified test endpoint function that resolves as soon as a valid endpoint is found
     const testEndpoint = async (endpoint: string): Promise<string | null> => {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+        const source = axios.CancelToken.source();
+        const timeoutId = setTimeout(() => source.cancel(), TIMEOUT_MS);
   
-        const response = await fetch(`${endpoint}`, {
-          headers:{
+        const response = await axios.get(endpoint, {
+          headers: {
             'Accept': 'application/text',
           },
-          signal: controller.signal
+          cancelToken: source.token,
+          timeout: TIMEOUT_MS
         });
   
         clearTimeout(timeoutId);
-        return response.ok ? endpoint : null;
+        return response.status === 200 ? endpoint : null;
       } catch (error: any) {
-        // if not AbortError, log it
-        if (error?.message != 'Aborted') {
+        if (!axios.isCancel(error)) {
           LogService.log(error, {component: 'providers', function: `scanForOllamaInstances: ${endpoint}`}, 'error');
         }
         return null;
