@@ -80,6 +80,8 @@ export function useChat() {
         abortController.current.signal
       );
 
+      console.log("handling stream");
+
       await streamHandler.handleStream(response, updatedThread, dispatchThread);
 
     } catch (error) {

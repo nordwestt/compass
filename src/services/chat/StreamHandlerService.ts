@@ -1,18 +1,23 @@
 import { ThreadAction } from '@/hooks/atoms';
 import { MessageStreamHandler } from '@/src/types/chat';
 import { Thread } from '@/types/core';
-
+import { AxiosResponse } from 'axios';
+import { Readable } from 'stream';
 export class StreamHandlerService {
   constructor(private tts: any) {}
 
   async handleStream(
-    response: Response,
+    response: ReadableStream,
     currentThread: Thread,
     dispatchThread: (action: ThreadAction) => void,
     onComplete?: () => void
   ) {
-    const reader = response.body?.getReader();
-    if (!reader) throw new Error('Stream reader not available');
+    
+    console.log("reached here");
+    if (!response) throw new Error('Stream reader not available');
+    
+    const reader = response.getReader();
+    
 
     let assistantMessage = currentThread.messages[currentThread.messages.length - 1].content;
     let chunkCount = 0;
@@ -70,6 +75,8 @@ export class StreamHandlerService {
       if (line.trim() === '') continue;
       
       try {
+        //console.log(line);
+        return line;
         const parsedChunk = JSON.parse(line);
         const content = parsedChunk.message?.content || 
                        parsedChunk.choices?.[0]?.delta?.content || 

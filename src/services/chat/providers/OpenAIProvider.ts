@@ -2,9 +2,10 @@ import { ChatProvider } from '@/src/types/chat';
 import { Character } from '@/types/core';
 import { ChatMessage } from '@/types/core';
 import { Model } from '@/types/core';
+import axios, { AxiosResponse } from 'axios';
 
 export class OpenAIProvider implements ChatProvider {
-  async sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): Promise<Response> {
+  async sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): Promise<AxiosResponse> {
     const newMessages = [
       { role: 'system', content: character.content },
       ...messages.map(message => ({ 
@@ -13,11 +14,13 @@ export class OpenAIProvider implements ChatProvider {
       }))
     ];
 
-    return fetch(`${model.provider.endpoint}/v1/chat/completions`, {
-      method: 'POST',
+    return axios({
+      method: 'post', 
+      url: `${model.provider.endpoint}/v1/chat/completions`,
+      responseType:'stream',
       headers: { 'Content-Type': 'application/json' },
       signal,
-      body: JSON.stringify({
+      data: JSON.stringify({
         model: model.id,
         messages: newMessages,
         stream: true
