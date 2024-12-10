@@ -88,10 +88,12 @@ export class StreamHandlerService {
       
       try {
         const parsedChunk = JSON.parse(line);
-        content += parsedChunk.message?.content || 
+        let text = parsedChunk.message?.content || 
                        parsedChunk.choices?.[0]?.delta?.content || 
                        parsedChunk.delta?.text;
-        
+        if (text) {
+          content += text;
+        }
       } catch (error:any) {
         LogService.log(error, {component: 'StreamHandlerService', function: `processChunk`}, 'error');
       }
