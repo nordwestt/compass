@@ -6,7 +6,7 @@ import { ChatMessage } from "@/types/core";
 import { Model } from "@/types/core";
 
 export interface ChatProvider {
-  sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): Promise<Response>;
+  sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string>;
   sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string>;
   sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>;
 }

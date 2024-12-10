@@ -7,7 +7,7 @@ import LogService from '@/utils/LogService';
 
 
 export class OllamaProvider implements ChatProvider {
-  async sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): Promise<Response> {
+  async *sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string> {
     const newMessages = [
       { role: 'system', content: character.content },
       ...messages.map(message => ({ 
@@ -17,17 +17,44 @@ export class OllamaProvider implements ChatProvider {
     ];
 
     try{
-    return fetch(`${model.provider.endpoint}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal,
-      body: JSON.stringify({
-        model: model.id,
-        messages: newMessages,
-        stream: true
-      }),
-      reactNative: {textStreaming: true}
-    } as any);
+      const response =  await fetch(`${model.provider.endpoint}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal,
+        body: JSON.stringify({
+          model: model.id,
+          messages: newMessages,
+          stream: true
+        }),
+        reactNative: {textStreaming: true}
+      } as any);
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('No reader available');
+      }
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = new TextDecoder().decode(value, { stream: true });
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
+          if (line.trim() === '') continue;
+          
+          try {
+            const parsedChunk = JSON.parse(line);
+            const text = parsedChunk.message?.content || '';
+            if (text) {
+              yield text;
+            }
+          } catch (error: any) {
+            LogService.log(error, {component: 'OllamaProvider', function: 'sendMessage.processChunk'}, 'error');
+          }
+        }
+      }
     }
     catch(error:any){
       LogService.log(error, {component: 'OllamaProvider', function: `sendMessage: ${model.provider.endpoint}`}, 'error');

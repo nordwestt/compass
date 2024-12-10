@@ -1,4 +1,4 @@
-import { useAtom, useSetAtom } from 'jotai';
+import { getDefaultStore, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currentThreadAtom, threadActionsAtom, ThreadAction, searchEnabledAtom } from './atoms';
 import { useRef } from 'react';
 import { MentionedCharacter } from '@/components/ChatInput';
@@ -8,9 +8,10 @@ import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
 import { current } from 'tailwindcss/colors';
+import { Thread } from '@/types/core';
 
 export function useChat() {
-  const [currentThread] = useAtom(currentThreadAtom);
+  const currentThread = useAtomValue(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const [searchEnabled] = useAtom(searchEnabledAtom);
   const abortController = useRef<AbortController | null>(null);
@@ -27,6 +28,25 @@ export function useChat() {
     }
     tts.stopStreaming();
   };
+
+  const handleFirstMessage = async (
+    message: string,
+  ): Promise<void> => {
+    const systemPrompt = `Based on the user message, generate a concise 3-word title that captures the essence of the conversation. Format: "Word1 Word2 Word3" (no quotes, no periods but do include spaces).`;
+    const currentThread = getDefaultStore().get(currentThreadAtom);
+
+    const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
+    const title = await provider.sendSimpleMessage(message, currentThread.selectedModel, systemPrompt);
+    // wait for 100 ms before updating the thread
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+
+    dispatchThread({
+      type: 'update',
+      payload: { ...currentThread, title: title }
+    });
+  }
+
 
   const isSearchRequired = async (message: string) : Promise<{query: string, searchRequired: boolean}> => {
     const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
@@ -83,6 +103,10 @@ export function useChat() {
       console.log("handling stream");
 
       await streamHandler.handleStream(response, updatedThread, dispatchThread);
+      const isFirstMessage = currentThread.messages.length === 0;
+      if(isFirstMessage) {
+        handleFirstMessage(message);
+      }
 
     } catch (error) {
       // Handle error cases
@@ -90,6 +114,9 @@ export function useChat() {
       abortController.current = null;
     }
   };
+
+
+  
 
   return { handleSend, handleInterrupt };
 } 
