@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { View, ScrollView, Platform, TouchableOpacity } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
@@ -70,6 +70,11 @@ export const ChatThread: React.FC = () => {
       console.error('Error sending message:', error);
     } finally {
       setIsGenerating(false);
+      if(flatListRef.current) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        debouncedScrollToEnd();
+      }
+      
     }
   };
 
@@ -94,6 +99,24 @@ export const ChatThread: React.FC = () => {
       isUser={message.isUser}
       character={message.character}
     />
+  );
+
+  const scrollToEnd = useCallback(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToOffset({ offset: 9999, animated: true });
+    }
+  }, []);
+
+  // Debounced version of scrollToEnd
+  const debouncedScrollToEnd = useCallback(
+    (() => {
+      let timeoutId: NodeJS.Timeout;
+      return () => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(scrollToEnd, 300);
+      };
+    })(),
+    [scrollToEnd]
   );
 
   const messages = currentThread?.messages || [];
@@ -126,16 +149,17 @@ export const ChatThread: React.FC = () => {
         ref={flatListRef}
         data={messages}
         renderItem={renderItem}
-        estimatedItemSize={100}
+        estimatedItemSize={400}
         onContentSizeChange={() => {
           if (messages.length > 0) {
-            // wait for 100 ms before scrolling to end
-            setTimeout(() => {
-              flatListRef.current?.scrollToEnd({ animated: true })
-            }, 100);
+            debouncedScrollToEnd();
           }
         }}
         keyExtractor={(_, index) => index.toString()}
+        maintainVisibleContentPosition={{ // Add this prop
+          minIndexForVisible: 0,
+          autoscrollToTopThreshold: 10
+        }}
         className="flex-1 -mt-4 pt-4"
         contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
         ListEmptyComponent={
