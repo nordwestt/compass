@@ -4,10 +4,9 @@ import { Character, Thread } from "@/types/core";
 import { ChatMessage } from "@/types/core";
 
 import { Model } from "@/types/core";
-import { AxiosResponse } from "axios";
 
 export interface ChatProvider {
-  sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): Promise<ReadableStream>;
+  sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): Promise<Response>;
   sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string>;
   sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>;
 }

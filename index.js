@@ -2,11 +2,21 @@
 // import { polyfill } from 'react-native-polyfill-globals/src/fetch';
 // polyfill();
 
-// import { ReadableStream as ReadableStreamPolyfill } from 'web-streams-polyfill/dist/ponyfill';
+import { ReadableStream as ReadableStreamPolyfill } from 'web-streams-polyfill/dist/ponyfill';
 // // @ts-ignore
-// globalThis.ReadableStream = ReadableStreamPolyfill;
 
+import { polyfill as polyfillFetch } from 'react-native-polyfill-globals/src/fetch';
+
+import { Platform } from 'react-native';
 import 'text-encoding';
+globalThis.ReadableStream = ReadableStreamPolyfill;
+
+polyfillFetch();
+
+// if(Platform.OS !== 'web') {
+    
+//     polyfillFetch();
+// }
 
 // Your existing app entry point
 import 'expo-router/entry';

@@ -1,29 +1,34 @@
 import { ThreadAction } from '@/hooks/atoms';
 import { MessageStreamHandler } from '@/src/types/chat';
 import { Thread } from '@/types/core';
-import { AxiosResponse } from 'axios';
 import { Readable } from 'stream';
+import LogService from '@/utils/LogService';
+
 export class StreamHandlerService {
   constructor(private tts: any) {}
 
   async handleStream(
-    response: ReadableStream,
+    response: Response,
     currentThread: Thread,
     dispatchThread: (action: ThreadAction) => void,
     onComplete?: () => void
   ) {
-    
+    try {
     console.log("reached here");
     if (!response) throw new Error('Stream reader not available');
     
-    const reader = response.getReader();
+    const reader = response.body?.getReader();
+    if(!reader) {
+      LogService.log(`No reader available ${JSON.stringify(response.body)}`, {component: 'StreamHandlerService', function: `handleStream`}, 'error');
+
+      return;
+    }
     
 
     let assistantMessage = currentThread.messages[currentThread.messages.length - 1].content;
     let chunkCount = 0;
     const isFirstMessage = currentThread.messages.length === 2;
-
-    try {
+    
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
@@ -49,8 +54,13 @@ export class StreamHandlerService {
           );
         }
       }
-    } finally {
+
       reader.releaseLock();
+    } 
+    catch(error:any){
+      LogService.log(error, {component: 'StreamHandlerService', function: `handleStream`}, 'error');
+    }
+    finally {
       onComplete?.();
     }
   }
@@ -75,9 +85,10 @@ export class StreamHandlerService {
       if (line.trim() === '') continue;
       
       try {
-        //console.log(line);
-        return line;
+        //console.log(line, typeof line);
+        //return line;
         const parsedChunk = JSON.parse(line);
+        //console.log(parsedChunk);
         const content = parsedChunk.message?.content || 
                        parsedChunk.choices?.[0]?.delta?.content || 
                        parsedChunk.delta?.text;
@@ -85,8 +96,8 @@ export class StreamHandlerService {
         if (content) {
           return content;
         }
-      } catch (e) {
-        console.error('Error parsing chunk:', e);
+      } catch (error:any) {
+        LogService.log(error, {component: 'StreamHandlerService', function: `processChunk`}, 'error');
       }
     }
     return null;
