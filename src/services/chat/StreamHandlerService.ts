@@ -79,28 +79,24 @@ export class StreamHandlerService {
 
   private async processChunk(value: Uint8Array): Promise<string | null> {
     const chunk = new TextDecoder().decode(value, { stream: true });
+    
     const lines = chunk.split('\n');
     
+    let content = '';
     for (const line of lines) {
       if (line.trim() === '') continue;
       
       try {
-        //console.log(line, typeof line);
-        //return line;
         const parsedChunk = JSON.parse(line);
-        //console.log(parsedChunk);
-        const content = parsedChunk.message?.content || 
+        content += parsedChunk.message?.content || 
                        parsedChunk.choices?.[0]?.delta?.content || 
                        parsedChunk.delta?.text;
         
-        if (content) {
-          return content;
-        }
       } catch (error:any) {
         LogService.log(error, {component: 'StreamHandlerService', function: `processChunk`}, 'error');
       }
     }
-    return null;
+    return content;
   }
 
   private async updateMessage(

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, PermissionsAndroid } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, PermissionsAndroid, Platform } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAtom } from 'jotai';
 import { availableProvidersAtom, logsAtom } from '@/hooks/atoms';
@@ -44,23 +44,28 @@ export default function Providers({ className }: ProvidersProps) {
 
   const autoScanForOllama = async () => {
 
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'Fine Location Permission',
-        message:
-          'Compass needs access to your location ' +
-          'so it can scan for Ollama instances on your network.',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Location permission granted');
-    } else {
-      console.log('Location permission denied');
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Fine Location Permission',
+          message:
+            'Compass needs access to your location ' +
+            'so it can scan for Ollama instances on your network.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );  
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location permission granted');
+      } else {
+        console.log('Location permission denied');
+      }
     }
+
+    
+    
 
     setScanning(true);
     try{
