@@ -7,6 +7,7 @@ import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { rawThemes } from '@/constants/themes';
 import { useThemePreset } from './ThemeProvider';
 import { useColorScheme } from 'nativewind';
+import { router } from 'expo-router';
 
 interface CharacterSelectorProps {
   selectedPrompt: Character;
@@ -63,6 +64,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
                       onSelectPrompt(prompt);
                       setIsModalVisible(false);
                     }}
+                    onLongPress={() => {setIsModalVisible(false); router.push(`/edit-character?id=${prompt.id}`)}}
                     className="w-[48%] mb-4 rounded-lg bg-white"
                   >
                     <View className="items-center p-3">

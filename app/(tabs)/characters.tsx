@@ -75,7 +75,7 @@ export default function CharactersScreen() {
         </Text>
         <View className="flex-row flex-wrap justify-between mb-8">
           {customPrompts.map((prompt) => (
-            <TouchableOpacity onPress={() => startChat(prompt)} onLongPress={() => handleEdit(prompt)} key={prompt.id} className="w-[48%] mb-4 bg-surface rounded-lg p-4 shadow-md">
+            <TouchableOpacity onPress={() => startChat(prompt)} onLongPress={() => router.push(`/edit-character?id=${prompt.id}`)} key={prompt.id} className="w-[48%] mb-4 bg-surface rounded-lg p-4 shadow-md">
               <View className="items-center">
                 <Image source={prompt.image} className="!h-[80px] !w-[80px] rounded-full mb-2" />
                 <Text className="font-medium text-center text-gray-800 dark:text-gray-200">
