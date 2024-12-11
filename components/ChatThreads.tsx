@@ -123,9 +123,11 @@ const ChatThreads: React.FC = () => {
         sections={groupThreadsByDate(threads)}
         keyExtractor={(thread) => thread.id}
         renderSectionHeader={({ section: { title } }) => (
-          <Text className="text-sm font-semibold text-text/50 px-4 py-2 bg-background/80">
-            {title}
-          </Text>
+          <View className="z-10">
+            <Text className="text-sm font-semibold text-text/50 px-4 py-2 bg-background">
+              {title}
+            </Text>
+          </View>
         )}
         renderItem={({ item: thread }) => (
           <View className="flex-row items-center mb-2 px-4">
