@@ -99,37 +99,6 @@ export default function CharactersScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* {customPrompts.map((prompt) => (
-          <View key={prompt.id} className="bg-background rounded-lg p-4 mb-4 shadow-sm">
-            <View className="flex-row items-center justify-between">
-              <View className="flex-row items-center flex-1">
-                <Image source={prompt.image} className="!h-[64px] !w-[64px] rounded-full mr-3" />
-                <View className="flex-1">
-                  <Text className="font-medium text-gray-800 dark:text-gray-200">
-                    {prompt.name}
-                  </Text>
-                  <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {prompt.content.slice(0, 50)}...
-                  </Text>
-                </View>
-              </View>
-              <View className="flex-row">
-                <TouchableOpacity 
-                  onPress={() => handleEdit(prompt)}
-                  className="p-2"
-                >
-                  <Ionicons name="pencil" size={20} color="#4B5563" />
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  onPress={() => handleDelete(prompt.id)}
-                  className="p-2"
-                >
-                  <Ionicons name="trash" size={20} color="#EF4444" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        ))} */}
       </ScrollView>
     </View>
   );
