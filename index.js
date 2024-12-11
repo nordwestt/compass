@@ -11,12 +11,10 @@ import { Platform } from 'react-native';
 import 'text-encoding';
 globalThis.ReadableStream = ReadableStreamPolyfill;
 
-polyfillFetch();
-
-// if(Platform.OS !== 'web') {
+if(Platform.OS !== 'web') {
     
-//     polyfillFetch();
-// }
+    polyfillFetch();
+}
 
 // Your existing app entry point
 import 'expo-router/entry';
