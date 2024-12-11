@@ -10,14 +10,15 @@ export class CharacterContextManager implements ChatContextManager {
     let messagesToSend: ChatMessage[] = [];
 
     if (mentionedCharacters.length > 0) {
-      const contextMessage = this.buildContextMessage(newMessage, currentThread);
+      const contextMessage = this.buildContextMessage(currentThread);
       assistantPlaceholder = { 
         content: '', 
         isUser: false, 
         character: mentionedCharacters[0].character 
       };
       messagesToSend = [
-        { content: contextMessage, isUser: true },
+        { content: contextMessage, isUser: false,isSystem: true },
+        newMessage,
         assistantPlaceholder
       ];
     } else {
@@ -25,13 +26,14 @@ export class CharacterContextManager implements ChatContextManager {
     }
     
     let historyToSend: ChatMessage[] = [];
-    // any character messages should be merged with the user's last message
+    // any character messages should be inserted before the user's last message as system message
     for (let i = 0; i < currentThread.messages.length; i++) {
         const message = currentThread.messages[i];
         if (message.character && historyToSend.length > 0) {
-        historyToSend[historyToSend.length - 1].content += `\n\n${[message.character.name]} responded: "${message.content}"`;
-        } else {
-        historyToSend.push(message);
+          historyToSend.push({ content: `${message.character.name} responded: "${message.content}"`, isUser: false, isSystem: true });
+        } 
+        else{
+          historyToSend.push(message);
         }
     }
 
@@ -46,14 +48,14 @@ export class CharacterContextManager implements ChatContextManager {
     };
   }
 
-  private buildContextMessage(newMessage: ChatMessage, thread: Thread): string {
+  private buildContextMessage(thread: Thread): string {
     if (thread.messages.length < 2) {
-      return `User: "${newMessage.content}"`;
+      return ``;
     }
 
     const userLastMessage = thread.messages[thread.messages.length - 2];
     const assistantLastMessage = thread.messages[thread.messages.length - 1];
     
-    return `I told ${thread.character.name} "${userLastMessage.content}" and they responded with "${assistantLastMessage.content}"\n\nUser: "${newMessage.content}"`;
+    return `User told ${thread.character.name} "${userLastMessage.content}" and they responded with "${assistantLastMessage.content}"`;
   }
 } 
