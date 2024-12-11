@@ -59,6 +59,13 @@ export default function EditCharacterScreen() {
     }
   };
 
+  const deleteCharacter = async () => {
+    const updatedPrompts = customPrompts.filter(p => p.id !== id);
+    await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
+    setCustomPrompts(updatedPrompts);
+    router.back();
+  };
+
   return (
     <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
@@ -104,10 +111,19 @@ export default function EditCharacterScreen() {
         </View>
       </ScrollView>
 
-      <View className="p-4 border-t border-border">
+      <View className="p-4 border-t border-border flex-row justify-between">
+        <TouchableOpacity
+          onPress={() => deleteCharacter()}
+          className="bg-red-500 p-4 rounded-lg flex-row items-center justify-center flex-1 mr-2"
+        >
+          <Ionicons name="trash-outline" size={20} color="white" className="mr-2" />
+          <Text className="text-white font-medium text-base">
+            Delete
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={saveCharacter}
-          className="bg-primary p-4 rounded-lg flex-row items-center justify-center"
+          className="bg-primary p-4 rounded-lg flex-row items-center justify-center flex-1"
         >
           <Ionicons name="save-outline" size={20} color="white" className="mr-2" />
           <Text className="text-white font-medium text-base">
