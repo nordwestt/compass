@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, Image, View, Text } from 'react-native';
+import React from 'react';
+import { TouchableOpacity, Image, View, Text, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system';
@@ -31,21 +31,32 @@ export function ImagePickerButton({ currentImage, onImageSelected }: ImagePicker
         { compress: 1, format: ImageManipulator.SaveFormat.PNG }
       );
 
-      // Save image to app's permanent storage
-      const fileName = `character_${Date.now()}.png`;
-      const newPath = `${FileSystem.documentDirectory}characters/${fileName}`;
-      
-      // Ensure directory exists
-      await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}characters/`, {
-        intermediates: true
-      });
+      if (Platform.OS === 'web') {
+        // For web, we can use the manipulated image URI directly
+        onImageSelected(manipulatedImage.uri);
+      } else {
+        // For native platforms, save to app's storage
+        const fileName = `character_${Date.now()}.png`;
+        const newPath = `${FileSystem.documentDirectory}characters/${fileName}`;
+        
+        try {
+          // Ensure directory exists
+          await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}characters/`, {
+            intermediates: true
+          });
 
-      await FileSystem.copyAsync({
-        from: manipulatedImage.uri,
-        to: newPath
-      });
+          await FileSystem.copyAsync({
+            from: manipulatedImage.uri,
+            to: newPath
+          });
 
-      onImageSelected(newPath);
+          onImageSelected(newPath);
+        } catch (error) {
+          console.error('Error saving image:', error);
+          // Fallback to using the manipulated image URI directly
+          onImageSelected(manipulatedImage.uri);
+        }
+      }
     }
   };
 
