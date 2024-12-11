@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, SectionList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
 import { threadsAtom, currentThreadAtom, threadActionsAtom } from '@/hooks/atoms';
@@ -9,15 +9,48 @@ import { Thread } from '@/types/core';
 import { createDefaultThread } from '@/hooks/atoms';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import { FlatList } from 'react-native';
 
-export const ChatThreads: React.FC = () => {
+interface Section {
+  title: string;
+  data: Thread[];
+}
+
+const ChatThreads: React.FC = () => {
   const [threads] = useAtom(threadsAtom);
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
-  const scrollViewRef = useRef<FlatList>(null);
+  const scrollViewRef = useRef<SectionList>(null);
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+
+  const groupThreadsByDate = useCallback((threads: Thread[]): Section[] => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const sections: Section[] = [
+      { title: 'Before', data: [] },
+      { title: 'Yesterday', data: [] },
+      { title: 'Today', data: [] },
+    ];
+
+    threads.forEach(thread => {
+      const threadDate = new Date(parseInt(thread.id));
+      threadDate.setHours(0, 0, 0, 0);
+
+      if (threadDate.getTime() === today.getTime()) {
+        sections[2].data.push(thread);
+      } else if (threadDate.getTime() === yesterday.getTime()) {
+        sections[1].data.push(thread);
+      } else {
+        sections[0].data.push(thread);
+      }
+    });
+
+    // Remove empty sections
+    return sections.filter(section => section.data.length > 0);
+  }, []);
 
   const addNewThread = async () => {
     const defaultModel = await AsyncStorage.getItem('defaultModel');
@@ -85,12 +118,17 @@ export const ChatThreads: React.FC = () => {
 
   return (
     <View className="flex flex-col flex-grow bg-background">
-      <FlatList
+      <SectionList
         ref={scrollViewRef}
-        data={threads}
+        sections={groupThreadsByDate(threads)}
         keyExtractor={(thread) => thread.id}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text className="text-sm font-semibold text-text/50 px-4 py-2 bg-background/80">
+            {title}
+          </Text>
+        )}
         renderItem={({ item: thread }) => (
-          <View className="flex-row items-center mb-2">
+          <View className="flex-row items-center mb-2 px-4">
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
@@ -116,12 +154,29 @@ export const ChatThreads: React.FC = () => {
             </TouchableOpacity>
           </View>
         )}
-        contentContainerStyle={{ justifyContent: 'flex-end', flexGrow: 1, padding:10 }}
-        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={10}
-        windowSize={5}
+        onScrollToIndexFailed={(info) => {
+          console.warn('Failed to scroll to index', info);
+          // Fallback to scrollToEnd if scrollToLocation fails
+          setTimeout(() => {
+          }, 100);
+        }}
+        stickySectionHeadersEnabled={true}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
+        onContentSizeChange={() => {
+          const lastSectionIndex = groupThreadsByDate(threads).length - 1;
+          console.log(lastSectionIndex);
+          const lastSection = groupThreadsByDate(threads)[lastSectionIndex];
+          if (lastSection?.data.length > 0) {
+            scrollViewRef.current?.scrollToLocation({ 
+              sectionIndex: lastSectionIndex,
+              itemIndex: 0,
+              animated: true,
+              viewOffset: 0
+            });
+          }
+        }}
       />
+      
       <TouchableOpacity 
         onPress={addNewThread} 
         className="mb-2 p-2 rounded-full bg-background"
@@ -146,4 +201,6 @@ export const ChatThreads: React.FC = () => {
       </View>
     </View>
   );
-}; 
+};
+
+export { ChatThreads }; 
