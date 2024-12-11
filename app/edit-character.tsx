@@ -7,6 +7,7 @@ import { Character } from '@/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
+import { ImagePickerButton } from '@/components/ImagePickerButton';
 
 export default function EditCharacterScreen() {
   const router = useRouter();
@@ -29,6 +30,13 @@ export default function EditCharacterScreen() {
 
   const [name, setName] = useState(character?.name || '');
   const [content, setContent] = useState(character?.content || '');
+  const [characterImage, setCharacterImage] = useState<string | null>(
+    typeof character?.image === 'string' ? character.image : null
+  );
+
+  const handleImageSelected = (imageUri: string) => {
+    setCharacterImage(imageUri);
+  };
 
   const saveCharacter = async () => {
     if (!name.trim() || !content.trim()) return;
@@ -38,7 +46,7 @@ export default function EditCharacterScreen() {
       if (id) {
         // Edit existing character
         updatedPrompts = customPrompts.map(p =>
-          p.id === id ? { ...p, name, content } : p
+          p.id === id ? { ...p, name, content, image: characterImage || p.image } : p
         );
       } else {
         // Create new character
@@ -46,7 +54,7 @@ export default function EditCharacterScreen() {
           id: Date.now().toString(),
           name,
           content,
-          image: require('@/assets/characters/default.png')
+          image: characterImage || require('@/assets/characters/default.png')
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
@@ -70,13 +78,10 @@ export default function EditCharacterScreen() {
     <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
         <View className="items-center mb-8">
-          <Image 
-            source={character?.image} 
-            className="!h-[80px] !w-[80px] rounded-full mb-4"
+          <ImagePickerButton
+            currentImage={characterImage || character?.image}
+            onImageSelected={handleImageSelected}
           />
-          <Text className="text-sm text-text">
-            Character Avatar
-          </Text>
         </View>
 
         <View className="space-y-6">
