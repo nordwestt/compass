@@ -84,7 +84,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
     }
 
     const filteredCharacters = allCharacters.filter(char => 
-      char.name.toLowerCase().includes(mentionSearch.toLowerCase())
+      mentionSearch != '' && char.name.toLowerCase().includes(mentionSearch.toLowerCase())
     );
 
     if(filteredCharacters.length === 0) {
