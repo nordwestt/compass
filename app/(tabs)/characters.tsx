@@ -7,11 +7,18 @@ import { createDefaultThread, customPromptsAtom, threadActionsAtom } from '@/hoo
 import { Character } from '@/types/core';
 import { modalService } from '@/services/modalService';
 import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
 
 export default function CharactersScreen() {
   const router = useRouter();
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
+
+  useEffect(()=>{
+    if(customPrompts.length === 0){
+      setCustomPrompts(PREDEFINED_PROMPTS);
+    }
+  },[customPrompts])
 
   const saveCustomPrompts = async (prompts: Character[]) => {
     try {
@@ -64,10 +71,10 @@ export default function CharactersScreen() {
     <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
         <Text className="text-2xl font-bold mb-4 text-primary">
-          Default Characters
+          Characters
         </Text>
         <View className="flex-row flex-wrap justify-between mb-8">
-          {PREDEFINED_PROMPTS.map((prompt) => (
+          {customPrompts.map((prompt) => (
             <TouchableOpacity onPress={() => startChat(prompt)} onLongPress={() => handleEdit(prompt)} key={prompt.id} className="w-[48%] mb-4 bg-surface rounded-lg p-4 shadow-md">
               <View className="items-center">
                 <Image source={prompt.image} className="!h-[80px] !w-[80px] rounded-full mb-2" />
@@ -83,9 +90,7 @@ export default function CharactersScreen() {
         </View>
 
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-            Custom Characters
-          </Text>
+          
           <TouchableOpacity
             onPress={handleAdd}
             className="bg-primary p-2 rounded-full"
@@ -94,7 +99,7 @@ export default function CharactersScreen() {
           </TouchableOpacity>
         </View>
 
-        {customPrompts.map((prompt) => (
+        {/* {customPrompts.map((prompt) => (
           <View key={prompt.id} className="bg-background rounded-lg p-4 mb-4 shadow-sm">
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center flex-1">
@@ -124,7 +129,7 @@ export default function CharactersScreen() {
               </View>
             </View>
           </View>
-        ))}
+        ))} */}
       </ScrollView>
     </View>
   );
