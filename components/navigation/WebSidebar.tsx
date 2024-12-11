@@ -22,7 +22,7 @@ export function WebSidebar({ className }: { className?: string }) {
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
 
   return (
-    <View className={`h-full border-r border-border bg-background ${className}`}>
+    <View className={`h-full bg-background ${className}`}>
       {routes.map((route, index) => (
         <Pressable
           key={route.key}
