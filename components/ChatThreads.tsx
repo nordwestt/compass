@@ -117,7 +117,7 @@ const ChatThreads: React.FC = () => {
   };
 
   return (
-    <View className="flex flex-col flex-grow bg-background">
+    <View className="flex-1 flex-col bg-background">
       <SectionList
         ref={scrollViewRef}
         sections={groupThreadsByDate(threads)}
