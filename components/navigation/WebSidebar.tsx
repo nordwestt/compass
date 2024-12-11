@@ -28,16 +28,16 @@ export function WebSidebar({ className }: { className?: string }) {
           key={route.key}
           onPress={() => setCurrentIndex(index)}
           className={`flex-row items-center p-4 space-x-3 ${
-            currentIndex === index ? 'bg-primary/10' : ''
+            currentIndex === index ? 'border-r border-primary' : ''
           }`}
         >
           <TabBarIcon 
             name={route.icon as any} 
             size={22} 
-            className={currentIndex === index ? '!text-secondary' : '!text-primary'} 
+            className={currentIndex === index ? '!text-primary' : '!text-secondary'} 
           />
           <Text 
-            className={currentIndex === index ? 'text-secondary' : 'text-primary'}
+            className={currentIndex === index ? 'text-primary' : 'text-secondary'}
           >
             {route.title}
           </Text>

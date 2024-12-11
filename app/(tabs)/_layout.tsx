@@ -1,9 +1,7 @@
-import { Tabs } from 'expo-router';
 import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Platform,useWindowDimensions, View } from 'react-native';
 import { useColorScheme, vars } from 'nativewind';
-import colors from "tailwindcss/colors";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import IndexRoute from './index';
 import CharactersRoute from './characters';
@@ -11,7 +9,6 @@ import SettingsRoute from './settings';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemePreset } from '@/components/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
-import { WebSidebar } from '@/components/navigation/WebSidebar';
 import { currentIndexAtom } from '@/hooks/atoms';
 import { useAtom } from 'jotai';
 //import { useThemeValue } from '@/constants/themes';
@@ -73,7 +70,7 @@ export default function TabLayout() {
         renderTabBar={renderTabBar}
         commonOptions={{
           icon: ({ route, focused, color }) => {
-            return <TabBarIcon name={route.icon as any} size={22} className='!text-primary' />;
+            return <TabBarIcon name={route.icon as any} size={22} className={`${focused ? '!text-primary' : '!text-secondary'}`}/>;
           },
         }}
       />
