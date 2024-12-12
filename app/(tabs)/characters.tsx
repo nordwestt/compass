@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { createDefaultThread, customPromptsAtom, threadActionsAtom } from '@/hooks/atoms';
+import { createDefaultThread, customPromptsAtom, threadActionsAtom, threadsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { modalService } from '@/services/modalService';
 import { useRouter } from 'expo-router';
@@ -13,6 +13,8 @@ export default function CharactersScreen() {
   const router = useRouter();
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
+  const threads = useAtomValue(threadsAtom);
+
 
   useEffect(()=>{
     if(customPrompts.length === 0){
@@ -50,7 +52,24 @@ export default function CharactersScreen() {
   };
 
   const startChat = async (prompt: Character) => {
+    const latestThread = threads[threads.length - 1];
     
+    // If the latest thread has no messages, update it instead of creating a new one
+    if (latestThread && latestThread.messages.length === 0) {
+      const defaultModel = await AsyncStorage.getItem('defaultModel');
+      latestThread.selectedModel = defaultModel ? JSON.parse(defaultModel) : {
+        id: '',
+        provider: { source: 'ollama', endpoint: '', apiKey: '' }
+      };
+      latestThread.character = prompt;
+      
+      await dispatchThread({ type: 'update', payload: latestThread });
+      await dispatchThread({ type: 'setCurrent', payload: latestThread });
+      router.push(`/thread/${latestThread.id}`);
+      return;
+    }
+
+    // Otherwise create a new thread as before
     const defaultModel = await AsyncStorage.getItem('defaultModel');
     const newThread = createDefaultThread();
     newThread.selectedModel = defaultModel ? JSON.parse(defaultModel) : {
