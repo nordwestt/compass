@@ -2,9 +2,9 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "compass",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.nordwestt.compass",
   "build": {
-    "frontendDist": "../build",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:3000",
     "beforeDevCommand": "npm run web",
     "beforeBuildCommand": "npm run build:web"
