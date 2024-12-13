@@ -6,11 +6,12 @@ interface ProviderCardProps {
   provider: Provider;
   onEdit: (provider: Provider) => void;
   onDelete: (id: string) => void;
+  className?: string;
 }
 
-export function ProviderCard({ provider, onEdit, onDelete }: ProviderCardProps) {
+export function ProviderCard({ provider, onEdit, onDelete, className }: ProviderCardProps) {
   return (
-    <View key={provider.id} className="bg-background rounded-lg p-4 shadow-sm mb-2">
+    <View key={provider.id} className={`rounded-lg p-4 shadow-sm ${className}`}>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
           {provider.source !== 'custom' && (
@@ -22,7 +23,7 @@ export function ProviderCard({ provider, onEdit, onDelete }: ProviderCardProps) 
                   ? require('@/assets/images/openai-icon.png')
                   : require('@/assets/images/ollama-icon.png')
               }
-              className="!w-[64px] !h-[64px] mr-2"
+              className="mr-2 !h-[48px] !w-[48px]"
             />
           )}
           <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200">

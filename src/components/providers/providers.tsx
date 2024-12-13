@@ -98,8 +98,8 @@ export default function Providers({ className }: ProvidersProps) {
           API Providers
         </Text>
 
-        {providers.map((provider) => (
-          <ProviderCard
+        {providers.map((provider, index) => (
+          <ProviderCard className={`border-b border-border ${index % 2 === 1 ? 'bg-gray-200' : ''}`}
             key={provider.id}
             provider={provider}
             onEdit={handleEdit}
