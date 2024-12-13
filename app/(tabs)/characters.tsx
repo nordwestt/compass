@@ -89,33 +89,33 @@ export default function CharactersScreen() {
   return (
     <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
-        <Text className="text-2xl font-bold mb-4 text-primary">
-          Characters
-        </Text>
-        <View className="flex-row flex-wrap justify-between mb-8">
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-2xl font-bold text-primary">
+            Characters
+          </Text>
+          <TouchableOpacity
+              onPress={handleAdd}
+              className="bg-primary px-4 py-2 rounded-lg flex-row items-center">
+              <Ionicons name="add" size={20} color="white" />
+              <Text className="text-white ml-2 font-medium">New Character</Text>
+            </TouchableOpacity>
+        </View>
+        <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8">
           {customPrompts.map((prompt) => (
-            <TouchableOpacity onPress={() => startChat(prompt)} onLongPress={() => router.push(`/edit-character?id=${prompt.id}`)} key={prompt.id} className="w-[48%] mb-4 bg-surface rounded-lg p-4 shadow-md">
-              <View className="items-center">
+            <TouchableOpacity onPress={() => startChat(prompt)} onLongPress={() => router.push(`/edit-character?id=${prompt.id}`)} key={prompt.id} className="w-[calc(50%-8px)] md:w-[calc(33.33%-16px)] lg:w-[calc(25%-16px)]">
+              <View className="items-center bg-surface rounded-xl p-4 border border-gray-200 flex flex-row shadow-lg">
                 <Image source={prompt.image} className="!h-[80px] !w-[80px] rounded-full mb-2" />
-                <Text className="font-medium text-center text-gray-800 dark:text-gray-200">
-                  {prompt.name}
-                </Text>
-                <Text className="text-sm text-center text-gray-500 dark:text-gray-400 mt-1">
-                  {prompt.content.slice(0, 50)}...
-                </Text>
+                <View className="flex-1">
+                  <Text className="font-bold text-center text-text">
+                    {prompt.name}
+                  </Text>
+                  <Text className="text-sm text-center text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2">
+                    {prompt.content.slice(0, 50)}...
+                  </Text>
+                </View>
               </View>
             </TouchableOpacity>
           ))}
-        </View>
-
-        <View className="flex-row justify-between items-center mb-4">
-          
-          <TouchableOpacity
-            onPress={handleAdd}
-            className="bg-primary p-2 rounded-full"
-          >
-            <Ionicons name="add" size={24} color="white" />
-          </TouchableOpacity>
         </View>
 
       </ScrollView>
