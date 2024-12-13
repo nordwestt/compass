@@ -7,6 +7,7 @@ import { useColorScheme } from 'nativewind';
 import { routes } from '@/app/(tabs)/_layout';
 import { currentIndexAtom } from '@/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
+import { useRouter } from 'expo-router';
 
 interface Route {
   key: string;
@@ -17,6 +18,7 @@ interface Route {
 
 export function WebSidebar({ className }: { className?: string }) {
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
+  const router = useRouter();
   const { colorScheme } = useColorScheme();
   const { themePreset } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
@@ -26,7 +28,10 @@ export function WebSidebar({ className }: { className?: string }) {
       {routes.map((route, index) => (
         <Pressable
           key={route.key}
-          onPress={() => setCurrentIndex(index)}
+          onPress={() => {
+            setCurrentIndex(index);
+            router.replace(`/${route.key == 'index' ? '' : route.key}` as any);
+          }}
           className={`flex-row items-center p-4 space-x-3 ${
             currentIndex === index ? 'border-r border-primary' : ''
           }`}
