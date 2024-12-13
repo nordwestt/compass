@@ -148,7 +148,7 @@ export function useModelFetching(providers: Provider[]) {
     }
 
     if(providers.length === 0) {
-      return useMemo(()=> models, [models]);
+      return;
     }
 
     if (providers.length > 0) {
