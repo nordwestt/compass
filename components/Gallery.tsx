@@ -9,6 +9,19 @@ export function Gallery() {
   const screenWidth = Dimensions.get('window').width;
   const imageSize = screenWidth < 768 ? screenWidth / 2 - 24 : screenWidth / 4 - 32;
 
+  if (images.length === 0) {
+    return (
+      <View className="flex-1 bg-background p-4 justify-center items-center">
+        <Text className="text-text text-lg text-center mb-2">
+          No images generated yet
+        </Text>
+        <Text className="text-gray-500 text-center">
+          Generate some images and they will appear here
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView className="flex-1 bg-background p-4">
       <Text className="text-2xl font-bold text-text mb-4">
