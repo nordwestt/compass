@@ -17,6 +17,8 @@ export class OllamaProvider implements ChatProvider {
     ];
 
     try{
+
+      
       const response =  await fetch(`${model.provider.endpoint}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,26 +36,40 @@ export class OllamaProvider implements ChatProvider {
         throw new Error('No reader available');
       }
 
+      let buffer = '';
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = new TextDecoder().decode(value, { stream: true });
-        const lines = chunk.split('\n');
-        
-        for (const line of lines) {
-          if (line.trim() === '') continue;
-          
-          try {
-            const parsedChunk = JSON.parse(line);
-            const text = parsedChunk.message?.content || '';
-            if (text) {
-              yield text;
-            }
-          } catch (error: any) {
-            LogService.log(error, {component: 'OllamaProvider', function: 'sendMessage.processChunk'}, 'error');
-          }
+        const chunk = new TextDecoder().decode(value, { stream: false });
+        buffer += chunk;
+        let parsedChunk = null;
+
+        try{
+          parsedChunk = JSON.parse(buffer);
+          yield parsedChunk.message?.content || '';
+          buffer = '';
+          continue;
         }
+        catch(error: any){
+        }
+
+        // const lines = chunk.split('\n');
+        
+        // for (const line of lines) {
+        //   if (line.trim() === '') continue;
+          
+        //   try {
+        //     const parsedChunk = JSON.parse(line);
+        //     const text = parsedChunk.message?.content || '';
+        //     if (text) {
+        //       yield text;
+        //     }
+        //   } catch (error: any) {
+        //     LogService.log(error, {component: 'OllamaProvider', function: `sendMessage.processChunk: ${line}`}, 'error');
+        //   }
+        // }
       }
     }
     catch(error:any){
