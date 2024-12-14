@@ -8,29 +8,36 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export class ReplicateProvider implements ImageProvider {
     async generateImage(prompt: string, model: Model, signal?: AbortSignal): Promise<string> {
         try {
+            let url = `${model.provider.endpoint}/v1/models/${model.id}/predictions`;
+            url = url.replace('https://api.replicate.com', 'http://localhost:8010/proxy');
+
             // Create prediction
             const createResponse = await axios.post(
-                `${model.provider.endpoint}/predictions`,
+                url,
                 {
-                    "aspect_ratio": "1:1",
-                    "go_fast": true,
-                    "megapixels": "1",
-                    "num_inference_steps": 4,
-                    "num_outputs": 1,
-                    "output_format": "webp",
-                    "output_quality": 80,
-                    "prompt": prompt
+                    input: {
+                        "aspect_ratio": "1:1",
+                        "go_fast": true,
+                        "megapixels": "1",
+                        "num_inference_steps": 4,
+                        "num_outputs": 1,
+                        "output_format": "webp",
+                        "output_quality": 80,
+                        "prompt": prompt
+                    }
                 },
                 {
                     headers: {
-                        'Authorization': `Token ${model.provider.apiKey}`,
-                        'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${model.provider.apiKey}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'wait'
                     },
                     signal
                 }
             );
 
-            const predictionUrl = createResponse.data.urls.get;
+            let predictionUrl = createResponse.data.urls.get;
+            predictionUrl = predictionUrl.replace('https://api.replicate.com', 'http://localhost:8010/proxy');
 
             // Poll for completion
             while (true) {
@@ -48,6 +55,10 @@ export class ReplicateProvider implements ImageProvider {
 
                 if (prediction.status === 'succeeded') {
                     const imageUrl = prediction.output[0];
+
+                    if(Platform.OS === 'web') {
+                        return imageUrl;
+                    }
                     
                     // Create a unique filename using timestamp
                     const timestamp = new Date().getTime();
