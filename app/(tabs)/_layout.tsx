@@ -24,7 +24,7 @@ export const routes = [
   { key: 'index', title: 'Chat', icon: 'chatbubble' },
   { key: 'characters', title: 'Characters', icon: 'people' },
   { key: 'images', title: 'Images', icon: 'image' },
-  { key: 'settings', title: 'Settings', icon: 'settings' },
+  { key: 'settings', title: 'Settings', icon: 'cog' },
 ];
 
 export default function TabLayout() {

@@ -90,9 +90,12 @@ export default function CharactersScreen() {
     <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
         <View className="flex-row justify-between items-center mb-4">
+        <View className="flex-row items-center p-4">
+          <Ionicons name="people" size={32} className="text-primary mr-2 pb-2" />
           <Text className="text-2xl font-bold text-primary">
-            Characters
+              Characters
           </Text>
+        </View>
           <TouchableOpacity
               onPress={handleAdd}
               className="bg-primary px-4 py-2 rounded-lg flex-row items-center">

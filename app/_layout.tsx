@@ -43,7 +43,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <View className="flex-row flex-1">
-      {isDesktop && <WebSidebar className="w-32 z-[2]" />}
+      {isDesktop && <WebSidebar className="z-[2]" />}
       <Stack screenOptions={{
             headerStyle: {
               backgroundColor: theme.surface,

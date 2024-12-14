@@ -5,6 +5,7 @@ import { generatedImagesAtom } from '@/hooks/atoms';
 import { format } from 'date-fns';
 import { ImageGenerator } from '@/components/ImageGenerator';
 import { Gallery } from '@/components/Gallery';
+import { Ionicons } from '@expo/vector-icons';
 type Tab = 'generator' | 'gallery';
 
 export default function ImageGenerationScreen() {
@@ -36,10 +37,13 @@ export default function ImageGenerationScreen() {
   );
 
   return (
-    <View className="flex-1 bg-background">
-      <Text className="text-2xl font-bold text-primary p-4">
+    <View className="flex-1 bg-background p-4">
+      <View className="flex-row items-center p-4">
+        <Ionicons name="image" size={32} className="text-primary mr-2 pb-2" />
+        <Text className="text-2xl font-bold text-primary">
             Images
-      </Text>
+        </Text>
+      </View>
       <View className="flex-row border-b border-border">
         <TabButton tab="generator" label="Generate" />
         <TabButton tab="gallery" label="Gallery" />

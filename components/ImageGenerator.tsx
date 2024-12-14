@@ -110,9 +110,11 @@ export function ImageGenerator() {
   const PromptPanel = (
     <View className={`${isWideScreen ? 'w-1/2 pr-4 h-full' : 'w-full'}`}>
       <View className="bg-surface rounded-xl p-4 border border-border flex-1">
-        <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-          Create Your Image
-        </Text>
+        <View className="flex-row items-center">
+            <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+            Prompt
+            </Text>
+        </View>
         
         <TextInput
           value={prompt}
