@@ -183,3 +183,14 @@ export const defaultVoiceAtom = atomWithAsyncStorage<Voice | null>('defaultVoice
 export const logsAtom = atomWithAsyncStorage<LogEntry[]>('logs', []);
 
 export interface LogEntry {component: string, function: string, date: string, message: string, level: 'error' | 'info' | 'warn' | 'debug'};
+
+// Add this interface near other interfaces
+export interface GeneratedImage {
+  id: string;
+  prompt: string;
+  imagePath: string;
+  createdAt: string;
+}
+
+// Add this with other atoms
+export const generatedImagesAtom = atomWithAsyncStorage<GeneratedImage[]>('generatedImages', []);

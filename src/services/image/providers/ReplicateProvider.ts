@@ -3,6 +3,7 @@ import { Model } from '@/types/core';
 import axios from 'axios';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export class ReplicateProvider implements ImageProvider {
     async generateImage(prompt: string, model: Model, signal?: AbortSignal): Promise<string> {
@@ -61,6 +62,19 @@ export class ReplicateProvider implements ImageProvider {
                     if (downloadResult.status !== 200) {
                         throw new Error('Failed to download image');
                     }
+
+                    const imageData = {
+                        id: timestamp.toString(),
+                        prompt,
+                        imagePath: fileUri,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // Get the current images and add the new one
+                    const currentImages = await AsyncStorage.getItem('generatedImages');
+                    const images = currentImages ? JSON.parse(currentImages) : [];
+                    images.push(imageData);
+                    await AsyncStorage.setItem('generatedImages', JSON.stringify(images));
 
                     return fileUri;
                 }
