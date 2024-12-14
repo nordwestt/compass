@@ -19,9 +19,9 @@ export default function ImageGenerationScreen() {
   }> = ({ tab, label }) => (
     <TouchableOpacity
       onPress={() => setActiveTab(tab)}
-      className={`flex-1 py-3 ${
+      className={`w-32 py-3 m-2 ${
         activeTab === tab
-          ? 'border-b-2 border-primary'
+          ? 'border border-primary rounded-lg shadow-sm bg-surface'
           : 'border-b-2 border-transparent'
       }`}
     >
