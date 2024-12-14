@@ -52,5 +52,15 @@ export const PREDEFINED_PROVIDERS = {
       search: true
     }
   } as Provider,
-  
+  replicate: {
+    name: 'Replicate',
+    endpoint: 'https://api.replicate.com',
+    source: 'replicate' as const,
+    capabilities: {
+      llm: false,
+      tts: false,
+      stt: false,
+      image: true
+    }
+  } as Provider
 } as const; 

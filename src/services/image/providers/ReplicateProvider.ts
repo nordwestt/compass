@@ -9,7 +9,9 @@ export class ReplicateProvider implements ImageProvider {
     async generateImage(prompt: string, model: Model, signal?: AbortSignal): Promise<string> {
         try {
             let url = `${model.provider.endpoint}/v1/models/${model.id}/predictions`;
-            url = url.replace('https://api.replicate.com', 'http://localhost:8010/proxy');
+            if(Platform.OS === 'web') {
+                url = url.replace('https://api.replicate.com', 'http://localhost:8010/proxy');
+            }
 
             // Create prediction
             const createResponse = await axios.post(
@@ -37,7 +39,9 @@ export class ReplicateProvider implements ImageProvider {
             );
 
             let predictionUrl = createResponse.data.urls.get;
-            predictionUrl = predictionUrl.replace('https://api.replicate.com', 'http://localhost:8010/proxy');
+            if(Platform.OS === 'web') {
+                predictionUrl = predictionUrl.replace('https://api.replicate.com', 'http://localhost:8010/proxy');
+            }
 
             // Poll for completion
             while (true) {

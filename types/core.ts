@@ -43,7 +43,8 @@ export interface Thread {
       llm: boolean,
       tts: boolean,
       stt: boolean,
-      search: boolean
+      search: boolean,
+      image?: boolean
     };
     apiKey?: string;
     endpoint: string;

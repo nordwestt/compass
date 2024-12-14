@@ -2,26 +2,26 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { ImageProviderFactory } from '@/src/services/image/ImageProviderFactory';
 import { Model } from '@/types/core';
+import { availableProvidersAtom } from '@/hooks/atoms';
+import { useAtomValue } from 'jotai';
 
-const DEFAULT_MODEL: Model = {
-  id: 'black-forest-labs/flux-schnell',
-  name: 'Flux Schnell',
-  provider: {
-    id: '',
-    source: 'replicate',
-    name: 'Replicate',
-    endpoint: 'https://api.replicate.com',
-    apiKey: ''
-  }
-};
 
 export function ImageGenerator() {
   const [prompt, setPrompt] = useState('');
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const availableProviders = useAtomValue(availableProvidersAtom);
 
   const handleGenerate = async () => {
+
+
+    const provider = availableProviders.find(p => p.source === 'replicate');
+    if (!provider) {
+      setError('Provider not found');
+      return;
+    }
+
     if (!prompt.trim()) {
       setError('Please enter a prompt');
       return;
@@ -30,9 +30,15 @@ export function ImageGenerator() {
     setIsLoading(true);
     setError(null);
 
+    const model = {
+      id: 'black-forest-labs/flux-schnell',
+      name: 'Flux Schnell',
+      provider: provider
+    };
+
     try {
-      const provider = ImageProviderFactory.getProvider(DEFAULT_MODEL);
-      const imageUri = await provider.generateImage(prompt, DEFAULT_MODEL);
+      const provider = ImageProviderFactory.getProvider(model);
+      const imageUri = await provider.generateImage(prompt, model);
       setGeneratedImage(imageUri);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate image');
