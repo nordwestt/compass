@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView, Platform } from 'react-native';
 import { Signal } from '@preact/signals-react';
-import {  useModelFetching } from '@/hooks/useModels';
 import { Model } from '@/types/core';
 import { useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
@@ -19,7 +18,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const endpoints = useAtomValue(availableProvidersAtom);
-  const models = useModelFetching(endpoints);
+  const models = useAtomValue(availableModelsAtom);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
 
   // Add useEffect to handle initial model selection

@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, PermissionsAndroid, Platform } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAtom } from 'jotai';
-import { availableProvidersAtom, logsAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, logsAtom, availableModelsAtom } from '@/hooks/atoms';
 import { ProviderCard } from '@/src/components/providers/ProviderCard';
 import { EndpointModal } from '@/src/components/providers/EndpointModal';
 import { useState } from 'react';
@@ -9,6 +9,7 @@ import { Provider } from '@/types/core';
 import NetInfo from '@react-native-community/netinfo';
 import LogService from '@/utils/LogService';
 import axios from 'axios';
+import { fetchAvailableModelsV2 } from '@/hooks/useModels';
 
 interface ProvidersProps {
   className?: string;
@@ -20,6 +21,7 @@ export default function Providers({ className }: ProvidersProps) {
   const [showModal, setShowModal] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
   const [scanning, setScanning] = useState(false);
+  const [models, setModels] = useAtom(availableModelsAtom);
   
   const handleSave = async (provider: Provider) => {
     if (editingProvider) {
@@ -30,6 +32,9 @@ export default function Providers({ className }: ProvidersProps) {
     }
     setEditingProvider(null);
     setShowModal(false);
+    fetchAvailableModelsV2(providers).then((models) => {
+      setModels(models);
+    });
   };
 
   const handleDelete = async (id: string) => {

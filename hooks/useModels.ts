@@ -50,134 +50,86 @@ export function useModels() {
 let isLoadingModels = false;
 
 
-export function useModelFetching(providers: Provider[]) {
-  const [models, setAvailableModels] = useAtom(availableModelsAtom);
+export const fetchAvailableModelsV2 = async (
+  endpoints: Provider[]
+): Promise<Model[]> => {
+  isLoadingModels = true;
+  try {
+    if (!endpoints?.length) {
+      return [];
+    }
 
-  const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const lastFetchTimeRef = useRef<number>(0);
-  const initialFetchDoneRef = useRef(false);
-  const FETCH_COOLDOWN = 10000;
+    const models: Model[] = [];
 
-  const fetchAvailableModelsV2 = async (
-    endpoints: Provider[]
-  ): Promise<Model[]> => {
-    isLoadingModels = true;
-    try {
-      if (!endpoints?.length) {
-        return [];
-      }
-  
-      const models: Model[] = [];
-  
-      for (const provider of endpoints) {
-        try {
-          switch (provider.source) {
-            case 'ollama':
-              const { data: ollamaData } = await axios.get(`${provider.endpoint}/api/tags`, {
-                headers: {
-                  'Accept': 'application/json',
-                }
-              });
-              
-              if (ollamaData && Array.isArray(ollamaData.models)) {
-                models.push(...ollamaData.models
-                  .filter((model: any) => model && typeof model.name === 'string')
-                  .map((model: any) => ({
-                    id: model.name,
-                    name: model.name,
-                    provider: provider
-                  })));
-              } else {
-                LogService.log(
-                  `Invalid Ollama response structure: ${JSON.stringify(ollamaData)}`,
-                  {component: 'useModelFetching', function: 'fetchAvailableModelsV2'},
-                  'error'
-                );
+    for (const provider of endpoints) {
+      try {
+        switch (provider.source) {
+          case 'ollama':
+            const { data: ollamaData } = await axios.get(`${provider.endpoint}/api/tags`, {
+              headers: {
+                'Accept': 'application/json',
               }
-              break;
-  
-            case 'openai':
-              const { data: openaiData } = await axios.get('https://api.openai.com/v1/models', {
-                headers: {
-                  'Authorization': `Bearer ${provider.apiKey}`
-                }
-              });
-              models.push(...openaiData.data
-                .filter((model: any) => model.id.includes('gpt'))
+            });
+            
+            if (ollamaData && Array.isArray(ollamaData.models)) {
+              models.push(...ollamaData.models
+                .filter((model: any) => model && typeof model.name === 'string')
                 .map((model: any) => ({
-                  id: model.id,
-                  name: model.id,
+                  id: model.name,
+                  name: model.name,
                   provider: provider
                 })));
-              break;
-  
-            case 'anthropic':
-              const { data: anthropicData } = await axios.get('https://api.anthropic.com/v1/models', {
-                headers: {
-                  'x-api-key': provider.apiKey,
-                  'anthropic-version': '2023-06-01'
-                }
-              });
-              models.push(...anthropicData.map((model: any) => ({
-                id: model.name,
-                name: model.name,
+            } else {
+              LogService.log(
+                `Invalid Ollama response structure: ${JSON.stringify(ollamaData)}`,
+                {component: 'useModelFetching', function: 'fetchAvailableModelsV2'},
+                'error'
+              );
+            }
+            break;
+
+          case 'openai':
+            const { data: openaiData } = await axios.get('https://api.openai.com/v1/models', {
+              headers: {
+                'Authorization': `Bearer ${provider.apiKey}`
+              }
+            });
+            models.push(...openaiData.data
+              .filter((model: any) => model.id.includes('gpt'))
+              .map((model: any) => ({
+                id: model.id,
+                name: model.id,
                 provider: provider
               })));
-              break;
-          }
-        } catch (error: any) {
-          
-          LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
+            break;
+
+          case 'anthropic':
+            const { data: anthropicData } = await axios.get('https://api.anthropic.com/v1/models', {
+              headers: {
+                'x-api-key': provider.apiKey,
+                'anthropic-version': '2023-06-01'
+              }
+            });
+            models.push(...anthropicData.map((model: any) => ({
+              id: model.name,
+              name: model.name,
+              provider: provider
+            })));
+            break;
         }
-      }
-  
-      return models; 
-    } catch (error: any) {
-
-      LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
-    } finally {
-      isLoadingModels = false;
-    }
-    return [];
-  };
-
-  const fetchModels = useCallback(async (isInitialFetch = false) => {
-    const now = Date.now();
-    if (!isInitialFetch && now - lastFetchTimeRef.current < FETCH_COOLDOWN) {
-      return;
-    }
-
-    if(providers.length === 0) {
-      return;
-    }
-
-    if (providers.length > 0) {
-      lastFetchTimeRef.current = now;
-      const newModels = await fetchAvailableModelsV2(providers);
-
-      
-      if (JSON.stringify(newModels) !== JSON.stringify(models)) {
-        setAvailableModels(newModels);
+      } catch (error: any) {
+        
+        LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
       }
     }
-  }, [providers, models, setAvailableModels]);
 
-  useEffect(() => {
-    if (providers.length > 0 && !initialFetchDoneRef.current) {
-      initialFetchDoneRef.current = true;
-      fetchModels(true);
-    }
+    return models; 
+  } catch (error: any) {
 
-    const intervalId = setInterval(() => fetchModels(false), 30000);
-
-    return () => {
-      clearInterval(intervalId);
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-      }
-    };
-  }, [fetchModels, providers]);
-
-  return useMemo(() => models, [models]);
-}
+    LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
+  } finally {
+    isLoadingModels = false;
+  }
+  return [];
+};
 
