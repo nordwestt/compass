@@ -65,6 +65,7 @@ export default function TabLayout() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <TabView
+        
         tabBarPosition='bottom'
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -72,6 +73,7 @@ export default function TabLayout() {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
         commonOptions={{
+          labelText:"",
           icon: ({ route, focused, color }) => {
             return <TabBarIcon name={route.icon as any} size={22} className={`${focused ? '!text-primary' : '!text-secondary'}`}/>;
           },
