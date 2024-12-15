@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, PermissionsAndroid, Platform } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useAtom } from 'jotai';
+import { getDefaultStore, useAtom } from 'jotai';
 import { availableProvidersAtom, logsAtom, availableModelsAtom } from '@/hooks/atoms';
 import { ProviderCard } from '@/src/components/providers/ProviderCard';
 import { EndpointModal } from '@/src/components/providers/EndpointModal';
@@ -26,13 +26,14 @@ export default function Providers({ className }: ProvidersProps) {
   const handleSave = async (provider: Provider) => {
     if (editingProvider) {
       const updated = providers.map((e) => (e.id === editingProvider.id ? provider : e));
-      setProviders(updated);
+      await setProviders(updated);
     } else {
-      setProviders([...providers, { ...provider, id: Date.now().toString() }]);
+      await setProviders([...providers, { ...provider, id: Date.now().toString() }]);
     }
     setEditingProvider(null);
     setShowModal(false);
-    fetchAvailableModelsV2(providers).then((models) => {
+
+    fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom)).then((models) => {
       setModels(models);
     });
   };
