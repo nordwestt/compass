@@ -32,8 +32,8 @@ export function WebSidebar({ className }: { className?: string }) {
             setCurrentIndex(index);
             router.replace(`/${route.key == 'index' ? '' : route.key}` as any);
           }}
-          className={`flex-row items-center p-4 space-x-3 ${
-            currentIndex === index ? 'border-r border-primary' : ''
+          className={`flex-row items-center p-4 space-x-3 m-2 rounded-lg hover:bg-surface ${
+            currentIndex === index ? 'border-r border-primary border shadow-sm bg-surface' : ''
           }`}
         >
           <TabBarIcon 

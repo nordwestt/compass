@@ -90,9 +90,12 @@ export default function CharactersScreen() {
     <View className="flex-1 bg-background">
       <ScrollView className="flex-1 p-4">
         <View className="flex-row justify-between items-center mb-4">
+        <View className="flex-row items-center p-4">
+          <Ionicons name="people" size={32} className="!text-primary mr-2 pb-2" />
           <Text className="text-2xl font-bold text-primary">
-            Characters
+              Characters
           </Text>
+        </View>
           <TouchableOpacity
               onPress={handleAdd}
               className="bg-primary px-4 py-2 rounded-lg flex-row items-center">
@@ -102,19 +105,30 @@ export default function CharactersScreen() {
         </View>
         <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8">
           {customPrompts.map((prompt) => (
-            <TouchableOpacity onPress={() => startChat(prompt)} onLongPress={() => router.push(`/edit-character?id=${prompt.id}`)} key={prompt.id} className="w-[calc(50%-8px)] md:w-[calc(33.33%-16px)] lg:w-[calc(25%-16px)]">
-              <View className="items-center bg-surface rounded-xl p-4 border border-gray-200 flex flex-row shadow-lg">
-                <Image source={prompt.image} className="!h-[80px] !w-[80px] rounded-full mb-2" />
-                <View className="flex-1">
-                  <Text className="font-bold text-center text-text">
-                    {prompt.name}
-                  </Text>
-                  <Text className="text-sm text-center text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2">
-                    {prompt.content.slice(0, 50)}...
-                  </Text>
-                </View>
+            <TouchableOpacity 
+            onPress={() => startChat(prompt)} 
+            onLongPress={() => router.push(`/edit-character?id=${prompt.id}`)} 
+            key={prompt.id} 
+            className="w-full md:w-[calc(33.33%-16px)] lg:w-[calc(25%-16px)] mb-4"
+          >
+            <View className="flex-row bg-surface rounded-xl p-4 border border-gray-200 shadow-lg">
+              <Image 
+                source={prompt.image} 
+                className="h-16 w-16 rounded-full"
+              />
+              <View className="flex-1 ml-4">
+                <Text className="font-bold text-text">
+                  {prompt.name}
+                </Text>
+                <Text 
+                  numberOfLines={2} 
+                  className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2"
+                >
+                  {prompt.content}
+                </Text>
               </View>
-            </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
           ))}
         </View>
 

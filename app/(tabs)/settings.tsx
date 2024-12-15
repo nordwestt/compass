@@ -30,7 +30,12 @@ export default function SettingsScreen() {
   return (
     <ScrollView className="flex-1 bg-background p-4">
       <View className="mb-6">
-        <Text className="text-2xl font-bold text-text mb-2">Settings</Text>
+        <View className="flex-row items-center p-4">
+          <Ionicons name="cog" size={32} className="!text-primary mr-2 pb-2" />
+          <Text className="text-2xl font-bold text-primary">
+              Settings
+          </Text>
+        </View>
         <Text className="text-secondary">Customize your chat experience</Text>
       </View>
 

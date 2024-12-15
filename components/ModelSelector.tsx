@@ -5,14 +5,8 @@ import {  useModelFetching } from '@/hooks/useModels';
 import { Model } from '@/types/core';
 import { useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
+import { PROVIDER_LOGOS } from '@/src/constants/logos';
 
-// Add provider logos mapping
-const PROVIDER_LOGOS = {
-  openai: require('../assets/providers/openai.png'),
-  anthropic: require('../assets/providers/anthropic.png'),
-  ollama: require('../assets/providers/ollama.png'),
-  // Add other provider logos as needed
-};
 
 interface ModelSelectorProps {
   selectedModel: Model;

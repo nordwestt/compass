@@ -38,12 +38,13 @@ export interface Thread {
   export interface Provider {
     id: string;
     name?: string;
-    source: 'ollama' | 'openai' | 'anthropic' | 'elevenlabs' | 'serper' | 'searxng' | 'custom';
+    source: 'ollama' | 'openai' | 'anthropic' | 'elevenlabs' | 'serper' | 'searxng' | 'custom' | 'replicate';
     capabilities?: {
       llm: boolean,
       tts: boolean,
       stt: boolean,
-      search: boolean
+      search: boolean,
+      image?: boolean
     };
     apiKey?: string;
     endpoint: string;

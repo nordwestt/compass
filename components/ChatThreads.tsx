@@ -124,7 +124,7 @@ const ChatThreads: React.FC = () => {
         keyExtractor={(thread) => thread.id}
         renderSectionHeader={({ section: { title } }) => (
           <View className="z-10">
-            <Text className="text-sm font-semibold text-text/50 px-4 py-2 bg-background">
+            <Text className="text-sm font-semibold text-text px-4 py-2 bg-background">
               {title}
             </Text>
           </View>
