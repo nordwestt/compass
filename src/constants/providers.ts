@@ -3,7 +3,7 @@ import { Provider } from '@/types/core';
 export const PREDEFINED_PROVIDERS = {
   anthropic: {
     name: 'Anthropic',
-    endpoint: 'https://api.anthropic.com/v1/messages',
+    endpoint: 'https://api.anthropic.com',
     source: 'anthropic' as const,
     capabilities: {
       llm: true,
@@ -13,7 +13,7 @@ export const PREDEFINED_PROVIDERS = {
   } as Provider,
   openai: {
     name: 'OpenAI',
-    endpoint: 'https://api.openai.com/v1/chat/completions',
+    endpoint: 'https://api.openai.com',
     source: 'openai' as const,
     capabilities: {
       llm: true,
