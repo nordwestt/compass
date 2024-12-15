@@ -39,7 +39,7 @@ export default function ImageGenerationScreen() {
   return (
     <View className="flex-1 bg-background p-4">
       <View className="flex-row items-center p-4">
-        <Ionicons name="image" size={32} className="text-primary mr-2 pb-2" />
+        <Ionicons name="image" size={32} className="!text-primary mr-2 pb-2" />
         <Text className="text-2xl font-bold text-primary">
             Images
         </Text>

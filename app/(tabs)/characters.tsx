@@ -91,7 +91,7 @@ export default function CharactersScreen() {
       <ScrollView className="flex-1 p-4">
         <View className="flex-row justify-between items-center mb-4">
         <View className="flex-row items-center p-4">
-          <Ionicons name="people" size={32} className="text-primary mr-2 pb-2" />
+          <Ionicons name="people" size={32} className="!text-primary mr-2 pb-2" />
           <Text className="text-2xl font-bold text-primary">
               Characters
           </Text>

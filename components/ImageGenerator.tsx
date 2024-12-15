@@ -119,7 +119,7 @@ export function ImageGenerator() {
         <TextInput
           value={prompt}
           onChangeText={setPrompt}
-          placeholder="Describe your image..."
+          placeholder=""
           className="bg-background border border-border rounded-lg p-3 mb-4 
                      text-text min-h-[100]"
           multiline
