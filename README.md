@@ -11,7 +11,7 @@ Compass is a modern, open-source Large Language Model (LLM) client designed to p
 - 👥 **Character System**: Built-in characters and support for custom character creation
 - 💬 **Chat History**: Persistent conversation tracking and management
 - 🤝 **Inter-Character Communication**: Tag (@) characters in chats for multi-agent interactions
-- 🎨 **Modern UI**: Clean, responsive interface with dark mode support
+- 🎨 **Modern UI**: Clean, responsive interface with multiple themes built in
 - 🔍 **Web search**: Web search integration using SearxNg
 - 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses (currently only supports ElevenLabs, more coming soon)
 - 🖼️ **Image Generation**: Generate images from text prompts (currently only supports Replicate, more coming soon)
