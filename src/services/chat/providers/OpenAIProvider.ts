@@ -16,8 +16,8 @@ export class OpenAIProvider implements ChatProvider {
     ];
 
     try {
-      let url = `${model.provider.endpoint}/v1/chat/completions`;
-      if(Platform.OS =='web') {
+      let url = `${model.provider.endpoint}`;
+      if(Platform.OS =='web' && false) {
         url = url.replace('https://api.openai.com', 'http://localhost:8010/proxy');
       }
       const response = await fetch(url, {
@@ -63,6 +63,7 @@ export class OpenAIProvider implements ChatProvider {
             }
           } catch (error: any) {
             LogService.log(error, { component: 'OpenAIProvider', function: 'sendMessage.processChunk' }, 'error');
+            throw error;
           }
         }
       }

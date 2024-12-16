@@ -9,6 +9,8 @@ import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
 import { current } from 'tailwindcss/colors';
 import { Thread } from '@/types/core';
+import LogService from '@/utils/LogService';
+import { toastService } from '@/services/toastService';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -108,8 +110,12 @@ export function useChat() {
         handleFirstMessage(message);
       }
 
-    } catch (error) {
-      // Handle error cases
+    } catch (error: any) {
+      toastService.danger({
+        title: 'Error sending message',
+        description: error.message
+      });
+      LogService.log(error, {component: 'useChat', function: `handleSend`}, 'error');
     } finally {
       abortController.current = null;
     }

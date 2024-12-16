@@ -10,6 +10,7 @@
     "beforeBuildCommand": "npm run build:web"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "Compass",

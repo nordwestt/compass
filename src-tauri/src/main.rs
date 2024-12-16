@@ -2,5 +2,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-  app_lib::run();
+  //app_lib::run();
+  tauri::Builder::default()
+    .plugin(tauri_plugin_cors_fetch::init())
+    .run(tauri::generate_context!())
+    .expect("failed to run app");
 }

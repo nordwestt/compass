@@ -9,14 +9,18 @@ export class ReplicateProvider implements ImageProvider {
     async generateImage(prompt: string, model: Model, signal?: AbortSignal): Promise<string> {
         try {
             let url = `${model.provider.endpoint}/v1/models/${model.id}/predictions`;
-            if(Platform.OS === 'web') {
+            if(Platform.OS === 'web' && false) {
                 url = url.replace('https://api.replicate.com', 'http://localhost:8010/proxy');
             }
 
-            // Create prediction
-            const createResponse = await axios.post(
-                url,
-                {
+            const createResponse = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${model.provider.apiKey}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'wait'
+                },
+                body: JSON.stringify({
                     input: {
                         "aspect_ratio": "1:1",
                         "go_fast": true,
@@ -27,25 +31,23 @@ export class ReplicateProvider implements ImageProvider {
                         "output_quality": 80,
                         "prompt": prompt
                     }
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${model.provider.apiKey}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'wait'
-                    },
-                    signal
-                }
-            );
-
-            let predictionUrl = createResponse.data.urls.get;
-            if(Platform.OS === 'web') {
+                }),
+                signal
+            });
+            
+            if (!createResponse.ok) {
+                throw new Error(`HTTP error! status: ${createResponse.status}`);
+            }
+            
+            const responseData = await createResponse.json();
+            let predictionUrl = responseData.urls.get;
+            if(Platform.OS === 'web' && false) {
                 predictionUrl = predictionUrl.replace('https://api.replicate.com', 'http://localhost:8010/proxy');
             }
 
             // Poll for completion
             while (true) {
-                const statusResponse = await axios.get(
+                const statusResponse = await fetch(
                     predictionUrl,
                     {
                         headers: {
@@ -55,7 +57,7 @@ export class ReplicateProvider implements ImageProvider {
                     }
                 );
 
-                const prediction = statusResponse.data;
+                const prediction = await statusResponse.json();
 
                 if (prediction.status === 'succeeded') {
                     const imageUrl = prediction.output[0];
