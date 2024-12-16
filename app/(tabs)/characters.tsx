@@ -114,7 +114,7 @@ export default function CharactersScreen() {
             <View className="flex-row bg-surface rounded-xl p-4 border border-gray-200 shadow-lg">
               <Image 
                 source={prompt.image} 
-                className="h-16 w-16 rounded-full"
+                className="!h-[64px] !w-[64px] rounded-full my-auto"
               />
               <View className="flex-1 ml-4">
                 <Text className="font-bold text-text">
