@@ -66,9 +66,9 @@ export const rawThemes = {
     },
     dark: {
       primary: '#c71585',
-      secondary: '#db7093',
+      secondary: '#db80a3',
       background: '#2c001e',
-      surface: '#8b008b',
+      surface: '#4b004b',
       text: '#ffb6c1',
       border: '#ff69b4',
     },
