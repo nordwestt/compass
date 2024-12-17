@@ -111,7 +111,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   };
 
   return (
-    <View className="relative flex-row items-center p-2 bg-background border-t border-gray-200 dark:border-gray-700">
+    <View className="relative flex-row items-center p-2 bg-surface border-t border-gray-200 dark:border-gray-700">
       {showMentionPopup && (
         <CharacterMentionPopup
           characters={allCharacters}
@@ -122,7 +122,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       )}
       <TextInput
         ref={inputRef}
-        className="flex-1 min-h-[40px] px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full mr-2 text-gray-800 dark:text-gray-200"
+        className="flex-1 min-h-[40px] px-4 py-2 bg-background rounded-full mr-2 text-text"
         placeholder="Type a message... (Use @ to mention characters)"
         placeholderTextColor="#9CA3AF"
         value={message}
