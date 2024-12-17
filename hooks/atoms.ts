@@ -105,7 +105,7 @@ export const isGeneratingAtom = atom(false)
 export const currentIndexAtom = atom(0)
 
 // For managing models
-export const availableModelsAtom = atom<Model[]>([])
+export const availableModelsAtom = atomWithAsyncStorage<Model[]>('availableModels', [])
 
 // Derived atom for the current model
 export const currentModelAtom = atom(
