@@ -112,7 +112,7 @@ export default function Providers({ className }: ProvidersProps) {
                 }}
                 className="bg-primary px-4 py-2 rounded-lg flex-row items-center">
                 <Ionicons name="add" size={20} color="white" />
-                <Text className="text-white ml-2 font-medium">New Character</Text>
+                <Text className="text-white ml-2 font-medium">New Provider</Text>
               </TouchableOpacity>
           </View>
 

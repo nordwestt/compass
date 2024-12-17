@@ -1,10 +1,16 @@
-import { View, Text, TouchableOpacity, Image, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Modal, ScrollView } from 'react-native';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 import { Provider } from '@/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { useState } from 'react';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import Animated, { 
+  FadeIn,
+  FadeOut,
+  SlideInDown,
+  SlideOutDown
+} from 'react-native-reanimated';
 
 interface ProviderTypeSelectorProps {
   className?: string;
@@ -52,19 +58,28 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
       <Modal
         visible={isModalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="none"
         onRequestClose={() => setIsModalVisible(false)}
       >
         <ThemeProvider>
+        <Animated.View 
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            className="absolute inset-0 bg-black/50"
+          />
         <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-background rounded-t-xl max-h-[70%]">
+          <Animated.View 
+              entering={SlideInDown.springify().damping(15)}
+              exiting={SlideOutDown.duration(200)}
+              className="rounded-t-xl max-h-[70%] bg-background"
+            >
             <View className="p-4 border-b border-gray-200 dark:border-gray-700">
               <Text className="text-lg font-bold text-center text-black dark:text-white">
                 Select Provider Type
               </Text>
             </View>
 
-            <View className="p-4">
+            <ScrollView className="p-4">
               {Object.entries(PREDEFINED_PROVIDERS).map(([key, value]) => (
                 <TouchableOpacity
                   key={key}
@@ -128,7 +143,7 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
                   />
                 )}
               </TouchableOpacity>
-            </View>
+            </ScrollView>
 
             <TouchableOpacity
               onPress={() => setIsModalVisible(false)}
@@ -138,7 +153,7 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
                 Cancel
               </Text>
             </TouchableOpacity>
-          </View>
+          </Animated.View>
         </View>
         </ThemeProvider>
       </Modal>
