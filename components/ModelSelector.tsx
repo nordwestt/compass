@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView, Platform } from 'react-native';
 import { Signal } from '@preact/signals-react';
 import { Model } from '@/types/core';
-import { useAtom, useAtomValue } from 'jotai';
+import { getDefaultStore, useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { ThemeProvider } from './ThemeProvider';
@@ -12,6 +12,8 @@ import Animated, {
   SlideInDown,
   SlideOutDown
 } from 'react-native-reanimated';
+import { fetchAvailableModelsV2 } from '@/hooks/useModels';
+
 
 
 interface ModelSelectorProps {
@@ -25,8 +27,16 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const endpoints = useAtomValue(availableProvidersAtom);
-  const models = useAtomValue(availableModelsAtom);
+  const [models, setModels] = useAtom(availableModelsAtom);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
+
+  React.useEffect(() => {
+    const fetchModels = async () => {
+      const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
+      setModels(models);
+    };
+    fetchModels();
+  }, []);
 
   // Add useEffect to handle initial model selection
   React.useEffect(() => {
