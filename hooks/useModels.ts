@@ -59,6 +59,7 @@ export const fetchAvailableModelsV2 = async (
       return [];
     }
 
+
     const models: Model[] = [];
 
     for (const provider of endpoints) {
@@ -104,12 +105,22 @@ export const fetchAvailableModelsV2 = async (
             break;
 
           case 'anthropic':
-            const { data: anthropicData } = await axios.get('https://api.anthropic.com/v1/models', {
-              headers: {
-                'x-api-key': provider.apiKey,
-                'anthropic-version': '2023-06-01'
-              }
-            });
+            // const { data: anthropicData } = await axios.get('https://api.anthropic.com/v1/models', {
+            //   headers: {
+            //     'x-api-key': provider.apiKey,
+            //     'anthropic-version': '2023-06-01'
+            //   }
+            // });
+            const anthropicData: any[] = [{
+              model: 'claude-3-5-haiku-20241022',
+              name: 'claude-3-5-haiku-20241022'
+            },{
+              model: 'claude-3-5-sonnet-20241022',
+              name: 'claude-3-5-sonnet-20241022'
+            },{
+              model: 'claude-3-opus-20240229',
+              name: 'claude-3-opus-20240229'
+            }];
             models.push(...anthropicData.map((model: any) => ({
               id: model.name,
               name: model.name,
