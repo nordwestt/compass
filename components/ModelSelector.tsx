@@ -34,13 +34,15 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     
     const currentModel = models.find(m => m.id === selectedModel.id);
     if (!currentModel) {
-      if (defaultModel?.id) {
+      if (defaultModel?.id && models.find(m => m.id === defaultModel.id)) {
         onSetModel(defaultModel);
       } else {
         onSetModel(models[0]);
       }
     }
   }, [models, selectedModel.id, defaultModel, onSetModel]);
+
+
 
   if(!endpoints.length) return <Text className="text-gray-500">No providers configured</Text>;
   
