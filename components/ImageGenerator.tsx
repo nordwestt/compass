@@ -120,7 +120,7 @@ export function ImageGenerator() {
   };
 
   const PromptPanel = (
-    <View className={`h-full alal ${isWideScreen ? 'w-1/2 pr-4 h-full' : 'w-full'}`}>
+    <View className={`h-full alal ${isWideScreen && generatedImage ? 'w-1/2 pr-4 h-full' : 'w-full'}`}>
       <View className="bg-surface rounded-xl p-4 border border-border flex-1 h-full">
         <View className="flex-row items-center">
             <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
