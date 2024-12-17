@@ -4,6 +4,7 @@ import { Provider } from '@/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { useState } from 'react';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 interface ProviderTypeSelectorProps {
   className?: string;
@@ -54,6 +55,7 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
         animationType="slide"
         onRequestClose={() => setIsModalVisible(false)}
       >
+        <ThemeProvider>
         <View className="flex-1 justify-end bg-black/50">
           <View className="bg-background rounded-t-xl max-h-[70%]">
             <View className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -138,6 +140,7 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
             </TouchableOpacity>
           </View>
         </View>
+        </ThemeProvider>
       </Modal>
     </>
   );

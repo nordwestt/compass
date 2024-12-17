@@ -5,7 +5,7 @@ import { allPromptsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { rawThemes } from '@/constants/themes';
-import { useThemePreset } from './ThemeProvider';
+import { ThemeProvider, useThemePreset } from './ThemeProvider';
 import { useColorScheme } from 'nativewind';
 import { router } from 'expo-router';
 
@@ -47,6 +47,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
         animationType="slide"
         onRequestClose={() => setIsModalVisible(false)}
       >
+        <ThemeProvider>
         <View className="flex-1 justify-end bg-black/50">
           <View className="rounded-t-xl max-h-[70%]" style={{ backgroundColor: theme.background }}>
             <View className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -96,6 +97,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
             </TouchableOpacity>
           </View>
         </View>
+        </ThemeProvider>
       </Modal>
     </>
   );

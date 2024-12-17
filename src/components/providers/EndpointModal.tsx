@@ -4,6 +4,7 @@ import { Provider } from '@/types/core';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 import { ProviderFormFields } from './ProviderFormFields';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 
 interface EndpointModalProps {
@@ -55,6 +56,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
       transparent={true}
       onRequestClose={onClose}
     >
+      <ThemeProvider>
       <View className="flex-1 justify-end">
         <View className="bg-white dark:bg-gray-900 rounded-t-xl p-6 h-4/5">
           <View className="flex-row items-center mb-6">
@@ -102,6 +104,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
           </View>
         </View>
       </View>
+      </ThemeProvider>
     </Modal>
   );
 } 

@@ -5,6 +5,7 @@ import { Model } from '@/types/core';
 import { useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
+import { ThemeProvider } from './ThemeProvider';
 
 
 interface ModelSelectorProps {
@@ -69,6 +70,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         animationType="slide"
         onRequestClose={() => setIsModalVisible(false)}
       >
+        <ThemeProvider>
         <View className="flex-1 justify-end bg-black/50">
           <View className="rounded-t-xl max-h-[70%] bg-white">
             <View className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -133,6 +135,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
             </View>
           </View>
         </View>
+        </ThemeProvider>
       </Modal>
     </>
   );

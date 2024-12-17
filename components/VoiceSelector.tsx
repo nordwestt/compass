@@ -6,6 +6,8 @@ import { useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, defaultVoiceAtom, ttsEnabledAtom } from '@/hooks/atoms';
 import { Ionicons } from '@expo/vector-icons';
 import { toastService } from '@/services/toastService';
+import { ThemeProvider } from './ThemeProvider';
+
 
 interface VoiceSelectorProps {
   selectedVoice: Voice | null;
@@ -76,6 +78,7 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
         animationType="slide"
         onRequestClose={() => setIsModalVisible(false)}
       >
+        <ThemeProvider>
         <View className="flex-1 justify-end">
           <View className="rounded-t-xl max-h-[70%] bg-white">
             <View className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -136,6 +139,7 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
             </View>
           </View>
         </View>
+        </ThemeProvider>
       </Modal>
     </>
   );
