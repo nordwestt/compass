@@ -6,6 +6,12 @@ import { useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { ThemeProvider } from './ThemeProvider';
+import Animated, { 
+  FadeIn,
+  FadeOut,
+  SlideInDown,
+  SlideOutDown
+} from 'react-native-reanimated';
 
 
 interface ModelSelectorProps {
@@ -67,74 +73,82 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       <Modal
         visible={isModalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="none"
         onRequestClose={() => setIsModalVisible(false)}
       >
         <ThemeProvider>
-        <View className="flex-1 justify-end bg-black/50">
-          <View className="rounded-t-xl max-h-[70%] bg-white">
-            <View className="p-4 border-b border-gray-200 dark:border-gray-700">
-              <Text className="text-lg font-bold text-center text-black dark:text-white">
-                Select Model
-              </Text>
-            </View>
-            
-            <ScrollView className="p-4">
-              {models.map((model) => (
-                <TouchableOpacity
-                  key={model.id}
-                  onPress={() => {
-                    onSetModel(model);
-                    //setIsModalVisible(false);
-                  }}
-                  className="flex-row items-center p-3 mb-2 rounded-lg bg-gray-50 dark:bg-gray-700"
-                >
-                  {PROVIDER_LOGOS[model.provider.source as keyof typeof PROVIDER_LOGOS] && (
-                    <Image
-                      source={PROVIDER_LOGOS[model.provider.source as keyof typeof PROVIDER_LOGOS]}
-                      className="!h-[48px] !w-[48px] rounded-full mr-3"
-                    />
-                  )}
-                  <View className="flex-1">
-                    <Text className="font-medium text-black dark:text-white">
-                      {model.name}
-                    </Text>
-                    <Text className="text-sm text-gray-500 dark:text-gray-400">
-                      {model.provider.name}
-                    </Text>
-                  </View>
-                  {model.id === selectedModel.id && (
-                    <View className="bg-primary px-2 py-1 rounded">
-                      <Text className="text-white text-sm">Selected</Text>
+          <Animated.View 
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            className="absolute inset-0 bg-black/50"
+          />
+          <View className="flex-1 justify-end">
+            <Animated.View 
+              entering={SlideInDown.springify().damping(15)}
+              exiting={SlideOutDown.duration(200)}
+              className="rounded-t-xl max-h-[70%] bg-background"
+            >
+              <View className="p-4 border-b border-gray-200 dark:border-gray-700">
+                <Text className="text-lg font-bold text-center text-black dark:text-white">
+                  Select Model
+                </Text>
+              </View>
+              
+              <ScrollView className="p-4">
+                {models.map((model) => (
+                  <TouchableOpacity
+                    key={model.id}
+                    onPress={() => {
+                      onSetModel(model);
+                      //setIsModalVisible(false);
+                    }}
+                    className="flex-row items-center p-3 mb-2 rounded-lg bg-surface"
+                  >
+                    {PROVIDER_LOGOS[model.provider.source as keyof typeof PROVIDER_LOGOS] && (
+                      <Image
+                        source={PROVIDER_LOGOS[model.provider.source as keyof typeof PROVIDER_LOGOS]}
+                        className="!h-[48px] !w-[48px] rounded-full mr-3"
+                      />
+                    )}
+                    <View className="flex-1">
+                      <Text className="font-medium text-black dark:text-white">
+                        {model.name}
+                      </Text>
+                      <Text className="text-sm text-gray-500 dark:text-gray-400">
+                        {model.provider.name}
+                      </Text>
                     </View>
-                  )}
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+                    {model.id === selectedModel.id && (
+                      <View className="bg-primary px-2 py-1 rounded">
+                        <Text className="text-white text-sm">Selected</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
 
-            <View className="p-4 border-t border-gray-200 dark:border-gray-700 flex-row justify-between">
-              <TouchableOpacity
-                onPress={() => setIsModalVisible(false)}
-                className="flex-1 mr-2"
-              >
-                <Text className="text-center text-blue-500 font-medium">
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setDefaultModel(selectedModel);
-                  setIsModalVisible(false);
-                }}
-                className="flex-1 ml-2 bg-primary py-2 px-4 rounded-lg"
-              >
-                <Text className="text-center text-white font-medium">
-                  Set as Default
-                </Text>
-              </TouchableOpacity>
-            </View>
+              <View className="p-4 border-t border-gray-200 dark:border-gray-700 flex-row justify-between">
+                <TouchableOpacity
+                  onPress={() => setIsModalVisible(false)}
+                  className="flex-1 mr-2 bg-surface p-2 rounded-lg">
+                  <Text className="text-center text-text">
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setDefaultModel(selectedModel);
+                    setIsModalVisible(false);
+                  }}
+                  className="flex-1 ml-2 bg-primary p-2 rounded-lg"
+                >
+                  <Text className="text-center text-white font-medium">
+                    Set as Default
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
           </View>
-        </View>
         </ThemeProvider>
       </Modal>
     </>

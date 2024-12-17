@@ -8,6 +8,12 @@ import { rawThemes } from '@/constants/themes';
 import { ThemeProvider, useThemePreset } from './ThemeProvider';
 import { useColorScheme } from 'nativewind';
 import { router } from 'expo-router';
+import Animated, { 
+  FadeIn,
+  FadeOut,
+  SlideInDown,
+  SlideOutDown
+} from 'react-native-reanimated';
 
 interface CharacterSelectorProps {
   selectedPrompt: Character;
@@ -44,59 +50,69 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
       <Modal
         visible={isModalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="none"
         onRequestClose={() => setIsModalVisible(false)}
       >
         <ThemeProvider>
-        <View className="flex-1 justify-end bg-black/50">
-          <View className="rounded-t-xl max-h-[70%]" style={{ backgroundColor: theme.background }}>
-            <View className="p-4 border-b border-gray-200 dark:border-gray-700">
-              <Text className="text-lg font-bold text-center text-black dark:text-white">
-                Select Character
-              </Text>
-            </View>
-            
-            <ScrollView className="p-4">
-              <View className="flex-row flex-wrap justify-between">
-                {allPrompts.map((prompt) => (
-                  <TouchableOpacity
-                    key={prompt.id}
-                    onPress={() => {
-                      onSelectPrompt(prompt);
-                      setIsModalVisible(false);
-                    }}
-                    onLongPress={() => {setIsModalVisible(false); router.push(`/edit-character?id=${prompt.id}`)}}
-                    className="w-[48%] mb-4 rounded-lg bg-white"
-                  >
-                    <View className="items-center p-3">
-                      {prompt.image && (
-                        <Image
-                          source={prompt.image}
-                          className="!h-[100px] !w-[100px] rounded-full mb-2"
-                        />
-                      )}
-                      <Text className="font-medium text-center text-black dark:text-white">
-                        {prompt.name}
-                      </Text>
-                      <Text className="text-sm text-center text-gray-500 dark:text-gray-400">
-                        {prompt.content.slice(0, 30)}...
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
+        <Animated.View 
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            className="absolute inset-0 bg-black/50"
+          />
+          <View className="flex-1 justify-end">
+            <Animated.View 
+                  entering={SlideInDown.springify().damping(15)}
+                  exiting={SlideOutDown.duration(200)}
+                  className="rounded-t-xl max-h-[70%] bg-background"
+                >
+              
+                <View className="p-4 border-b border-gray-200 dark:border-gray-700">
+                  <Text className="text-lg font-bold text-center text-black dark:text-white">
+                    Select Character
+                  </Text>
+                </View>
+                
+                <ScrollView className="p-4">
+                  <View className="flex-row flex-wrap justify-between">
+                    {allPrompts.map((prompt) => (
+                      <TouchableOpacity
+                        key={prompt.id}
+                        onPress={() => {
+                          onSelectPrompt(prompt);
+                          setIsModalVisible(false);
+                        }}
+                        onLongPress={() => {setIsModalVisible(false); router.push(`/edit-character?id=${prompt.id}`)}}
+                        className="w-[48%] mb-4 rounded-lg bg-white"
+                      >
+                        <View className="items-center p-3">
+                          {prompt.image && (
+                            <Image
+                              source={prompt.image}
+                              className="!h-[100px] !w-[100px] rounded-full mb-2"
+                            />
+                          )}
+                          <Text className="font-medium text-center text-black dark:text-white">
+                            {prompt.name}
+                          </Text>
+                          <Text className="text-sm text-center text-gray-500 dark:text-gray-400">
+                            {prompt.content.slice(0, 30)}...
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </ScrollView>
 
-            <TouchableOpacity
-              onPress={() => setIsModalVisible(false)}
-              className="p-4 border-t border-gray-200 dark:border-gray-700"
-            >
-              <Text className="text-center text-blue-500 font-medium">
-                Cancel
-              </Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setIsModalVisible(false)}
+                  className="p-4 border-t border-gray-200 dark:border-gray-700 bg-surface"
+                >
+                  <Text className="text-center text-text">
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+              </Animated.View>
           </View>
-        </View>
         </ThemeProvider>
       </Modal>
     </>
