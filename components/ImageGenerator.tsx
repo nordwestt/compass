@@ -5,6 +5,8 @@ import { Model } from '@/types/core';
 import { availableProvidersAtom } from '@/hooks/atoms';
 import { useAtomValue } from 'jotai';
 import { useWindowDimensions } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 // Predefined options to enhance prompt creation
 const perspectives = [
@@ -44,12 +46,16 @@ const PromptTag: React.FC<PromptTagProps> = ({ label, onPress }) => (
 interface PromptSectionProps {
   title: string;
   items: string[];
+  icon: string;
   onSelectItem: (item: string) => void;
 }
 
-const PromptSection: React.FC<PromptSectionProps> = ({ title, items, onSelectItem }) => (
+const PromptSection: React.FC<PromptSectionProps> = ({ title, items, icon, onSelectItem }) => (
   <View className="mb-4">
-    <Text className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">{title}</Text>
+    <View className="flex-row items-center p-2">
+      <MaterialCommunityIcons name={icon as any} size={24} className="!text-primary" />
+      <Text className="text-sm font-semibold text-primary">{title}</Text>
+    </View>
     <View className="flex-row flex-wrap">
       {items.map((item) => (
         <PromptTag key={item} label={item} onPress={() => onSelectItem(item)} />
@@ -126,10 +132,10 @@ export function ImageGenerator() {
         />
 
         <ScrollView className="overflow-y-auto">
-          <PromptSection title="Style" items={styles} onSelectItem={appendToPrompt} />
-          <PromptSection title="Perspective" items={perspectives} onSelectItem={appendToPrompt} />
-          <PromptSection title="Lighting" items={lighting} onSelectItem={appendToPrompt} />
-          <PromptSection title="Mood" items={moods} onSelectItem={appendToPrompt} />
+          <PromptSection icon="palette" title="Style" items={styles} onSelectItem={appendToPrompt} />
+          <PromptSection icon="pine-tree" title="Perspective" items={perspectives} onSelectItem={appendToPrompt} />
+          <PromptSection icon="track-light" title="Lighting" items={lighting} onSelectItem={appendToPrompt} />
+          <PromptSection icon="guy-fawkes-mask" title="Mood" items={moods} onSelectItem={appendToPrompt} />
         </ScrollView>
 
         <TouchableOpacity
