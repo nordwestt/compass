@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
-import { allPromptsAtom } from '@/hooks/atoms';
+import { allPromptsAtom, customPromptsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { rawThemes } from '@/constants/themes';
@@ -25,7 +25,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   onSelectPrompt
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const allPrompts = useAtomValue(allPromptsAtom);
+  const allPrompts = useAtomValue(customPromptsAtom);
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
@@ -74,9 +74,9 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
                 
                 <ScrollView className="p-4">
                   <View className="flex-row flex-wrap justify-between">
-                    {allPrompts.map((prompt) => (
+                    {allPrompts.map((prompt, index) => (
                       <TouchableOpacity
-                        key={prompt.id}
+                        key={`${prompt.id}-${index}`}
                         onPress={() => {
                           onSelectPrompt(prompt);
                           setIsModalVisible(false);
