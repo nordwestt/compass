@@ -74,7 +74,7 @@ export class OpenAIProvider implements ChatProvider {
   }
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
-    const response = await fetch(`${model.provider.endpoint}/v1/chat/completions`, {
+    const response = await fetch(`${model.provider.endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,6 +91,10 @@ export class OpenAIProvider implements ChatProvider {
     });
 
     const data = await response.json();
+    console.log("endpoint", model.provider.endpoint);
+    if(!data.choices) {
+      throw new Error(`Unexpected format: ${data}`);
+    }
     return data.choices[0].message.content;
   }
 

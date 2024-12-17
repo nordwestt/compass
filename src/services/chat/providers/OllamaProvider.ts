@@ -90,6 +90,9 @@ export class OllamaProvider implements ChatProvider {
       }),
     });
     let data = await response.json();
+    if(!data?.message){
+      throw new Error(`Unexpected format: ${data}`);
+    }
     return data.message.content;
   }
 

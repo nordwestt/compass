@@ -38,15 +38,18 @@ export function useChat() {
     const currentThread = getDefaultStore().get(currentThreadAtom);
 
     const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
-    const title = await provider.sendSimpleMessage(message, currentThread.selectedModel, systemPrompt);
-    // wait for 100 ms before updating the thread
-    await new Promise(resolve => setTimeout(resolve, 200));
+    try{
+      const title = await provider.sendSimpleMessage(message, currentThread.selectedModel, systemPrompt);
+      // wait for 100 ms before updating the thread
+      await new Promise(resolve => setTimeout(resolve, 200));
 
-
-    dispatchThread({
-      type: 'update',
-      payload: { ...currentThread, title: title }
-    });
+      dispatchThread({
+        type: 'update',
+        payload: { ...currentThread, title: title }
+      });
+    } catch (error: any) {
+      LogService.log(error, { component: 'useChat', function: 'handleFirstMessage' }, 'error');
+    }
   }
 
 
