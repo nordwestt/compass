@@ -6,6 +6,9 @@ import { availableProvidersAtom } from '@/hooks/atoms';
 import { useAtomValue } from 'jotai';
 import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useColorScheme } from 'nativewind';
+import { useThemePreset } from '@/components/ThemeProvider';
+import { rawThemes } from '@/constants/themes';
 
 
 // Predefined options to enhance prompt creation
@@ -73,6 +76,9 @@ export function ImageGenerator() {
   const { width } = useWindowDimensions();
   const isWeb = Platform.OS === 'web';
   const isWideScreen = isWeb && width >= 768;
+  const { themePreset } = useThemePreset();
+  const { colorScheme } = useColorScheme();
+  const theme = rawThemes[themePreset][colorScheme ?? 'light'];
 
   const appendToPrompt = (text: string) => {
     setPrompt((current) => {
@@ -125,7 +131,8 @@ export function ImageGenerator() {
         <TextInput
           value={prompt}
           onChangeText={setPrompt}
-          placeholder=""
+          placeholder="Type your prompt here..."
+          placeholderTextColor={theme.text}
           className="bg-background border border-border rounded-lg p-3 mb-4 
                      text-text min-h-[100]"
           multiline
