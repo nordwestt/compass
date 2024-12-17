@@ -35,9 +35,9 @@ interface PromptTagProps {
 const PromptTag: React.FC<PromptTagProps> = ({ label, onPress }) => (
   <TouchableOpacity 
     onPress={onPress}
-    className="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full m-1 border border-border"
+    className="bg-background px-3 py-1 rounded-full m-1 border border-border"
   >
-    <Text className="text-sm text-gray-800 dark:text-gray-200">{label}</Text>
+    <Text className="text-sm text-text">{label}</Text>
   </TouchableOpacity>
 );
 
@@ -108,8 +108,8 @@ export function ImageGenerator() {
   };
 
   const PromptPanel = (
-    <View className={`${isWideScreen ? 'w-1/2 pr-4 h-full' : 'w-full'}`}>
-      <View className="bg-surface rounded-xl p-4 border border-border flex-1">
+    <View className={`h-full alal ${isWideScreen ? 'w-1/2 pr-4 h-full' : 'w-full'}`}>
+      <View className="bg-surface rounded-xl p-4 border border-border flex-1 h-full">
         <View className="flex-row items-center">
             <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
             Prompt
@@ -125,7 +125,7 @@ export function ImageGenerator() {
           multiline
         />
 
-        <ScrollView className="">
+        <ScrollView className="overflow-y-auto">
           <PromptSection title="Style" items={styles} onSelectItem={appendToPrompt} />
           <PromptSection title="Perspective" items={perspectives} onSelectItem={appendToPrompt} />
           <PromptSection title="Lighting" items={lighting} onSelectItem={appendToPrompt} />
@@ -172,8 +172,8 @@ export function ImageGenerator() {
   );
 
   return (
-    <ScrollView className="p-4 flex-1" contentContainerStyle={{ flexGrow: 1 }}>
-      <View className={`flex flex-1 ${isWideScreen ? 'flex-row' : 'flex-col'}`}>
+    <ScrollView className="p-4 h-full" contentContainerStyle={{ height: '100%' }}>
+      <View className={`flex flex-1 h-full ${isWideScreen ? 'flex-row' : 'flex-col'}`}>
         {PromptPanel}
         {ImagePanel}
       </View>
