@@ -47,10 +47,10 @@ export const rawThemes = {
       border: '#80deea',
     },
     dark: {
-      primary: '#0077b6',
-      secondary: '#023e8a',
+      primary: '#30a7e6',
+      secondary: '#326eba',
       background: '#03045e',
-      surface: '#0077b6',
+      surface: '#002776',
       text: '#caf0f8',
       border: '#90e0ef',
     },

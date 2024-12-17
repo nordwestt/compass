@@ -82,7 +82,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
                           setIsModalVisible(false);
                         }}
                         onLongPress={() => {setIsModalVisible(false); router.push(`/edit-character?id=${prompt.id}`)}}
-                        className="w-[48%] mb-4 rounded-lg bg-white"
+                        className="w-[48%] mb-4 rounded-lg bg-surface"
                       >
                         <View className="items-center p-3">
                           {prompt.image && (
