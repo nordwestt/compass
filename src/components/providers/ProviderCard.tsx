@@ -1,6 +1,8 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Provider } from '@/types/core';
+import { PROVIDER_LOGOS } from '@/src/constants/logos';
+
 
 interface ProviderCardProps {
   provider: Provider;
@@ -16,13 +18,7 @@ export function ProviderCard({ provider, onEdit, onDelete, className }: Provider
         <View className="flex-row items-center">
           {provider.source !== 'custom' && (
             <Image
-              source={
-                provider.source === 'anthropic'
-                  ? require('@/assets/images/anthropic-icon.png')
-                  : provider.source === 'openai'
-                  ? require('@/assets/images/openai-icon.png')
-                  : require('@/assets/images/ollama-icon.png')
-              }
+              source={PROVIDER_LOGOS[provider.source]}
               className="mr-2 !h-[48px] !w-[48px]"
             />
           )}

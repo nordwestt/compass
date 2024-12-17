@@ -3,5 +3,7 @@ export const PROVIDER_LOGOS = {
     anthropic: require('@/assets/providers/anthropic.png'),
     ollama: require('@/assets/providers/ollama.png'),
     elevenlabs: require('@/assets/providers/elevenlabs.png'),
-    replicate: require('@/assets/providers/replicate.png')
+    replicate: require('@/assets/providers/replicate.png'),
+    serper: require('@/assets/providers/ollama.png'),
+    searxng: require('@/assets/providers/ollama.png'),
   };

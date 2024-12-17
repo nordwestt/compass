@@ -100,27 +100,30 @@ export default function Providers({ className }: ProvidersProps) {
   return (
     <View className={`flex-1 ${className}`}>
       <ScrollView className="p-4" contentContainerStyle={{ flexGrow: 0 }}>
-        <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
-          API Providers
-        </Text>
+        
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-2xl font-bold mb-4 text-text">
+            API Providers
+          </Text>
+          <TouchableOpacity
+                onPress={() => {
+                  setEditingProvider(null);
+                  setShowModal(true);
+                }}
+                className="bg-primary px-4 py-2 rounded-lg flex-row items-center">
+                <Ionicons name="add" size={20} color="white" />
+                <Text className="text-white ml-2 font-medium">New Character</Text>
+              </TouchableOpacity>
+          </View>
 
         {providers.map((provider, index) => (
-          <ProviderCard className={`border-b border-border ${index % 2 === 1 ? 'bg-gray-200' : ''}`}
+          <ProviderCard className={`border-b border-border ${index % 2 === 1 ? 'bg-surface' : ''}`}
             key={provider.id}
             provider={provider}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
         ))}
-        <TouchableOpacity
-          onPress={() => {
-            setEditingProvider(null);
-          setShowModal(true);
-          }}
-          className="w-14 h-14 mx-auto bg-primary rounded-full items-center justify-center shadow-lg"
-        >
-          <Ionicons name="add" size={30} color="white" />
-        </TouchableOpacity>
       </ScrollView>
       <View className="bg-primary/10 dark:bg-primary/20 rounded-lg p-4 mb-6">
           <TouchableOpacity 
