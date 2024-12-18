@@ -92,12 +92,15 @@ export default function Providers({ className }: ProvidersProps) {
           search: false
         }
       }));
-      setProviders([...providers, ...newProviders]);
-      console.log('Provider added');
-      toastService.success({
-        title: 'Provider added',
-        description: 'Provider added successfully'
-      });
+
+      if(providers.filter(p => p.endpoint === newProviders[0].endpoint).length === 0) {
+        setProviders([...providers, ...newProviders]);
+        console.log('Provider added');
+        toastService.success({
+          title: 'Provider added',
+          description: 'Provider added successfully'
+        });
+      }
     }).finally(() => {
       setScanning(false);
       });
