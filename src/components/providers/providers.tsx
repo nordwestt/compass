@@ -10,6 +10,8 @@ import NetInfo from '@react-native-community/netinfo';
 import LogService from '@/utils/LogService';
 import axios from 'axios';
 import { fetchAvailableModelsV2 } from '@/hooks/useModels';
+import { toastService } from '@/services/toastService';
+
 
 interface ProvidersProps {
   className?: string;
@@ -33,8 +35,12 @@ export default function Providers({ className }: ProvidersProps) {
     setEditingProvider(null);
     setShowModal(false);
 
-    fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom)).then((models) => {
-      setModels(models);
+    fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom)).then((ollamaModels) => {
+      setModels([...models,...ollamaModels]);
+      toastService.success({
+        title: 'Provider added',
+        description: 'Provider added successfully'
+      });
     });
   };
 
