@@ -35,13 +35,11 @@ export default function Providers({ className }: ProvidersProps) {
     setEditingProvider(null);
     setShowModal(false);
 
-    fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom)).then((ollamaModels) => {
-      setModels([...models,...ollamaModels]);
-      toastService.success({
-        title: 'Provider added',
-        description: 'Provider added successfully'
-      });
+    fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom)).then((modelsFound) => {
+      setModels(modelsFound);
+      
     });
+    
   };
 
   const handleDelete = async (id: string) => {
@@ -82,7 +80,7 @@ export default function Providers({ className }: ProvidersProps) {
     setScanning(true);
     try{
     scanForOllamaInstances().then((ollamaEndpoints) => {
-      setProviders(ollamaEndpoints.map((endpoint) => ({
+      const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
         endpoint,
         id: Date.now().toString(),
         name: "Ollama",
@@ -93,7 +91,13 @@ export default function Providers({ className }: ProvidersProps) {
           stt: false,
           search: false
         }
-      })));
+      }));
+      setProviders([...providers, ...newProviders]);
+      console.log('Provider added');
+      toastService.success({
+        title: 'Provider added',
+        description: 'Provider added successfully'
+      });
     }).finally(() => {
       setScanning(false);
       });
