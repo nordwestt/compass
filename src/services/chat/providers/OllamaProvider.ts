@@ -19,7 +19,7 @@ export class OllamaProvider implements ChatProvider {
     try{
 
       
-      const response =  await fetch(`${model.provider.endpoint}/api/chat`, {
+      const response =  await fetch(`http://localhost:9493/${model.provider.endpoint}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         signal,

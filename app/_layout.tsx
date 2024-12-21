@@ -12,7 +12,7 @@ import { Toast } from "@/components/Toast";
 import { Platform, View } from "react-native";
 import { WebSidebar } from "@/components/navigation/WebSidebar";
 import { routes } from "./(tabs)/_layout";
-
+import { Command } from "@tauri-apps/plugin-shell";
 
 
 SplashScreen.preventAutoHideAsync();
@@ -22,6 +22,14 @@ export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
+
+
+  const myFunc = async function() {
+    const command = Command.sidecar("binaries/corsproxy");
+    const output = await command.execute();
+    }
+    myFunc();
+
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),

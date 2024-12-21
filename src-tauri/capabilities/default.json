@@ -7,6 +7,20 @@
   ],
   "permissions": [
     "core:default",
-    "cors-fetch:default"
+    "shell:default",
+    "shell:allow-spawn",
+    "shell:allow-open",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "binaries/corsproxy",
+          "cmd": "binaries/corsproxy",
+          "sidecar": true,
+          "args": []
+        }
+      ]
+    }
+
   ]
 }
