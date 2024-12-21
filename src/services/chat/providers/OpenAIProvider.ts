@@ -20,7 +20,7 @@ export class OpenAIProvider implements ChatProvider {
       if(Platform.OS =='web' && false) {
         url = url.replace('https://api.openai.com', 'http://localhost:8010/proxy');
       }
-      const response = await fetch(url, {
+      const response = await fetch("http://localhost:9493/"+url+"/v1/chat/completions", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
