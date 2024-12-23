@@ -91,14 +91,20 @@ export default function Providers({ className }: ProvidersProps) {
           stt: false,
           search: false
         }
-      }));
+      } as Provider)).filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
 
-      if(providers.filter(p => p.endpoint === newProviders[0].endpoint).length === 0) {
+      if(newProviders.length > 0) {
         setProviders([...providers, ...newProviders]);
         console.log('Provider added');
         toastService.success({
           title: 'Provider added',
-          description: 'Provider added successfully'
+          description: `${newProviders.length} new Ollama instances were found`
+        });
+      }
+      else{
+        toastService.info({
+          title: 'No new Ollama instances found',
+          description: 'Couldn\'t find any new Ollama instances on your network'
         });
       }
     }).finally(() => {
