@@ -36,7 +36,10 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   React.useEffect(() => {
     const fetchModels = async () => {
-      if(!providers.length) {
+      
+      const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
+
+      if(!models.length && !providers.length) {
         let ollamaEndpoints = await scanForOllamaInstances();
         const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
           endpoint,
@@ -61,7 +64,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           });
         }
       }
-      const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
       setModels(models);
     };
     fetchModels();
