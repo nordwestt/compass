@@ -6,6 +6,8 @@ import { getDefaultStore, useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { ThemeProvider } from './ThemeProvider';
+import { Provider } from '@/types/core';
+
 import Animated, { 
   FadeIn,
   FadeOut,
@@ -13,6 +15,8 @@ import Animated, {
   SlideOutDown
 } from 'react-native-reanimated';
 import { fetchAvailableModelsV2 } from '@/hooks/useModels';
+import { scanForOllamaInstances } from '@/src/components/providers/providers';
+import { toastService } from '@/services/toastService';
 
 
 
@@ -26,12 +30,37 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   onSetModel,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const endpoints = useAtomValue(availableProvidersAtom);
+  const [providers, setProviders] = useAtom(availableProvidersAtom);
   const [models, setModels] = useAtom(availableModelsAtom);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
 
   React.useEffect(() => {
     const fetchModels = async () => {
+      if(!providers.length) {
+        let ollamaEndpoints = await scanForOllamaInstances();
+        const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
+          endpoint,
+          id: Date.now().toString(),
+          name: "Ollama",
+          source: 'ollama',
+          capabilities: {
+            llm: true,
+            tts: false,
+            stt: false,
+            search: false
+          }
+        } as Provider)).filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
+  
+        if(newProviders.length > 0) {
+          setProviders([...providers, ...newProviders]);
+        }
+        else{
+          toastService.info({
+            title: 'Couldn\'t find any providers',
+            description: 'Tried to scan, but found no providers'
+          });
+        }
+      }
       const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
       setModels(models);
     };
@@ -54,7 +83,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
 
 
-  if(!endpoints.length) return <Text className="text-gray-500">No providers configured</Text>;
+  if(!providers.length) return <Text className="text-gray-500">No providers configured</Text>;
   
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;

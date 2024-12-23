@@ -185,73 +185,73 @@ export default function Providers({ className }: ProvidersProps) {
     </View>
   );
 
-  async function scanForOllamaInstances(): Promise<string[]> {
-    // Get network info
-    const networkState = await NetInfo.fetch();
-    const networkPatterns: string[] = [
-      'http://localhost:11434',
-      'http://127.0.0.1:11434',
-    ];
-  
-    if (networkState.type === 'wifi' && networkState.details?.ipAddress && networkState.details?.subnet) {
-      // Extract subnet from IP and subnet mask
-      const subnet = networkState.details.ipAddress.split('.').slice(0, 3).join('.');
-      // Generate IPs only for the detected subnet
-      for (let i = 1; i <= 254; i++) {
-        networkPatterns.push(`http://${subnet}.${i}:11434`);
-      }
-    } else {
-      // Fallback to checking common subnets if we can't determine the current network
-      for (let i = 1; i <= 254; i++) {
-        networkPatterns.push(`http://192.168.0.${i}:11434`);
-      }
-      for (let i = 1; i <= 254; i++) {
-        networkPatterns.push(`http://192.168.1.${i}:11434`);
-      }
-    }
-  
-    // Batch size of concurrent requests
-    const BATCH_SIZE = 25;
-    const TIMEOUT_MS = 500;
-  
-    // Modified test endpoint function that resolves as soon as a valid endpoint is found
-    const testEndpoint = async (endpoint: string): Promise<string | null> => {
-      try {
-        const source = axios.CancelToken.source();
-        const timeoutId = setTimeout(() => source.cancel(), TIMEOUT_MS);
-  
-        const response = await axios.get(endpoint, {
-          headers: {
-            'Accept': 'application/text',
-          },
-          cancelToken: source.token,
-          timeout: TIMEOUT_MS
-        });
-  
-        clearTimeout(timeoutId);
-        return response.status === 200 ? endpoint : null;
-      } catch (error: any) {
-        if (!axios.isCancel(error)) {
-          LogService.log(error, {component: 'providers', function: `scanForOllamaInstances: ${endpoint}`}, 'error');
-        }
-        return null;
-      }
-    };
-  
-    // Process endpoints in batches
-    for (let i = 0; i < networkPatterns.length; i += BATCH_SIZE) {
-      const batch = networkPatterns.slice(i, i + BATCH_SIZE);
-      const results = await Promise.all(batch.map(testEndpoint));
-      
-      // Find first successful result
-      const foundEndpoint = results.find(result => result !== null);
-      if (foundEndpoint) {
-        return [foundEndpoint];
-      }
-    }
-  
-    return [];
-  }
-  
 }
 
+
+export async function scanForOllamaInstances(): Promise<string[]> {
+  // Get network info
+  const networkState = await NetInfo.fetch();
+  const networkPatterns: string[] = [
+    'http://localhost:11434',
+    'http://127.0.0.1:11434',
+  ];
+
+  if (networkState.type === 'wifi' && networkState.details?.ipAddress && networkState.details?.subnet) {
+    // Extract subnet from IP and subnet mask
+    const subnet = networkState.details.ipAddress.split('.').slice(0, 3).join('.');
+    // Generate IPs only for the detected subnet
+    for (let i = 1; i <= 254; i++) {
+      networkPatterns.push(`http://${subnet}.${i}:11434`);
+    }
+  } else {
+    // Fallback to checking common subnets if we can't determine the current network
+    for (let i = 1; i <= 254; i++) {
+      networkPatterns.push(`http://192.168.0.${i}:11434`);
+    }
+    for (let i = 1; i <= 254; i++) {
+      networkPatterns.push(`http://192.168.1.${i}:11434`);
+    }
+  }
+
+  // Batch size of concurrent requests
+  const BATCH_SIZE = 25;
+  const TIMEOUT_MS = 500;
+
+  // Modified test endpoint function that resolves as soon as a valid endpoint is found
+  const testEndpoint = async (endpoint: string): Promise<string | null> => {
+    try {
+      const source = axios.CancelToken.source();
+      const timeoutId = setTimeout(() => source.cancel(), TIMEOUT_MS);
+
+      const response = await axios.get(endpoint, {
+        headers: {
+          'Accept': 'application/text',
+        },
+        cancelToken: source.token,
+        timeout: TIMEOUT_MS
+      });
+
+      clearTimeout(timeoutId);
+      return response.status === 200 ? endpoint : null;
+    } catch (error: any) {
+      if (!axios.isCancel(error)) {
+        LogService.log(error, {component: 'providers', function: `scanForOllamaInstances: ${endpoint}`}, 'error');
+      }
+      return null;
+    }
+  };
+
+  // Process endpoints in batches
+  for (let i = 0; i < networkPatterns.length; i += BATCH_SIZE) {
+    const batch = networkPatterns.slice(i, i + BATCH_SIZE);
+    const results = await Promise.all(batch.map(testEndpoint));
+    
+    // Find first successful result
+    const foundEndpoint = results.find(result => result !== null);
+    if (foundEndpoint) {
+      return [foundEndpoint];
+    }
+  }
+
+  return [];
+}
