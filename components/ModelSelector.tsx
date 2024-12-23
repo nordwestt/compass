@@ -38,6 +38,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     const fetchModels = async () => {
       
       const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
+      setModels(models);
+
 
       if(!models.length && !providers.length) {
         let ollamaEndpoints = await scanForOllamaInstances();
@@ -56,6 +58,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   
         if(newProviders.length > 0) {
           setProviders([...providers, ...newProviders]);
+          
+          const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
+          setModels(models);
         }
         else{
           toastService.info({
@@ -64,7 +69,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           });
         }
       }
-      setModels(models);
+      
     };
     fetchModels();
   }, []);
