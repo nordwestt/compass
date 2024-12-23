@@ -16,11 +16,9 @@ export class OpenAIProvider implements ChatProvider {
     ];
 
     try {
-      let url = `${model.provider.endpoint}`;
-      if(Platform.OS =='web' && false) {
-        url = url.replace('https://api.openai.com', 'http://localhost:8010/proxy');
-      }
-      const response = await fetch("http://localhost:9493/"+url+"/v1/chat/completions", {
+      let url = `${model.provider.endpoint}/v1/chat/completions`;
+      if(Platform.OS =='web') url = "http://localhost:9493/"+url;
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +72,9 @@ export class OpenAIProvider implements ChatProvider {
   }
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
-    const response = await fetch(`${model.provider.endpoint}`, {
+    let url = `${model.provider.endpoint}`;
+    if(Platform.OS =='web') url = "http://localhost:9493/"+url;
+    const response = await fetch(url+"/v1/chat/completions", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +99,9 @@ export class OpenAIProvider implements ChatProvider {
   }
 
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any> {
-    const response = await fetch(`${model.provider.endpoint}/v1/chat/completions`, {
+    let url = `${model.provider.endpoint}`;
+    if(Platform.OS =='web') url = "http://localhost:9493/"+url;
+    const response = await fetch(url+"/v1/chat/completions", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

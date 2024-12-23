@@ -3,6 +3,8 @@ import { Character } from '@/types/core';
 import { ChatMessage } from '@/types/core';
 import { Model } from '@/types/core';
 import LogService from '@/utils/LogService';
+import { Platform } from 'react-native';
+import { toastService } from '@/services/toastService';
 
 
 
@@ -19,7 +21,9 @@ export class OllamaProvider implements ChatProvider {
     try{
 
       
-      const response =  await fetch(`http://localhost:9493/${model.provider.endpoint}/api/chat`, {
+      let url = `${model.provider.endpoint}/api/chat`;
+      if(Platform.OS =='web') url = "http://localhost:9493/"+url;
+      const response =  await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         signal,
@@ -54,33 +58,20 @@ export class OllamaProvider implements ChatProvider {
         }
         catch(error: any){
         }
-
-        // const lines = chunk.split('\n');
-        
-        // for (const line of lines) {
-        //   if (line.trim() === '') continue;
-          
-        //   try {
-        //     const parsedChunk = JSON.parse(line);
-        //     const text = parsedChunk.message?.content || '';
-        //     if (text) {
-        //       yield text;
-        //     }
-        //   } catch (error: any) {
-        //     LogService.log(error, {component: 'OllamaProvider', function: `sendMessage.processChunk: ${line}`}, 'error');
-        //   }
-        // }
       }
     }
     catch(error:any){
       LogService.log(error, {component: 'OllamaProvider', function: `sendMessage: ${model.provider.endpoint}`}, 'error');
+      toastService.danger({title: "Could not send message", description: error.message});
       throw error;
     }
   }
 
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
-    let response = await fetch(`${model.provider.endpoint}/api/chat`, {
+    let url = `${model.provider.endpoint}/api/chat`;
+    if(Platform.OS =='web' ) url = "http://localhost:9493/"+url;
+    let response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -98,7 +89,9 @@ export class OllamaProvider implements ChatProvider {
 
   
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>{
-    let response = await fetch(`${model.provider.endpoint}/api/chat`, {
+    let url = `${model.provider.endpoint}/api/chat`;
+    if(Platform.OS =='web' ) url = "http://localhost:9493/"+url;
+    let response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
