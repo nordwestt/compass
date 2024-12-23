@@ -9,10 +9,18 @@ import type { ThemePresetRaw } from '@/constants/themes';
 const themePresetAtom = atomWithStorage<ThemePresetRaw>('theme-preset', 'default');
 
 export function ThemeProvider({ children }: PropsWithChildren) {
-  const [themePreset] = useAtom(themePresetAtom);
+  const [themePreset, setThemePreset] = useAtom(themePresetAtom);
   const { colorScheme } = useColorScheme();
 
-  const actualTheme = vars(rawThemes[themePreset][colorScheme ?? 'light']);
+  let actualTheme = {};
+  if(!rawThemes[themePreset]) {
+    actualTheme = vars(rawThemes['default'][colorScheme ??'light']);
+    setThemePreset('default');
+  }
+  else{
+    actualTheme = vars(rawThemes[themePreset][colorScheme ?? 'light']);
+  }
+
   
   
   return (

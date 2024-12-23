@@ -34,8 +34,13 @@ export default function TabLayout() {
   const [index, setIndex] = useAtom(currentIndexAtom);
 
   const { themePreset } = useThemePreset();
-  const theme = rawThemes[themePreset][colorScheme ?? 'light'];
-
+  let theme = {} as any;
+  if(!rawThemes[themePreset]){
+    theme = rawThemes['default'][colorScheme ?? 'light'];
+  }
+  else{
+    theme = rawThemes[themePreset][colorScheme ?? 'light'];
+  }
   const renderTabBar = (props: any) => (
     <TabBar
       {...props}

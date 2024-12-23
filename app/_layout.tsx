@@ -20,7 +20,13 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
-  const theme = rawThemes[themePreset][colorScheme ?? 'light'];
+  let theme = {} as any;
+  if(!rawThemes[themePreset]){
+    theme = rawThemes['default'][colorScheme ?? 'light'];
+  }
+  else{
+    theme = rawThemes[themePreset][colorScheme ?? 'light'];
+  }
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
 
 
