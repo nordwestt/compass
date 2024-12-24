@@ -25,12 +25,12 @@ export const createDefaultThread = (): Thread => {
 
 // Core atoms
 export const threadsAtom = atomWithAsyncStorage<Thread[]>('threads', [createDefaultThread()])
-export const currentThreadAtom = atom<Thread>(createDefaultThread())
+export const currentThreadAtom = atomWithAsyncStorage<Thread>('currentThread', createDefaultThread())
 export const sidebarVisibleAtom = atom(true)
 
 // Derived atoms
 export const currentThreadMessagesAtom = atom(
-  (get) => get(currentThreadAtom).messages
+  async (get) => (await get(currentThreadAtom)).messages
 )
 
 // First, let's define our action types
@@ -58,7 +58,7 @@ export const threadActionsAtom = atom(
           t.id === action.payload.id ? action.payload : t
         )
         set(threadsAtom, updatedThreads)
-        if(get(currentThreadAtom).id === action.payload.id) {
+        if((await get(currentThreadAtom)).id === action.payload.id) {
           set(currentThreadAtom, action.payload)
         }
         break
@@ -67,7 +67,7 @@ export const threadActionsAtom = atom(
         const newThreads = threads.filter(t => t.id !== action.payload)
         set(threadsAtom, newThreads)
         
-        if(get(currentThreadAtom).id === action.payload) {
+        if((await get(currentThreadAtom)).id === action.payload) {
           if(newThreads.length > 0) {
             set(currentThreadAtom, newThreads[newThreads.length - 1])
           } else {
@@ -88,9 +88,9 @@ export const threadActionsAtom = atom(
             : t
         )
         set(threadsAtom, threadsWithUpdatedMessages)
-        if (get(currentThreadAtom).id === action.payload.threadId) {
+        if ((await get(currentThreadAtom)).id === action.payload.threadId) {
           set(currentThreadAtom, {
-            ...get(currentThreadAtom),
+            ...(await get(currentThreadAtom)),
             messages: action.payload.messages
           })
         }
@@ -111,12 +111,12 @@ export const availableModelsAtom = atom<Model[]>([])
 
 // Derived atom for the current model
 export const currentModelAtom = atom(
-  (get) => get(currentThreadAtom).selectedModel
+  async (get) => (await get(currentThreadAtom)).selectedModel
 )
 
 // Derived atom for the current character
 export const currentCharacterAtom = atom(
-  (get) => get(currentThreadAtom).character
+  async (get) => (await get(currentThreadAtom)).character
 )
 
 // Helper atom for chat actions
