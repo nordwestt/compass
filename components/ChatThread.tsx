@@ -36,6 +36,12 @@ export const ChatThread: React.FC = () => {
   const [selectedVoice, setSelectedVoice] = useAtom(defaultVoiceAtom);
   
   const previousThreadId = useRef(currentThread.id);
+
+  useEffect(() => {
+    if(threads.find(t => t.id === currentThread.id) === undefined) {
+      dispatchThread({ type: 'add', payload: currentThread });
+    }
+  }, []);
   
   useEffect(() => {
 
