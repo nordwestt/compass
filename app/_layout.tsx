@@ -28,13 +28,14 @@ export default function RootLayout() {
     theme = rawThemes[themePreset][colorScheme ?? 'light'];
   }
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
+  const isTauri = Platform.OS === 'web' && typeof window !== 'undefined' && !!(window as any).__TAURI__;
 
 
   const myFunc = async function() {
     const command = Command.sidecar("binaries/corsproxy");
     const output = await command.execute();
   }
-  if(Platform.OS == 'web') {
+  if(isTauri) {
     myFunc();
   }
 
