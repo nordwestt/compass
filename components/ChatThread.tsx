@@ -109,7 +109,7 @@ export const ChatThread: React.FC = () => {
 
   const scrollToEnd = useCallback(() => {
     if (flatListRef.current) {
-      flatListRef.current.scrollToOffset({ offset: 9999, animated: true });
+      flatListRef.current.scrollToOffset({ offset: 99999999, animated: true });
     }
   }, []);
 

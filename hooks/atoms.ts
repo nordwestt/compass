@@ -3,10 +3,10 @@ import { atomWithAsyncStorage } from './storage'
 import { Model, Thread, ChatMessage, Character, Provider, Voice } from '@/types/core'
 import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
-export const createDefaultThread = (): Thread => {
+export const createDefaultThread = (name: string="New thread"): Thread => {
   return {
     id: Date.now().toString(),
-    title: "New thread",
+    title: name,
     messages: [],
     selectedModel: {
     id: '',
@@ -25,7 +25,7 @@ export const createDefaultThread = (): Thread => {
 
 // Core atoms
 export const threadsAtom = atomWithAsyncStorage<Thread[]>('threads', [createDefaultThread()])
-export const currentThreadAtom = atomWithAsyncStorage<Thread>('currentThread', createDefaultThread())
+export const currentThreadAtom = atomWithAsyncStorage<Thread>('currentThread', createDefaultThread('Your first thread'))
 export const sidebarVisibleAtom = atom(true)
 
 // Derived atoms
