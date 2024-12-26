@@ -19,8 +19,8 @@ export const ThreadsSidebar = () => {
   }
 
   return (
-    <View className="w-64 border-r-2 border-border z-[1]">
-      <View className="flex-row justify-between items-center p-4 bg-background">
+    <View className="w-64 border-r-2 border-border z-[1] bg-surface m-2 rounded-lg p-1 my-4">
+      <View className="flex-row justify-between items-center p-4">
         <Text className="text-center text-lg font-bold text-text">
           Threads
         </Text>

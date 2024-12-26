@@ -117,14 +117,14 @@ const ChatThreads: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 flex-col bg-background">
+    <View className="flex-1 flex-col">
       <SectionList
         ref={scrollViewRef}
         sections={groupThreadsByDate(threads)}
         keyExtractor={(thread) => thread.id}
         renderSectionHeader={({ section: { title } }) => (
           <View className="z-10">
-            <Text className="text-sm font-semibold text-text px-4 py-2 bg-background">
+            <Text className="text-sm font-semibold text-text px-4 py-2">
               {title}
             </Text>
           </View>
