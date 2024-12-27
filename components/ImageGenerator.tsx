@@ -119,6 +119,21 @@ export function ImageGenerator() {
     }
   };
 
+  const ImagePanel = generatedImage && (
+    <View className={`${isWideScreen ? 'w-1/2 pl-4' : 'w-full mt-4'}`}>
+      <View className="bg-surface rounded-xl p-4 shadow-lg flex-1">
+        <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+          Generated Image
+        </Text>
+          <Image
+            source={{ uri: generatedImage }}
+            className="w-full h-[400px] border-primary border-4 rounded-lg overflow-hidden"
+            resizeMode="cover"
+          />
+      </View>
+    </View>
+  );
+
   const PromptPanel = (
     <View className={`h-full alal ${isWideScreen && generatedImage ? 'w-1/2 pr-4 h-full' : 'w-full'}`}>
       <View className="bg-surface rounded-xl p-4 border border-border flex-1 h-full">
@@ -143,6 +158,7 @@ export function ImageGenerator() {
           <PromptSection icon="pine-tree" title="Perspective" items={perspectives} onSelectItem={appendToPrompt} />
           <PromptSection icon="track-light" title="Lighting" items={lighting} onSelectItem={appendToPrompt} />
           <PromptSection icon="guy-fawkes-mask" title="Mood" items={moods} onSelectItem={appendToPrompt} />
+          {Platform.OS !== 'web' && generatedImage && ImagePanel}
         </ScrollView>
 
         <TouchableOpacity
@@ -167,28 +183,13 @@ export function ImageGenerator() {
     </View>
   );
 
-  const ImagePanel = generatedImage && (
-    <View className={`${isWideScreen ? 'w-1/2 pl-4' : 'w-full mt-4'}`}>
-      <View className="bg-surface rounded-xl p-4 shadow-lg flex-1">
-        <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-          Generated Image
-        </Text>
-        <View className="rounded-lg overflow-hidden border-4 border-gray-200 dark:border-gray-700">
-          <Image
-            source={{ uri: generatedImage }}
-            className="w-full h-[400px]"
-            resizeMode="contain"
-          />
-        </View>
-      </View>
-    </View>
-  );
+  
 
   return (
     <ScrollView className="p-4 h-full" contentContainerStyle={{ height: '100%' }}>
       <View className={`flex flex-1 h-full ${isWideScreen ? 'flex-row' : 'flex-col'}`}>
         {PromptPanel}
-        {ImagePanel}
+        {isWideScreen && ImagePanel}
       </View>
     </ScrollView>
   );
