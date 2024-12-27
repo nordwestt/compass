@@ -22,27 +22,34 @@ export function WebSidebar({ className }: { className?: string }) {
   const { colorScheme } = useColorScheme();
   const { themePreset } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
+  const [isHovered, setIsHovered] = React.useState(false);
 
   return (
-    <View className={`h-full bg-background ${className}`}>
+    <View className={`group h-full bg-background ${className}`}>
       {routes.map((route, index) => (
         <Pressable
+        onHoverIn={() => setIsHovered(true)}
+       onHoverOut={() => setIsHovered(false)}
           key={route.key}
           onPress={() => {
             setCurrentIndex(index);
-            router.replace(`/${route.key == 'index' ? '' : route.key}` as any);
+            router.replace(`/${route.key === 'index' ? '' : route.key}` as any);
           }}
-          className={`flex-row items-center p-4 space-x-3 m-2 rounded-lg hover:bg-surface ${
-            currentIndex === index ? 'border-r border-primary border shadow-sm bg-surface' : ''
+          className={`group-hover:w-32 w-14 transition-all duration-200 flex-row items-center justify-between p-4 m-2 rounded-lg hover:bg-surface ${
+            currentIndex === index
+              ? 'border-r border-primary border shadow-sm bg-surface'
+              : ''
           }`}
         >
-          <TabBarIcon 
-            name={route.icon as any} 
-            size={22} 
-            className={currentIndex === index ? '!text-primary' : '!text-secondary'} 
+          <TabBarIcon
+            name={route.icon as any}
+            size={22}
+            className={`w-12 ${currentIndex === index ? '!text-primary' : '!text-secondary'}`}
           />
-          <Text 
-            className={currentIndex === index ? 'text-primary' : 'text-secondary'}
+          <Text
+            className={`text-end opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+              currentIndex === index ? 'text-primary' : 'text-secondary'
+            }`}
           >
             {route.title}
           </Text>
