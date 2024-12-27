@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export function CustomHeader() {
   const navigation = useNavigation();
@@ -37,8 +37,8 @@ export function CustomHeader() {
   );
 
   return (
-    <View className="flex-row items-center px-4 py-3 bg-surface h-28" style={{ paddingTop: top }}>
-      <View className="flex-row items-center flex-1">
+    <SafeAreaView className="flex-row items-center px-4 py-3 bg-surface">
+      <View className="flex-row items-center flex-1 h-12">
         {canGoBack && (
           <TouchableOpacity 
             onPress={() => navigation.goBack()}
@@ -57,6 +57,6 @@ export function CustomHeader() {
         <Ionicons name="settings-outline" size={24} className="!text-primary" />
       </TouchableOpacity>
       */}
-    </View>
+    </SafeAreaView>
   );
 } 
