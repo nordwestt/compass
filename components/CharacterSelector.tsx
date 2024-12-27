@@ -34,7 +34,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
     <>
       <TouchableOpacity 
         onPress={() => setIsModalVisible(true)}
-        className="flex-row items-center px-4 py-2 rounded-lg bg-background border border-border hover:bg-surface"
+        className="flex-row items-center px-4 py-2 h-12 rounded-lg bg-background border border-border hover:bg-surface"
       >
         {selectedPrompt.image && (
           <Image 

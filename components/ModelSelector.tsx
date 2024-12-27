@@ -103,7 +103,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     <>
       <TouchableOpacity 
         onPress={() => setIsModalVisible(true)}
-        className="flex-row items-center px-2 py-2 rounded-lg bg-background hover:bg-surface border border-border"
+        className="flex-row items-center px-2 h-12 py-2 rounded-lg bg-background hover:bg-surface border border-border"
       >
         {PROVIDER_LOGOS[selectedModel.provider.source as keyof typeof PROVIDER_LOGOS] && (
           <Image 
