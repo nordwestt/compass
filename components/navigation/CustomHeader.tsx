@@ -1,12 +1,14 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { HeaderTitle } from './HeaderTitle';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export function CustomHeader() {
   const navigation = useNavigation();
   const route = useRoute();
   const canGoBack = navigation.canGoBack();
+  const { top } = useSafeAreaInsets();
+
   let segments = route.name.split('/').filter(Boolean);
   if(segments.length > 1) {
     segments = [segments[segments.length - 2]];
@@ -33,7 +35,7 @@ export function CustomHeader() {
   );
 
   return (
-    <View className="flex-row items-center px-4 py-3 bg-surface">
+    <View className="flex-row items-center px-4 py-3 bg-surface" style={{ paddingTop: top }}>
       <View className="flex-row items-center flex-1">
         {canGoBack && (
           <TouchableOpacity 
