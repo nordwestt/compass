@@ -111,7 +111,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   };
 
   return (
-    <View className="relative flex-row items-center p-2 bg-surface border-t border-gray-200 dark:border-gray-700">
+    <View className="relative flex-row items-center p-2 bg-surface border-t border-border rounded-t-xl mx-2">
       {showMentionPopup && (
         <CharacterMentionPopup
           characters={allCharacters}
@@ -122,7 +122,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       )}
       <TextInput
         ref={inputRef}
-        className="flex-1 min-h-[40px] px-4 py-2 bg-background rounded-full mr-2 text-text"
+        className="flex-1 min-h-[60px] px-4 py-2 bg-background rounded-full mr-2 text-text"
         placeholder="Type a message... (Use @ to mention characters)"
         placeholderTextColor="#9CA3AF"
         value={message}
@@ -139,14 +139,14 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
           onPress={onInterrupt}
           className="w-10 h-10 rounded-full bg-red-500 items-center justify-center"
         >
-          <Ionicons name="stop" size={20} color="white" />
+          <Ionicons name="stop" size={26} color="white" />
         </Pressable>
       ) : (
         <Pressable
           onPress={handleSend}
-          className="w-10 h-10 rounded-full bg-primary dark:bg-blue-600 items-center justify-center"
+          className="w-12 h-12 rounded-full bg-primary dark:bg-blue-600 items-center justify-center"
         >
-          <Ionicons name="send" size={20} color="white" />
+          <Ionicons name="send" size={26} color="white" />
         </Pressable>
       )}
     </View>

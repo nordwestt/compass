@@ -32,7 +32,7 @@ export function WebSidebar({ className }: { className?: string }) {
             setCurrentIndex(index);
             router.replace(`/${route.key === 'index' ? '' : route.key}` as any);
           }}
-          className={`group-hover:w-32 w-14 transition-all duration-200 flex-row items-center justify-between p-4 m-2 rounded-lg hover:bg-surface ${
+          className={`group-hover:w-32 z-20 w-14 transition-all duration-200 flex-row items-center justify-between p-4 m-2 rounded-lg hover:bg-surface ${
             currentIndex === index
               ? 'border-r border-primary border shadow-sm bg-surface'
               : ''
