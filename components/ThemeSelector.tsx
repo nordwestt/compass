@@ -12,12 +12,12 @@ export function ThemeSelector({ className }: ThemeSelectorProps) {
   return (
     <View className={`p-4 flex-1 bg-background ${className}`}>
       <Text className="text-lg font-bold text-text mb-4">Theme</Text>
-      <View className="flex-col space-y-4">
+      <View className="grid grid-cols-2 gap-4">
         {availableThemes.map((t) => (
           <TouchableOpacity
             key={t}
             onPress={() => setThemePreset(t)}
-            className={`p-4 rounded-lg shadow-lg ${
+            className={`p-4 rounded-lg h-24 shadow-lg ${
               themePreset === t ? 'border-2 border-primary' : ''
             }`}
             style={{
