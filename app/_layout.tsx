@@ -13,6 +13,8 @@ import { Platform, View } from "react-native";
 import { WebSidebar } from "@/components/navigation/WebSidebar";
 import { routes } from "./(tabs)/_layout";
 import { Command } from "@tauri-apps/plugin-shell";
+import { HeaderTitle } from "@/components/navigation/HeaderTitle";
+import { CustomHeader } from "@/components/navigation/CustomHeader";
 
 
 SplashScreen.preventAutoHideAsync();
@@ -56,6 +58,7 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+  
 
   return (
     <ThemeProvider>
@@ -68,6 +71,7 @@ export default function RootLayout() {
             headerTintColor: theme.text,
             headerShadowVisible: false,
             headerBackTitleVisible: false,
+            header: () => <CustomHeader />
           }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
