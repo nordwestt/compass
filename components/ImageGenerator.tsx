@@ -40,7 +40,7 @@ interface PromptTagProps {
 const PromptTag: React.FC<PromptTagProps> = ({ label, onPress }) => (
   <TouchableOpacity 
     onPress={onPress}
-    className="bg-background px-3 py-1 rounded-full m-1 border border-border"
+    className="bg-background hover:bg-surface px-3 py-1 rounded-full m-1 border border-border"
   >
     <Text className="text-sm text-text">{label}</Text>
   </TouchableOpacity>
@@ -148,7 +148,7 @@ export function ImageGenerator() {
         <TouchableOpacity
           onPress={handleGenerate}
           disabled={isLoading}
-          className={`p-4 rounded-lg mt-4 ${isLoading ? 'bg-gray-400' : 'bg-primary'}`}
+          className={`p-4 rounded-lg mt-4 ${isLoading ? 'bg-gray-400' : 'bg-primary hover:opacity-80'}`}
         >
           {isLoading ? (
             <View className="flex-row items-center justify-center">

@@ -42,7 +42,7 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
     <View className="flex-row items-center flex-1 justify-between border border-border rounded-lg">
       <TouchableOpacity 
         onPress={() => ttsProviders().length ? setIsModalVisible(true) : showTTSDisabledToast()}
-        className="flex-row items-center px-4 py-2 bg-background rounded-l-lg h-10 border-r border-border"
+        className="flex-row items-center px-4 py-2 bg-background rounded-l-lg h-10 border-r border-border hover:bg-surface"
       >
             <Ionicons name="mic" size={20} className="mr-2 text-gray-600 dark:text-gray-400" />
             <Text className="flex-1 text-black dark:text-white">
@@ -62,7 +62,7 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
                 showTTSDisabledToast();
               }
             }}
-            className={`w-10 h-10 rounded-r-lg bg-background items-center justify-center`}
+            className={`w-10 h-10 rounded-r-lg bg-background items-center justify-center hover:bg-surface`}
           >
             <Ionicons 
               name={ttsEnabled ? "volume-high" : "volume-mute"} 

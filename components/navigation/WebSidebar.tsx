@@ -22,14 +22,11 @@ export function WebSidebar({ className }: { className?: string }) {
   const { colorScheme } = useColorScheme();
   const { themePreset } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
-  const [isHovered, setIsHovered] = React.useState(false);
 
   return (
     <View className={`group h-full bg-background ${className}`}>
       {routes.map((route, index) => (
         <Pressable
-        onHoverIn={() => setIsHovered(true)}
-       onHoverOut={() => setIsHovered(false)}
           key={route.key}
           onPress={() => {
             setCurrentIndex(index);

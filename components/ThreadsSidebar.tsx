@@ -11,7 +11,7 @@ export const ThreadsSidebar = () => {
     return (
       <TouchableOpacity 
         onPress={() => setIsSidebarVisible(true)} 
-        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-surface"
+        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-surface hover:bg-background"
       >
         <Ionicons name="chevron-forward" size={24} className="!text-text" />
       </TouchableOpacity>
@@ -26,7 +26,7 @@ export const ThreadsSidebar = () => {
         </Text>
         <TouchableOpacity 
           onPress={() => setIsSidebarVisible(false)} 
-          className="p-2 rounded-full bg-surface"
+          className="p-2 rounded-full bg-surface hover:bg-background"
         >
           <Ionicons name="chevron-back" size={24} className="!text-text" />
         </TouchableOpacity>

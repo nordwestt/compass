@@ -134,7 +134,7 @@ const ChatThreads: React.FC = () => {
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`shadow-md flex-1 p-4 rounded-lg bg-surface ${
+              className={`shadow-md flex-1 p-4 rounded-lg bg-surface hover:bg-background ${
                 currentThread.id === thread.id 
                   ? 'web:border-primary web:border-2' 
                   : ''
@@ -146,7 +146,7 @@ const ChatThreads: React.FC = () => {
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => deleteThread(thread.id)}
-              className="ml-2 p-2 rounded-full bg-red-100 dark:bg-red-900"
+              className="ml-2 p-2 rounded-full bg-background hover:bg-red-100 hover:dark:bg-red-900"
             >
               <Ionicons 
                 name="trash-outline" 
@@ -181,7 +181,7 @@ const ChatThreads: React.FC = () => {
       
       <TouchableOpacity 
         onPress={addNewThread} 
-        className="mb-2 p-2 rounded-full bg-background"
+        className="mb-2 p-2 rounded-full bg-background hover:bg-surface hover:border-primary hover:border-2"
       >
         <Ionicons 
           className="mx-auto !text-text" 
@@ -192,7 +192,7 @@ const ChatThreads: React.FC = () => {
       <View className="flex-row justify-center space-x-4 mb-2">
         <TouchableOpacity 
           onPress={toggleDark}
-          className="p-2 rounded-full bg-secondary"
+          className="p-2 rounded-full bg-surface hover:bg-background"
         >
           <Ionicons 
             name={isDarkMode ? 'sunny' : 'moon'} 

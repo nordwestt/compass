@@ -98,7 +98,7 @@ export default function CharactersScreen() {
         </View>
           <TouchableOpacity
               onPress={handleAdd}
-              className="bg-primary px-4 py-2 rounded-lg flex-row items-center">
+              className="bg-primary px-4 py-2 rounded-lg flex-row items-center hover:opacity-80">
               <Ionicons name="add" size={20} color="white" />
               <Text className="text-white ml-2 font-medium">New Character</Text>
             </TouchableOpacity>
@@ -111,7 +111,7 @@ export default function CharactersScreen() {
             key={prompt.id} 
             className="w-full md:w-[calc(33.33%-16px)] lg:w-[calc(25%-16px)] mb-4"
           >
-            <View className="flex-row bg-surface rounded-xl p-4 border border-gray-200 shadow-lg">
+            <View className="flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg">
               <Image 
                 source={prompt.image} 
                 className="!h-[64px] !w-[64px] rounded-full my-auto"

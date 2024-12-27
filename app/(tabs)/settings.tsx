@@ -12,7 +12,7 @@ interface SettingItemProps {
 
 const SettingItem = ({ title, description, icon, onPress }: SettingItemProps) => (
   <TouchableOpacity 
-    className="flex-row items-center p-4 mb-2 bg-surface rounded-lg border border-border"
+    className="flex-row items-center p-4 mb-2 bg-surface rounded-lg border border-border hover:bg-background hover:shadow-md"
     onPress={onPress}
   >
     <View className="bg-primary/10 p-3 rounded-full mr-4">
