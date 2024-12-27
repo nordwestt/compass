@@ -13,9 +13,8 @@ import { Platform, View } from "react-native";
 import { WebSidebar } from "@/components/navigation/WebSidebar";
 import { routes } from "./(tabs)/_layout";
 import { Command } from "@tauri-apps/plugin-shell";
-import { HeaderTitle } from "@/components/navigation/HeaderTitle";
 import { CustomHeader } from "@/components/navigation/CustomHeader";
-
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 

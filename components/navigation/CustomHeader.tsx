@@ -16,26 +16,28 @@ export function CustomHeader() {
 
 
   const Title = () => (
-    <View className="flex-row items-center">
-      {segments.map((segment, index) => (
-        <View key={segment} className="flex-row items-center">
-          {index > 0 && (
-            <Ionicons 
-              name="chevron-forward" 
-              size={16} 
-              className="!text-secondary mx-1" 
-            />
-          )}
-          <Text className="text-primary capitalize font-semibold pt-1">
-            {segment.replace('-', ' ')}
-          </Text>
-        </View>
-      ))}
-    </View>
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+      <View className="flex-row items-center">
+        {segments.map((segment, index) => (
+          <View key={segment} className="flex-row items-center">
+            {index > 0 && (
+              <Ionicons 
+                name="chevron-forward" 
+                size={16} 
+                className="!text-secondary mx-1" 
+              />
+            )}
+            <Text className="text-primary capitalize font-semibold pt-1 text-lg">
+              {segment.replace('-', ' ')}
+            </Text>
+          </View>
+        ))}
+      </View>
+    </TouchableOpacity>
   );
 
   return (
-    <View className="flex-row items-center px-4 py-3 bg-surface" style={{ paddingTop: top }}>
+    <View className="flex-row items-center px-4 py-3 bg-surface h-28" style={{ paddingTop: top }}>
       <View className="flex-row items-center flex-1">
         {canGoBack && (
           <TouchableOpacity 
