@@ -11,6 +11,8 @@ import LogService from '@/utils/LogService';
 import axios from 'axios';
 import { fetchAvailableModelsV2 } from '@/hooks/useModels';
 import { toastService } from '@/services/toastService';
+import { EditOllama } from './EditOllama';
+import { router } from 'expo-router';
 
 
 interface ProvidersProps {
@@ -172,7 +174,7 @@ export default function Providers({ className }: ProvidersProps) {
         </View>
 
       
-
+      
       <EndpointModal
         visible={showModal}
         onClose={() => {

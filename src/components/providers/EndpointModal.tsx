@@ -5,6 +5,7 @@ import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 import { ProviderFormFields } from './ProviderFormFields';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { EditOllama } from './EditOllama';
 
 
 interface EndpointModalProps {
@@ -82,6 +83,9 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
               customEndpoint={customEndpoint}
               setCustomEndpoint={setCustomEndpoint}
             />
+            {selectedType === 'ollama' && provider && <EditOllama
+              provider={provider!}
+            />}
           </ScrollView>
 
           <View className="flex-row space-x-4 mt-6">
