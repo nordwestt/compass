@@ -53,6 +53,7 @@
     "react-native-fetch-api": "^3.0.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-markdown-display": "^7.0.2",
+    "react-native-modal": "^13.0.1",
     "react-native-pager-view": "6.3.0",
     "react-native-polyfill-globals": "^3.1.0",
     "react-native-reanimated": "~3.10.1",

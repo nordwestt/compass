@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform, ScrollView, Pressable } from 'react-native';
 import { ImageProviderFactory } from '@/src/services/image/ImageProviderFactory';
 import { Model } from '@/types/core';
 import { availableProvidersAtom } from '@/hooks/atoms';
@@ -9,6 +9,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 import { useThemePreset } from '@/components/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
+import Modal from 'react-native-modal';
 
 
 // Predefined options to enhance prompt creation
@@ -79,6 +80,8 @@ export function ImageGenerator() {
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
+  const [isImageViewVisible, setIsImageViewVisible] = useState(false);
+
 
   const appendToPrompt = (text: string) => {
     setPrompt((current) => {
@@ -88,6 +91,7 @@ export function ImageGenerator() {
   };
 
   const handleGenerate = async () => {
+    
     const provider = availableProviders.find(p => p.source === 'replicate');
     if (!provider) {
       setError('Provider not found');
@@ -125,11 +129,37 @@ export function ImageGenerator() {
         <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
           Generated Image
         </Text>
+        <Pressable onPress={() => setIsImageViewVisible(true)}>
           <Image
             source={{ uri: generatedImage }}
             className="w-full h-[400px] border-primary border-4 rounded-lg overflow-hidden"
             resizeMode="cover"
           />
+        </Pressable>
+
+        {(
+          <Modal
+            isVisible={isImageViewVisible}
+            onBackdropPress={() => setIsImageViewVisible(false)}
+            onSwipeComplete={() => setIsImageViewVisible(false)}
+            swipeDirection={['down']}
+            className="m-0 flex items-center justify-center"
+          >
+            <View className="w-[70vw] flex-1 mx-auto flex items-center justify-center">
+            <TouchableOpacity 
+                onPress={() => setIsImageViewVisible(false)}
+                className="absolute right-4 top-4 z-10 bg-black/50 rounded-full p-2"
+              >
+                <MaterialCommunityIcons name="close" size={24} color="white" />
+              </TouchableOpacity>
+              <Image
+                source={{ uri: generatedImage }}
+                className="w-[70vw] flex-1 rounded-lg overflow-hidden"
+                resizeMode="contain"
+              />
+            </View>
+          </Modal>
+        )}
       </View>
     </View>
   );
