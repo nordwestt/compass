@@ -44,9 +44,9 @@ export const ChatThread: React.FC = () => {
   }, []);
   
   useEffect(() => {
-
+    chatInputRef.current?.focus();
     if (previousThreadId.current !== currentThread.id) {
-      chatInputRef.current?.focus();
+      
       previousThreadId.current = currentThread.id;
       setIsGenerating(false);
     }

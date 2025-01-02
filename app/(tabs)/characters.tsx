@@ -82,8 +82,13 @@ export default function CharactersScreen() {
       
       await dispatchThread({ type: 'update', payload: latestThread });
       await dispatchThread({ type: 'setCurrent', payload: latestThread });
-      
-      router.push(`/thread/${latestThread.id}`);
+      if(Platform.OS == 'web'){
+        setCurrentIndex(0);
+        router.replace("/");
+      }
+      else{
+        router.push(`/thread/${latestThread.id}`);
+      }
       return;
     }
 
@@ -100,7 +105,13 @@ export default function CharactersScreen() {
 
     // wait for 100 ms before pushing to thread to allow propagation
     setTimeout(() => {
+      if(Platform.OS == 'web'){
+        setCurrentIndex(0);
+        router.replace("/");
+      }
+      else{
         router.push(`/thread/${newThread.id}`);
+      }
     }, 100);
   };
 
