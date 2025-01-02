@@ -41,7 +41,8 @@ export default function Providers({ className }: ProvidersProps) {
       setModels(modelsFound);
       
     });
-    
+
+    toastService.success({ title: 'Provider saved', description: 'Provider saved successfully' });
   };
 
   const handleDelete = async (id: string) => {

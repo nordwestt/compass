@@ -9,6 +9,8 @@ import { useState } from 'react';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { ImagePickerButton } from '@/components/ImagePickerButton';
 import { useEffect } from 'react';
+import { toastService } from '@/services/toastService';
+
 
 interface EditCharacterProps {  
   id: string | undefined;
@@ -63,12 +65,13 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
-      
       await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
       setCustomPrompts(updatedPrompts);
       onSave();
+      toastService.success({ title: 'Character saved', description: 'Character saved successfully' });
     } catch (error) {
       console.error('Error saving character:', error);
+      toastService.danger({ title: 'Error saving character', description: 'Error saving character' });
     }
   };
 
@@ -76,6 +79,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     const updatedPrompts = customPrompts.filter(p => p.id !== id);
     await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
     setCustomPrompts(updatedPrompts);
+    toastService.success({ title: 'Character deleted', description: 'Character deleted successfully' });
     onSave();
   };
 

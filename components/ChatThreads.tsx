@@ -9,6 +9,8 @@ import { Thread } from '@/types/core';
 import { createDefaultThread } from '@/hooks/atoms';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
+import { toastService } from '@/services/toastService';
+
 
 interface Section {
   title: string;
