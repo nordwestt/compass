@@ -1,19 +1,23 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, Platform } from 'react-native';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { createDefaultThread, customPromptsAtom, threadActionsAtom, threadsAtom } from '@/hooks/atoms';
+import { createDefaultThread, currentIndexAtom, customPromptsAtom, threadActionsAtom, threadsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { modalService } from '@/services/modalService';
 import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import EditCharacter from '@/components/EditCharacter';
 
 export default function CharactersScreen() {
   const router = useRouter();
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const threads = useAtomValue(threadsAtom);
+  const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
+
+  const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
 
 
   useEffect(()=>{
@@ -32,7 +36,11 @@ export default function CharactersScreen() {
   };
 
   const handleEdit = (prompt: Character) => {
-    router.push(`/edit-character?id=${prompt.id}`);
+    if(Platform.OS == 'web'){
+      setEditingCharacter(prompt);
+    } else {
+      router.push(`/edit-character?id=${prompt.id}`);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -48,7 +56,16 @@ export default function CharactersScreen() {
   };
 
   const handleAdd = () => {
-    router.push('/edit-character');
+    if(Platform.OS == 'web'){
+      setEditingCharacter({
+        id: "",
+        name: '',
+        content: '',
+        image: require('@/assets/characters/default.png')
+      });
+    } else {
+      router.push('/edit-character');
+    }
   };
 
   const startChat = async (prompt: Character) => {
@@ -65,6 +82,7 @@ export default function CharactersScreen() {
       
       await dispatchThread({ type: 'update', payload: latestThread });
       await dispatchThread({ type: 'setCurrent', payload: latestThread });
+      
       router.push(`/thread/${latestThread.id}`);
       return;
     }
@@ -78,16 +96,16 @@ export default function CharactersScreen() {
     };
     newThread.character = prompt;
     
-    dispatchThread({ type: 'add', payload: newThread });
+    await dispatchThread({ type: 'add', payload: newThread });
 
     // wait for 100 ms before pushing to thread to allow propagation
     setTimeout(() => {
-      router.push(`/thread/${newThread.id}`);
+        router.push(`/thread/${newThread.id}`);
     }, 100);
   };
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background flex-row">
       <ScrollView className="flex-1 p-4">
         <View className="flex-row justify-between items-center mb-4">
         <View className="flex-row items-center p-4">
@@ -103,13 +121,13 @@ export default function CharactersScreen() {
               <Text className="text-white ml-2 font-medium">New Character</Text>
             </TouchableOpacity>
         </View>
-        <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8">
+        <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {customPrompts.map((prompt) => (
             <TouchableOpacity 
-            onPress={() => startChat(prompt)} 
-            onLongPress={() => router.push(`/edit-character?id=${prompt.id}`)} 
+            onPress={() => handleEdit(prompt)} 
+            onLongPress={() => startChat(prompt)} 
             key={prompt.id} 
-            className="w-full md:w-[calc(33.33%-16px)] lg:w-[calc(25%-16px)] mb-4"
+            className="w-full mb-4"
           >
             <View className="flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg">
               <Image 
@@ -133,6 +151,7 @@ export default function CharactersScreen() {
         </View>
 
       </ScrollView>
+      {editingCharacter && <EditCharacter id={editingCharacter.id} onSave={() => setEditingCharacter(null)} className="flex-1 bg-surface rounded-xl m-4 shadow-lg" />}
     </View>
   );
 } 
