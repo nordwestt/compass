@@ -71,7 +71,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
       )}
       <View 
         className={`px-4 py-2 rounded-2xl max-w-[80%] ${
-          isUser ? "bg-primary rounded-tr-none" : "bg-gray-200 dark:bg-gray-800 rounded-tl-none"
+          isUser ? "bg-primary rounded-tr-none" : "bg-surface rounded-tl-none"
         }`}
       >
         <Markdown style={markdownStyles}>
