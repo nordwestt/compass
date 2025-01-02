@@ -117,7 +117,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     image: PROVIDER_LOGOS[model.provider.source as keyof typeof PROVIDER_LOGOS]
   }));
 
-  //modelList = [...modelList, ...(modelList.map(x=>({...x, id: "wuut"})))];
+  // modelList = [...modelList, ...(modelList.map(x=>({...x, id: "wuut"})))];
 
 
   return (

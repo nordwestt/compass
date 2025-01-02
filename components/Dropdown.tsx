@@ -20,7 +20,13 @@ export const Dropdown = ({ children, selected, onSelect }: DropdownProps) => {
   return ( 
   
   <View>
-    <TouchableOpacity onBlur={() => setIsOpen(false)}
+    <TouchableOpacity onBlur={() => {
+      if(isOpen) {
+        setTimeout(() => {
+          setIsOpen(false)
+        }, 200)
+      }
+    }}
         onPress={() => {
           setIsOpen(!isOpen)
         }}
