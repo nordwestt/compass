@@ -15,12 +15,14 @@ import { routes } from "./(tabs)/_layout";
 import { Command } from "@tauri-apps/plugin-shell";
 import { CustomHeader } from "@/components/navigation/CustomHeader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
+  useKeyboardShortcuts();
+
   let theme = {} as any;
   if(!rawThemes[themePreset]){
     theme = rawThemes['default'][colorScheme ?? 'light'];

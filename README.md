@@ -16,7 +16,7 @@ Compass is a modern, open-source Large Language Model (LLM) client designed to p
 - 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses (currently only supports ElevenLabs, more coming soon)
 - 🖼️ **Image Generation**: Generate images from text prompts (currently only supports Replicate, more coming soon)
 - 📁 **Image Gallery**: View images that have been generated
-
+- 🖥️ **Desktop Shortcut**: Alt + N to open a new chat
 ## Roadmap
 
 - 🎤 **Speech-to-Text (STT)**: Voice input capabilities
