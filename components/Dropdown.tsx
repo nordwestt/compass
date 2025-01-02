@@ -26,7 +26,7 @@ export const Dropdown = ({ children, selected, onSelect }: DropdownProps) => {
         className="flex-row items-center px-2 h-12 py-2 rounded-lg bg-background hover:bg-surface border border-border"
       >
         {selected?.image && (
-          <Image source={selected.image as any} className="!h-[48px] !w-[48px] rounded-full mr-3"/>
+          <Image source={selected.image as any} className="!h-[32px] !w-[32px] rounded-full mr-3"/>
         )}
         <Text className="font-medium text-black dark:text-white">
           {selected?.title}
