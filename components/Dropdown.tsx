@@ -20,9 +20,10 @@ export const Dropdown = ({ children, selected, onSelect }: DropdownProps) => {
   return ( 
   
   <View>
-    <View className="absolute h-screen w-screen top-0 left-0 right-0 bottom-0"><Pressable className="h-screen w-screen cursor-default" onPress={() => setIsOpen(false)}></Pressable></View>
-    <TouchableOpacity 
-        onPress={() => setIsOpen(!isOpen)}
+    <TouchableOpacity onBlur={() => setIsOpen(false)}
+        onPress={() => {
+          setIsOpen(!isOpen)
+        }}
         className="flex-row items-center px-2 h-12 py-2 rounded-lg bg-background hover:bg-surface border border-border"
       >
         {selected?.image && (
