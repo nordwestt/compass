@@ -98,7 +98,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
               value={character?.name || ''}
               onChangeText={(text) => setCharacter({ ...character!, name: text })}
               placeholder="Enter character name"
-              className="bg-surface p-4 rounded-lg text-text border-2 border-border"
+              className="p-4 rounded-lg text-text border-2 border-border bg-background"
               placeholderTextColor="#9CA3AF"
             />
           </View>
@@ -114,7 +114,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
               multiline
               numberOfLines={6}
               textAlignVertical="top"
-              className="bg-surface p-4 rounded-lg text-text border-2 border-border"
+              className="bg-background p-4 rounded-lg text-text border-2 border-border"
               placeholderTextColor="#9CA3AF"
             />
           </View>
