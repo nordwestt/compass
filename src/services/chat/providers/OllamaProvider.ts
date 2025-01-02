@@ -6,6 +6,11 @@ import LogService from '@/utils/LogService';
 import { Platform } from 'react-native';
 import { toastService } from '@/services/toastService';
 
+function isTauri(){
+  return typeof window !== 'undefined' && !!(window as any).__TAURI__;
+}
+
+const PROXY_URL = "http://localhost:9493/";
 
 
 export class OllamaProvider implements ChatProvider {
@@ -22,7 +27,7 @@ export class OllamaProvider implements ChatProvider {
 
       
       let url = `${model.provider.endpoint}/api/chat`;
-      if(Platform.OS =='web') url = "http://localhost:9493/"+url;
+      if(isTauri()) url = PROXY_URL+url;
       const response =  await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,7 +75,7 @@ export class OllamaProvider implements ChatProvider {
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
     let url = `${model.provider.endpoint}/api/chat`;
-    if(Platform.OS =='web' ) url = "http://localhost:9493/"+url;
+    if(isTauri()) url = PROXY_URL+url;
     let response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -90,7 +95,7 @@ export class OllamaProvider implements ChatProvider {
   
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>{
     let url = `${model.provider.endpoint}/api/chat`;
-    if(Platform.OS =='web' ) url = "http://localhost:9493/"+url;
+    if(isTauri()) url = PROXY_URL+url;
     let response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
