@@ -8,23 +8,23 @@ function isTauri(){
   return typeof window !== 'undefined' && !!(window as any).__TAURI__;
 }
 
+export async function getTauriImageUri(imagePath: string) {
+  if(!isTauri()) {
+    return imagePath;
+  }
+  const byteContents = await readFile(imagePath, { baseDir: BaseDirectory.Picture });
+  // Create a Blob from the byte contents
+  const blob = new Blob([byteContents], { type: 'image/webp' });
+  // Create and return an object URL
+  return URL.createObjectURL(blob);
+}
+
 export function Gallery() {
   const [images, setImages] = useAtom(generatedImagesAtom);
   const [loadedImages, setLoadedImages] = useState<GeneratedImage[]>([]);
 
   const screenWidth = Dimensions.get('window').width;
   const imageSize = screenWidth < 768 ? screenWidth / 2 - 24 : screenWidth / 4 - 32;
-
-  async function getTauriImageUri(imagePath: string) {
-    if(!isTauri()) {
-      return imagePath;
-    }
-    const byteContents = await readFile(imagePath, { baseDir: BaseDirectory.Picture });
-    // Create a Blob from the byte contents
-    const blob = new Blob([byteContents], { type: 'image/webp' });
-    // Create and return an object URL
-    return URL.createObjectURL(blob);
-  }
 
   useEffect(() => {
     const loadImageUris = async () => {

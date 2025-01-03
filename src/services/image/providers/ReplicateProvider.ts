@@ -84,20 +84,7 @@ export class ReplicateProvider implements ImageProvider {
                         await file.write(uint8Array);
                         await file.close();
 
-                        const imageData = {
-                            id: timestamp.toString(),
-                            prompt,
-                            imagePath: fileUri,
-                            createdAt: new Date().toISOString()
-                        };
-
-                        // Get the current images and add the new one
-                        const currentImages = await AsyncStorage.getItem('generatedImages');
-                        const images = currentImages ? JSON.parse(currentImages) : [];
-                        images.push(imageData);
-                        await AsyncStorage.setItem('generatedImages', JSON.stringify(images));
-                        console.log("save image", fileUri);
-                        return prediction.output[0];
+                        return fileUri;
                         //const blobb = new Blob([uint8Array], { type: 'image/webp' });
                         // Create and return an object URL
                         //return URL.createObjectURL(blobb);

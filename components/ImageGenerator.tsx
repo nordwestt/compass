@@ -10,6 +10,7 @@ import { useColorScheme } from 'nativewind';
 import { useThemePreset } from '@/components/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import Modal from 'react-native-modal';
+import { useImageGeneration } from '@/hooks/useImageGeneration';
 
 
 // Predefined options to enhance prompt creation
@@ -81,7 +82,7 @@ export function ImageGenerator() {
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
   const [isImageViewVisible, setIsImageViewVisible] = useState(false);
-
+  const { generateImage } = useImageGeneration();
 
   const appendToPrompt = (text: string) => {
     setPrompt((current) => {
@@ -113,8 +114,7 @@ export function ImageGenerator() {
     };
 
     try {
-      const provider = ImageProviderFactory.getProvider(model);
-      const imageUri = await provider.generateImage(prompt, model);
+      const imageUri = await generateImage(prompt, model);
       setGeneratedImage(imageUri);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate image');
