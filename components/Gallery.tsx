@@ -4,6 +4,8 @@ import { useAtom, useAtomValue } from 'jotai';
 import { GeneratedImage, generatedImagesAtom } from '@/hooks/atoms';
 import { format } from 'date-fns';
 import { open, BaseDirectory, readFile } from "@tauri-apps/plugin-fs"
+import Modal from 'react-native-modal';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 function isTauri(){
   return typeof window !== 'undefined' && !!(window as any).__TAURI__;
 }
@@ -22,7 +24,8 @@ export async function getTauriImageUri(imagePath: string) {
 export function Gallery() {
   const [images, setImages] = useAtom(generatedImagesAtom);
   const [loadedImages, setLoadedImages] = useState<GeneratedImage[]>([]);
-
+  const [isImageViewVisible, setIsImageViewVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const screenWidth = Dimensions.get('window').width;
   const imageSize = screenWidth < 768 ? screenWidth / 2 - 24 : screenWidth / 4 - 32;
 
@@ -67,11 +70,16 @@ export function Gallery() {
             className="bg-surface rounded-lg overflow-hidden shadow-md"
             style={{ width: imageSize }}
           >
+            <TouchableOpacity onPress={() => {
+              setSelectedImage(image.imagePath);
+              setIsImageViewVisible(true);
+            }}>
             <Image
               source={{ uri: image.imagePath }}
               className="w-full aspect-square"
-              resizeMode="cover"
-            />
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
             <View className="p-3">
               <Text className="text-xs text-gray-500 mb-2">
                 {format(new Date(image.createdAt), 'MMM d, yyyy h:mm a')}
@@ -83,6 +91,28 @@ export function Gallery() {
           </View>
         ))}
       </View>
+      <Modal
+    isVisible={isImageViewVisible}
+    onBackdropPress={() => setIsImageViewVisible(false)}
+    onSwipeComplete={() => setIsImageViewVisible(false)}
+    swipeDirection={['down']}
+    className="m-0 flex items-center justify-center"
+  >
+    <View className="w-[70vw] flex-1 mx-auto flex items-center justify-center">
+    <TouchableOpacity 
+        onPress={() => setIsImageViewVisible(false)}
+        className="absolute right-4 top-4 z-10 bg-black/50 rounded-full p-2"
+      >
+        <MaterialCommunityIcons name="close" size={24} color="white" />
+      </TouchableOpacity>
+      <Image
+        source={{ uri: selectedImage! }}
+        className="w-[70vw] flex-1 rounded-lg overflow-hidden"
+        resizeMode="contain"
+      />
+    </View>
+  </Modal>
     </ScrollView>
+    
   );
 } 
