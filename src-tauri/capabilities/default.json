@@ -10,6 +10,15 @@
     "shell:default",
     "shell:allow-spawn",
     "core:webview:allow-set-webview-zoom",
+    "fs:allow-picture-read-recursive",
+    "fs:allow-picture-write-recursive",
+    "fs:allow-open",
+    "fs:allow-write",
+    "fs:allow-write-file",
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "$PICTURE/*" }]
+    },
     "shell:allow-open",
     {
       "identifier": "shell:allow-execute",

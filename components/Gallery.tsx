@@ -1,13 +1,44 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { useAtomValue } from 'jotai';
-import { generatedImagesAtom } from '@/hooks/atoms';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, Platform } from 'react-native';
+import { useAtom, useAtomValue } from 'jotai';
+import { GeneratedImage, generatedImagesAtom } from '@/hooks/atoms';
 import { format } from 'date-fns';
+import { open, BaseDirectory, readFile } from "@tauri-apps/plugin-fs"
+function isTauri(){
+  return typeof window !== 'undefined' && !!(window as any).__TAURI__;
+}
 
 export function Gallery() {
-  const images = useAtomValue(generatedImagesAtom);
+  const [images, setImages] = useAtom(generatedImagesAtom);
+  const [loadedImages, setLoadedImages] = useState<GeneratedImage[]>([]);
+
   const screenWidth = Dimensions.get('window').width;
   const imageSize = screenWidth < 768 ? screenWidth / 2 - 24 : screenWidth / 4 - 32;
+
+  async function getTauriImageUri(imagePath: string) {
+    if(!isTauri()) {
+      return imagePath;
+    }
+    const byteContents = await readFile(imagePath, { baseDir: BaseDirectory.Picture });
+    // Create a Blob from the byte contents
+    const blob = new Blob([byteContents], { type: 'image/webp' });
+    // Create and return an object URL
+    return URL.createObjectURL(blob);
+  }
+
+  useEffect(() => {
+    const loadImageUris = async () => {
+      const imagesWithUris = await Promise.all(
+        images.map(async (image) => ({
+          ...image,
+          imagePath: await getTauriImageUri(image.imagePath)
+        }))
+      );
+      setLoadedImages(imagesWithUris);
+    };
+
+    loadImageUris();
+  }, [images]);
 
   if (images.length === 0) {
     return (
@@ -21,6 +52,7 @@ export function Gallery() {
       </View>
     );
   }
+  
 
   return (
     <ScrollView className="flex-1 bg-background p-4">
@@ -29,7 +61,7 @@ export function Gallery() {
       </Text>
       
       <View className="flex-row flex-wrap gap-4">
-        {images.map((image) => (
+        {loadedImages.map((image) => (
           <View 
             key={image.id} 
             className="bg-surface rounded-lg overflow-hidden shadow-md"
