@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
 import { allPromptsAtom, customPromptsAtom } from '@/hooks/atoms';
@@ -25,10 +25,16 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   onSelectPrompt
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const allPrompts = useAtomValue(customPromptsAtom);
+  const [allPrompts, setAllPrompts] = useAtom(customPromptsAtom);
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
+
+  useEffect(() => {
+    if(allPrompts.length === 0) {
+      setAllPrompts(PREDEFINED_PROMPTS);
+    }
+  }, []);
 
   return (
     <>
