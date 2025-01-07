@@ -1,5 +1,6 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, Pressable } from "react-native"
+import { View, Text, TouchableOpacity, Image, ScrollView, Pressable, Platform } from "react-native"
 import React, { useState } from 'react';
+import Modal from 'react-native-modal';
 
 export interface DropdownElement {
     title: string;
@@ -16,6 +17,32 @@ interface DropdownProps {
 export const Dropdown = ({ children, selected, onSelect }: DropdownProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
+
+    const scrollView = () =>{
+      return (
+        <ScrollView>
+        {children.map((child) => (
+          <TouchableOpacity
+            key={child.id}
+            onPress={() => {
+              onSelect(child);
+              setIsOpen(false);
+            }}
+            className={`w-64 flex-row items-center p-3 hover:bg-surface`}
+          >
+            {child.image && (
+              <Image source={child.image as any} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
+            )}
+            <View className="flex-1">
+              <Text className="font-medium text-black dark:text-white">
+                {child.title}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+        </ScrollView>
+      )
+    }
     
   return ( 
   
@@ -39,29 +66,12 @@ export const Dropdown = ({ children, selected, onSelect }: DropdownProps) => {
           {selected?.title}
         </Text>
       </TouchableOpacity>
-      {isOpen && <View className="absolute z-200 mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg">
-        <ScrollView>
-        {children.map((child) => (
-          <TouchableOpacity
-            key={child.id}
-            onPress={() => {
-              onSelect(child);
-              setIsOpen(false);
-            }}
-            className={`w-64 flex-row items-center p-3 hover:bg-surface`}
-          >
-            {child.image && (
-              <Image source={child.image as any} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
-            )}
-            <View className="flex-1">
-              <Text className="font-medium text-black dark:text-white">
-                {child.title}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-        </ScrollView>
+      {isOpen && Platform.OS === 'web' && <View className="absolute z-200 mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg">
+        {scrollView()}
       </View>}
+      {isOpen && Platform.OS !== 'web' && <Modal isVisible={isOpen} onBackdropPress={() => setIsOpen(false)} >
+        {scrollView()}
+      </Modal>}
     </View>
   )
   
