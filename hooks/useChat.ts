@@ -48,6 +48,7 @@ export function useChat() {
         payload: { ...currentThread, title: title }
       });
     } catch (error: any) {
+      toastService.danger({title: 'Error generating title', description: "The AI service may be experiencing issues. Please try again later."});
       LogService.log(error, { component: 'useChat', function: 'handleFirstMessage' }, 'error');
     }
   }
