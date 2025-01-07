@@ -35,7 +35,7 @@ export function useChat() {
     message: string,
   ): Promise<void> => {
     const systemPrompt = `Based on the user message, generate a concise 3-word title that captures the essence of the conversation. Format: "Word1 Word2 Word3" (no quotes, no periods but do include spaces).`;
-    const currentThread = getDefaultStore().get(currentThreadAtom);
+    const currentThread = getDefaultStore().get(currentThreadAtom) as Thread;
 
     const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
     try{
