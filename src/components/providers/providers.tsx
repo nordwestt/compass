@@ -237,9 +237,6 @@ export async function scanForOllamaInstances(): Promise<string[]> {
       clearTimeout(timeoutId);
       return response.status === 200 ? endpoint : null;
     } catch (error: any) {
-      if (!axios.isCancel(error)) {
-        LogService.log(error, {component: 'providers', function: `scanForOllamaInstances: ${endpoint}`}, 'error');
-      }
       return null;
     }
   };
