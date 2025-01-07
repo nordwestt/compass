@@ -117,12 +117,17 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     image: PROVIDER_LOGOS[model.provider.source as keyof typeof PROVIDER_LOGOS]
   }));
 
+  function onModelSelect(model: DropdownElement) {
+    setDropdownModel(model);
+    onSetModel(models.find(m => m.id === model.id)!);
+  }
+
   // modelList = [...modelList, ...(modelList.map(x=>({...x, id: "wuut"})))];
 
 
   return (
     <>
-      <Dropdown selected={dropdownModel} onSelect={setDropdownModel} children={modelList} />
+      <Dropdown selected={dropdownModel} onSelect={onModelSelect} children={modelList} />
     </>
   );
 }; 
