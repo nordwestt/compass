@@ -148,6 +148,7 @@ export const ChatThread: React.FC = () => {
         <CharacterSelector
           selectedPrompt={currentThread.character}
           onSelectPrompt={handleSelectPrompt}
+          className="w-40 overflow-hidden"
         />
       </View>
 

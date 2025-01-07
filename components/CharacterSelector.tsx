@@ -18,11 +18,13 @@ import Animated, {
 interface CharacterSelectorProps {
   selectedPrompt: Character;
   onSelectPrompt: (prompt: Character) => void;
+  className?: string;
 }
 
 export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   selectedPrompt,
-  onSelectPrompt
+  onSelectPrompt,
+  className
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [allPrompts, setAllPrompts] = useAtom(customPromptsAtom);
@@ -37,7 +39,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   }, []);
 
   return (
-    <>
+    <View className={className}>
       <TouchableOpacity 
         onPress={() => setIsModalVisible(true)}
         className="flex-row items-center px-4 py-2 h-12 rounded-lg bg-background border border-border hover:bg-surface"
@@ -121,6 +123,6 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
           </View>
         </ThemeProvider>
       </Modal>
-    </>
+    </View>
   );
 }; 

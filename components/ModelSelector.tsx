@@ -25,11 +25,13 @@ import { Dropdown } from './Dropdown';
 interface ModelSelectorProps {
   selectedModel: Model;
   onSetModel: (model: Model) => void;
+  className?: string;
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({ 
   selectedModel,
   onSetModel,
+  className
 }) => {
   const [providers, setProviders] = useAtom(availableProvidersAtom);
   const [models, setModels] = useAtom(availableModelsAtom);
@@ -126,8 +128,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
 
   return (
-    <>
+    <View className={className}>
       <Dropdown selected={dropdownModel} onSelect={onModelSelect} children={modelList} />
-    </>
+    </View>
   );
 }; 
