@@ -117,7 +117,7 @@ export default function CharactersScreen() {
 
   return (
     <View className="flex-1 bg-background flex-row">
-      <ScrollView className="flex-1 p-4">
+      <View className="flex-1 p-4">
         <View className="flex-row justify-between items-center mb-4">
         <View className="flex-row items-center p-4">
           <Ionicons name="people" size={32} className="!text-primary mr-2 pb-2" />
@@ -132,6 +132,7 @@ export default function CharactersScreen() {
               <Text className="text-white ml-2 font-medium">New Character</Text>
             </TouchableOpacity>
         </View>
+        <ScrollView className="flex-1 p-1">
         <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {customPrompts.map((prompt) => (
             <TouchableOpacity 
@@ -140,7 +141,7 @@ export default function CharactersScreen() {
             key={prompt.id} 
             className="w-full mb-4"
           >
-            <View className="flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg">
+            <View className="flex-row bg-surface rounded-xl p-4 border border-gray-200 shadow-lg">
               <Image 
                 source={prompt.image} 
                 className="!h-[64px] !w-[64px] rounded-full my-auto"
@@ -160,8 +161,9 @@ export default function CharactersScreen() {
           </TouchableOpacity>
           ))}
         </View>
+        </ScrollView>
 
-      </ScrollView>
+      </View>
       {editingCharacter && <EditCharacter id={editingCharacter.id} onSave={() => setEditingCharacter(null)} className="flex-1 bg-surface rounded-xl m-4 shadow-lg" />}
     </View>
   );
