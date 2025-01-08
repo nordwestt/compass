@@ -4,7 +4,7 @@ import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
 import { Character } from '@/types/core';
 import { Text } from 'react-native';
-import { currentThreadAtom, fontPreferencesAtom } from '@/hooks/atoms';
+import { currentThreadAtom, editingMessageIndexAtom, fontPreferencesAtom } from '@/hooks/atoms';
 import { useAtomValue } from 'jotai';
 import { InteractionManager, Clipboard } from 'react-native';
 import { toastService } from '@/services/toastService';
@@ -13,12 +13,14 @@ interface MessageProps {
   content: string;
   isUser: boolean;
   character?: Character;
+  index: number;
 }
 
-export const Message: React.FC<MessageProps> = ({ content, isUser, character }) => {
+export const Message: React.FC<MessageProps> = ({ content, isUser, character, index }) => {
   const { colorScheme } = useColorScheme();
   const currentThread = useAtomValue(currentThreadAtom);
   const preferences = useAtomValue(fontPreferencesAtom);
+  const editingMessageIndex = useAtomValue(editingMessageIndexAtom);
   const isDark = colorScheme === 'dark';
 
   const markdownStyles = {
@@ -99,17 +101,22 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
       <View 
         className={`px-4 py-2 rounded-2xl max-w-[80%] ${
           isUser ? "bg-primary rounded-tr-none" : "bg-surface rounded-tl-none"
-        }`}
+        } ${editingMessageIndex === index ? "bg-yellow-500" : ""}`}
       >
-        <Markdown 
-          style={markdownStyles}
-          rules={{
-            fence: renderCodeBlock,
+        {editingMessageIndex === index && (
+          <Text className="text-yellow-400 text-xs mb-1">Editing...</Text>
+        )}
+        {editingMessageIndex !== index && (
+          <Markdown 
+            style={markdownStyles}
+            rules={{
+              fence: renderCodeBlock,
             code_block: renderCodeBlock,
           }}
         >
-          {displayContent}
-        </Markdown>
+            {displayContent}
+          </Markdown>
+        )}
       </View>
     </View>
   );

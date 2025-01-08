@@ -1,8 +1,8 @@
 import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
-import { View, TextInput, Pressable } from 'react-native';
+import { View, TextInput, Pressable, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { allPromptsAtom } from '@/hooks/atoms';
-import { useAtomValue } from 'jotai';
+import { allPromptsAtom, editingMessageIndexAtom } from '@/hooks/atoms';
+import { useAtom, useAtomValue } from 'jotai';
 import { CharacterMentionPopup } from './CharacterMentionPopup';
 import { Character } from '@/types/core';
 
@@ -14,6 +14,7 @@ interface ChatInputProps {
 
 export interface ChatInputRef {
   focus: () => void;
+  setEditMessage: (message: string) => void;
 }
 
 export interface MentionedCharacter {
@@ -31,9 +32,17 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   const inputRef = useRef<TextInput>(null);
   const allCharacters = useAtomValue(allPromptsAtom);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
+
 
   useImperativeHandle(ref, () => ({
     focus: () => {
+      inputRef.current?.focus();
+    },
+    setEditMessage: (message: string) => {
+      setMessage(message);
+      setIsEditing(true);
       inputRef.current?.focus();
     }
   }));
@@ -73,6 +82,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       onSend(message.trim(), mentionedCharacters);
       setMessage('');
       setMentionedCharacters([]);
+      setIsEditing(false);
     }
   };
 
@@ -110,6 +120,14 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
     }
   };
 
+  const handleBlur = () => {
+    setIsEditing(false);
+    setMessage('');
+    setMentionedCharacters([]);
+    setShowMentionPopup(false);
+    setEditingMessageIndex(-1);
+  };
+
   return (
     <View className="relative flex-row items-center p-2 bg-surface border-t border-border rounded-t-xl mx-2">
       {showMentionPopup && (
@@ -121,8 +139,9 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
         />
       )}
       <TextInput
+        onBlur={handleBlur}
         ref={inputRef}
-        className="flex-1 min-h-[60px] px-4 py-2 bg-background rounded-lg mr-2 text-text"
+        className={`flex-1 min-h-[60px] px-4 py-2 bg-background rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
         placeholder="Type a message... (Use @ to mention characters)"
         placeholderTextColor="#9CA3AF"
         value={message}
@@ -148,6 +167,11 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
         >
           <Ionicons name="send" size={26} color="white" />
         </Pressable>
+      )}
+      {isEditing && (
+        <Text className="absolute -top-6 right-14 text-yellow-500 text-sm">
+          Editing message...
+        </Text>
       )}
     </View>
   );

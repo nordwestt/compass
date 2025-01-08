@@ -73,10 +73,9 @@ export function useChat() {
   const handleSend = async (message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
 
-    
+    const currentThread = getDefaultStore().get(currentThreadAtom) as Thread;
 
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
-
     const updatedThread = {
       ...currentThread,
       messages: [...currentThread.messages, {content: message, isUser: true}, context.assistantPlaceholder]

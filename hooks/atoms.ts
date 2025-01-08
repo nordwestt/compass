@@ -179,6 +179,7 @@ export const searchEnabledAtom = atomWithAsyncStorage<boolean>('searchEnabled', 
 
 // Add with other atoms
 export const availableVoicesAtom = atom<Voice[]>([]);
+export const editingMessageIndexAtom = atom<number>(-1);
 
 export const defaultVoiceAtom = atomWithAsyncStorage<Voice | null>('defaultVoice', null);
 

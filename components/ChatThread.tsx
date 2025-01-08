@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useCallback } from 'react';
-import { View, ScrollView, Platform, TouchableOpacity } from 'react-native';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
+import { View, ScrollView, Platform, TouchableOpacity, Text } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
 import { ModelSelector } from './ModelSelector';
@@ -7,12 +7,13 @@ import { useModels } from '@/hooks/useModels';
 import { useChat } from '@/hooks/useChat';
 import { CharacterSelector } from './CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { Model, Character } from '@/types/core';
+import { Model, Character, ChatMessage } from '@/types/core';
 
 import { 
   currentThreadAtom, 
   threadActionsAtom, 
   threadsAtom,
+  editingMessageIndexAtom,
   isGeneratingAtom,
   availableProvidersAtom,
   ttsEnabledAtom,
@@ -37,6 +38,8 @@ export const ChatThread: React.FC = () => {
   
   const previousThreadId = useRef(currentThread.id);
 
+  const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
+
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
       dispatchThread({ type: 'add', payload: currentThread });
@@ -60,7 +63,18 @@ export const ChatThread: React.FC = () => {
       return;
     }
 
-    if (currentThread.messages.length === 0 && threads.filter(t => t.id === currentThread.id).length === 0) {
+    if (editingMessageIndex !== -1) {
+      const updatedMessages = [...currentThread.messages];
+      //updatedMessages[editingMessageIndex].content = message;
+      updatedMessages.splice(editingMessageIndex);
+      
+      await dispatchThread({
+        type: 'update',
+        payload: { ...currentThread, messages: updatedMessages }
+      });
+      
+      setEditingMessageIndex(-1);
+    } else if (currentThread.messages.length === 0 && threads.filter(t => t.id === currentThread.id).length === 0) {
 
       dispatchThread({ 
         type: 'add', 
@@ -99,12 +113,27 @@ export const ChatThread: React.FC = () => {
     });
   };
 
-  const renderItem = ({ item: message }: { item: any }) => (
-    <Message
-      content={message.content}
-      isUser={message.isUser}
-      character={message.character}
-    />
+  const handleMessagePress = (index: number, message: ChatMessage) =>{
+    if (message.isUser) {
+      setEditingMessageIndex(index);
+
+      chatInputRef.current?.setEditMessage(message.content);
+
+    }
+  };
+
+  const renderItem = ({ item: message, index }: { item: any; index: number }) => (
+    <TouchableOpacity 
+      onPress={() => handleMessagePress(index, message)}
+      activeOpacity={message.isUser ? 0.7 : 1}
+    >
+      <Message
+        content={message.content}
+        isUser={message.isUser}
+        character={message.character}
+        index={index}
+      />
+    </TouchableOpacity>
   );
 
   const scrollToEnd = useCallback(() => {
