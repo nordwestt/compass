@@ -16,6 +16,7 @@ import { Command } from "@tauri-apps/plugin-shell";
 import { CustomHeader } from "@/components/navigation/CustomHeader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -62,6 +63,7 @@ export default function RootLayout() {
   
 
   return (
+    <GestureHandlerRootView>
     <ThemeProvider>
       <View className="flex-row flex-1">
       {isDesktop && <WebSidebar className="" />}
@@ -81,5 +83,6 @@ export default function RootLayout() {
       <ConfirmationModal />
       <Toast />
     </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

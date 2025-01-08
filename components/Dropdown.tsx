@@ -1,6 +1,7 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, Pressable, Platform } from "react-native"
+import { View, Text, TouchableOpacity, Image, Pressable, Platform } from "react-native"
 import React, { useState } from 'react';
 import Modal from 'react-native-modal';
+import { ScrollView } from "react-native-gesture-handler";
 
 export interface DropdownElement {
     title: string;
@@ -49,6 +50,7 @@ export const Dropdown = ({ children, selected, onSelect }: DropdownProps) => {
   <View>
     <TouchableOpacity onBlur={() => {
       if(isOpen) {
+        console.log("isOpen", isOpen)
         setTimeout(() => {
           setIsOpen(false)
         }, 200)
@@ -66,12 +68,10 @@ export const Dropdown = ({ children, selected, onSelect }: DropdownProps) => {
           {selected?.title}
         </Text>
       </TouchableOpacity>
-      {isOpen && Platform.OS === 'web' && <View className="absolute z-200 mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg">
+      {isOpen && <View className="z-200 absolute mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg">
         {scrollView()}
       </View>}
-      {isOpen && Platform.OS !== 'web' && <Modal isVisible={isOpen} onBackdropPress={() => setIsOpen(false)} >
-        {scrollView()}
-      </Modal>}
+      
     </View>
   )
   
