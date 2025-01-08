@@ -122,7 +122,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       )}
       <TextInput
         ref={inputRef}
-        className="flex-1 min-h-[60px] px-4 py-2 bg-background rounded-full mr-2 text-text"
+        className="flex-1 min-h-[60px] px-4 py-2 bg-background rounded-lg mr-2 text-text"
         placeholder="Type a message... (Use @ to mention characters)"
         placeholderTextColor="#9CA3AF"
         value={message}
