@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
 import { Character } from '@/types/core';
 import { Text } from 'react-native';
 import { currentThreadAtom, fontPreferencesAtom } from '@/hooks/atoms';
 import { useAtomValue } from 'jotai';
-import { InteractionManager } from 'react-native';
-
+import { InteractionManager, Clipboard } from 'react-native';
+import { toastService } from '@/services/toastService';
+import { Ionicons } from '@expo/vector-icons';
 interface MessageProps {
   content: string;
   isUser: boolean;
@@ -56,6 +57,32 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
     });
   }, [content]);
 
+  const renderCodeBlock = (node: any) => {
+    const handleCopy = () => {
+      Clipboard.setString(node.content);
+      toastService.success({
+        title: 'Copied to clipboard',
+        description: ""
+      });
+    };
+
+    return (
+      <View key={node.content} style={markdownStyles.code_block} className="border-border border">
+        <View className="flex-row justify-between items-center mb-2">
+          {node.sourceInfo && <Text className="text-xs opacity-50">{node.sourceInfo}</Text>}
+          <TouchableOpacity 
+            onPress={handleCopy}
+            className="bg-surface border-border border px-2 py-1 rounded flex-row items-center"
+          >
+            <Ionicons name="copy" size={16} color={isDark ? "#fff" : "#000"}/>
+            <Text className="text-xs ml-1">Copy</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={{ fontFamily: 'monospace' }}>{node.content}</Text>
+      </View>
+    );
+  };
+
   return (
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
       {!isUser && (
@@ -74,7 +101,13 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character }) 
           isUser ? "bg-primary rounded-tr-none" : "bg-surface rounded-tl-none"
         }`}
       >
-        <Markdown style={markdownStyles}>
+        <Markdown 
+          style={markdownStyles}
+          rules={{
+            fence: renderCodeBlock,
+            code_block: renderCodeBlock,
+          }}
+        >
           {displayContent}
         </Markdown>
       </View>
