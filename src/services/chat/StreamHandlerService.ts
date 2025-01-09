@@ -70,8 +70,8 @@ export class StreamHandlerService {
           messages: updatedMessages
         }
       });
-      // wait 200 ms
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // RN has a debounce for rendering, so it's better to wait a bit before updating the message
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
 
