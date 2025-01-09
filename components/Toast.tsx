@@ -95,7 +95,7 @@ export const Toast = () => {
       <Animated.View style={[animatedStyle]} className="px-4 py-2 mb-2">
         <TouchableOpacity
           onPress={handleDismiss}
-          className={`rounded-lg shadow-lg ${getToastColor(toast.type)} p-4 flex-row items-center`}
+          className={`rounded-lg shadow-lg ${getToastColor(toast.type)} p-4 flex-row items-center mt-4 mx-8`}
         >
           <Ionicons name={getToastIcon(toast.type)} size={24} color="white" />
           <View className="flex-1 ml-3">

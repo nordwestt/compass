@@ -11,6 +11,7 @@ import { useThemePreset } from '@/components/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import Modal from 'react-native-modal';
 import { useImageGeneration } from '@/hooks/useImageGeneration';
+import { toastService } from '@/services/toastService';
 
 
 // Predefined options to enhance prompt creation
@@ -95,12 +96,18 @@ export function ImageGenerator() {
     
     const provider = availableProviders.find(p => p.source === 'replicate');
     if (!provider) {
-      setError('Provider not found');
+      toastService.info({
+        title: 'Provider not found',
+        description: 'Please add a provider to generate images',
+      });
       return;
     }
 
     if (!prompt.trim()) {
-      setError('Please enter a prompt');
+      toastService.info({
+        title: 'Please enter a prompt',
+        description: 'Please enter a prompt to generate an image',
+      });
       return;
     }
 
@@ -117,7 +124,10 @@ export function ImageGenerator() {
       const imageUri = await generateImage(prompt, model);
       setGeneratedImage(imageUri);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate image');
+      toastService.danger({
+        title: 'Failed to generate image',
+        description: err instanceof Error ? err.message : 'Failed to generate image',
+      });
     } finally {
       setIsLoading(false);
     }
