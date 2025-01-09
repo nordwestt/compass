@@ -55,6 +55,14 @@ export const ChatThread: React.FC = () => {
     }
   }, [currentThread.id]);
 
+  useEffect(() => {
+    // get latest message
+    const latestMessage = currentThread.messages[currentThread.messages.length - 1];
+    if(latestMessage && !latestMessage.isUser) {
+      console.log("latestMessage", latestMessage);
+    }
+  }, [currentThread]);
+
 
   const { handleSend, handleInterrupt } = useChat();
 

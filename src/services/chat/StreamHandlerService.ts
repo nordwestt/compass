@@ -14,6 +14,7 @@ export class StreamHandlerService {
     onComplete?: () => void
   ) {
     try {
+      console.log("handling stream inside service", typeof response, response);
     
       let assistantMessage = currentThread.messages[currentThread.messages.length - 1].content;
       let chunkCount = 0;
@@ -63,12 +64,14 @@ export class StreamHandlerService {
     if (lastMessage && !lastMessage.isUser) {
       lastMessage.content = assistantMessage;
       dispatchThread({
-        type: 'update',
+        type: 'updateMessages',
         payload: {
-          ...currentThread,
+          threadId: currentThread.id,
           messages: updatedMessages
         }
       });
+      // wait 200 ms
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
   }
 

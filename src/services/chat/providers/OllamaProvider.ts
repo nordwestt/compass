@@ -47,22 +47,28 @@ export class OllamaProvider implements ChatProvider {
 
       let buffer = '';
 
+      let decoder = new TextDecoder();
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = new TextDecoder().decode(value, { stream: false });
+        const chunk = decoder.decode(value);
         buffer += chunk;
         let parsedChunk = null;
 
-        try{
-          parsedChunk = JSON.parse(buffer);
-          yield parsedChunk.message?.content || '';
-          buffer = '';
-          continue;
+        let chunks = buffer.split("\n");
+        for(let chunk of chunks){
+          try{
+            parsedChunk = JSON.parse(chunk);
+            yield parsedChunk.message?.content || '';
+            buffer = '';
+          }
+          catch(error: any){
+            continue;
+          }
         }
-        catch(error: any){
-        }
+          
       }
     }
     catch(error:any){
