@@ -49,11 +49,26 @@ export default function ImageGenerationScreen() {
         <TabButton tab="gallery" label="Gallery" />
       </View>
       
-      {activeTab === 'generator' ? (
-        <ImageGenerator />
-      ) : (
-        <Gallery />
-      )}
+      <View className="flex-1 relative">
+        <View 
+          className={`absolute inset-0 flex-1 ${
+            activeTab === 'generator' ? 'opacity-100' : 'opacity-0'
+          }`}
+          pointerEvents={activeTab === 'generator' ? 'auto' : 'none'}
+          style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}
+        >
+          <ImageGenerator />
+        </View>
+        <View 
+          className={`absolute inset-0 flex-1 ${
+            activeTab === 'gallery' ? 'opacity-100' : 'opacity-0'
+          }`}
+          pointerEvents={activeTab === 'gallery' ? 'auto' : 'none'}
+          style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}
+        >
+          <Gallery />
+        </View>
+      </View>
     </View>
   );
 }
