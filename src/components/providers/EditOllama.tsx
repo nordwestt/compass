@@ -27,8 +27,9 @@ export function EditOllama({ provider }: EditOllamaProps) {
   const [isPulling, setPulling] = useState<string | null>(null);
 
   const availableModels: AvailableModel[] = [
+    { id: "TheAzazel/l3.2-rogue-creative-instruct-abliterated-7b"},
     { id: "llama2:3b" },
-    { id: "llama2:1b" }
+    { id: "llama2:1b" },
   ];
 
   const fetchLocalModels = async () => {

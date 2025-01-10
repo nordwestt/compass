@@ -63,7 +63,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
       onClose={onClose}
       maxHeight="85%"
     >
-      <View className="p-6">
+      <ScrollView className="p-6">
         <View className="flex-row items-center mb-6">
           {provider && provider.source !== 'custom' && PROVIDER_LOGOS[provider.source as keyof typeof PROVIDER_LOGOS] && (
             <Image
@@ -110,7 +110,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </Modal>
   );
 } 
