@@ -85,7 +85,7 @@ export default function Providers({ className }: ProvidersProps) {
     scanForOllamaInstances().then((ollamaEndpoints) => {
       const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
         endpoint,
-        id: Date.now().toString(),
+        id: Date.now().toString() + endpoint,
         name: "Ollama",
         source: 'ollama',
         capabilities: {
@@ -241,17 +241,19 @@ export async function scanForOllamaInstances(): Promise<string[]> {
     }
   };
 
+  let results: string[] = [];
   // Process endpoints in batches
   for (let i = 0; i < networkPatterns.length; i += BATCH_SIZE) {
     const batch = networkPatterns.slice(i, i + BATCH_SIZE);
-    const results = await Promise.all(batch.map(testEndpoint));
+    const batchResults = await Promise.all(batch.map(testEndpoint));
+    results = [...results, ...batchResults.filter(result => result !== null)];
     
-    // Find first successful result
-    const foundEndpoint = results.find(result => result !== null);
-    if (foundEndpoint) {
-      return [foundEndpoint];
-    }
   }
 
-  return [];
+  // if we have both localhost and 127.0.0.1, remove 127.0.0.1
+  if (results.includes('http://localhost:11434') && results.includes('http://127.0.0.1:11434')) {
+    results = results.filter(result => result !== 'http://127.0.0.1:11434');
+  }
+
+  return results;
 }
