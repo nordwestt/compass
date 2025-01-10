@@ -17,8 +17,9 @@ export const PREDEFINED_PROVIDERS = {
     source: 'openai' as const,
     capabilities: {
       llm: true,
-      tts: true,
-      stt: true
+      tts: false,
+      stt: false,
+      image: true
     }
   } as Provider,
   ollama: {

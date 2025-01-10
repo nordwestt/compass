@@ -6,6 +6,8 @@ import { ProviderFormFields } from './ProviderFormFields';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { Modal } from '@/src/components/ui/Modal';
 import { EditOllama } from './EditOllama';
+import { useAtom } from 'jotai';
+import { providerTypeSelectorModalAtom } from './ProviderTypeSelector';
 
 
 interface EndpointModalProps {
@@ -20,6 +22,7 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
   const [apiKey, setApiKey] = useState(provider?.apiKey ?? '');
   const [selectedType, setSelectedType] = useState<Provider['source']>(provider?.source ?? 'ollama');
   const [customEndpoint, setCustomEndpoint] = useState(provider?.endpoint ?? '');
+  const [isProviderTypeSelectorModalVisible, setIsProviderTypeSelectorModalVisible] = useAtom(providerTypeSelectorModalAtom);
 
   useEffect(() => {
     if (provider) {
@@ -32,6 +35,10 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
       setApiKey('');
       setSelectedType('custom');
       setCustomEndpoint('');
+      // wait for 100ms before showing the provider type selector modal
+      setTimeout(() => {
+        setIsProviderTypeSelectorModalVisible(true);
+      }, 2000);
     }
   }, [provider]);
 
@@ -58,9 +65,9 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
     >
       <View className="p-6">
         <View className="flex-row items-center mb-6">
-          {selectedType !== 'custom' && PROVIDER_LOGOS[selectedType as keyof typeof PROVIDER_LOGOS] && (
+          {provider && provider.source !== 'custom' && PROVIDER_LOGOS[provider.source as keyof typeof PROVIDER_LOGOS] && (
             <Image
-              source={PROVIDER_LOGOS[selectedType as keyof typeof PROVIDER_LOGOS]}
+              source={PROVIDER_LOGOS[provider.source as keyof typeof PROVIDER_LOGOS]}
               className="!w-[48px] !h-[48px] rounded-full mr-3"
             />
           )}

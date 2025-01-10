@@ -4,14 +4,10 @@ import { Provider } from '@/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { useState } from 'react';
-import { ThemeProvider } from '@/components/ThemeProvider';
-import Animated, { 
-  FadeIn,
-  FadeOut,
-  SlideInDown,
-  SlideOutDown
-} from 'react-native-reanimated';
 import { Modal } from '@/src/components/ui/Modal';
+import { atom, useAtom } from 'jotai';
+
+export const providerTypeSelectorModalAtom = atom(false);
 
 interface ProviderTypeSelectorProps {
   className?: string;
@@ -20,7 +16,7 @@ interface ProviderTypeSelectorProps {
 }
 
 export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: ProviderTypeSelectorProps) {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useAtom(providerTypeSelectorModalAtom);
 
   const selectedProvider = Object.values(PREDEFINED_PROVIDERS).find(
     provider => provider.source === selectedType
