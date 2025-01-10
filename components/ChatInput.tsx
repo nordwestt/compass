@@ -122,8 +122,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
 
   const handleBlur = () => {
     setIsEditing(false);
-    setMessage('');
-    setMentionedCharacters([]);
+      setMentionedCharacters([]);
     setShowMentionPopup(false);
     setEditingMessageIndex(-1);
   };
