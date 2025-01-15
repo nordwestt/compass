@@ -5,7 +5,7 @@ import { allPromptsAtom, customPromptsAtom } from '@/hooks/atoms';
 import { Character } from '@/types/core';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { rawThemes } from '@/constants/themes';
-import { ThemeProvider, useThemePreset } from '../ThemeProvider';
+import { ThemeProvider, useThemePreset } from '../../../components/ThemeProvider';
 import { useColorScheme } from 'nativewind';
 import { router } from 'expo-router';
 import Animated, { 

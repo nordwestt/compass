@@ -3,7 +3,7 @@ import { View, TextInput, Pressable, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { allPromptsAtom, editingMessageIndexAtom } from '@/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
-import { CharacterMentionPopup } from '@/components/character/CharacterMentionPopup';
+import { CharacterMentionPopup } from '@/src/components/character/CharacterMentionPopup';
 import { Character } from '@/types/core';
 
 interface ChatInputProps {

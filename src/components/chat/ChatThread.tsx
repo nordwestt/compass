@@ -5,7 +5,7 @@ import { ChatInput, ChatInputRef } from './ChatInput';
 import { ModelSelector } from './ModelSelector';
 import { useModels } from '@/hooks/useModels';
 import { useChat } from '@/hooks/useChat';
-import { CharacterSelector } from '@/components/character/CharacterSelector';
+import { CharacterSelector } from '@/src/components/character/CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Model, Character, ChatMessage } from '@/types/core';
 
