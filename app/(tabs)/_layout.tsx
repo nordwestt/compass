@@ -1,5 +1,5 @@
 import React from 'react';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { TabBarIcon } from '@/src/components/navigation/TabBarIcon';
 import { Platform,useWindowDimensions, View } from 'react-native';
 import { useColorScheme, vars } from 'nativewind';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
