@@ -255,5 +255,19 @@ export async function scanForOllamaInstances(): Promise<string[]> {
     results = results.filter(result => result !== 'http://127.0.0.1:11434');
   }
 
+  if(results.length>1 && results.includes('http://localhost:11434')){
+    // make request to /api/tags
+    const localResponse = await axios.get(`http://localhost:11434/api/tags`);
+
+    const otherEndpoints = results.filter(result => result !== 'http://localhost:11434');
+    for(let i = 0; i < otherEndpoints.length; i++){
+      const response = await axios.get(`${otherEndpoints[i]}/api/tags`);
+      if(localResponse.data.toString() == response.data.toString()){
+        results = results.filter(result => result != otherEndpoints[i]);
+      }
+    }
+    
+  }
+
   return results;
 }
