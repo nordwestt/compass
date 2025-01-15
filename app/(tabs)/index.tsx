@@ -1,6 +1,6 @@
 import { View, Platform } from 'react-native';
-import { ChatThread } from '@/components/chat/ChatThread';
-import { ChatThreads } from '@/components/chat/ChatThreads';
+import { ChatThread } from '@/src/components/chat/ChatThread';
+import { ChatThreads } from '@/src/components/chat/ChatThreads';
 import { useAtom } from 'jotai';
 import { sidebarVisibleAtom } from '@/hooks/atoms';
 import { ThreadsSidebar } from '@/components/ThreadsSidebar';

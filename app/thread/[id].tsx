@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { ChatThread } from '@/components/chat/ChatThread';
+import { ChatThread } from '@/src/components/chat/ChatThread';
 import { TouchableOpacity, View } from 'react-native';
 import { useAtomValue } from 'jotai';
 import { threadsAtom } from '@/hooks/atoms';
