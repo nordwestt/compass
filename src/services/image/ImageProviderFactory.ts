@@ -1,4 +1,4 @@
-import { Model } from '@/types/core';
+import { Model } from '@/src/types/core';
 import { ImageProvider } from '@/src/types/image';
 import { ReplicateProvider } from './providers/ReplicateProvider';
 

@@ -1,4 +1,4 @@
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 import { SearchService } from '@/src/types/search';
 import { SerperSearchService } from './SerperSearchService';
 import { SearxngSearchService } from './SearxngSearchService';

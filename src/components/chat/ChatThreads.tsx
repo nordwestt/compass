@@ -3,13 +3,13 @@ import { View, Text, TouchableOpacity, Platform, SectionList } from 'react-nativ
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
 import { threadsAtom, currentThreadAtom, threadActionsAtom } from '@/hooks/atoms';
-import { modalService } from '@/services/modalService';
+import { modalService } from '@/src/services/modalService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Thread } from '@/types/core';
+import { Thread } from '@/src/types/core';
 import { createDefaultThread } from '@/hooks/atoms';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 
 
 interface Section {

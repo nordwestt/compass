@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithAsyncStorage } from './storage'
-import { Model, Thread, ChatMessage, Character, Provider, Voice } from '@/types/core'
+import { Model, Thread, ChatMessage, Character, Provider, Voice } from '@/src/types/core'
 import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
 export const createDefaultThread = (name: string="New thread"): Thread => {

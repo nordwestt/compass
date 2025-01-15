@@ -1,4 +1,4 @@
-import { Model } from '@/types/core';
+import { Model } from '@/src/types/core';
 import { ChatProvider } from '@/src/types/chat';
 import { OllamaProvider } from './providers/OllamaProvider';
 import { OpenAIProvider } from './providers/OpenAIProvider';

@@ -1,5 +1,5 @@
 import { ImageProvider } from '@/src/types/image';
-import { Model } from '@/types/core';
+import { Model } from '@/src/types/core';
 import axios from 'axios';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';

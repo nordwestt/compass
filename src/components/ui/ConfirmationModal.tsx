@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, TextInput, Platform } from 'react-native';
-import { modalService } from '@/services/modalService';
+import { modalService } from '@/src/services/modalService';
 
 interface ModalState {
   isVisible: boolean;

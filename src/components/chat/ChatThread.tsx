@@ -7,7 +7,7 @@ import { useModels } from '@/hooks/useModels';
 import { useChat } from '@/hooks/useChat';
 import { CharacterSelector } from '@/src/components/character/CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { Model, Character, ChatMessage } from '@/types/core';
+import { Model, Character, ChatMessage } from '@/src/types/core';
 
 import { 
   currentThreadAtom, 
@@ -22,7 +22,7 @@ import {
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 import { VoiceSelector } from './VoiceSelector';
 
 export const ChatThread: React.FC = () => {

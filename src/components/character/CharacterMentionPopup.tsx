@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { Character } from '@/types/core';
+import { Character } from '@/src/types/core';
 import { useAtomValue } from 'jotai';
 import { currentThreadAtom } from '@/hooks/atoms';
 

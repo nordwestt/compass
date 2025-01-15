@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
-import { Character } from '@/types/core';
+import { Character } from '@/src/types/core';
 import { Text } from 'react-native';
 import { currentThreadAtom, editingMessageIndexAtom, fontPreferencesAtom } from '@/hooks/atoms';
 import { useAtomValue } from 'jotai';
 import { InteractionManager, Clipboard } from 'react-native';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 import { Ionicons } from '@expo/vector-icons';
 interface MessageProps {
   content: string;

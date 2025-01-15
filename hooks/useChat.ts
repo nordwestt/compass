@@ -8,9 +8,9 @@ import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
 import { current } from 'tailwindcss/colors';
-import { Thread } from '@/types/core';
+import { Thread } from '@/src/types/core';
 import LogService from '@/utils/LogService';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);

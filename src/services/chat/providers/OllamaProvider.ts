@@ -1,10 +1,10 @@
 import { ChatProvider } from '@/src/types/chat';
-import { Character } from '@/types/core';
-import { ChatMessage } from '@/types/core';
-import { Model } from '@/types/core';
+import { Character } from '@/src/types/core';
+import { ChatMessage } from '@/src/types/core';
+import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { Platform } from 'react-native';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 
 function isTauri(){
   return typeof window !== 'undefined' && !!(window as any).__TAURI__;

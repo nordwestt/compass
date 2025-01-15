@@ -7,8 +7,8 @@ import Animated, {
   runOnJS,
   withSequence,
 } from 'react-native-reanimated';
-import { toastService } from '@/services/toastService';
-import { ToastMessage } from '@/types/toast';
+import { toastService } from '@/src/services/toastService';
+import { ToastMessage } from '@/src/types/toast';
 import { Ionicons } from '@expo/vector-icons';
 
 const getToastColor = (type: ToastMessage['type']) => {

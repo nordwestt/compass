@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView, Platform } from 'react-native';
 import { Signal } from '@preact/signals-react';
-import { Model } from '@/types/core';
+import { Model } from '@/src/types/core';
 import { getDefaultStore, useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 import { DropdownElement } from '@/src/components/ui/Dropdown';
 
 import Animated, { 
@@ -17,7 +17,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { fetchAvailableModelsV2 } from '@/hooks/useModels';
 import { scanForOllamaInstances } from '@/src/components/providers/providers';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';
 
 

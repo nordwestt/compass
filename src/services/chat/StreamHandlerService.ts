@@ -1,6 +1,6 @@
 import { ThreadAction } from '@/hooks/atoms';
 import { MessageStreamHandler } from '@/src/types/chat';
-import { Thread } from '@/types/core';
+import { Thread } from '@/src/types/core';
 import { Readable } from 'stream';
 import LogService from '@/utils/LogService';
 

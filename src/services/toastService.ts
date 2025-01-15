@@ -1,4 +1,4 @@
-import { ToastMessage, ToastOptions, ToastType } from '@/types/toast';
+import { ToastMessage, ToastOptions, ToastType } from '@/src/types/toast';
 
 let updateCallback: ((toasts: ToastMessage[]) => void) | null = null;
 let toasts: ToastMessage[] = [];

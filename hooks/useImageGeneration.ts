@@ -1,6 +1,6 @@
 
 import { ImageProviderFactory } from '@/src/services/image/ImageProviderFactory';
-import { Model } from '@/types/core';
+import { Model } from '@/src/types/core';
 import { useAtom } from 'jotai';
 import { generatedImagesAtom } from './atoms';
 import { Platform } from 'react-native';

@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 
 

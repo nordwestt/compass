@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 import axios from 'axios';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 import LogService from '@/utils/LogService';
 
 interface EditOllamaProps {

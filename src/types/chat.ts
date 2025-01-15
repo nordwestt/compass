@@ -1,9 +1,9 @@
 import { MentionedCharacter } from "@/src/components/chat/ChatInput";
-import { Character, Thread } from "@/types/core";
+import { Character, Thread } from "@/src/types/core";
 
-import { ChatMessage } from "@/types/core";
+import { ChatMessage } from "@/src/types/core";
 
-import { Model } from "@/types/core";
+import { Model } from "@/src/types/core";
 
 export interface ChatProvider {
   sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string>;

@@ -1,8 +1,8 @@
 import { useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableVoicesAtom } from '@/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
-import { Provider, Voice } from '@/types/core';
-import { ttsService } from '@/services/ttsService';
+import { Provider, Voice } from '@/src/types/core';
+import { ttsService } from '@/src/services/ttsService';
 
 export const fetchAvailableVoices = async (
   providers: Provider[]

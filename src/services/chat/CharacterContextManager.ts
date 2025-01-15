@@ -1,7 +1,7 @@
 import { MentionedCharacter } from '@/src/components/chat/ChatInput';
 import { ChatContextManager } from '@/src/types/chat';
-import { ChatMessage } from '@/types/core';
-import { Thread } from '@/types/core';
+import { ChatMessage } from '@/src/types/core';
+import { Thread } from '@/src/types/core';
 
 export class CharacterContextManager implements ChatContextManager {
   prepareContext(message: string, currentThread: Thread, mentionedCharacters: MentionedCharacter[]) {

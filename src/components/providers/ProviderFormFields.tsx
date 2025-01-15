@@ -1,6 +1,6 @@
 import { View, Text, TextInput } from 'react-native';
 import { ProviderTypeSelector } from './ProviderTypeSelector';
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 
 interface ProviderFormFieldsProps {

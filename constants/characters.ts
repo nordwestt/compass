@@ -1,4 +1,4 @@
-import { Character } from '@/types/core';
+import { Character } from '@/src/types/core';
 
 const discourageRoleplayComments = "Never use roleplay actions or narrate your behavior (like *thinks* or *pauses*).";
 

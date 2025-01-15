@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform, ScrollView, Pressable } from 'react-native';
 import { ImageProviderFactory } from '@/src/services/image/ImageProviderFactory';
-import { Model } from '@/types/core';
+import { Model } from '@/src/types/core';
 import { availableProvidersAtom } from '@/hooks/atoms';
 import { useAtomValue } from 'jotai';
 import { useWindowDimensions } from 'react-native';
@@ -11,7 +11,7 @@ import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import Modal from 'react-native-modal';
 import { useImageGeneration } from '@/hooks/useImageGeneration';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 
 
 // Predefined options to enhance prompt creation

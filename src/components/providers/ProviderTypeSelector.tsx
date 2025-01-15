@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { useState } from 'react';

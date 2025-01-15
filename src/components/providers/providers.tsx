@@ -5,12 +5,12 @@ import { availableProvidersAtom, logsAtom, availableModelsAtom } from '@/hooks/a
 import { ProviderCard } from '@/src/components/providers/ProviderCard';
 import { EndpointModal } from '@/src/components/providers/EndpointModal';
 import { useState } from 'react';
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 import NetInfo from '@react-native-community/netinfo';
 import LogService from '@/utils/LogService';
 import axios from 'axios';
 import { fetchAvailableModelsV2 } from '@/hooks/useModels';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 import { EditOllama } from './EditOllama';
 import { router } from 'expo-router';
 

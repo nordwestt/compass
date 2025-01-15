@@ -3,13 +3,13 @@ import { useAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { customPromptsAtom } from '@/hooks/atoms';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Character } from '@/types/core';
+import { Character } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { ImagePickerButton } from '@/src/components/image/ImagePickerButton';
 import { useEffect } from 'react';
-import { toastService } from '@/services/toastService';
+import { toastService } from '@/src/services/toastService';
 
 
 interface EditCharacterProps {  

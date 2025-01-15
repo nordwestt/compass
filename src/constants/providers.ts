@@ -1,4 +1,4 @@
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 
 export const PREDEFINED_PROVIDERS = {
   anthropic: {

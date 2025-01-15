@@ -1,7 +1,7 @@
 import { ChatProvider } from '@/src/types/chat';
-import { Character } from '@/types/core';
-import { ChatMessage } from '@/types/core';
-import { Model } from '@/types/core';
+import { Character } from '@/src/types/core';
+import { ChatMessage } from '@/src/types/core';
+import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { Platform } from 'react-native';
 

@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Provider } from '@/types/core';
+import { Provider } from '@/src/types/core';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 import { ProviderFormFields } from './ProviderFormFields';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
