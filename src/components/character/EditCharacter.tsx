@@ -7,7 +7,7 @@ import { Character } from '@/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { ImagePickerButton } from '@/components/image/ImagePickerButton';
+import { ImagePickerButton } from '@/src/components/image/ImagePickerButton';
 import { useEffect } from 'react';
 import { toastService } from '@/services/toastService';
 

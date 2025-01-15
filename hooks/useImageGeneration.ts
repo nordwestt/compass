@@ -4,7 +4,7 @@ import { Model } from '@/types/core';
 import { useAtom } from 'jotai';
 import { generatedImagesAtom } from './atoms';
 import { Platform } from 'react-native';
-import { getTauriImageUri } from '@/components/image/Gallery';
+import { getTauriImageUri } from '@/src/components/image/Gallery';
 
 export function useImageGeneration() {
   const [images, setImages] = useAtom(generatedImagesAtom);
