@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, PermissionsAndroid, Platform } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { getDefaultStore, useAtom } from 'jotai';
-import { availableProvidersAtom, logsAtom, availableModelsAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, logsAtom, availableModelsAtom } from '@/src/hooks/atoms';
 import { ProviderCard } from '@/src/components/providers/ProviderCard';
 import { EndpointModal } from '@/src/components/providers/EndpointModal';
 import { useState } from 'react';
@@ -9,7 +9,7 @@ import { Provider } from '@/src/types/core';
 import NetInfo from '@react-native-community/netinfo';
 import LogService from '@/utils/LogService';
 import axios from 'axios';
-import { fetchAvailableModelsV2 } from '@/hooks/useModels';
+import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
 import { toastService } from '@/src/services/toastService';
 import { EditOllama } from './EditOllama';
 import { router } from 'expo-router';

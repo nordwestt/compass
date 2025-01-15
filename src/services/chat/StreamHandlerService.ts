@@ -1,4 +1,4 @@
-import { ThreadAction } from '@/hooks/atoms';
+import { ThreadAction } from '@/src/hooks/atoms';
 import { MessageStreamHandler } from '@/src/types/chat';
 import { Thread } from '@/src/types/core';
 import { Readable } from 'stream';

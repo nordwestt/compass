@@ -5,7 +5,7 @@ import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import { useColorScheme } from 'nativewind';
 import { routes } from '@/app/(tabs)/_layout';
-import { currentIndexAtom } from '@/hooks/atoms';
+import { currentIndexAtom } from '@/src/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
 import { useRouter } from 'expo-router';
 

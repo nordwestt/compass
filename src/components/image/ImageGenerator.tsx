@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform, ScrollView, Pressable } from 'react-native';
 import { ImageProviderFactory } from '@/src/services/image/ImageProviderFactory';
 import { Model } from '@/src/types/core';
-import { availableProvidersAtom } from '@/hooks/atoms';
+import { availableProvidersAtom } from '@/src/hooks/atoms';
 import { useAtomValue } from 'jotai';
 import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -10,7 +10,7 @@ import { useColorScheme } from 'nativewind';
 import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import Modal from 'react-native-modal';
-import { useImageGeneration } from '@/hooks/useImageGeneration';
+import { useImageGeneration } from '@/src/hooks/useImageGeneration';
 import { toastService } from '@/src/services/toastService';
 
 

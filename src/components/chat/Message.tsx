@@ -4,7 +4,7 @@ import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
 import { Character } from '@/src/types/core';
 import { Text } from 'react-native';
-import { currentThreadAtom, editingMessageIndexAtom, fontPreferencesAtom } from '@/hooks/atoms';
+import { currentThreadAtom, editingMessageIndexAtom, fontPreferencesAtom } from '@/src/hooks/atoms';
 import { useAtomValue } from 'jotai';
 import { InteractionManager, Clipboard } from 'react-native';
 import { toastService } from '@/src/services/toastService';

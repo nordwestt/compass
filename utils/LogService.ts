@@ -1,4 +1,4 @@
-import { logsAtom } from '@/hooks/atoms';
+import { logsAtom } from '@/src/hooks/atoms';
 import { getDefaultStore, useAtom } from 'jotai';
 
 type LogLevel = 'error' | 'info' | 'warn' | 'debug';

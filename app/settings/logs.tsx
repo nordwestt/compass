@@ -1,8 +1,8 @@
 import { FlashList } from '@shopify/flash-list';
-import { logsAtom } from '@/hooks/atoms';
+import { logsAtom } from '@/src/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { LogEntry } from '@/hooks/atoms';
+import { LogEntry } from '@/src/hooks/atoms';
 
 export default function LogsScreen() {
   const [logs, setLogs] = useAtom(logsAtom);

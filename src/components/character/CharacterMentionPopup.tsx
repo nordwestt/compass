@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { Character } from '@/src/types/core';
 import { useAtomValue } from 'jotai';
-import { currentThreadAtom } from '@/hooks/atoms';
+import { currentThreadAtom } from '@/src/hooks/atoms';
 
 interface CharacterMentionPopupProps {
   characters: Character[];

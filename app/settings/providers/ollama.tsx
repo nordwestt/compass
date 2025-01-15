@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useAtom } from 'jotai';
-import { availableProvidersAtom } from '@/hooks/atoms';
+import { availableProvidersAtom } from '@/src/hooks/atoms';
 import { EditOllama } from '@/src/components/providers/EditOllama';
 
 export default function ProvidersSettingScreen() {

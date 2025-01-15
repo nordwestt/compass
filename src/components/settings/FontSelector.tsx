@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { useAtom } from 'jotai';
-import { fontPreferencesAtom } from '@/hooks/atoms';
+import { fontPreferencesAtom } from '@/src/hooks/atoms';
 import { Selector } from '@/src/components/Selector';
 import { Message } from '@/src/components/chat/Message';
 

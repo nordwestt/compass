@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { customPromptsAtom } from '@/hooks/atoms';
+import { customPromptsAtom } from '@/src/hooks/atoms';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Character } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
-import { GeneratedImage, generatedImagesAtom } from '@/hooks/atoms';
+import { GeneratedImage, generatedImagesAtom } from '@/src/hooks/atoms';
 import { format } from 'date-fns';
 import { open, BaseDirectory, readFile } from "@tauri-apps/plugin-fs"
 import Modal from 'react-native-modal';

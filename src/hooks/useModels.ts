@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Model, Provider } from '@/src/types/core';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { availableProvidersAtom, availableModelsAtom, logsAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, availableModelsAtom, logsAtom } from '@/src/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
 import LogService from '@/utils/LogService';
 import axios from 'axios';

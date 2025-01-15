@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { availableProvidersAtom } from '@/hooks/atoms';
+import { availableProvidersAtom } from '@/src/hooks/atoms';
 import { createSearchService } from '@/src/services/search/searchServiceFactory';
 import { SearchResponse } from '@/src/types/search';
 import { useState, useCallback } from 'react';

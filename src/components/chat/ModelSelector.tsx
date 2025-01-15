@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Modal, Image, ScrollView, Platform } from
 import { Signal } from '@preact/signals-react';
 import { Model } from '@/src/types/core';
 import { getDefaultStore, useAtom, useAtomValue } from 'jotai';
-import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/src/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
 import { Provider } from '@/src/types/core';
@@ -15,7 +15,7 @@ import Animated, {
   SlideInDown,
   SlideOutDown
 } from 'react-native-reanimated';
-import { fetchAvailableModelsV2 } from '@/hooks/useModels';
+import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
 import { scanForOllamaInstances } from '@/src/components/providers/providers';
 import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';

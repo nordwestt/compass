@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
-import { allPromptsAtom, customPromptsAtom } from '@/hooks/atoms';
+import { allPromptsAtom, customPromptsAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { rawThemes } from '@/constants/themes';

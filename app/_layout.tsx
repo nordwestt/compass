@@ -15,7 +15,7 @@ import { routes } from "./(tabs)/_layout";
 import { Command } from "@tauri-apps/plugin-shell";
 import { CustomHeader } from "@/src/components/navigation/CustomHeader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useKeyboardShortcuts } from "@/src/hooks/useKeyboardShortcuts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 

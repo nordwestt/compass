@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useAtomValue } from 'jotai';
-import { generatedImagesAtom } from '@/hooks/atoms';
+import { generatedImagesAtom } from '@/src/hooks/atoms';
 import { format } from 'date-fns';
 import { ImageGenerator } from '@/src/components/image/ImageGenerator';
 import { Gallery } from '@/src/components/image/Gallery';

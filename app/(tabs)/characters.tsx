@@ -3,7 +3,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { createDefaultThread, currentIndexAtom, customPromptsAtom, threadActionsAtom, threadsAtom } from '@/hooks/atoms';
+import { createDefaultThread, currentIndexAtom, customPromptsAtom, threadActionsAtom, threadsAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
 import { modalService } from '@/src/services/modalService';
 import { useRouter } from 'expo-router';

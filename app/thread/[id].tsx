@@ -2,7 +2,7 @@ import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { ChatThread } from '@/src/components/chat/ChatThread';
 import { TouchableOpacity, View } from 'react-native';
 import { useAtomValue } from 'jotai';
-import { threadsAtom } from '@/hooks/atoms';
+import { threadsAtom } from '@/src/hooks/atoms';
 import { useEffect, useLayoutEffect } from 'react';
 import { router } from 'expo-router';
 

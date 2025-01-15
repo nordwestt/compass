@@ -2,7 +2,7 @@ import { View, Platform } from 'react-native';
 import { ChatThread } from '@/src/components/chat/ChatThread';
 import { ChatThreads } from '@/src/components/chat/ChatThreads';
 import { useAtom } from 'jotai';
-import { sidebarVisibleAtom } from '@/hooks/atoms';
+import { sidebarVisibleAtom } from '@/src/hooks/atoms';
 import { ThreadsSidebar } from '@/src/components/web/ThreadsSidebar';
 import { useWindowDimensions, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';

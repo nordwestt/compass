@@ -9,7 +9,7 @@ import SettingsRoute from './settings';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
-import { currentIndexAtom } from '@/hooks/atoms';
+import { currentIndexAtom } from '@/src/hooks/atoms';
 import { useAtom } from 'jotai';
 import ImagesRoute from './images';
 //import { useThemeValue } from '@/constants/themes';

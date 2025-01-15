@@ -3,8 +3,8 @@ import { View, ScrollView, Platform, TouchableOpacity, Text } from 'react-native
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
 import { ModelSelector } from './ModelSelector';
-import { useModels } from '@/hooks/useModels';
-import { useChat } from '@/hooks/useChat';
+import { useModels } from '@/src/hooks/useModels';
+import { useChat } from '@/src/hooks/useChat';
 import { CharacterSelector } from '@/src/components/character/CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Model, Character, ChatMessage } from '@/src/types/core';
@@ -18,7 +18,7 @@ import {
   availableProvidersAtom,
   ttsEnabledAtom,
   defaultVoiceAtom
-} from '@/hooks/atoms';
+} from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';

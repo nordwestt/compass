@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
-import { useVoices } from '@/hooks/useVoices';
+import { useVoices } from '@/src/hooks/useVoices';
 import { Voice } from '@/src/types/core';
 import { useAtom, useAtomValue } from 'jotai';
-import { availableProvidersAtom, defaultVoiceAtom, ttsEnabledAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, defaultVoiceAtom, ttsEnabledAtom } from '@/src/hooks/atoms';
 import { Ionicons } from '@expo/vector-icons';
 import { toastService } from '@/src/services/toastService';
 import { ThemeProvider } from '@/src/components/ui/ThemeProvider';

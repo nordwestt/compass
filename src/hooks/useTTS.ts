@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { useAtomValue } from 'jotai';
 import { Platform } from 'react-native';
-import { availableProvidersAtom, ttsEnabledAtom, defaultVoiceAtom } from '@/hooks/atoms';
+import { availableProvidersAtom, ttsEnabledAtom, defaultVoiceAtom } from '@/src/hooks/atoms';
 import { ttsService, TTSOptions } from '@/src/services/ttsService';
 
 export function useTTS() {
