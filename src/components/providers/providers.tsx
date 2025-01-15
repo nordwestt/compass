@@ -52,6 +52,7 @@ export default function Providers({ className }: ProvidersProps) {
 
   const handleEdit = (provider: Provider) => {
     setEditingProvider(provider);
+    console.log("editing provider", provider);
     setShowModal(true);
   };
 
@@ -184,6 +185,7 @@ export default function Providers({ className }: ProvidersProps) {
         }}
         onSave={handleSave}
         provider={editingProvider}
+        editing={editingProvider != null}
       />
     </View>
   );

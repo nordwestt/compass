@@ -15,9 +15,10 @@ interface EndpointModalProps {
   onClose: () => void;
   onSave: (provider: Provider) => void;
   provider: Provider | null;
+  editing: boolean;
 }
 
-export function EndpointModal({ visible, onClose, onSave, provider }: EndpointModalProps) {
+export function EndpointModal({ visible, onClose, onSave, provider, editing }: EndpointModalProps) {
   const [name, setName] = useState(provider?.name ?? '');
   const [apiKey, setApiKey] = useState(provider?.apiKey ?? '');
   const [selectedType, setSelectedType] = useState<Provider['source']>(provider?.source ?? 'ollama');
@@ -25,22 +26,24 @@ export function EndpointModal({ visible, onClose, onSave, provider }: EndpointMo
   const [isProviderTypeSelectorModalVisible, setIsProviderTypeSelectorModalVisible] = useAtom(providerTypeSelectorModalAtom);
 
   useEffect(() => {
-    if (provider) {
-      setName(provider.name ?? '');
-      setApiKey(provider.apiKey ?? '');
-      setSelectedType(provider.source);
-      setCustomEndpoint(provider.endpoint);
-    } else {
-      setName('');
-      setApiKey('');
-      setSelectedType('custom');
-      setCustomEndpoint('');
-      // wait for 100ms before showing the provider type selector modal
-      setTimeout(() => {
+    if (visible) {
+      if (provider) {
+        setName(provider.name ?? '');
+        setApiKey(provider.apiKey ?? '');
+        setSelectedType(provider.source);
+        setCustomEndpoint(provider.endpoint);
+      } else {
+        setName('');
+        setApiKey('');
+        setSelectedType('custom');
+        setCustomEndpoint('');
+        // Only show type selector when creating new provider
         setIsProviderTypeSelectorModalVisible(true);
-      }, 2000);
+      }
+    } else {
+      setIsProviderTypeSelectorModalVisible(false);
     }
-  }, [provider]);
+  }, [visible, provider]);
 
   const handleSave = () => {
     const endpointUrl = customEndpoint;
