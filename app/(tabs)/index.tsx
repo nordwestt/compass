@@ -3,7 +3,7 @@ import { ChatThread } from '@/src/components/chat/ChatThread';
 import { ChatThreads } from '@/src/components/chat/ChatThreads';
 import { useAtom } from 'jotai';
 import { sidebarVisibleAtom } from '@/hooks/atoms';
-import { ThreadsSidebar } from '@/components/ThreadsSidebar';
+import { ThreadsSidebar } from '@/src/components/web/ThreadsSidebar';
 import { useWindowDimensions, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { TabBarIcon } from './TabBarIcon';
-import { useThemePreset } from '@/components/ThemeProvider';
+import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import { useColorScheme } from 'nativewind';
 import { routes } from '@/app/(tabs)/_layout';

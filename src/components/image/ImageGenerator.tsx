@@ -7,7 +7,7 @@ import { useAtomValue } from 'jotai';
 import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
-import { useThemePreset } from '@/components/ThemeProvider';
+import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import Modal from 'react-native-modal';
 import { useImageGeneration } from '@/hooks/useImageGeneration';

@@ -6,7 +6,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, defaultVoiceAtom, ttsEnabledAtom } from '@/hooks/atoms';
 import { Ionicons } from '@expo/vector-icons';
 import { toastService } from '@/services/toastService';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
 
 
 interface VoiceSelectorProps {

@@ -5,9 +5,9 @@ import { Model } from '@/types/core';
 import { getDefaultStore, useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
 import { Provider } from '@/types/core';
-import { DropdownElement } from '@/components/Dropdown';
+import { DropdownElement } from '@/src/components/ui/Dropdown';
 
 import Animated, { 
   FadeIn,
@@ -18,7 +18,7 @@ import Animated, {
 import { fetchAvailableModelsV2 } from '@/hooks/useModels';
 import { scanForOllamaInstances } from '@/src/components/providers/providers';
 import { toastService } from '@/services/toastService';
-import { Dropdown } from '@/components/Dropdown';
+import { Dropdown } from '@/src/components/ui/Dropdown';
 
 
 

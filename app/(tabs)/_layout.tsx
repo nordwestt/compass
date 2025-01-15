@@ -7,7 +7,7 @@ import IndexRoute from './index';
 import CharactersRoute from './characters';
 import SettingsRoute from './settings';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useThemePreset } from '@/components/ThemeProvider';
+import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import { currentIndexAtom } from '@/hooks/atoms';
 import { useAtom } from 'jotai';

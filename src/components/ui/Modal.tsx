@@ -1,6 +1,6 @@
 import { Modal as RNModal, View, Text } from 'react-native';
 
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
 import Animated, { 
   FadeIn,
   FadeOut,
