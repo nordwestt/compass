@@ -3,8 +3,8 @@ import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions } from 'rea
 import { useAtomValue } from 'jotai';
 import { generatedImagesAtom } from '@/hooks/atoms';
 import { format } from 'date-fns';
-import { ImageGenerator } from '@/components/ImageGenerator';
-import { Gallery } from '@/components/Gallery';
+import { ImageGenerator } from '@/components/image/ImageGenerator';
+import { Gallery } from '@/components/image/Gallery';
 import { Ionicons } from '@expo/vector-icons';
 type Tab = 'generator' | 'gallery';
 

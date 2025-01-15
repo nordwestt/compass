@@ -1,4 +1,4 @@
-import { MentionedCharacter } from "@/components/ChatInput";
+import { MentionedCharacter } from "@/components/chat/ChatInput";
 import { Character, Thread } from "@/types/core";
 
 import { ChatMessage } from "@/types/core";

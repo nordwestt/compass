@@ -1,7 +1,7 @@
 import { getDefaultStore, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currentThreadAtom, threadActionsAtom, ThreadAction, searchEnabledAtom } from './atoms';
 import { useRef } from 'react';
-import { MentionedCharacter } from '@/components/ChatInput';
+import { MentionedCharacter } from '@/components/chat/ChatInput';
 import { useTTS } from './useTTS';
 import { CharacterContextManager } from '@/src/services/chat/CharacterContextManager';
 import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';

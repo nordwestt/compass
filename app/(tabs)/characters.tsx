@@ -8,7 +8,7 @@ import { Character } from '@/types/core';
 import { modalService } from '@/services/modalService';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import EditCharacter from '@/components/EditCharacter';
+import EditCharacter from '@/components/character/EditCharacter';
 
 export default function CharactersScreen() {
   const router = useRouter();

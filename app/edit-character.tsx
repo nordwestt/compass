@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import EditCharacter from '@/components/EditCharacter';
+import EditCharacter from '@/components/character/EditCharacter';
 
 export default function EditCharacterScreen() {
   const router = useRouter();

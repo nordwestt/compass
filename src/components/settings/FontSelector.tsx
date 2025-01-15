@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { useAtom } from 'jotai';
 import { fontPreferencesAtom } from '@/hooks/atoms';
 import { Selector } from '@/src/components/Selector';
-import { Message } from '@/components/Message';
+import { Message } from '@/components/chat/Message';
 
 const AVAILABLE_FONTS = [
   { id: 'Caveat-Medium', name: 'Caveat Medium' },

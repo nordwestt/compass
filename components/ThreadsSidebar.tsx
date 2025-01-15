@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import { ChatThreads } from './ChatThreads';
+import { ChatThreads } from './chat/ChatThreads';
 import { useAtom } from 'jotai';
 import { sidebarVisibleAtom } from '@/hooks/atoms';
 import Ionicons from '@expo/vector-icons/Ionicons';
