@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Image, ScrollView, Platform } from 'react-native';
-import { Signal } from '@preact/signals-react';
 import { Model } from '@/src/types/core';
 import { getDefaultStore, useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/src/hooks/atoms';
