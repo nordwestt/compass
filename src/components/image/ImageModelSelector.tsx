@@ -13,7 +13,7 @@ import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';
 
 
-const replicateModels = ['black-forest-labs/flux-schnell', 'black-forest-labs/flux-dev'];
+const replicateModels = ['black-forest-labs/flux-schnell', 'black-forest-labs/flux-dev', 'black-forest-labs/flux-pro', 'black-forest-labs/flux-1.1-pro'];
 
 interface ImageModelSelectorProps {
   selectedModel: Model | undefined;
