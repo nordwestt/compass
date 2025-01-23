@@ -43,10 +43,10 @@ export default function ImageGenerationScreen() {
         <Text className="text-2xl font-bold text-primary">
             Images
         </Text>
-      </View>
-      <View className="flex-row border-b border-border">
-        <TabButton tab="generator" label="Generate" />
-        <TabButton tab="gallery" label="Gallery" />
+        <View className="ms-4 flex-row border-border">
+          <TabButton tab="generator" label="Generate" />
+          <TabButton tab="gallery" label="Gallery" />
+        </View>
       </View>
       
       <View className="flex-1 relative">

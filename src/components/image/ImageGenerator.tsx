@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform, ScrollView, Pressable } from 'react-native';
-import { ImageProviderFactory } from '@/src/services/image/ImageProviderFactory';
-import { Model } from '@/src/types/core';
 import { availableProvidersAtom } from '@/src/hooks/atoms';
 import { useAtomValue } from 'jotai';
 import { useWindowDimensions } from 'react-native';
@@ -12,6 +10,8 @@ import { rawThemes } from '@/constants/themes';
 import Modal from 'react-native-modal';
 import { useImageGeneration } from '@/src/hooks/useImageGeneration';
 import { toastService } from '@/src/services/toastService';
+import { ImageModelSelector } from './ImageModelSelector';
+import { Model } from '@/src/types/core';
 
 
 // Predefined options to enhance prompt creation
@@ -85,6 +85,8 @@ export function ImageGenerator() {
   const [isImageViewVisible, setIsImageViewVisible] = useState(false);
   const { generateImage } = useImageGeneration();
 
+  const [selectedImageModel, setSelectedImageModel] = useState<Model>(); 
+
   const appendToPrompt = (text: string) => {
     setPrompt((current) => {
       const newPrompt = current ? `${current}, ${text}` : text;
@@ -95,7 +97,7 @@ export function ImageGenerator() {
   const handleGenerate = async () => {
     
     const provider = availableProviders.find(p => p.source === 'replicate');
-    if (!provider) {
+    if (!provider || !selectedImageModel) {
       toastService.info({
         title: 'Provider not found',
         description: 'Please add a provider to generate images',
@@ -114,14 +116,8 @@ export function ImageGenerator() {
     setIsLoading(true);
     setError(null);
 
-    const model = {
-      id: 'black-forest-labs/flux-schnell',
-      name: 'Flux Schnell',
-      provider: provider
-    };
-
     try {
-      const imageUri = await generateImage(prompt, model);
+      const imageUri = await generateImage(prompt, selectedImageModel!);
       setGeneratedImage(imageUri);
     } catch (err) {
       toastService.danger({
@@ -174,9 +170,18 @@ export function ImageGenerator() {
     </View>
   );
 
+  const handleSelectModel = (model: Model) => {
+    setSelectedImageModel(model);
+    toastService.success({title:`Selected model: ${model.name}`});
+  };
+
+
   const PromptPanel = (
-    <View className={`h-full alal ${isWideScreen && generatedImage ? 'w-1/2 pr-4 h-full' : 'w-full'}`}>
+    <View className={`h-full ${isWideScreen && generatedImage ? 'w-1/2 pr-4 h-full' : 'w-full'}`}>
+
       <View className="bg-surface rounded-xl p-4 border border-border flex-1 h-full">
+      
+
         <View className="flex-row items-center">
             <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
             Prompt
@@ -224,9 +229,12 @@ export function ImageGenerator() {
   );
 
   
+  
 
   return (
     <ScrollView className="p-4 h-full" contentContainerStyle={{ height: '100%' }}>
+      <ImageModelSelector className='z-10 mb-4' selectedModel={selectedImageModel}
+              onSetModel={handleSelectModel}/>
       <View className={`flex flex-1 h-full ${isWideScreen ? 'flex-row' : 'flex-col'}`}>
         {PromptPanel}
         {isWideScreen && ImagePanel}
