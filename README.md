@@ -32,6 +32,8 @@ Compass is a modern, open-source Large Language Model (LLM) client designed to p
 
 ## Get Started
 
+It is recommended that you install Ollama and open up access, following the [guide](https://github.com/nordwestt/compass/wiki/Ollama) 
+
 1. Install dependencies
 
    ```bash
