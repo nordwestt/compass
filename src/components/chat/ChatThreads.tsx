@@ -136,7 +136,7 @@ const ChatThreads: React.FC = () => {
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`shadow-md flex-1 p-4 rounded-lg bg-surface hover:bg-background ${
+              className={`shadow-md flex-1 p-4 rounded-lg bg-surface web:bg-background hover:bg-background ${
                 currentThread.id === thread.id 
                   ? 'web:border-primary web:border-2' 
                   : ''
