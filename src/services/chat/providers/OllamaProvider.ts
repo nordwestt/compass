@@ -5,6 +5,8 @@ import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { Platform } from 'react-native';
 import { toastService } from '@/src/services/toastService';
+import { CoreMessage, streamText } from 'ai';
+import { createOllama } from 'ollama-ai-provider';
 
 function isTauri(){
   return typeof window !== 'undefined' && !!(window as any).__TAURI__;
@@ -25,51 +27,26 @@ export class OllamaProvider implements ChatProvider {
 
     try{
 
+      const ollama = createOllama({
+        // optional settings, e.g.
+        baseURL: model.provider.endpoint,
+      });
+
+      let oMessages = newMessages.map(message => ({role: message.role, content: message.content}));
+
+      let oneMessage: CoreMessage = {
+        role: 'user',
+        content: 'Hello, how are you?'
+      };
+
+      const result = streamText({
+        model: ollama(model.id),
+        messages: [oneMessage],
+      });
+
+      let res = result.toDataStreamResponse();
+      console.log(res);
       
-      let url = `${model.provider.endpoint}/api/chat`;
-      if(isTauri()) url = PROXY_URL+url;
-      const response =  await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal,
-        body: JSON.stringify({
-          model: model.id,
-          messages: newMessages,
-          stream: true
-        }),
-        reactNative: {textStreaming: true}
-      } as any);
-
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No reader available');
-      }
-
-      let buffer = '';
-
-      let decoder = new TextDecoder();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        buffer += chunk;
-        let parsedChunk = null;
-
-        let chunks = buffer.split("\n");
-        for(let chunk of chunks){
-          try{
-            parsedChunk = JSON.parse(chunk);
-            yield parsedChunk.message?.content || '';
-            buffer = '';
-          }
-          catch(error: any){
-            continue;
-          }
-        }
-          
-      }
     }
     catch(error:any){
       LogService.log(error, {component: 'OllamaProvider', function: `sendMessage: ${model.provider.endpoint}`}, 'error');
