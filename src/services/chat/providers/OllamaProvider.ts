@@ -7,6 +7,7 @@ import { Platform } from 'react-native';
 import { toastService } from '@/src/services/toastService';
 import { CoreMessage, streamText } from 'ai';
 import { createOllama } from 'ollama-ai-provider';
+import { fetch as expoFetch } from 'expo/fetch';
 
 function isTauri(){
   return typeof window !== 'undefined' && !!(window as any).__TAURI__;
@@ -30,6 +31,7 @@ export class OllamaProvider implements ChatProvider {
       const ollama = createOllama({
         // optional settings, e.g.
         baseURL: model.provider.endpoint,
+        fetch: expoFetch as unknown as typeof globalThis.fetch
       });
 
       let oMessages = newMessages.map(message => ({role: message.role, content: message.content}));
