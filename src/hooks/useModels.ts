@@ -4,7 +4,6 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, logsAtom } from '@/src/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
 import LogService from '@/utils/LogService';
-import axios from 'axios';
 
 export const loadDefaultModel = async (): Promise<Model | null> => {
   try {
@@ -59,18 +58,18 @@ export const fetchAvailableModelsV2 = async (
       return [];
     }
 
-
     const models: Model[] = [];
 
     for (const provider of endpoints) {
       try {
         switch (provider.source) {
           case 'ollama':
-            const { data: ollamaData } = await axios.get(`${provider.endpoint}/api/tags`, {
+            const ollamaResponse = await fetch(`${provider.endpoint}/api/tags`, {
               headers: {
                 'Accept': 'application/json',
               }
             });
+            const ollamaData = await ollamaResponse.json();
             
             if (ollamaData && Array.isArray(ollamaData.models)) {
               models.push(...ollamaData.models
@@ -90,11 +89,12 @@ export const fetchAvailableModelsV2 = async (
             break;
 
           case 'openai':
-            const { data: openaiData } = await axios.get('https://api.openai.com/v1/models', {
+            const openaiResponse = await fetch('https://api.openai.com/v1/models', {
               headers: {
                 'Authorization': `Bearer ${provider.apiKey}`
               }
             });
+            const openaiData = await openaiResponse.json();
             models.push(...openaiData.data
               .filter((model: any) => model.id.includes('gpt'))
               .map((model: any) => ({
@@ -105,12 +105,7 @@ export const fetchAvailableModelsV2 = async (
             break;
 
           case 'anthropic':
-            // const { data: anthropicData } = await axios.get('https://api.anthropic.com/v1/models', {
-            //   headers: {
-            //     'x-api-key': provider.apiKey,
-            //     'anthropic-version': '2023-06-01'
-            //   }
-            // });
+            // Anthropic API call commented out, using static data
             const anthropicData: any[] = [{
               model: 'claude-3-5-haiku-20241022',
               name: 'claude-3-5-haiku-20241022'
@@ -129,14 +124,12 @@ export const fetchAvailableModelsV2 = async (
             break;
         }
       } catch (error: any) {
-        
         LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
       }
     }
 
     return models; 
   } catch (error: any) {
-
     LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
   } finally {
     isLoadingModels = false;
