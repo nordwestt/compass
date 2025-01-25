@@ -41,13 +41,15 @@ export class OllamaProvider implements ChatProvider {
         content: 'Hello, how are you?'
       };
 
-      const result = streamText({
+      const { textStream } = streamText({
         model: ollama(model.id),
         messages: [oneMessage],
       });
 
-      let res = result.toDataStreamResponse();
-      console.log(res);
+      for await (const textPart of textStream) {
+        console.log(textPart);
+        yield textPart;
+      }
       
     }
     catch(error:any){

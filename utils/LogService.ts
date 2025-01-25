@@ -19,7 +19,7 @@ class LogService {
     let msg = "";
 
     if(message instanceof Error) {
-      msg = JSON.stringify({message: message.message, stack: message.stack?.slice(0,100), cause: message.cause});
+      msg = JSON.stringify({message: message.message, stack: message.stack?.slice(0,150), cause: message.cause});
     } else {
       msg = message;
     }
