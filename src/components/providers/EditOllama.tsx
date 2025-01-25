@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'rea
 import { useState, useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Provider } from '@/src/types/core';
-import axios from 'axios';
 import { toastService } from '@/src/services/toastService';
 import LogService from '@/utils/LogService';
 
@@ -35,9 +34,10 @@ export function EditOllama({ provider }: EditOllamaProps) {
   const fetchLocalModels = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${provider.endpoint}/api/tags`);
-      if (response.data && Array.isArray(response.data.models)) {
-        setLocalModels(response.data.models);
+      const response = await fetch(`${provider.endpoint}/api/tags`);
+      const data = await response.json();
+      if (data && Array.isArray(data.models)) {
+        setLocalModels(data.models);
       }
     } catch (error: any) {
       LogService.log(error, { component: 'EditOllama', function: 'fetchLocalModels' }, 'error');
@@ -53,9 +53,15 @@ export function EditOllama({ provider }: EditOllamaProps) {
   const pullModel = async (modelId: string) => {
     setPulling(modelId);
     try {
-      await axios.post(`${provider.endpoint}/api/pull`, {
-        name: modelId,
-        stream: false
+      await fetch(`${provider.endpoint}/api/pull`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: modelId,
+          stream: false
+        })
       });
       toastService.success({
         title: 'Model pulled successfully',
@@ -75,8 +81,12 @@ export function EditOllama({ provider }: EditOllamaProps) {
 
   const deleteModel = async (modelName: string) => {
     try {
-      await axios.delete(`${provider.endpoint}/api/delete`, {
-        data: { name: modelName }
+      await fetch(`${provider.endpoint}/api/delete`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: modelName })
       });
       toastService.success({
         title: 'Model deleted',

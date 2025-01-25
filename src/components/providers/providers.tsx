@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { Provider } from '@/src/types/core';
 import NetInfo from '@react-native-community/netinfo';
 import LogService from '@/utils/LogService';
-import axios from 'axios';
 import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
 import { toastService } from '@/src/services/toastService';
 import { EditOllama } from './EditOllama';
@@ -225,15 +224,14 @@ export async function scanForOllamaInstances(): Promise<string[]> {
   // Modified test endpoint function that resolves as soon as a valid endpoint is found
   const testEndpoint = async (endpoint: string): Promise<string | null> => {
     try {
-      const source = axios.CancelToken.source();
-      const timeoutId = setTimeout(() => source.cancel(), TIMEOUT_MS);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-      const response = await axios.get(endpoint, {
+      const response = await fetch(endpoint, {
         headers: {
           'Accept': 'application/text',
         },
-        cancelToken: source.token,
-        timeout: TIMEOUT_MS
+        signal: controller.signal
       });
 
       clearTimeout(timeoutId);
@@ -249,7 +247,6 @@ export async function scanForOllamaInstances(): Promise<string[]> {
     const batch = networkPatterns.slice(i, i + BATCH_SIZE);
     const batchResults = await Promise.all(batch.map(testEndpoint));
     results = [...results, ...batchResults.filter(result => result !== null)];
-    
   }
 
   // if we have both localhost and 127.0.0.1, remove 127.0.0.1
@@ -259,16 +256,17 @@ export async function scanForOllamaInstances(): Promise<string[]> {
 
   if(results.length>1 && results.includes('http://localhost:11434')){
     // make request to /api/tags
-    const localResponse = await axios.get(`http://localhost:11434/api/tags`);
+    const localResponse = await fetch(`http://localhost:11434/api/tags`);
+    const localData = await localResponse.json();
 
     const otherEndpoints = results.filter(result => result !== 'http://localhost:11434');
     for(let i = 0; i < otherEndpoints.length; i++){
-      const response = await axios.get(`${otherEndpoints[i]}/api/tags`);
-      if(localResponse.data.toString() == response.data.toString()){
+      const response = await fetch(`${otherEndpoints[i]}/api/tags`);
+      const responseData = await response.json();
+      if(localData.toString() == responseData.toString()){
         results = results.filter(result => result != otherEndpoints[i]);
       }
     }
-    
   }
 
   return results;

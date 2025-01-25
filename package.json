@@ -31,7 +31,6 @@
     "@tauri-apps/plugin-fs": "^2.2.0",
     "@tauri-apps/plugin-shell": "^2.2.0",
     "ai": "^4.1.4",
-    "axios": "^1.7.9",
     "date-fns": "^4.1.0",
     "expo": "^52.0.27",
     "expo-av": "~15.0.2",
