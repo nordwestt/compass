@@ -30,20 +30,14 @@ export class OllamaProvider implements ChatProvider {
 
       const ollama = createOllama({
         // optional settings, e.g.
-        baseURL: model.provider.endpoint,
+        baseURL: model.provider.endpoint+'/api',
         fetch: expoFetch as unknown as typeof globalThis.fetch
       });
 
-      let oMessages = newMessages.map(message => ({role: message.role, content: message.content}));
-
-      let oneMessage: CoreMessage = {
-        role: 'user',
-        content: 'Hello, how are you?'
-      };
 
       const { textStream } = streamText({
         model: ollama(model.id),
-        messages: [oneMessage],
+        messages: newMessages as CoreMessage[],
       });
 
       for await (const textPart of textStream) {

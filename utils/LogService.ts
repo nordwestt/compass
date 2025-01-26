@@ -1,5 +1,6 @@
 import { logsAtom } from '@/src/hooks/atoms';
 import { getDefaultStore, useAtom } from 'jotai';
+import { APICallError } from 'ai';
 
 type LogLevel = 'error' | 'info' | 'warn' | 'debug';
 
@@ -36,6 +37,17 @@ class LogService {
     
     // Also log to console for development
     console[level](`[${context.component}:${context.function}]`, message);
+
+    
+    if (APICallError.isInstance(message)) {
+      console.log("APICallError");
+      console.log(message.url);
+      console.log(message.requestBodyValues)
+      console.log(message.statusCode);
+      console.log(message.responseBody);
+      console.log(message.responseBody);
+      console.log(message.data);
+    }
   }
 }
 

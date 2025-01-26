@@ -1,6 +1,6 @@
 {
   "name": "compass",
-  "main": "index.js",
+  "main": "index.ts",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -27,6 +27,7 @@
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
     "@shopify/flash-list": "1.7.1",
+    "@stardazed/streams-text-encoding": "^1.0.2",
     "@tauri-apps/cli": "^2.1.0",
     "@tauri-apps/plugin-fs": "^2.2.0",
     "@tauri-apps/plugin-shell": "^2.2.0",
@@ -52,6 +53,7 @@
     "react": "^18.2.0",
     "react-dom": "18.3.1",
     "react-native": "^0.76.6",
+    "react-native-fast-encoder": "^0.1.12",
     "react-native-fetch-api": "^3.0.0",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-markdown-display": "^7.0.2",
