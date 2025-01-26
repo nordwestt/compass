@@ -36,8 +36,7 @@ export class OllamaProvider implements ChatProvider {
           model: model.id,
           messages: newMessages,
           stream: true
-        }),
-        reactNative: {textStreaming: true}
+        })
       } as any);
 
       const reader = response.body?.getReader();
