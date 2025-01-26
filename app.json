@@ -73,7 +73,7 @@
     ],
     "experiments": {
       "typedRoutes": true,
-      "baseUrl": "/expo-gh-pages"
+      "baseUrl": "/compass"
     },
     "extra": {
       "router": {
