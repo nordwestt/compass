@@ -32,9 +32,7 @@ export default function RootLayout() {
   else{
     theme = rawThemes[themePreset][colorScheme ?? 'light'];
   }
-  const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
-  const isTauri = Platform.OS === 'web' && typeof window !== 'undefined' && !!(window as any).__TAURI__;
-
+  const isDesktop = Platform.isWeb && window.innerWidth >= 768;
 
   const myFunc = async function() {
     const command = Command.sidecar("binaries/corsproxy");
