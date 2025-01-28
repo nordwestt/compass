@@ -9,11 +9,12 @@ import {fetch as expoFetch} from 'expo/fetch';
 
 import { Platform } from 'react-native';
 import 'text-encoding';
-globalThis.ReadableStream = ReadableStreamPolyfill;
+
 
 if(Platform.OS !== 'web') {
     
     globalThis.fetch = expoFetch;
+    globalThis.ReadableStream = ReadableStreamPolyfill;
 }
 
 // Your existing app entry point
