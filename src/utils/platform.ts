@@ -1,18 +1,19 @@
+import { Platform as ExpoPlatform } from 'react-native';
+
 export const Platform = {
-  OS: process.env.EXPO_PUBLIC_PLATFORM || 'web',
   
   // Check if running in Tauri
   isTauri: typeof window !== 'undefined' && !!(window as any).__TAURI__,
   
   // Check if running in browser (web but not Tauri)
-  isWeb: typeof window !== 'undefined' && !(window as any).__TAURI__,
+  isWeb: typeof window !== 'undefined' && !(window as any).__TAURI__ && ExpoPlatform.OS=='web',
   
   // Check if running on mobile (iOS/Android)
-  isMobile: ['ios', 'android'].includes(process.env.EXPO_PUBLIC_PLATFORM || ''),
+  isMobile: ExpoPlatform.OS != 'web',
   
   // Specific platform checks
-  isIOS: process.env.EXPO_PUBLIC_PLATFORM === 'ios',
-  isAndroid: process.env.EXPO_PUBLIC_PLATFORM === 'android',
+  isIOS: ExpoPlatform.OS =='ios',
+  isAndroid: ExpoPlatform.OS =='android',
   
   // Helper method to get platform type
   getPlatformType(): 'mobile' | 'web' | 'tauri' {

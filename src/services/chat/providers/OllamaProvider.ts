@@ -9,7 +9,7 @@ import { createOllama } from 'ollama-ai-provider';
 import { fetch as expoFetch } from 'expo/fetch';
 
 
-import {Platform} from '@/src/utils/platform';
+import {Platform as PlatformCust} from '@/src/utils/platform';
 import {streamResponse} from '@/src/services/chat/streamUtils';
 
 const PROXY_URL = "http://localhost:9493/";
@@ -26,10 +26,9 @@ export class OllamaProvider implements ChatProvider {
     ];
 
     try{
-
-      if(Platform.isMobile){
+      if(PlatformCust.isMobile){
         let url = `${model.provider.endpoint}/api/chat`;
-        if(Platform.isTauri) url = PROXY_URL+url;
+        if(PlatformCust.isTauri) url = PROXY_URL+url;
         yield* streamResponse(url, {
           model: model.id,
           messages: newMessages,
@@ -67,7 +66,7 @@ export class OllamaProvider implements ChatProvider {
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
     let url = `${model.provider.endpoint}/api/chat`;
-    if(Platform.isTauri) url = PROXY_URL+url;
+    if(PlatformCust.isTauri) url = PROXY_URL+url;
     let response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -87,7 +86,7 @@ export class OllamaProvider implements ChatProvider {
   
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>{
     let url = `${model.provider.endpoint}/api/chat`;
-    if(Platform.isTauri) url = PROXY_URL+url;
+    if(PlatformCust.isTauri) url = PROXY_URL+url;
     let response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

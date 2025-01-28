@@ -2,7 +2,9 @@
 // @ts-nocheck
 import { Platform } from "react-native";
 import TextEncoder from "react-native-fast-encoder";
+import 'text-encoding';
 import {fetch as expoFetch} from 'expo/fetch';
+
 
 if (Platform.OS !== "web") {
   const setupPolyfills = async () => {
@@ -16,9 +18,9 @@ if (Platform.OS !== "web") {
     polyfillGlobal("TextDecoder", () => TextEncoder);
     polyfillGlobal("ReadableStream", () => ReadableStream);
     polyfillGlobal("TransformStream", () => TransformStream);
-    globalThis.fetch = expoFetch;
     
   };
+  globalThis.fetch = expoFetch;    
 
   setupPolyfills();
 }
