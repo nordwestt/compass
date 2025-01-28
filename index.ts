@@ -1,28 +1,19 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import { Platform } from "react-native";
-import TextEncoder from "react-native-fast-encoder";
-import 'text-encoding';
+// Add these polyfills at the very top of your index.js
+// import { polyfill } from 'react-native-polyfill-globals/src/fetch';
+// polyfill();
+
+import { ReadableStream as ReadableStreamPolyfill } from 'web-streams-polyfill/dist/ponyfill';
+// // @ts-ignore
+
 import {fetch as expoFetch} from 'expo/fetch';
 
+import { Platform } from 'react-native';
+import 'text-encoding';
+globalThis.ReadableStream = ReadableStreamPolyfill;
 
-if (Platform.OS !== "web") {
-  const setupPolyfills = async () => {
-    const { polyfillGlobal } = await import(
-      "react-native/Libraries/Utilities/PolyfillFunctions"
-    );
-    const { ReadableStream, TransformStream } = await import(
-      "web-streams-polyfill/dist/ponyfill"
-    );
-
-    polyfillGlobal("TextDecoder", () => TextEncoder);
-    polyfillGlobal("ReadableStream", () => ReadableStream);
-    polyfillGlobal("TransformStream", () => TransformStream);
+if(Platform.OS !== 'web') {
     
-  };
-  globalThis.fetch = expoFetch;    
-
-  setupPolyfills();
+    globalThis.fetch = expoFetch;
 }
 
 // Your existing app entry point
