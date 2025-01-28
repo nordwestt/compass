@@ -72,7 +72,8 @@
       "expo-font"
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "baseUrl": "/compass"
     },
     "extra": {
       "router": {

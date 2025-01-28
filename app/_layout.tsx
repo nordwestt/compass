@@ -9,7 +9,7 @@ import { ConfirmationModal } from '@/src/components/ui/ConfirmationModal';
 import { rawThemes } from '@/constants/themes';
 import { useColorScheme } from 'nativewind';
 import { Toast } from "@/src/components/ui/Toast";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import { WebSidebar } from "@/src/components/navigation/WebSidebar";
 import { routes } from "./(tabs)/_layout";
 import { Command } from "@tauri-apps/plugin-shell";
@@ -18,6 +18,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useKeyboardShortcuts } from "@/src/hooks/useKeyboardShortcuts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
+import { Platform } from '@/src/utils/platform';
 
 export default function RootLayout() {
   const { themePreset } = useThemePreset();
@@ -39,7 +40,7 @@ export default function RootLayout() {
     const command = Command.sidecar("binaries/corsproxy");
     const output = await command.execute();
   }
-  if(isTauri) {
+  if(Platform.isTauri) {
     myFunc();
   }
 

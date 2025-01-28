@@ -18,6 +18,7 @@ import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
 import { scanForOllamaInstances } from '@/src/components/providers/providers';
 import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';
+import { Platform as PlatformUtils } from '@/src/utils/platform';
 
 
 
@@ -44,7 +45,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       setModels(models);
 
 
-      if(!models.length && !providers.length) {
+      if(!models.length && !providers.length && !PlatformUtils.isWeb) {
         let ollamaEndpoints = await scanForOllamaInstances();
         const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
           endpoint,
