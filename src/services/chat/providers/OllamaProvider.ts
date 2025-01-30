@@ -4,9 +4,11 @@ import { ChatMessage } from '@/src/types/core';
 import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
-import { CoreMessage, streamText } from 'ai';
+import { CoreMessage, streamText, tool } from 'ai';
 import { createOllama } from 'ollama-ai-provider';
 import { fetch as expoFetch } from 'expo/fetch';
+import { z } from 'zod';
+
 
 
 import {Platform as PlatformCust} from '@/src/utils/platform';
@@ -40,16 +42,33 @@ export class OllamaProvider implements ChatProvider {
         const ollama = createOllama({
           // optional settings, e.g.
           baseURL: model.provider.endpoint+'/api',
-          fetch: expoFetch as unknown as typeof globalThis.fetch
+          fetch: expoFetch as unknown as typeof globalThis.fetch,
+          
         });
 
-        const { textStream } = streamText({
-          model: ollama(model.id),
+        const { textStream, steps } = streamText({
+          model: ollama(model.id, {simulateStreaming:true}),
           messages: newMessages as CoreMessage[],
-        });
+          // tools: {
+          //   weather: tool({
+          //     description: 'Get the weather in a location (celsius)',
+          //     parameters: z.object({
+          //       location: z.string().describe('The location to get the weather for'),
+          //     }),
+          //     execute: async ({ location }) => {
+          //       console.log("location", location);
+          //       const temperature = 21.69;
+          //       return `${temperature} degrees celsius`;
+          //     },
+          //   }),
+          // },
+          // toolChoice: 'auto',
+          // maxSteps: 1
+        }
+      );
 
         for await (const textPart of textStream) {
-          console.log(textPart);
+          console.log("textPart", textPart);
           yield textPart;
         }
 
