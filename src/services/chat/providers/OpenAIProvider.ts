@@ -1,9 +1,14 @@
 import { ChatProvider } from '@/src/types/chat';
 import { Character } from '@/src/types/core';
-import { ChatMessage } from '@/src/types/core';
-import { Model } from '@/src/types/core';
+import { ChatMessage, Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
-import { Platform } from 'react-native';
+import { CoreMessage, streamText } from 'ai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { fetch as expoFetch } from 'expo/fetch';
+import { Platform as PlatformCust } from '@/src/utils/platform';
+import { streamResponse } from '@/src/services/chat/streamUtils';
+
+const PROXY_URL = "http://localhost:9493/";
 
 export class OpenAIProvider implements ChatProvider {
   async *sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string> {
@@ -16,53 +21,28 @@ export class OpenAIProvider implements ChatProvider {
     ];
 
     try {
-      let url = `${model.provider.endpoint}/v1/chat/completions`;
-      if(Platform.OS =='web') url = "http://localhost:9493/"+url;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${model.provider.apiKey}`
-        },
-        signal,
-        body: JSON.stringify({
+      if (PlatformCust.isMobile) {
+        let url = `${model.provider.endpoint}/v1/chat/completions`;
+        if (PlatformCust.isTauri) url = PROXY_URL + url;
+        yield* streamResponse(url, {
           model: model.id,
           messages: newMessages,
           stream: true
-        }),
-        reactNative: { textStreaming: true }
-      } as any);
+        });
+      } else {
+        const openai = createOpenAI({
+          baseURL: model.provider.endpoint+'/v1',
+          apiKey: model.provider.apiKey,
+          fetch: expoFetch as unknown as typeof globalThis.fetch
+        });
 
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No reader available');
-      }
+        const { textStream } = streamText({
+          model: openai(model.id),
+          messages: newMessages as CoreMessage[],
+        });
 
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          if (line.trim() === '' || line.trim() === 'data: [DONE]') continue;
-          if (!line.startsWith('data: ')) continue;
-
-          try {
-            const json = JSON.parse(line.slice(6));
-            const content = json.choices[0]?.delta?.content;
-            if (content) {
-              yield content;
-            }
-          } catch (error: any) {
-            LogService.log(error, { component: 'OpenAIProvider', function: 'sendMessage.processChunk' }, 'error');
-            throw error;
-          }
+        for await (const textPart of textStream) {
+          yield textPart;
         }
       }
     } catch (error: any) {
@@ -73,7 +53,7 @@ export class OpenAIProvider implements ChatProvider {
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
     let url = `${model.provider.endpoint}`;
-    if(Platform.OS =='web') url = "http://localhost:9493/"+url;
+    if(PlatformCust.isMobile) url = PROXY_URL+url;
     const response = await fetch(url+"/v1/chat/completions", {
       method: 'POST',
       headers: {
@@ -100,7 +80,7 @@ export class OpenAIProvider implements ChatProvider {
 
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any> {
     let url = `${model.provider.endpoint}`;
-    if(Platform.OS =='web') url = "http://localhost:9493/"+url;
+    if(PlatformCust.isMobile) url = PROXY_URL+url;
     const response = await fetch(url+"/v1/chat/completions", {
       method: 'POST',
       headers: {
