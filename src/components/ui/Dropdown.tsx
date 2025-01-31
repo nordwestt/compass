@@ -21,6 +21,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
 
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [highlightedIndex, setHighlightedIndex] = useState(0);
     
     // Add ref for the TextInput
     const searchInputRef = React.useRef<TextInput>(null);
@@ -38,6 +39,35 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
         child.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Reset highlighted index when search query changes or dropdown opens
+    React.useEffect(() => {
+        setHighlightedIndex(filteredChildren.length > 0 ? 0 : -1);
+    }, [searchQuery, isOpen]);
+
+    // Handle keyboard navigation
+    const handleKeyPress = (e: any) => {
+        if (!isOpen) return;
+
+        switch (e.nativeEvent.key) {
+            case 'ArrowDown':
+                setHighlightedIndex(prev => 
+                    prev < filteredChildren.length - 1 ? prev + 1 : prev
+                );
+                break;
+            case 'ArrowUp':
+                setHighlightedIndex(prev => 
+                    prev > 0 ? prev - 1 : prev
+                );
+                break;
+            case 'Enter':
+                if (highlightedIndex >= 0 && highlightedIndex < filteredChildren.length) {
+                    onSelect(filteredChildren[highlightedIndex]);
+                    setIsOpen(false);
+                }
+                break;
+        }
+    };
+
     const scrollView = () =>{
       return (
         <ScrollView>
@@ -50,17 +80,20 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
                 placeholderTextColor="#666"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
+                onKeyPress={handleKeyPress}
               />
             </View>
           )}
-          {filteredChildren.map((child) => (
+          {filteredChildren.map((child, index) => (
             <TouchableOpacity
               key={child.id}
               onPress={() => {
                 onSelect(child);
                 setIsOpen(false);
               }}
-              className={`w-64 flex-row items-center p-3 hover:bg-surface`}
+              className={`w-64 flex-row items-center p-3 ${
+                index === highlightedIndex ? 'bg-surface' : ''
+              } hover:bg-surface`}
             >
               {child.image && (
                 <Image source={child.image as any} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
