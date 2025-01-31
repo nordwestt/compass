@@ -129,7 +129,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   return (
     <View className={className}>
-      <Dropdown selected={dropdownModel} onSelect={onModelSelect} children={modelList} />
+      <Dropdown showSearch={true} selected={dropdownModel} onSelect={onModelSelect} children={modelList} />
     </View>
   );
 }; 
