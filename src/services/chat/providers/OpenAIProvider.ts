@@ -21,6 +21,11 @@ export class OpenAIProvider implements ChatProvider {
       }))
     ];
 
+    // if latest message is empty
+    if(newMessages[newMessages.length-1].content.trim() === ''){
+      newMessages.pop();
+    }
+
     try {
       if (PlatformCust.isMobile) {
         let url = `${model.provider.endpoint}/v1/chat/completions`;
