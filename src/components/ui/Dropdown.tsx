@@ -21,6 +21,18 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
 
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    
+    // Add ref for the TextInput
+    const searchInputRef = React.useRef<TextInput>(null);
+
+    // Focus input when dropdown opens
+    React.useEffect(() => {
+        if (isOpen && showSearch) {
+            setTimeout(() => {
+                searchInputRef.current?.focus();
+            }, 100);
+        }
+    }, [isOpen, showSearch]);
 
     const filteredChildren = children.filter(child =>
         child.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -32,6 +44,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
           {showSearch && (
             <View className="p-2 border-b border-border">
               <TextInput
+                ref={searchInputRef}
                 className="px-3 py-2 bg-surface rounded-md text-black dark:text-white"
                 placeholder="Search..."
                 placeholderTextColor="#666"
@@ -70,7 +83,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
       if(isOpen) {
         console.log("isOpen", isOpen)
         setTimeout(() => {
-          setIsOpen(false)
+          //setIsOpen(false)
         }, 200)
       }
     }}
