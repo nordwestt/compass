@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Modal from 'react-native-modal';
 import { ScrollView } from "react-native-gesture-handler";
 import { TextInput } from "react-native-gesture-handler";
+import { useAtom } from 'jotai';
+import { keyboardEventAtom } from '../../hooks/useKeyboardShortcuts';
 
 export interface DropdownElement {
     title: string;
@@ -22,6 +24,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [highlightedIndex, setHighlightedIndex] = useState(0);
+    const [keyboardEvent] = useAtom(keyboardEventAtom);
     
     // Add ref for the TextInput
     const searchInputRef = React.useRef<TextInput>(null);
@@ -40,16 +43,6 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
         }
     }, [isOpen, showSearch]);
 
-    // Scroll to highlighted item
-    React.useEffect(() => {
-        if (isOpen && highlightedIndex >= 0) {
-          // wait 100 ms before scrolling
-          setTimeout(() => {
-            const yOffset = (highlightedIndex * ITEM_HEIGHT) + (showSearch ? SEARCH_HEIGHT : 0);
-            scrollViewRef.current?.scrollTo({ y: yOffset, animated: true });
-          }, 100);
-        }
-    }, [highlightedIndex, isOpen]);
 
     const filteredChildren = children.filter(child =>
         child.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -60,17 +53,17 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
         setHighlightedIndex(filteredChildren.length > 0 ? 0 : -1);
     }, [searchQuery, isOpen]);
 
-    // Handle keyboard navigation
-    const handleKeyPress = (e: any) => {
-        if (!isOpen) return;
-
-        switch (e.nativeEvent.key) {
+    // Handle keyboard events from the global listener
+    React.useEffect(() => {
+        if (!isOpen || !keyboardEvent) return;
+        console.log("keyboardEvent", keyboardEvent)
+        switch (keyboardEvent.key) {
             case 'ArrowDown':
             case 'ArrowUp':
-                // Blur the input when using arrow keys
+
                 searchInputRef.current?.blur();
                 
-                if (e.nativeEvent.key === 'ArrowDown') {
+                if (keyboardEvent.key === 'ArrowDown') {
                     setHighlightedIndex(prev => 
                         prev < filteredChildren.length - 1 ? prev + 1 : prev
                     );
@@ -87,7 +80,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
                 }
                 break;
         }
-    };
+    }, [keyboardEvent, isOpen]);
 
     const scrollView = () =>{
       return (
@@ -101,7 +94,16 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
                 placeholderTextColor="#666"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                onKeyPress={handleKeyPress}
+                onKeyPress={(e) => {
+                  switch (e.nativeEvent.key) {
+                    case 'ArrowDown':
+                    case 'ArrowUp':
+                        // Blur the input when using arrow keys
+                        searchInputRef.current?.blur();
+                        console.log("ArrowDown or ArrowUp")
+                        break;
+                  }
+                }}
               />
             </View>
           )}
