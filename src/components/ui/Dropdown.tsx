@@ -25,6 +25,11 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
     
     // Add ref for the TextInput
     const searchInputRef = React.useRef<TextInput>(null);
+    const scrollViewRef = React.useRef<ScrollView>(null);
+    
+    // Constants for item height calculation
+    const ITEM_HEIGHT = 72; // Height of each item (48px image + padding)
+    const SEARCH_HEIGHT = 61; // Height of search box (including padding and border)
 
     // Focus input when dropdown opens
     React.useEffect(() => {
@@ -34,6 +39,17 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
             }, 100);
         }
     }, [isOpen, showSearch]);
+
+    // Scroll to highlighted item
+    React.useEffect(() => {
+        if (isOpen && highlightedIndex >= 0) {
+          // wait 100 ms before scrolling
+          setTimeout(() => {
+            const yOffset = (highlightedIndex * ITEM_HEIGHT) + (showSearch ? SEARCH_HEIGHT : 0);
+            scrollViewRef.current?.scrollTo({ y: yOffset, animated: true });
+          }, 100);
+        }
+    }, [highlightedIndex, isOpen]);
 
     const filteredChildren = children.filter(child =>
         child.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -50,14 +66,19 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
 
         switch (e.nativeEvent.key) {
             case 'ArrowDown':
-                setHighlightedIndex(prev => 
-                    prev < filteredChildren.length - 1 ? prev + 1 : prev
-                );
-                break;
             case 'ArrowUp':
-                setHighlightedIndex(prev => 
-                    prev > 0 ? prev - 1 : prev
-                );
+                // Blur the input when using arrow keys
+                searchInputRef.current?.blur();
+                
+                if (e.nativeEvent.key === 'ArrowDown') {
+                    setHighlightedIndex(prev => 
+                        prev < filteredChildren.length - 1 ? prev + 1 : prev
+                    );
+                } else {
+                    setHighlightedIndex(prev => 
+                        prev > 0 ? prev - 1 : prev
+                    );
+                }
                 break;
             case 'Enter':
                 if (highlightedIndex >= 0 && highlightedIndex < filteredChildren.length) {
@@ -70,7 +91,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
 
     const scrollView = () =>{
       return (
-        <ScrollView>
+        <ScrollView ref={scrollViewRef}>
           {showSearch && (
             <View className="p-2 border-b border-border">
               <TextInput
