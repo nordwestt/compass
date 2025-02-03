@@ -4,7 +4,7 @@ import { ChatMessage } from '@/src/types/core';
 import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
-import { CoreMessage, streamText, tool } from 'ai';
+import { CoreMessage, generateText, streamText, tool } from 'ai';
 import { createOllama } from 'ollama-ai-provider';
 import { fetch as expoFetch } from 'expo/fetch';
 import { z } from 'zod';
@@ -89,6 +89,23 @@ export class OllamaProvider implements ChatProvider {
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
     let url = `${model.provider.endpoint}/api/chat`;
+    if(PlatformCust.isTauri) url = PROXY_URL+url;
+
+    if(!PlatformCust.isMobile){
+    const ollama = createOllama({
+      // optional settings, e.g.
+      baseURL: model.provider.endpoint+'/api',
+      fetch: expoFetch as unknown as typeof globalThis.fetch,
+    });
+
+    const result = await generateText({
+      model: ollama(model.id),
+      messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: message }]
+    });
+
+    return result.text;
+  }
+
     if(PlatformCust.isTauri) url = PROXY_URL+url;
     let response = await fetch(url, {
       method: 'POST',
