@@ -54,26 +54,25 @@ export class OllamaProvider implements ChatProvider {
         const { textStream, steps } = streamText({
           model: ollama(model.id),
           messages: newMessages as CoreMessage[],
-          // tools: {
-          //   weather: tool({
-          //     description: 'Get the weather in a location (celsius)',
-          //     parameters: z.object({
-          //       location: z.string().describe('The location to get the weather for'),
-          //     }),
-          //     execute: async ({ location }) => {
-          //       console.log("location", location);
-          //       const temperature = 21.69;
-          //       return `${temperature} degrees celsius`;
-          //     },
-          //   }),
-          // },
-          // toolChoice: 'auto',
-          // maxSteps: 5
+          tools: {
+            weather: tool({
+              description: 'Get the weather in a location (celsius)',
+              parameters: z.object({
+                location: z.string().describe('The location to get the weather for'),
+              }),
+              execute: async ({ location }) => {
+                console.log("location", location);
+                const temperature = 21.69;
+                return `${temperature} degrees celsius`;
+              },
+            }),
+          },
+          toolChoice: 'auto',
+          maxSteps: 5
         }
       );
 
         for await (const textPart of textStream) {
-          console.log("textPart", textPart);
           yield textPart;
         }
 
