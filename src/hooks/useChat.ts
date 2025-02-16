@@ -11,6 +11,7 @@ import { current } from 'tailwindcss/colors';
 import { Thread } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
+import TurndownService from 'turndown';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -72,6 +73,17 @@ export function useChat() {
 
   const handleSend = async (message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
+
+    // extract url's from the message
+    // const urls = message.match(/https?:\/\/[^\s]+/g);
+    // if(urls && urls.length > 0) {
+    //   const turndown = new TurndownService();
+    //   for(const url of urls) {
+    //     const markdown = turndown.turndown(await fetch(url).then(res => res.text()));
+    //     console.log(markdown);
+    //   }
+    // }
+
 
     //const currentThread = getDefaultStore().get(currentThreadAtom) as Thread;
 
