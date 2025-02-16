@@ -133,12 +133,28 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     onSetModel(models.find(m => m.id === model.id)!);
   }
 
+  function setCurrentModelAsDefault() {
+    setDefaultModel(selectedModel);
+    toastService.success({
+      title: "Default model set",
+      description: "The selected model will now be used as the default model"
+    });
+  }
+
   // modelList = [...modelList, ...(modelList.map(x=>({...x, id: "wuut"})))];
 
 
   return (
-    <View className={className}>
-      <Dropdown showSearch={true} selected={dropdownModel} onSelect={onModelSelect} children={modelList} />
+    <View className={`flex-row gap-2 items-center ${className}`}>
+      <Dropdown showSearch={true} selected={dropdownModel} onSelect={onModelSelect} children={modelList}/>
+      {selectedModel.id !== defaultModel?.id && (
+          <TouchableOpacity 
+            onPress={setCurrentModelAsDefault}
+            className="p-2 flex items-center justify-center bg-primary hover:opacity-80 rounded-lg border border-border h-12"
+          >
+            <Text className="text-white">Set as default model</Text>
+          </TouchableOpacity>
+        )}
     </View>
   );
 }; 
