@@ -82,7 +82,7 @@ export default function Providers({ className }: ProvidersProps) {
 
     setScanning(true);
     try{
-    scanForOllamaInstances().then((ollamaEndpoints) => {
+      scanNetworkOllamaInstances().then((ollamaEndpoints) => {
       const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
         endpoint,
         id: Date.now().toString() + endpoint,
@@ -191,14 +191,39 @@ export default function Providers({ className }: ProvidersProps) {
 
 }
 
+export async function scanLocalOllama(): Promise<string[]> {
+  const localEndpoints = [
+    'http://localhost:11434'
+  ];
 
-export async function scanForOllamaInstances(): Promise<string[]> {
+  const testEndpoint = async (endpoint: string): Promise<string | null> => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 500);
+
+      const response = await fetch(endpoint, {
+        headers: {
+          'Accept': 'application/text',
+        },
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      return response.status === 200 ? endpoint : null;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const results = await Promise.all(localEndpoints.map(testEndpoint));
+  return results.filter(result => result !== null) as string[];
+}
+
+
+export async function scanNetworkOllamaInstances(): Promise<string[]> {
   // Get network info
   const networkState = await NetInfo.fetch();
-  const networkPatterns: string[] = [
-    'http://localhost:11434',
-    'http://127.0.0.1:11434',
-  ];
+  const networkPatterns: string[] = [];
 
   if (networkState.type === 'wifi' && networkState.details?.ipAddress && networkState.details?.subnet) {
     // Extract subnet from IP and subnet mask

@@ -15,10 +15,11 @@ import Animated, {
   SlideOutDown
 } from 'react-native-reanimated';
 import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
-import { scanForOllamaInstances } from '@/src/components/providers/providers';
+import { scanLocalOllama } from '@/src/components/providers/providers';
 import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';
 import { Platform as PlatformUtils } from '@/src/utils/platform';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -46,7 +47,15 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
 
       if(!models.length && !providers.length && !PlatformUtils.isWeb) {
-        let ollamaEndpoints = await scanForOllamaInstances();
+        
+      }
+      
+    };
+    fetchModels();
+  }, []);
+
+  async function scanOllamaProviders(){
+    let ollamaEndpoints = await scanLocalOllama();
         const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
           endpoint,
           id: Date.now().toString(),
@@ -72,11 +81,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
             description: 'Tried to scan, but found no providers'
           });
         }
-      }
-      
-    };
-    fetchModels();
-  }, []);
+  }
 
   function setDropdownModell(model: Model) {
     setDropdownModel({
@@ -103,7 +108,10 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
 
 
-  if(!providers.length) return <Text className="text-gray-500">No providers configured</Text>;
+  if(!providers.length) return <TouchableOpacity className="flex-row items-center gap-2 bg-primary hover:opacity-80 text-white rounded-lg p-2 border border-border" onPress={scanOllamaProviders}>
+    <Ionicons name="radio-outline" size={24} color="white" />
+    Scan for Ollama
+    </TouchableOpacity>;
   
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
