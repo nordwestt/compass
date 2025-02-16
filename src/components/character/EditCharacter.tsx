@@ -128,7 +128,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
       <View className="p-4 border-t border-border flex-row justify-between">
         <TouchableOpacity
           onPress={() => deleteCharacter()}
-          className="bg-red-500 p-4 rounded-lg flex-row items-center justify-center flex-1 mr-2"
+          className="bg-red-500 p-4 rounded-lg flex-row items-center justify-center flex-1 mr-2 hover:opacity-80"
         >
           <Ionicons name="trash-outline" size={20} color="white" className="mr-2" />
           <Text className="text-white font-medium text-base">
@@ -137,7 +137,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
         </TouchableOpacity>
         <TouchableOpacity
           onPress={saveCharacter}
-          className="bg-primary p-4 rounded-lg flex-row items-center justify-center flex-1"
+          className="bg-primary p-4 rounded-lg flex-row items-center justify-center flex-1 hover:opacity-80"
         >
           <Ionicons name="save-outline" size={20} color="white" className="mr-2" />
           <Text className="text-white font-medium text-base">

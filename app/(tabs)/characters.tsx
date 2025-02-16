@@ -141,7 +141,7 @@ export default function CharactersScreen() {
             key={prompt.id} 
             className="w-full mb-4"
           >
-            <View className="flex-row bg-surface rounded-xl p-4 border border-gray-200 shadow-lg">
+            <View className="flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg">
               <Image 
                 source={prompt.image} 
                 className="!h-[64px] !w-[64px] rounded-full my-auto"
