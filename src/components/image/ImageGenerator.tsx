@@ -235,10 +235,10 @@ export function ImageGenerator() {
     <ScrollView className="p-4 h-full" contentContainerStyle={{ height: '100%' }}>
       <ImageModelSelector className='z-10 mb-4' selectedModel={selectedImageModel}
               onSetModel={handleSelectModel}/>
-      <View className={`flex flex-1 h-full ${isWideScreen ? 'flex-row' : 'flex-col'}`}>
+      {selectedImageModel && <View className={`flex flex-1 h-full ${isWideScreen ? 'flex-row' : 'flex-col'}`}>
         {PromptPanel}
         {isWideScreen && ImagePanel}
-      </View>
+      </View>}
     </ScrollView>
   );
 } 
