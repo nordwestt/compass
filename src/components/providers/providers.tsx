@@ -82,7 +82,7 @@ export default function Providers({ className }: ProvidersProps) {
 
     setScanning(true);
     try{
-      scanNetworkOllamaInstances().then((ollamaEndpoints) => {
+      scanNetworkOllama().then((ollamaEndpoints) => {
       const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
         endpoint,
         id: Date.now().toString() + endpoint,
@@ -220,7 +220,7 @@ export async function scanLocalOllama(): Promise<string[]> {
 }
 
 
-export async function scanNetworkOllamaInstances(): Promise<string[]> {
+export async function scanNetworkOllama(): Promise<string[]> {
   // Get network info
   const networkState = await NetInfo.fetch();
   const networkPatterns: string[] = [];

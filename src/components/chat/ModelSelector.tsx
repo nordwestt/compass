@@ -15,7 +15,7 @@ import Animated, {
   SlideOutDown
 } from 'react-native-reanimated';
 import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
-import { scanLocalOllama } from '@/src/components/providers/providers';
+import { scanLocalOllama, scanNetworkOllama } from '@/src/components/providers/providers';
 import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';
 import { Platform as PlatformUtils } from '@/src/utils/platform';
@@ -56,31 +56,32 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   async function scanOllamaProviders(){
     let ollamaEndpoints = await scanLocalOllama();
-        const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
-          endpoint,
-          id: Date.now().toString(),
-          name: "Ollama",
-          source: 'ollama',
-          capabilities: {
-            llm: true,
-            tts: false,
-            stt: false,
-            search: false
-          }
-        } as Provider)).filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
-  
-        if(newProviders.length > 0) {
-          setProviders([...providers, ...newProviders]);
-          
-          const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
-          setModels(models);
-        }
-        else{
-          toastService.info({
-            title: 'Couldn\'t find any providers',
-            description: 'Tried to scan, but found no providers'
-          });
-        }
+    if(!ollamaEndpoints.length) ollamaEndpoints = await scanNetworkOllama();
+    const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
+      endpoint,
+      id: Date.now().toString(),
+      name: "Ollama",
+      source: 'ollama',
+      capabilities: {
+        llm: true,
+        tts: false,
+        stt: false,
+        search: false
+      }
+    } as Provider)).filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
+
+    if(newProviders.length > 0) {
+      setProviders([...providers, ...newProviders]);
+      
+      const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
+      setModels(models);
+    }
+    else{
+      toastService.info({
+        title: 'Couldn\'t find any providers',
+        description: 'Tried to scan, but found no providers'
+      });
+    }
   }
 
   function setDropdownModell(model: Model) {
