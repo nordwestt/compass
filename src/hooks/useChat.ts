@@ -8,7 +8,7 @@ import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
 import { current } from 'tailwindcss/colors';
-import { Thread } from '@/src/types/core';
+import { ChatMessage, Thread } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
 import TurndownService from 'turndown';
@@ -34,19 +34,18 @@ export function useChat() {
 
   const handleFirstMessage = async (
     message: string,
+    thread: Thread
   ): Promise<void> => {
     const systemPrompt = `Based on the user message, generate a concise 3-word title that captures the essence of the conversation. Format: "Word1 Word2 Word3" (no quotes, no periods but do include spaces).`;
-    const currentThread = getDefaultStore().get(currentThreadAtom) as Thread;
 
-    const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
-    try{
-      const title = await provider.sendSimpleMessage(message, currentThread.selectedModel, systemPrompt);
-      // wait for 100 ms before updating the thread
+    const provider = ChatProviderFactory.getProvider(thread.selectedModel);
+    try {
+      const title = await provider.sendSimpleMessage(message, thread.selectedModel, systemPrompt);
       await new Promise(resolve => setTimeout(resolve, 200));
 
       dispatchThread({
         type: 'update',
-        payload: { ...currentThread, title: title }
+        payload: { ...thread, title: title }
       });
     } catch (error: any) {
       toastService.danger({title: 'Error generating title', description: "The AI service may be experiencing issues. Please try again later."});
@@ -54,10 +53,8 @@ export function useChat() {
     }
   }
 
-
   const isSearchRequired = async (message: string) : Promise<{query: string, searchRequired: boolean}> => {
     const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
-
     const systemPrompt = `
     Your name is SearchAssistantBot, and you identify if the user's message requires a search on the internet.
     If the user's message requires a search, return the query to be searched and set "searchRequired" to true. 
@@ -67,13 +64,12 @@ export function useChat() {
     - "What is the capital of France?" -> {"query": "", "searchRequired": false}
     `;
 
-    let jsonResponse = await provider.sendJSONMessage(message, currentThread.selectedModel, systemPrompt);
-    return jsonResponse;
+    return await provider.sendJSONMessage(message, currentThread.selectedModel, systemPrompt);
   }
 
-  const handleSend = async (message: string, mentionedCharacters: MentionedCharacter[] = []) => {
+  const handleSend = async (messages: ChatMessage[], message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
-
+    
     // extract url's from the message
     // const urls = message.match(/https?:\/\/[^\s]+/g);
     // if(urls && urls.length > 0) {
@@ -83,17 +79,13 @@ export function useChat() {
     //     console.log(markdown);
     //   }
     // }
-
-
-    //const currentThread = getDefaultStore().get(currentThreadAtom) as Thread;
-
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
     const updatedThread = {
       ...currentThread,
-      messages: [...currentThread.messages, {content: message, isUser: true}, context.assistantPlaceholder]
+      messages: [...messages, {content: message, isUser: true}, context.assistantPlaceholder]
     };
 
-    dispatchThread({
+    await dispatchThread({
       type: 'update',
       payload: updatedThread
     });
@@ -117,12 +109,10 @@ export function useChat() {
         abortController.current.signal
       );
 
-      console.log("handling stream");
-
       await streamHandler.handleStream(response, updatedThread, dispatchThread);
       const isFirstMessage = currentThread.messages.length === 0;
       if(isFirstMessage) {
-        handleFirstMessage(message);
+        await handleFirstMessage(message, updatedThread);
       }
 
     } catch (error: any) {
@@ -135,9 +125,6 @@ export function useChat() {
       abortController.current = null;
     }
   };
-
-
-  
 
   return { handleSend, handleInterrupt };
 } 

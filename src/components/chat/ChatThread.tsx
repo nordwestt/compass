@@ -62,30 +62,25 @@ export const ChatThread: React.FC = () => {
     if(!providers.length) {
       return;
     }
+    let messages = [...currentThread.messages];
 
-    if (editingMessageIndex !== -1) {
-      const updatedMessages = [...currentThread.messages];
-      //updatedMessages[editingMessageIndex].content = message;
-      updatedMessages.splice(editingMessageIndex);
-      
-      await dispatchThread({
-        type: 'update',
-        payload: { ...currentThread, messages: updatedMessages }
-      });
-      
+    const isEditing = editingMessageIndex !== -1;
+
+    if (isEditing) {
+      messages.splice(editingMessageIndex);
       setEditingMessageIndex(-1);
-    } else if (currentThread.messages.length === 0 && threads.filter(t => t.id === currentThread.id).length === 0) {
+    }
 
-      dispatchThread({ 
+    if (currentThread.messages.length === 0 && threads.filter(t => t.id === currentThread.id).length === 0) {
+      await dispatchThread({ 
         type: 'add', 
         payload: currentThread 
       });
-
     }
 
     setIsGenerating(true);
-    try{
-      await handleSend(message, mentionedCharacters);
+    try {
+      await handleSend(messages, message, mentionedCharacters);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -94,7 +89,6 @@ export const ChatThread: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 200));
         debouncedScrollToEnd();
       }
-      
     }
   };
 
@@ -115,6 +109,7 @@ export const ChatThread: React.FC = () => {
 
   const handleMessagePress = (index: number, message: ChatMessage) =>{
     if (message.isUser) {
+      console.log("User pressed message", message, index);
       setEditingMessageIndex(index);
 
       chatInputRef.current?.setEditMessage(message.content);
