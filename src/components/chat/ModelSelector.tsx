@@ -78,8 +78,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     }
     else{
       toastService.info({
-        title: 'Couldn\'t find any providers',
-        description: 'Tried to scan, but found no providers'
+        title: 'Couldn\'t find any ollama instances',
+        description: 'Please check the help section in Settings for information on how to install and enable ollama'
       });
     }
   }

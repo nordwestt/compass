@@ -68,6 +68,13 @@ export default function SettingsScreen() {
           onPress={() => router.push('/settings/logs')}
         />
 
+        <SettingItem
+          title="Help"
+          description="Install and configure ollama"
+          icon="help-circle"
+          onPress={() => router.push('/settings/help')}
+        />
+
         {/* <SettingItem
           title="About"
           description="Version information and credits"
