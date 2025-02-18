@@ -36,8 +36,13 @@ export default function CharactersScreen() {
   };
 
   const handleEdit = (prompt: Character) => {
-    if(Platform.OS == 'web'){
-      setEditingCharacter(prompt);
+    if (Platform.OS == 'web') {
+      // Close the pane if clicking on the same character
+      if (editingCharacter?.id === prompt.id) {
+        setEditingCharacter(null);
+      } else {
+        setEditingCharacter(prompt);
+      }
     } else {
       router.push(`/edit-character?id=${prompt.id}`);
     }

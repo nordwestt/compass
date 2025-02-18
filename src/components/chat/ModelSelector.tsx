@@ -137,7 +137,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     setDefaultModel(selectedModel);
     toastService.success({
       title: "Default model set",
-      description: "The selected model will now be used as the default model"
+      description: "The selected model will now be used for new threads"
     });
   }
 
