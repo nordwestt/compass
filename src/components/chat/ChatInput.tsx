@@ -86,11 +86,12 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
     }
   };
 
-  const handleKeyPress = ({ nativeEvent }: { nativeEvent: { key: string, ctrlKey?: boolean } }) => {
-
-    if (nativeEvent.key === 'Enter' && nativeEvent.ctrlKey) {
-      handleSend();
-      return;
+  const handleKeyPress = ({ nativeEvent }: { nativeEvent: { key: string, shiftKey?: boolean } }) => {
+    if (nativeEvent.key === 'Enter') {
+      if (!nativeEvent.shiftKey) {
+        handleSend();
+        return;
+      }
     }
 
     const filteredCharacters = allCharacters.filter(char => 
