@@ -14,6 +14,7 @@ import Animated, {
   SlideInDown,
   SlideOutDown
 } from 'react-native-reanimated';
+import { CharacterAvatar } from './CharacterAvatar';
 
 interface CharacterSelectorProps {
   selectedPrompt: Character;
@@ -44,12 +45,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
         onPress={() => setIsModalVisible(true)}
         className="flex-row items-center px-4 py-2 h-12 rounded-lg bg-background border border-border hover:bg-surface"
       >
-        {selectedPrompt.image && (
-          <Image 
-            source={selectedPrompt.image} 
-            className="!h-[32px] !w-[32px] rounded-full"
-          />
-        )}
+        <CharacterAvatar character={selectedPrompt} size={32} />
         <Text className="ml-2 text-black dark:text-white">
           {selectedPrompt.name}
         </Text>

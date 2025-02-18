@@ -9,6 +9,7 @@ import { useAtomValue } from 'jotai';
 import { InteractionManager, Clipboard } from 'react-native';
 import { toastService } from '@/src/services/toastService';
 import { Ionicons } from '@expo/vector-icons';
+import { CharacterAvatar } from '../character/CharacterAvatar';
 interface MessageProps {
   content: string;
   isUser: boolean;
@@ -89,9 +90,9 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
       {!isUser && (
         <View className="mr-2 items-center my-auto">
-          <Image 
-            source={character?.image ||currentThread.character?.image} 
-            className="!w-[32px] !h-[32px] rounded-full"
+          <CharacterAvatar 
+            character={character || currentThread.character} 
+            size={32} 
           />
           <Text className="text-xs mt-1 text-gray-600 dark:text-gray-400 font-bold">
             {character?.name || currentThread.character?.name}

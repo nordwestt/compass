@@ -9,6 +9,7 @@ import { modalService } from '@/src/services/modalService';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import EditCharacter from '@/src/components/character/EditCharacter';
+import { CharacterAvatar } from '@/src/components/character/CharacterAvatar';
 
 export default function CharactersScreen() {
   const router = useRouter();
@@ -146,18 +147,17 @@ export default function CharactersScreen() {
             key={prompt.id} 
             className="w-full mb-4"
           >
-            <View className="flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg">
-              <Image 
-                source={prompt.image} 
-                className="!h-[64px] !w-[64px] rounded-full my-auto"
-              />
-              <View className="flex-1 ml-4">
-                <Text className="font-bold text-text">
-                  {prompt.name}
+            <View className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg">
+              <View className="flex-col items-center my-2">
+              <CharacterAvatar character={prompt} size={64} className="my-auto shadow-2xl" />
+                <Text className="font-extrabold text-primary">
+                    {prompt.name}
                 </Text>
+              </View>
+              <View className="flex-1 ml-4">
                 <Text 
-                  numberOfLines={2} 
-                  className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2"
+                  numberOfLines={20} 
+                  className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2 overflow-y-auto"
                 >
                   {prompt.content}
                 </Text>

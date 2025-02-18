@@ -23,7 +23,8 @@ export interface Thread {
     id: string;
     name: string;
     content: string;
-    image: any | string;
+    image?: any | string;
+    icon?: string;
     voice?: Voice;
   }
 
