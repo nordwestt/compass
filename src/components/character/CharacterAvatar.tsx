@@ -18,13 +18,13 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
     return (
       <Image 
         source={character.image} 
-        className={`!h-[${size}px] !w-[${size}px] rounded-full ${className}`}
+        className={`!h-[64px] !w-[64px] rounded-full ${className}`}
       />
     );
   }
 
   return (
-    <View className={`!h-[${size}px] !w-[${size}px] rounded-full bg-primary items-center justify-center ${className}`} style={{ aspectRatio: 1 }}>
+    <View className={`!h-[64px] !w-[64px] rounded-full bg-primary items-center justify-center ${className}`} style={{ aspectRatio: 1 }}>
       <Ionicons 
         name={character.icon || 'person' as any} 
         size={size * 0.6} 
