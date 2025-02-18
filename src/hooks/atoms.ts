@@ -167,7 +167,7 @@ export const availableProvidersAtom = atomWithAsyncStorage<Provider[]>('provider
 export const defaultModelAtom = atomWithAsyncStorage<Model>('defaultModel', createDefaultThread().selectedModel);
 
 export const fontPreferencesAtom = atom({
-  fontFamily: 'Caveat-Medium',
+  fontFamily: 'System',
   fontSize: 18,
   lineHeight: 24,
   letterSpacing: 0.8,
