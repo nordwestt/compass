@@ -9,13 +9,13 @@ function isTauri(){
     return typeof window !== 'undefined' && !!(window as any).__TAURI__;
 }
 
-const PROXY_URL = "http://localhost:9493/";
+const PROXY_URL = "https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/";
 
 export class ReplicateProvider implements ImageProvider {
     async generateImage(prompt: string, model: Model, signal?: AbortSignal): Promise<string> {
         try {
             let url = `${model.provider.endpoint}/v1/models/${model.id}/predictions`;
-            if(isTauri()) {
+            if(isTauri() || Platform.OS == 'web') {
                 url = PROXY_URL + url;
             }
 
@@ -47,7 +47,7 @@ export class ReplicateProvider implements ImageProvider {
             
             const responseData = await createResponse.json();
             let predictionUrl = responseData.urls.get;
-            if(isTauri()) {
+            if(isTauri() || Platform.OS === 'web') {
                 predictionUrl = PROXY_URL + predictionUrl;
             }
 
@@ -89,7 +89,49 @@ export class ReplicateProvider implements ImageProvider {
                         //return URL.createObjectURL(blobb);
                     }
                     else if(Platform.OS === 'web') {
-                        return imageUrl;
+                        try {
+                            // Check if File System Access API is available
+                            if ('showSaveFilePicker' in window) {
+                                const response = await fetch(imageUrl);
+                                const blob = await response.blob();
+                                
+                                // Prompt user to choose save location
+                                const handle = await (window as any).showSaveFilePicker({
+                                    suggestedName: `generated_${new Date().getTime()}.webp`,
+                                    types: [{
+                                        description: 'WebP Image',
+                                        accept: {'image/webp': ['.webp']},
+                                    }],
+                                });
+                                
+                                // Write the file
+                                const writable = await handle.createWritable();
+                                await writable.write(blob);
+                                await writable.close();
+                                
+                                return imageUrl;
+                            } else {
+                                // Fallback for browsers that don't support File System Access API
+                                const response = await fetch(imageUrl);
+                                const blob = await response.blob();
+                                const url = window.URL.createObjectURL(blob);
+                                
+                                // Create download link and trigger download
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `generated_${new Date().getTime()}.webp`;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                window.URL.revokeObjectURL(url);
+                                
+                                return imageUrl;
+                            }
+                        } catch (error) {
+                            console.warn('Failed to save image:', error);
+                            // If saving fails, still return the URL
+                            return imageUrl;
+                        }
                     }
                     
                     // Create a unique filename using timestamp
