@@ -195,5 +195,6 @@ export interface GeneratedImage {
   createdAt: string;
 }
 
-// Add this with other atoms
 export const generatedImagesAtom = atomWithAsyncStorage<GeneratedImage[]>('generatedImages', []);
+
+export const selectedImageModelAtom = atomWithAsyncStorage<Model | undefined>('selectedImageModel', undefined);

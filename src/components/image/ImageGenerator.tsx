@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform, ScrollView, Pressable } from 'react-native';
-import { availableProvidersAtom } from '@/src/hooks/atoms';
-import { useAtomValue } from 'jotai';
+import { availableProvidersAtom, selectedImageModelAtom } from '@/src/hooks/atoms';
+import { useAtom, useAtomValue } from 'jotai';
 import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
@@ -84,8 +84,7 @@ export function ImageGenerator() {
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
   const [isImageViewVisible, setIsImageViewVisible] = useState(false);
   const { generateImage } = useImageGeneration();
-
-  const [selectedImageModel, setSelectedImageModel] = useState<Model>(); 
+  const [selectedImageModel, setSelectedImageModel] = useAtom(selectedImageModelAtom);
 
   const appendToPrompt = (text: string) => {
     setPrompt((current) => {
@@ -172,7 +171,6 @@ export function ImageGenerator() {
 
   const handleSelectModel = (model: Model) => {
     setSelectedImageModel(model);
-    toastService.success({title:`Selected model: ${model.name}`});
   };
 
 
