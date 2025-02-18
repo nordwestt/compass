@@ -85,7 +85,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
 
   return (
     <View className={`flex-1 bg-background ${className}`}>
-      <ScrollView className="flex-1 p-4">
+      <ScrollView className="flex-1 p-4" contentContainerStyle={{ flexGrow: 1 }}>
         <View className="items-center mb-8">
           <ImagePickerButton
             currentImage={character?.image}
@@ -93,7 +93,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           />
         </View>
 
-        <View className="space-y-6">
+        <View className="space-y-6 flex-1">
           <View>
             <Text className="text-base font-medium mb-2 text-text">
               Character Name
@@ -107,7 +107,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             />
           </View>
 
-          <View>
+          <View className='flex-1'>
             <Text className="text-base font-medium mb-2 text-text">
               Character Prompt
             </Text>
@@ -118,7 +118,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
               multiline
               numberOfLines={6}
               textAlignVertical="top"
-              className="bg-surface p-4 rounded-lg text-text border-2 border-border"
+              className="bg-surface p-4 rounded-lg text-text border-2 border-border flex-1"
               placeholderTextColor="#9CA3AF"
             />
           </View>
