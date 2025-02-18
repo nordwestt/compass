@@ -109,7 +109,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
 
 
-  if(!providers.length) return <TouchableOpacity className="flex-row items-center gap-2 bg-primary hover:opacity-80 text-white rounded-lg p-2 border border-border" onPress={scanOllamaProviders}>
+  if(!providers.filter(p => p.capabilities?.llm).length) return <TouchableOpacity className="flex-row items-center gap-2 bg-primary hover:opacity-80 text-white rounded-lg p-2 border border-border" onPress={scanOllamaProviders}>
     <Ionicons name="radio-outline" size={24} color="white" />
     Scan for Ollama
     </TouchableOpacity>;

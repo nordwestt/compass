@@ -95,7 +95,7 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
 
   return (
     <View className={className}>
-      <Dropdown selected={dropdownModel} onSelect={onModelSelect} children={modelList} />
+      <Dropdown selected={dropdownModel} onSelect={onModelSelect} children={modelList} className='bg-surface'/>
     </View>
   );
 }; 
