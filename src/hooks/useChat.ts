@@ -12,6 +12,7 @@ import { ChatMessage, Thread } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
 import TurndownService from 'turndown';
+import { getProxyUrl } from '../utils/proxy';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -71,14 +72,16 @@ export function useChat() {
     abortController.current = new AbortController();
     
     // extract url's from the message
-    // const urls = message.match(/https?:\/\/[^\s]+/g);
-    // if(urls && urls.length > 0) {
-    //   const turndown = new TurndownService();
-    //   for(const url of urls) {
-    //     const markdown = turndown.turndown(await fetch(url).then(res => res.text()));
-    //     console.log(markdown);
-    //   }
-    // }
+    const urls = message.match(/https?:\/\/[^\s]+/g);
+    if(urls && urls.length > 0) {
+      const turndown = new TurndownService();
+      
+      for(const url of urls) {
+        console.log("looking up url", url);
+        const markdown = turndown.turndown(await fetch(await getProxyUrl(url)).then(res => res.text()));
+        console.log(markdown);
+      }
+    }
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
     const updatedThread = {
       ...currentThread,
