@@ -102,7 +102,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             {useIcon ? (
               <TouchableOpacity 
                 onPress={() => setShowIconSelector(true)}
-                className="w-[80px] h-[80px] rounded-full bg-primary items-center justify-center"
+                className="w-[80px] h-[80px] rounded-full bg-primary items-center justify-center hover:opacity-80"
               >
                 <Ionicons 
                   name={character?.icon || 'person' as any} 

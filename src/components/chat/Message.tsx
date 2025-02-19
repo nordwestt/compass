@@ -53,6 +53,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
   };
 
   const [displayContent, setDisplayContent] = useState('');
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -86,6 +87,14 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
     );
   };
 
+  const handleCopyMessage = () => {
+    Clipboard.setString(content);
+    toastService.success({
+      title: 'Message copied to clipboard',
+      description: ""
+    });
+  };
+
   return (
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
       {!isUser && (
@@ -100,9 +109,11 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         </View>
       )}
       <View 
-        className={`px-4 py-2 rounded-2xl max-w-[80%] ${
+        className={`relative px-4 py-2 rounded-2xl max-w-[80%] ${
           isUser ? "bg-primary rounded-tr-none" : "bg-surface rounded-tl-none"
         } ${editingMessageIndex === index ? "bg-yellow-500" : ""}`}
+        onPointerEnter={() => setIsHovered(true)}
+        onPointerLeave={() => setIsHovered(false)}
       >
         {editingMessageIndex === index && (
           <Text className="text-yellow-400 text-xs mb-1">Editing...</Text>
@@ -117,6 +128,25 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         >
             {displayContent}
           </Markdown>
+        )}
+        
+        {isHovered && (
+          <View className="absolute -bottom-8 right-0 flex-row bg-surface border border-border rounded-lg shadow-lg overflow-hidden">
+            <TouchableOpacity 
+              onPress={handleCopyMessage}
+              className="p-2 flex-row items-center"
+            >
+              <Ionicons name="copy-outline" size={16} color={isDark ? "#fff" : "#000"} />
+              <Text className="text-xs ml-1 text-text">Copy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => {/* Add edit handler */}}
+              className="p-2 flex-row items-center border-l border-border"
+            >
+              <Ionicons name="pencil-outline" size={16} color={isDark ? "#fff" : "#000"} />
+              <Text className="text-xs ml-1 text-text">Edit</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </View>
