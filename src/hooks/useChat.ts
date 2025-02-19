@@ -73,22 +73,48 @@ export function useChat() {
   const handleSend = async (messages: ChatMessage[], message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
     
-    // extract url's from the message
+    let webContent: string[] = [];
     const urls = message.match(/https?:\/\/[^\s]+/g);
-    if(urls && urls.length > 0) {
+    if (urls && urls.length > 0) {
+      toastService.info({ title: 'Processing URLs', description: 'Fetching content from links...' });
       
-      for(const url of urls) {
-        console.log("looking up url", url);
-        const html = await fetch(await getProxyUrl(url)).then(res => res.text());
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const reader = new Readability(doc);
-        const article = reader.parse();
-        console.log(article?.textContent);
+      for (const url of urls) {
+        try {
+          const html = await fetch(await getProxyUrl(url)).then(res => res.text());
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const reader = new Readability(doc);
+          const article = reader.parse();
+          
+          if (article?.textContent) {
+            // Trim and clean up the content
+            const cleanContent = article.textContent
+              .trim()
+              .replace(/\s+/g, ' ')
+              .slice(0, 2000); // Limit content length
+            
+            webContent.push(`Content from ${url}:\n${cleanContent}\n`);
+          }
+        } catch (error: any) {
+          LogService.log(error, { component: 'useChat', function: 'handleSend' }, 'error');
+          toastService.warning({ 
+            title: 'URL Processing Error', 
+            description: `Failed to process ${url}` 
+          });
+        }
       }
     }
-
     
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
+    
+    // Add web content to context if available
+    if (webContent.length > 0) {
+      context.messagesToSend.push({
+        content: `Web content context:\n${webContent.join('\n')}`,
+        isSystem: true,
+        isUser: false
+      });
+    }
+
     const updatedThread = {
       ...currentThread,
       messages: [...messages, {content: message, isUser: true}, context.assistantPlaceholder]

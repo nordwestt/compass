@@ -4,12 +4,12 @@ import { ChatMessage } from '@/src/types/core';
 import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
-import { CoreMessage, generateText, streamText, tool } from 'ai';
+import { CoreMessage, embedMany, generateText, streamText, tool } from 'ai';
 import { createOllama } from 'ollama-ai-provider';
 import { fetch as expoFetch } from 'expo/fetch';
 import { z } from 'zod';
 import { getProxyUrl } from '@/src/utils/proxy';
-
+import { embed } from 'ai';
 
 
 
@@ -146,4 +146,22 @@ export class OllamaProvider implements ChatProvider {
     }
   }
 
+  async embedText(texts: string[], model: Model): Promise<number[][]> {
+    let url = `${model.provider.endpoint}/api/embed`;
+    if(PlatformCust.isTauri) url = await getProxyUrl(url);
+
+    const ollama = createOllama({
+      // optional settings, e.g.
+      baseURL: model.provider.endpoint+'/api',
+      fetch: expoFetch as unknown as typeof globalThis.fetch,
+    });
+    
+    const { embeddings } = await embedMany({
+      model: ollama.embedding('all-minilm'),
+      values: texts,
+    });
+
+    return embeddings;
+
+  }
 } 
