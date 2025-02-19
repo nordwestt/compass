@@ -11,7 +11,9 @@ import { current } from 'tailwindcss/colors';
 import { ChatMessage, Thread } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
-import TurndownService from 'turndown';
+//import TurndownService from 'turndown';
+import { Readability } from '@mozilla/readability';
+//import { JSDOM } from 'jsdom';
 import { getProxyUrl } from '../utils/proxy';
 
 export function useChat() {
@@ -74,14 +76,18 @@ export function useChat() {
     // extract url's from the message
     const urls = message.match(/https?:\/\/[^\s]+/g);
     if(urls && urls.length > 0) {
-      const turndown = new TurndownService();
       
       for(const url of urls) {
         console.log("looking up url", url);
-        const markdown = turndown.turndown(await fetch(await getProxyUrl(url)).then(res => res.text()));
-        console.log(markdown);
+        const html = await fetch(await getProxyUrl(url)).then(res => res.text());
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const reader = new Readability(doc);
+        const article = reader.parse();
+        console.log(article?.textContent);
       }
     }
+
+    
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
     const updatedThread = {
       ...currentThread,
