@@ -118,17 +118,13 @@ export const ChatThread: React.FC = () => {
   };
 
   const renderItem = ({ item: message, index }: { item: any; index: number }) => (
-    // <TouchableOpacity 
-    //   onPress={() => handleMessagePress(index, message)}
-    //   activeOpacity={message.isUser ? 0.7 : 1}
-    // >
-      <Message
-        content={message.content}
-        isUser={message.isUser}
-        character={message.character}
-        index={index}
-      />
-    // </TouchableOpacity>
+    <Message
+      content={message.content}
+      isUser={message.isUser}
+      character={message.character}
+      index={index}
+      onEdit={() => handleMessagePress(index, message)}
+    />
   );
 
   const scrollToEnd = useCallback(() => {

@@ -10,14 +10,16 @@ import { InteractionManager, Clipboard } from 'react-native';
 import { toastService } from '@/src/services/toastService';
 import { Ionicons } from '@expo/vector-icons';
 import { CharacterAvatar } from '../character/CharacterAvatar';
+
 interface MessageProps {
   content: string;
   isUser: boolean;
   character?: Character;
   index: number;
+  onEdit?: (index: number) => void;
 }
 
-export const Message: React.FC<MessageProps> = ({ content, isUser, character, index }) => {
+export const Message: React.FC<MessageProps> = ({ content, isUser, character, index, onEdit }) => {
   const { colorScheme } = useColorScheme();
   const currentThread = useAtomValue(currentThreadAtom);
   const preferences = useAtomValue(fontPreferencesAtom);
@@ -139,13 +141,15 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
               <Ionicons name="copy-outline" size={16} color={isDark ? "#fff" : "#000"} />
               <Text className="text-xs ml-1 text-text">Copy</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={() => {/* Add edit handler */}}
-              className="p-2 flex-row items-center border-l border-border"
-            >
-              <Ionicons name="pencil-outline" size={16} color={isDark ? "#fff" : "#000"} />
-              <Text className="text-xs ml-1 text-text">Edit</Text>
-            </TouchableOpacity>
+            {isUser && (
+              <TouchableOpacity 
+                onPress={() => onEdit?.(index)}
+                className="p-2 flex-row items-center border-l border-border"
+              >
+                <Ionicons name="pencil-outline" size={16} color={isDark ? "#fff" : "#000"} />
+                <Text className="text-xs ml-1 text-text">Edit</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
