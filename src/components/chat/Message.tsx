@@ -109,7 +109,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         </View>
       )}
       <View 
-        className={`relative px-4 py-2 rounded-2xl max-w-[80%] ${
+        className={`relative px-4 py-2 mb-4 rounded-2xl max-w-[80%] ${
           isUser ? "bg-primary rounded-tr-none" : "bg-surface rounded-tl-none"
         } ${editingMessageIndex === index ? "bg-yellow-500" : ""}`}
         onPointerEnter={() => setIsHovered(true)}
@@ -131,7 +131,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         )}
         
         {isHovered && (
-          <View className="absolute -bottom-8 right-0 flex-row bg-surface border border-border rounded-lg shadow-lg overflow-hidden">
+          <View className="absolute -bottom-4 right-0 flex-row bg-surface border border-border rounded-lg shadow-lg overflow-hidden">
             <TouchableOpacity 
               onPress={handleCopyMessage}
               className="p-2 flex-row items-center"
