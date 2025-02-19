@@ -10,6 +10,7 @@ import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { ImagePickerButton } from '@/src/components/image/ImagePickerButton';
 import { useEffect } from 'react';
 import { toastService } from '@/src/services/toastService';
+import { IconSelector } from '@/src/components/character/IconSelector';
 
 
 interface EditCharacterProps {  
@@ -21,23 +22,26 @@ interface EditCharacterProps {
 export default function EditCharacter({ id, onSave, className }: EditCharacterProps) {
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
   const [character, setCharacter] = useState<Character | null>(null);
+  const [showIconSelector, setShowIconSelector] = useState(false);
+  const [useIcon, setUseIcon] = useState(false);
 
   useEffect(() => {
     let chara = id 
-    ? customPrompts.find(p => p.id === id) 
-    : { name: '', content: '', image: require('@/assets/characters/default.png') };
+      ? customPrompts.find(p => p.id === id) 
+      : { name: '', content: '', image: require('@/assets/characters/default.png'), icon: undefined };
 
     if(id){
-        chara = customPrompts.find(p => p.id === id);
-        if(!chara){
-            chara = PREDEFINED_PROMPTS.find(p => p.id === id);
-        }
+      chara = customPrompts.find(p => p.id === id);
+      if(!chara){
+        chara = PREDEFINED_PROMPTS.find(p => p.id === id);
+      }
     }
     else{
-        chara = { name: '', content: '', image: require('@/assets/characters/default.png') };
+      chara = { name: '', content: '', image: require('@/assets/characters/default.png'), icon: undefined };
     }
 
     setCharacter(chara as Character);
+    setUseIcon(!!chara?.icon);
   }, [id]);
 
 
@@ -53,7 +57,13 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
       if (id) {
         // Edit existing character
         updatedPrompts = customPrompts.map(p =>
-          p.id === id ? { ...p, name: character?.name || '', content: character?.content || '', image: character?.image || p.image } : p
+          p.id === id ? { 
+            ...p, 
+            name: character?.name || '', 
+            content: character?.content || '',
+            image: useIcon ? undefined : (character?.image || p.image),
+            icon: useIcon ? character?.icon : undefined
+          } : p
         );
       } else {
         // Create new character
@@ -61,7 +71,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           id: Date.now().toString(),
           name: character?.name || '',
           content: character?.content || '',
-          image: character?.image || require('@/assets/characters/default.png')
+          image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
+          icon: useIcon ? character?.icon : undefined
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
@@ -87,11 +98,48 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     <View className={`flex-1 bg-background ${className}`}>
       <ScrollView className="flex-1 p-4" contentContainerStyle={{ flexGrow: 1 }}>
         <View className="items-center mb-8">
-          <ImagePickerButton
-            currentImage={character?.image}
-            onImageSelected={handleImageSelected}
-          />
+          <View className="relative">
+            {useIcon ? (
+              <TouchableOpacity 
+                onPress={() => setShowIconSelector(true)}
+                className="w-[80px] h-[80px] rounded-full bg-primary items-center justify-center"
+              >
+                <Ionicons 
+                  name={character?.icon || 'person' as any} 
+                  size={48} 
+                  color="white" 
+                />
+              </TouchableOpacity>
+            ) : (
+              <ImagePickerButton
+                currentImage={character?.image}
+                onImageSelected={handleImageSelected}
+              />
+            )}
+            <TouchableOpacity 
+              onPress={() => setUseIcon(!useIcon)}
+              className="absolute bottom-4 right-0 bg-primary rounded-full p-2"
+            >
+              <Ionicons 
+                name={useIcon ? 'image' : 'apps'} 
+                size={16} 
+                color="white" 
+              />
+            </TouchableOpacity>
+          </View>
+          <Text className="text-sm text-text mt-2">
+            {useIcon ? 'Tap to change icon' : 'Tap to change avatar'}
+          </Text>
         </View>
+
+        <IconSelector
+          isVisible={showIconSelector}
+          onClose={() => setShowIconSelector(false)}
+          onSelect={(iconName) => {
+            setCharacter({ ...character!, icon: iconName, image: undefined });
+          }}
+          currentIcon={character?.icon}
+        />
 
         <View className="space-y-6 flex-1">
           <View>
