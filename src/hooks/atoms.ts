@@ -198,3 +198,5 @@ export interface GeneratedImage {
 export const generatedImagesAtom = atomWithAsyncStorage<GeneratedImage[]>('generatedImages', []);
 
 export const selectedImageModelAtom = atomWithAsyncStorage<Model | undefined>('selectedImageModel', undefined);
+
+export const proxyUrlAtom = atomWithAsyncStorage<string>('proxyUrl', 'https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/');

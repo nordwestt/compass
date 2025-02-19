@@ -4,19 +4,18 @@ import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { open, SeekMode, BaseDirectory } from '@tauri-apps/plugin-fs';
+import { getProxyUrl } from '@/src/utils/proxy';
 
 function isTauri(){
     return typeof window !== 'undefined' && !!(window as any).__TAURI__;
 }
-
-const PROXY_URL = "https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/";
 
 export class ReplicateProvider implements ImageProvider {
     async generateImage(prompt: string, model: Model, signal?: AbortSignal): Promise<string> {
         try {
             let url = `${model.provider.endpoint}/v1/models/${model.id}/predictions`;
             if(isTauri() || Platform.OS == 'web') {
-                url = PROXY_URL + url;
+                url = await getProxyUrl(url);
             }
 
             const createResponse = await fetch(url, {
@@ -48,7 +47,7 @@ export class ReplicateProvider implements ImageProvider {
             const responseData = await createResponse.json();
             let predictionUrl = responseData.urls.get;
             if(isTauri() || Platform.OS === 'web') {
-                predictionUrl = PROXY_URL + predictionUrl;
+                predictionUrl = await getProxyUrl(predictionUrl);
             }
 
             // Poll for completion
@@ -69,7 +68,7 @@ export class ReplicateProvider implements ImageProvider {
                     let imageUrl = prediction.output[0];
 
                     if(isTauri()) {
-                        imageUrl = PROXY_URL + imageUrl;
+                        imageUrl = await getProxyUrl(imageUrl);
                         // Create a unique filename using timestamp
                         const timestamp = new Date().getTime();
                         const fileUri = `generated_${timestamp}.webp`;

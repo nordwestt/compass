@@ -8,8 +8,7 @@ import { fetch as expoFetch } from 'expo/fetch';
 import { Platform as PlatformCust } from '@/src/utils/platform';
 import { streamResponse } from '@/src/services/chat/streamUtils';
 import { z } from 'zod';
-
-const PROXY_URL = "http://localhost:9493/";
+import { getProxyUrl } from '@/src/utils/proxy';
 
 export class OpenAIProvider implements ChatProvider {
   async *sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string> {
@@ -29,7 +28,7 @@ export class OpenAIProvider implements ChatProvider {
     try {
       if (PlatformCust.isMobile) {
         let url = `${model.provider.endpoint}/v1/chat/completions`;
-        if (PlatformCust.isTauri) url = PROXY_URL + url;
+        if (PlatformCust.isTauri) url = await getProxyUrl(url);
         yield* streamResponse(url, {
           model: model.id,
           messages: newMessages,
@@ -74,7 +73,7 @@ export class OpenAIProvider implements ChatProvider {
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
     let url = `${model.provider.endpoint}`;
-    if(PlatformCust.isMobile) url = PROXY_URL+url;
+    if(PlatformCust.isMobile) url = await getProxyUrl(url);
     const response = await fetch(url+"/v1/chat/completions", {
       method: 'POST',
       headers: {
@@ -101,7 +100,7 @@ export class OpenAIProvider implements ChatProvider {
 
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any> {
     let url = `${model.provider.endpoint}`;
-    if(PlatformCust.isMobile) url = PROXY_URL+url;
+    if(PlatformCust.isMobile) url = await getProxyUrl(url);
     const response = await fetch(url+"/v1/chat/completions", {
       method: 'POST',
       headers: {
