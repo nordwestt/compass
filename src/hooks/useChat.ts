@@ -109,11 +109,14 @@ export function useChat() {
     
     // Add web content to context if available
     if (webContent.length > 0) {
-      const relevantPassages = await searchRelevantPassages(message, webContent.join('\n'), ChatProviderFactory.getProvider(currentThread.selectedModel), {
+      // remove urls from message
+      const messageWithoutUrls = message.replace(urls?.join('|') || '', '');
+      const relevantPassages = await searchRelevantPassages(messageWithoutUrls, webContent.join('\n'), ChatProviderFactory.getProvider(currentThread.selectedModel), {
         maxChunkSize: 512,
-        minSimilarity: 0.7,
-        maxResults: 3
+        minSimilarity: 0.5,
+        maxResults: 5
       });
+      console.log("relevantPassages",relevantPassages);
       if(relevantPassages.length > 0) {
         context.messagesToSend.push({
           content: `Web content context:\n${relevantPassages.map(passage => passage.text).join('\n')}`,
