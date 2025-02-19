@@ -1,11 +1,16 @@
 import { ChatProvider } from '@/src/types/chat';
-import { Character } from '@/src/types/core';
+import { Character, Provider } from '@/src/types/core';
 import { ChatMessage } from '@/src/types/core';
 import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { Platform } from 'react-native';
 
 export class AnthropicProvider implements ChatProvider {
+  provider: Provider;
+  constructor(provider: Provider) {
+    this.provider = provider;
+  }
+
   async *sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string> {
     const newMessages = [
       ...messages.map((message, index) => ({
@@ -129,5 +134,9 @@ export class AnthropicProvider implements ChatProvider {
     } catch (error) {
       return { query: "", searchRequired: false };
     }
+  }
+
+  async embedText(texts: string[]): Promise<number[][]> {
+    return [];
   }
 } 

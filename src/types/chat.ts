@@ -1,14 +1,16 @@
 import { MentionedCharacter } from "@/src/components/chat/ChatInput";
-import { Character, Thread } from "@/src/types/core";
+import { Character, Provider, Thread } from "@/src/types/core";
 
 import { ChatMessage } from "@/src/types/core";
 
 import { Model } from "@/src/types/core";
 
 export interface ChatProvider {
+  provider: Provider;
   sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string>;
   sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string>;
   sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>;
+  embedText(texts: string[]): Promise<number[][]>;
 }
 
 export interface MessageStreamHandler {

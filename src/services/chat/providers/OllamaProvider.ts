@@ -1,5 +1,5 @@
 import { ChatProvider } from '@/src/types/chat';
-import { Character } from '@/src/types/core';
+import { Character, Provider } from '@/src/types/core';
 import { ChatMessage } from '@/src/types/core';
 import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
@@ -18,6 +18,10 @@ import {streamResponse} from '@/src/services/chat/streamUtils';
 
 
 export class OllamaProvider implements ChatProvider {
+  provider: Provider;
+  constructor(provider: Provider) {
+    this.provider = provider;
+  }
   async *sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string> {
     const newMessages = [
       { role: 'system', content: character.content },
@@ -146,13 +150,13 @@ export class OllamaProvider implements ChatProvider {
     }
   }
 
-  async embedText(texts: string[], model: Model): Promise<number[][]> {
-    let url = `${model.provider.endpoint}/api/embed`;
+  async embedText(texts: string[]): Promise<number[][]> {
+    let url = `${this.provider.endpoint}/api/embed`;
     if(PlatformCust.isTauri) url = await getProxyUrl(url);
 
     const ollama = createOllama({
       // optional settings, e.g.
-      baseURL: model.provider.endpoint+'/api',
+      baseURL: this.provider.endpoint+'/api',
       fetch: expoFetch as unknown as typeof globalThis.fetch,
     });
     

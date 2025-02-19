@@ -1,8 +1,8 @@
 import { ChatProvider } from '@/src/types/chat';
-import { Character } from '@/src/types/core';
+import { Character, Provider } from '@/src/types/core';
 import { ChatMessage, Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
-import { CoreMessage, createDataStream, StreamData, streamText, tool } from 'ai';
+import { CoreMessage, createDataStream, embedMany, StreamData, streamText, tool } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { fetch as expoFetch } from 'expo/fetch';
 import { Platform as PlatformCust } from '@/src/utils/platform';
@@ -11,6 +11,10 @@ import { z } from 'zod';
 import { getProxyUrl } from '@/src/utils/proxy';
 
 export class OpenAIProvider implements ChatProvider {
+  provider: Provider;
+  constructor(provider: Provider) {
+    this.provider = provider;
+  }
   async *sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string> {
     const newMessages = [
       { role: 'system', content: character.content },
@@ -125,5 +129,20 @@ export class OpenAIProvider implements ChatProvider {
     } catch (error) {
       return { query: "", searchRequired: false };
     }
+  }
+
+  async embedText(texts: string[]): Promise<number[][]> {
+    const openai = createOpenAI({
+      baseURL: this.provider.endpoint+'/v1',
+      apiKey: this.provider.apiKey,
+      fetch: expoFetch as unknown as typeof globalThis.fetch
+    });
+
+    const { embeddings } = await embedMany({
+      model: openai.embedding('text-embedding-3-small'),
+      values: texts,
+    });
+
+    return embeddings;
   }
 } 

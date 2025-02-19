@@ -15,6 +15,7 @@ import { toastService } from '@/src/services/toastService';
 import { Readability } from '@mozilla/readability';
 //import { JSDOM } from 'jsdom';
 import { getProxyUrl } from '../utils/proxy';
+import { searchRelevantPassages } from '../utils/semanticSearch';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -108,11 +109,18 @@ export function useChat() {
     
     // Add web content to context if available
     if (webContent.length > 0) {
-      context.messagesToSend.push({
-        content: `Web content context:\n${webContent.join('\n')}`,
-        isSystem: true,
-        isUser: false
+      const relevantPassages = await searchRelevantPassages(message, webContent.join('\n'), ChatProviderFactory.getProvider(currentThread.selectedModel), {
+        maxChunkSize: 512,
+        minSimilarity: 0.7,
+        maxResults: 3
       });
+      if(relevantPassages.length > 0) {
+        context.messagesToSend.push({
+          content: `Web content context:\n${relevantPassages.map(passage => passage.text).join('\n')}`,
+          isSystem: true,
+          isUser: false
+        });
+      }
     }
 
     const updatedThread = {
