@@ -16,6 +16,7 @@ import { Readability } from '@mozilla/readability';
 //import { JSDOM } from 'jsdom';
 import { getProxyUrl } from '../utils/proxy';
 import { searchRelevantPassages } from '../utils/semanticSearch';
+import { fetchSiteText } from '../utils/siteFetcher';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -81,20 +82,8 @@ export function useChat() {
       
       for (const url of urls) {
         try {
-          const html = await fetch(await getProxyUrl(url)).then(res => res.text());
-          const doc = new DOMParser().parseFromString(html, 'text/html');
-          const reader = new Readability(doc);
-          const article = reader.parse();
-          
-          if (article?.textContent) {
-            // Trim and clean up the content
-            const cleanContent = article.textContent
-              .trim()
-              .replace(/\s+/g, ' ')
-              .slice(0, 2000); // Limit content length
-            
-            webContent.push(`Content from ${url}:\n${cleanContent}\n`);
-          }
+          const content = await fetchSiteText(url);
+          webContent.push(`Content from ${url}:\n${content}\n`);
         } catch (error: any) {
           LogService.log(error, { component: 'useChat', function: 'handleSend' }, 'error');
           toastService.warning({ 
