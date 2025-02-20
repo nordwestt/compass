@@ -8,7 +8,7 @@ import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
 import { current } from 'tailwindcss/colors';
-import { ChatMessage, Thread } from '@/src/types/core';
+import { Character, ChatMessage, Thread } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
 //import TurndownService from 'turndown';
@@ -17,6 +17,7 @@ import { Readability } from '@mozilla/readability';
 import { getProxyUrl } from '../utils/proxy';
 import { searchRelevantPassages } from '../utils/semanticSearch';
 import { fetchSiteText } from '../utils/siteFetcher';
+import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform } from './pipelines';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -72,49 +73,25 @@ export function useChat() {
     return await provider.sendJSONMessage(message, currentThread.selectedModel, systemPrompt);
   }
 
+  const pipeline = new MessageTransformPipeline()
+    .addTransform(urlContentTransform)
+    .addTransform(relevantPassagesTransform);
+
   const handleSend = async (messages: ChatMessage[], message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
-    
-    let webContent: string[] = [];
-    const urls = message.match(/https?:\/\/[^\s]+/g);
-    if (urls && urls.length > 0) {
-      toastService.info({ title: 'Processing URLs', description: 'Fetching content from links...' });
-      
-      for (const url of urls) {
-        try {
-          const content = await fetchSiteText(url);
-          webContent.push(`Content from ${url}:\n${content}\n`);
-        } catch (error: any) {
-          LogService.log(error, { component: 'useChat', function: 'handleSend' }, 'error');
-          toastService.warning({ 
-            title: 'URL Processing Error', 
-            description: `Failed to process ${url}` 
-          });
-        }
-      }
-    }
-    
-    let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
-    
-    // Add web content to context if available
-    if (webContent.length > 0) {
-      // remove urls from message
-      const messageWithoutUrls = message.replace(urls?.join('|') || '', '');
-      const relevantPassages = await searchRelevantPassages(messageWithoutUrls, webContent.join('\n'), ChatProviderFactory.getProvider(currentThread.selectedModel), {
-        maxChunkSize: 512,
-        minSimilarity: 0.5,
-        maxResults: 5
-      });
-      console.log("relevantPassages",relevantPassages);
-      if(relevantPassages.length > 0) {
-        context.messagesToSend.push({
-          content: `Web content context:\n${relevantPassages.map(passage => passage.text).join('\n')}`,
-          isSystem: true,
-          isUser: false
-        });
-      }
-    }
 
+    let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
+
+    const initialContext: MessageContext = {
+      message,
+      thread: currentThread,
+      mentionedCharacters,
+      context,
+      metadata: {}
+    };
+
+    const transformedContext = await pipeline.process(initialContext);
+    
     const updatedThread = {
       ...currentThread,
       messages: [...messages, {content: message, isUser: true}, context.assistantPlaceholder]
@@ -130,7 +107,7 @@ export function useChat() {
       if(searchRequired.searchRequired) {
         const searchResponse = await search(searchRequired.query);
         if(searchResponse?.results?.length && searchResponse?.results?.length > 0) {
-          context.messagesToSend.push({content: `Web search results: ${searchResponse?.results.slice(0,3)?.map(result => result.content).join('\n')}`, isSystem: true, isUser: false});
+          transformedContext.context.messagesToSend.push({content: `Web search results: ${searchResponse?.results.slice(0,3)?.map(result => result.content).join('\n')}`, isSystem: true, isUser: false});
         }
       }
     }
@@ -138,7 +115,7 @@ export function useChat() {
     try {
       const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
       const response = await provider.sendMessage(
-        context.useMention ? context.messagesToSend : [...context.historyToSend, ...context.messagesToSend],
+        transformedContext.context.useMention ? transformedContext.context.messagesToSend : [...transformedContext.context.historyToSend, ...transformedContext.context.messagesToSend],
         currentThread.selectedModel,
         context.characterToUse,
         abortController.current.signal
@@ -162,4 +139,5 @@ export function useChat() {
   };
 
   return { handleSend, handleInterrupt };
-} 
+}
+
