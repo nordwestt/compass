@@ -7,6 +7,10 @@ import { Character } from "../types/core";
 import { searchRelevantPassages } from "../utils/semanticSearch";
 import { toastService } from "../services/toastService";
 import { fetchSiteText } from "../utils/siteFetcher";
+import { isSearchRequired } from '../utils/semanticSearch';
+import { ChatProvider } from "../types/chat";
+
+
 
 export const urlContentTransform: MessageTransform = {
     name: 'urlContent',
@@ -77,48 +81,121 @@ export const relevantPassagesTransform: MessageTransform = {
     }
   };
 
-  export class MessageTransformPipeline {
-    private transforms: MessageTransform[] = [];
-  
-    addTransform(transform: MessageTransform) {
-      this.transforms.push(transform);
-      return this;
+export const searchTransform: MessageTransform = {
+  name: 'search',
+  transform: async (ctx: MessageContext): Promise<MessageContext> => {
+    if (!ctx.metadata.searchEnabled) return ctx;
+
+    const searchRequired = await isSearchRequired(
+      ctx.message,
+      ctx.provider,
+      ctx.thread
+    );
+
+    if (searchRequired.searchRequired) {
+      const searchResponse = await ctx.metadata.searchFunction(searchRequired.query);
+      if (searchResponse?.results?.length && searchResponse?.results?.length > 0) {
+        ctx.context.messagesToSend.push({
+          content: `Web search results: ${searchResponse.results.slice(0,3).map((result: any) => result.content).join('\n')}`,
+          isSystem: true,
+          isUser: false
+        });
+      }
     }
-  
-    async process(initialContext: MessageContext): Promise<MessageContext> {
-      return this.transforms.reduce(
-        async (contextPromise, transform) => {
-          const context = await contextPromise;
-          try {
-            return await transform.transform(context);
-          } catch (error: any) {
-            LogService.log(error, {
-              component: 'MessageTransformPipeline',
-              function: transform.name
-            }, 'error');
-            return context; // Continue pipeline even if one transform fails
-          }
-        },
-        Promise.resolve(initialContext)
-      );
-    }
+
+    return ctx;
   }
-  
-  export interface MessageContext {
-    message: string;
-    thread: Thread;
-    mentionedCharacters: MentionedCharacter[];
-    context: {
-      messagesToSend: ChatMessage[];
-      historyToSend: ChatMessage[];
-      assistantPlaceholder: ChatMessage;
-      useMention: boolean;
-      characterToUse: Character;
+};
+
+export const threadUpdateTransform: MessageTransform = {
+  name: 'threadUpdate',
+  transform: async (ctx: MessageContext): Promise<MessageContext> => {
+    const updatedThread = {
+      ...ctx.thread,
+      messages: [...ctx.metadata.messages, {content: ctx.message, isUser: true}, ctx.context.assistantPlaceholder]
     };
-    metadata: Record<string, any>; // For storing intermediate data between transforms
+
+    await ctx.metadata.dispatchThread({
+      type: 'update',
+      payload: updatedThread
+    });
+
+    ctx.metadata.updatedThread = updatedThread;
+    return ctx;
   }
-  
-  export interface MessageTransform {
-    name: string;
-    transform: (ctx: MessageContext) => Promise<MessageContext>;
+};
+
+export const firstMessageTransform: MessageTransform = {
+  name: 'firstMessage',
+  transform: async (ctx: MessageContext): Promise<MessageContext> => {
+    const isFirstMessage = ctx.thread.messages.length === 0;
+    if (!isFirstMessage) return ctx;
+
+    const systemPrompt = `Based on the user message, generate a concise 3-word title that captures the essence of the conversation. Format: "Word1 Word2 Word3" (no quotes, no periods but do include spaces).`;
+
+    try {
+      const title = await ctx.provider.sendSimpleMessage(ctx.message, ctx.thread.selectedModel, systemPrompt);
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      await ctx.metadata.dispatchThread({
+        type: 'update',
+        payload: { ...ctx.metadata.updatedThread, title: title }
+      });
+    } catch (error: any) {
+      toastService.danger({
+        title: 'Error generating title',
+        description: "The AI service may be experiencing issues. Please try again later."
+      });
+      LogService.log(error, { component: 'firstMessageTransform', function: 'transform' }, 'error');
+    }
+
+    return ctx;
   }
+};
+
+export class MessageTransformPipeline {
+  private transforms: MessageTransform[] = [];
+
+  addTransform(transform: MessageTransform) {
+    this.transforms.push(transform);
+    return this;
+  }
+
+  async process(initialContext: MessageContext): Promise<MessageContext> {
+    return this.transforms.reduce(
+      async (contextPromise, transform) => {
+        const context = await contextPromise;
+        try {
+          return await transform.transform(context);
+        } catch (error: any) {
+          LogService.log(error, {
+            component: 'MessageTransformPipeline',
+            function: transform.name
+          }, 'error');
+          return context; // Continue pipeline even if one transform fails
+        }
+      },
+      Promise.resolve(initialContext)
+    );
+  }
+}
+
+export interface MessageContext {
+  message: string;
+  provider: ChatProvider;
+  thread: Thread;
+  mentionedCharacters: MentionedCharacter[];
+  context: {
+    messagesToSend: ChatMessage[];
+    historyToSend: ChatMessage[];
+    assistantPlaceholder: ChatMessage;
+    useMention: boolean;
+    characterToUse: Character;
+  };
+  metadata: Record<string, any>; // For storing intermediate data between transforms
+}
+
+export interface MessageTransform {
+  name: string;
+  transform: (ctx: MessageContext) => Promise<MessageContext>;
+}

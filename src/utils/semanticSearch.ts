@@ -2,6 +2,8 @@
 
 import LogService from "@/utils/LogService";
 import { ChatProvider } from "../types/chat";
+import { ChatProviderFactory } from "../services/chat/ChatProviderFactory";
+import { Thread } from "../types/core";
 
 interface SearchResult {
     text: string;
@@ -80,3 +82,16 @@ interface SearchResult {
     }
   }
   
+
+  export const isSearchRequired = async (message: string, provider: ChatProvider, currentThread: Thread) : Promise<{query: string, searchRequired: boolean}> => {
+    const systemPrompt = `
+    Your name is SearchAssistantBot, and you identify if the user's message requires a search on the internet.
+    If the user's message requires a search, return the query to be searched and set "searchRequired" to true. 
+    If the user's message does not require a search, simply return an empty string and set "searchRequired" to false.
+    Examples:
+    - "What is the weather in Tokyo?" -> {"query": "weather in Tokyo", "searchRequired": true}
+    - "What is the capital of France?" -> {"query": "", "searchRequired": false}
+    `;
+
+    return await provider.sendJSONMessage(message, currentThread.selectedModel, systemPrompt);
+  }

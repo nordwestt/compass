@@ -17,7 +17,7 @@ import { Readability } from '@mozilla/readability';
 import { getProxyUrl } from '../utils/proxy';
 import { searchRelevantPassages } from '../utils/semanticSearch';
 import { fetchSiteText } from '../utils/siteFetcher';
-import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform } from './pipelines';
+import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform, searchTransform, threadUpdateTransform, firstMessageTransform } from './pipelines';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -59,80 +59,56 @@ export function useChat() {
     }
   }
 
-  const isSearchRequired = async (message: string) : Promise<{query: string, searchRequired: boolean}> => {
-    const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
-    const systemPrompt = `
-    Your name is SearchAssistantBot, and you identify if the user's message requires a search on the internet.
-    If the user's message requires a search, return the query to be searched and set "searchRequired" to true. 
-    If the user's message does not require a search, simply return an empty string and set "searchRequired" to false.
-    Examples:
-    - "What is the weather in Tokyo?" -> {"query": "weather in Tokyo", "searchRequired": true}
-    - "What is the capital of France?" -> {"query": "", "searchRequired": false}
-    `;
-
-    return await provider.sendJSONMessage(message, currentThread.selectedModel, systemPrompt);
-  }
+  
 
   const pipeline = new MessageTransformPipeline()
     .addTransform(urlContentTransform)
-    .addTransform(relevantPassagesTransform);
+    .addTransform(relevantPassagesTransform)
+    .addTransform(searchTransform)
+    .addTransform(threadUpdateTransform)
+    .addTransform(firstMessageTransform);
 
   const handleSend = async (messages: ChatMessage[], message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
-
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
+
+    const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
 
     const initialContext: MessageContext = {
       message,
+      provider,
       thread: currentThread,
       mentionedCharacters,
       context,
-      metadata: {}
-    };
-
-    const transformedContext = await pipeline.process(initialContext);
-    
-    const updatedThread = {
-      ...currentThread,
-      messages: [...messages, {content: message, isUser: true}, context.assistantPlaceholder]
-    };
-
-    await dispatchThread({
-      type: 'update',
-      payload: updatedThread
-    });
-
-    if(searchEnabled) {
-      const searchRequired = await isSearchRequired(message);
-      if(searchRequired.searchRequired) {
-        const searchResponse = await search(searchRequired.query);
-        if(searchResponse?.results?.length && searchResponse?.results?.length > 0) {
-          transformedContext.context.messagesToSend.push({content: `Web search results: ${searchResponse?.results.slice(0,3)?.map(result => result.content).join('\n')}`, isSystem: true, isUser: false});
-        }
+      metadata: {
+        messages,
+        searchEnabled,
+        searchFunction: search,
+        dispatchThread,
       }
-    }
+    };
 
     try {
-      const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
+      const transformedContext = await pipeline.process(initialContext);
+      
+      
       const response = await provider.sendMessage(
-        transformedContext.context.useMention ? transformedContext.context.messagesToSend : [...transformedContext.context.historyToSend, ...transformedContext.context.messagesToSend],
+        transformedContext.context.useMention ? 
+          transformedContext.context.messagesToSend : 
+          [...transformedContext.context.historyToSend, ...transformedContext.context.messagesToSend],
         currentThread.selectedModel,
         context.characterToUse,
         abortController.current.signal
       );
 
-      await streamHandler.handleStream(response, updatedThread, dispatchThread);
-      const isFirstMessage = currentThread.messages.length === 0;
-      if(isFirstMessage) {
-        await handleFirstMessage(message, updatedThread);
-      }
+      await streamHandler.handleStream(response, transformedContext.metadata.updatedThread, dispatchThread);
 
     } catch (error: any) {
       toastService.danger({
         title: 'Error sending message',
         description: error.message
       });
-      LogService.log(error, {component: 'useChat', function: `handleSend`}, 'error');
+      LogService.log(error, {component: 'useChat', function: 'handleSend'}, 'error');
     } finally {
       abortController.current = null;
     }
