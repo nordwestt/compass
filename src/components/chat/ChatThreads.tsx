@@ -159,7 +159,7 @@ const ChatThreads: React.FC = () => {
           </View>
         )}
         onScrollToIndexFailed={(info) => {
-          console.warn('Failed to scroll to index', info);
+          //console.warn('Failed to scroll to index', info);
           // Fallback to scrollToEnd if scrollToLocation fails
           setTimeout(() => {
           }, 100);
