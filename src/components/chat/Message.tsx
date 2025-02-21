@@ -17,9 +17,11 @@ interface MessageProps {
   character?: Character;
   index: number;
   onEdit?: (index: number) => void;
+  onPreviewCode?: () => void;
+  hasPreviewableCode?: boolean;
 }
 
-export const Message: React.FC<MessageProps> = ({ content, isUser, character, index, onEdit }) => {
+export const Message: React.FC<MessageProps> = ({ content, isUser, character, index, onEdit, onPreviewCode, hasPreviewableCode }) => {
   const { colorScheme } = useColorScheme();
   const currentThread = useAtomValue(currentThreadAtom);
   const preferences = useAtomValue(fontPreferencesAtom);
@@ -141,6 +143,15 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
               <Ionicons name="copy-outline" size={16} color={isDark ? "#fff" : "#000"} />
               <Text className="text-xs ml-1 text-text">Copy</Text>
             </TouchableOpacity>
+            {!isUser && hasPreviewableCode && (
+              <TouchableOpacity 
+                onPress={onPreviewCode}
+                className="p-2 flex-row items-center border-l border-border"
+              >
+                <Ionicons name="code-outline" size={16} color={isDark ? "#fff" : "#000"} />
+                <Text className="text-xs ml-1 text-text">Preview</Text>
+              </TouchableOpacity>
+            )}
             {isUser && (
               <TouchableOpacity 
                 onPress={() => onEdit?.(index)}

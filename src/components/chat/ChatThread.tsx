@@ -126,28 +126,7 @@ export const ChatThread: React.FC = () => {
   };
 
   const renderItem = ({ item: message, index }: { item: any; index: number }) => {
-    if (!message.isUser) {
-      const parsedCode = parseCodeBlocks(message.content);
-      if (parsedCode) {
-        return (
-          <View>
-            <Message
-              content={message.content}
-              isUser={message.isUser}
-              character={message.character}
-              index={index}
-              onEdit={() => handleMessagePress(index, message)}
-            />
-            <TouchableOpacity 
-              onPress={() => setPreviewCode(parsedCode)}
-              className="bg-primary px-3 py-1 rounded-full self-start ml-4 mt-2"
-            >
-              <Text className="text-white">Preview Code</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      }
-    }
+    const parsedCode = !message.isUser ? parseCodeBlocks(message.content) : null;
 
     return (
       <Message
@@ -156,6 +135,8 @@ export const ChatThread: React.FC = () => {
         character={message.character}
         index={index}
         onEdit={() => handleMessagePress(index, message)}
+        onPreviewCode={() => parsedCode && setPreviewCode(parsedCode)}
+        hasPreviewableCode={!!parsedCode}
       />
     );
   };
