@@ -162,6 +162,8 @@ export const ChatThread: React.FC = () => {
   const messages = currentThread?.messages || [];
 
   return (
+    <View className="flex-row flex-1">
+
     <View className="flex-1 bg-background">
       <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
         <View className="flex-row items-center gap-2">
@@ -185,7 +187,7 @@ export const ChatThread: React.FC = () => {
           className="w-40 overflow-hidden"
         />
       </View>
-      <View className="flex-row flex-1">
+      
       <FlashList
         ref={flatListRef}
         data={messages}
@@ -210,13 +212,7 @@ export const ChatThread: React.FC = () => {
         }
       />
 
-      {previewCode && (
-        <CodePreview
-          {...previewCode}
-          onClose={() => setPreviewCode(null)}
-        />
-      )}
-      </View>
+      
 
       <ChatInput 
         ref={chatInputRef}
@@ -224,7 +220,15 @@ export const ChatThread: React.FC = () => {
         isGenerating={isGenerating}
         onInterrupt={handleInterrupt}
       />
+      
     </View>
+    {previewCode && (
+        <CodePreview
+          {...previewCode}
+          onClose={() => setPreviewCode(null)}
+        />
+      )}
+      </View>
   );
 }; 
 
