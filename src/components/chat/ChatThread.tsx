@@ -204,7 +204,7 @@ export const ChatThread: React.FC = () => {
           className="w-40 overflow-hidden"
         />
       </View>
-      {/* <View className="flex-row flex-1"> */}
+      <View className="flex-row flex-1">
       <FlashList
         ref={flatListRef}
         data={messages}
@@ -235,7 +235,7 @@ export const ChatThread: React.FC = () => {
           onClose={() => setPreviewCode(null)}
         />
       )}
-      {/* </View> */}
+      </View>
 
       <ChatInput 
         ref={chatInputRef}

@@ -38,7 +38,7 @@ export const CodePreview: React.FC<CodePreviewProps> = ({
   `;
 
   return (
-    <View className="absolute bottom-20 right-4 w-80 h-96 bg-surface border border-border rounded-lg shadow-xl overflow-hidden">
+    <View className="w-1/3 h-3/4 m-4 bg-surface border border-border rounded-lg shadow-xl overflow-hidden">
       <View className="flex-row justify-between items-center p-2 bg-background border-b border-border">
         <Text className="text-text font-bold">Preview</Text>
         <TouchableOpacity onPress={onClose}>
