@@ -24,6 +24,8 @@ import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';
 import { toastService } from '@/src/services/toastService';
 import { VoiceSelector } from './VoiceSelector';
+import { CodePreview } from './CodePreview';
+import { parseCodeBlocks } from '@/src/utils/codeParser';
 
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlashList<any>>(null);
@@ -39,6 +41,12 @@ export const ChatThread: React.FC = () => {
   const previousThreadId = useRef(currentThread.id);
 
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
+
+  const [previewCode, setPreviewCode] = useState<{
+    html?: string;
+    css?: string;
+    javascript?: string;
+  } | null>(null);
 
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
@@ -117,15 +125,40 @@ export const ChatThread: React.FC = () => {
     }
   };
 
-  const renderItem = ({ item: message, index }: { item: any; index: number }) => (
-    <Message
-      content={message.content}
-      isUser={message.isUser}
-      character={message.character}
-      index={index}
-      onEdit={() => handleMessagePress(index, message)}
-    />
-  );
+  const renderItem = ({ item: message, index }: { item: any; index: number }) => {
+    if (!message.isUser) {
+      const parsedCode = parseCodeBlocks(message.content);
+      if (parsedCode) {
+        return (
+          <View>
+            <Message
+              content={message.content}
+              isUser={message.isUser}
+              character={message.character}
+              index={index}
+              onEdit={() => handleMessagePress(index, message)}
+            />
+            <TouchableOpacity 
+              onPress={() => setPreviewCode(parsedCode)}
+              className="bg-primary px-3 py-1 rounded-full self-start ml-4 mt-2"
+            >
+              <Text className="text-white">Preview Code</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
+    }
+
+    return (
+      <Message
+        content={message.content}
+        isUser={message.isUser}
+        character={message.character}
+        index={index}
+        onEdit={() => handleMessagePress(index, message)}
+      />
+    );
+  };
 
   const scrollToEnd = useCallback(() => {
     if (flatListRef.current) {
@@ -171,7 +204,7 @@ export const ChatThread: React.FC = () => {
           className="w-40 overflow-hidden"
         />
       </View>
-
+      {/* <View className="flex-row flex-1"> */}
       <FlashList
         ref={flatListRef}
         data={messages}
@@ -195,6 +228,14 @@ export const ChatThread: React.FC = () => {
           </View>
         }
       />
+
+      {previewCode && (
+        <CodePreview
+          {...previewCode}
+          onClose={() => setPreviewCode(null)}
+        />
+      )}
+      {/* </View> */}
 
       <ChatInput 
         ref={chatInputRef}
