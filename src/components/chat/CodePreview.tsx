@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import WebView from 'react-native-webview';
 
@@ -85,9 +85,11 @@ ${javascript}`;
         )
       ) : (
         <View className="flex-1">
-          <Text className="text-text p-2" style={{ fontFamily: 'monospace' }}>
-            {codeContent}
-          </Text>
+          <ScrollView className="flex-1">
+            <Text className="text-text p-2" style={{ fontFamily: 'monospace' }}>
+              {codeContent}
+            </Text>
+          </ScrollView>
         </View>
       )}
     </View>
