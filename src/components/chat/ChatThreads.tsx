@@ -168,7 +168,6 @@ const ChatThreads: React.FC = () => {
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
         onContentSizeChange={() => {
           const lastSectionIndex = groupThreadsByDate(threads).length - 1;
-          console.log(lastSectionIndex);
           const lastSection = groupThreadsByDate(threads)[lastSectionIndex];
           if (lastSection?.data.length > 0) {
             scrollViewRef.current?.scrollToLocation({ 
