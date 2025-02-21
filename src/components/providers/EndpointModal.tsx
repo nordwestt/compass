@@ -51,7 +51,9 @@ export function EndpointModal({ visible, onClose, onSave, provider, editing }: E
 
   return (
     <Modal isVisible={visible} onClose={onClose} maxHeight="85%">
+      
       <ScrollView className="p-6">
+      
         <View className="flex-row items-center mb-6">
           {provider && provider.source !== 'custom' && PROVIDER_LOGOS[provider.source] && (
             <Image
@@ -59,7 +61,7 @@ export function EndpointModal({ visible, onClose, onSave, provider, editing }: E
               className="!w-[48px] !h-[48px] rounded-full mr-3"
             />
           )}
-          <Text className="text-xl font-bold text-gray-800 dark:text-gray-200">
+          <Text className="text-xl font-bold text-text">
             {provider ? 'Edit API Provider' : 'Add API Provider'}
           </Text>
         </View>

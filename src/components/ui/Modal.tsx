@@ -39,13 +39,13 @@ export function Modal({
           className="absolute bg-black/50 flex-1 w-full h-full"
         ></Animated.View>
         <View className="flex-1 justify-end">
-          <Animated.View 
-            entering={SlideInDown.springify().damping(15)}
-            exiting={SlideOutDown.duration(200)}
+          <View 
+            // entering={SlideInDown.springify().damping(15)}
+            // exiting={SlideOutDown.duration(200)}
             className={`rounded-t-xl bg-background max-h-[70%]`}
           >
             {children}
-          </Animated.View>
+          </View>
         </View>
       </ThemeProvider>
     </RNModal>

@@ -5,5 +5,5 @@ export const PROVIDER_LOGOS = {
     elevenlabs: require('@/assets/providers/elevenlabs.png'),
     replicate: require('@/assets/providers/replicate.png'),
     serper: require('@/assets/providers/ollama.png'),
-    searxng: require('@/assets/providers/ollama.png'),
+    searxng: require('@/assets/providers/searxng.png'),
   };

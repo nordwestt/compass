@@ -40,7 +40,7 @@ export function ProviderFormFields({
               className={`mr-2 p-3 rounded-lg flex-row items-center ${
                 selectedType === value.source 
                   ? 'bg-primary' 
-                  : 'bg-gray-100 dark:bg-gray-700'
+                  : 'bg-background'
               }`}
             >
               {PROVIDER_LOGOS[value.source as keyof typeof PROVIDER_LOGOS] && (
@@ -63,7 +63,7 @@ export function ProviderFormFields({
           <TextInput
             value={name}
             onChangeText={setName}
-            className="border border-border rounded-lg p-3 bg-white dark:bg-gray-800"
+            className="border border-border rounded-lg p-3 bg-surface text-text"
             placeholder="Enter name"
           />
         </View>
@@ -74,7 +74,7 @@ export function ProviderFormFields({
         <TextInput
           value={apiKey}
           onChangeText={setApiKey}
-          className="border border-border rounded-lg p-3 bg-white dark:bg-gray-800"
+          className="border border-border rounded-lg p-3 bg-surface text-text"
           placeholder="Enter API key, if required"
           secureTextEntry
         />
@@ -86,7 +86,7 @@ export function ProviderFormFields({
           <TextInput
             value={customEndpoint}
             onChangeText={setCustomEndpoint}
-            className="border border-border rounded-lg p-3 bg-white dark:bg-gray-800"
+            className="border border-border rounded-lg p-3 bg-surface text-text"
             placeholder="Enter endpoint URL"
           />
         </View>
