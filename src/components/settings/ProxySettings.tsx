@@ -8,11 +8,11 @@ export function ProxySettings() {
 
   return (
     <View className="space-y-4">
-      <Text className="text-lg font-semibold text-foreground">Proxy Settings</Text>
+      <Text className="text-lg font-semibold text-text">Proxy Settings</Text>
       <View className="space-y-2">
         <Text className="text-sm text-secondary">Proxy URL</Text>
         <TextInput
-          className="bg-surface p-2 rounded-lg border border-border text-foreground"
+          className="bg-surface p-2 rounded-lg border border-border text-text"
           value={proxyUrl}
           onChangeText={setProxyUrl}
           placeholder="Enter proxy URL"
