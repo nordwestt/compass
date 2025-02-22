@@ -55,17 +55,17 @@ export const ConfirmationModal = () => {
       <View className="flex-row justify-end space-x-2">
         <TouchableOpacity
           onPress={() => modalService.handleResponse(null)}
-          className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700"
+          className="px-4 py-2 rounded-lg bg-surface text-text w-1/2 mr-2"
         >
-          <Text className="text-black dark:text-white">Cancel</Text>
+          <Text className="text-black dark:text-white text-center">Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => modalService.handleResponse(
             modalState.type === 'prompt' ? inputText : true
           )}
-          className="px-4 py-2 rounded-lg bg-primary"
+          className="px-4 py-2 rounded-lg bg-primary w-1/2"
         >
-          <Text className="text-white">
+          <Text className="text-white text-center">
             {modalState.type === 'prompt' ? 'Save' : 'Confirm'}
           </Text>
         </TouchableOpacity>
