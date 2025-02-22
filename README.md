@@ -14,17 +14,20 @@ Try it out [here](https://nordwestt.com/compass) (only for visual demo, since br
 
 ## Features
 
-- 🌐 **Cross-Platform**: Available on iOS, Android, and Linux
+- 🌐 **Cross-Platform**: Buildable for iOS, Android, Linux and web
+- 🔍 **Auto-scanning for Ollama instances on network**: Just connect to the same network and Compass will find it with the press of a button.
 - 🤖 **Multiple LLM Providers**: Support for OpenAI, Anthropic, Ollama, and more
 - 👥 **Character System**: Built-in characters and support for custom character creation
 - 💬 **Chat History**: Persistent conversation tracking and management
 - 🤝 **Inter-Character Communication**: Tag (@) characters in chats for multi-agent interactions
 - 🎨 **Modern UI**: Clean, responsive interface with multiple themes built in
-- 🔍 **Web search**: Web search integration using SearxNg
-- 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses (currently only supports ElevenLabs, more coming soon)
-- 🖼️ **Image Generation**: Generate images from text prompts (currently only supports Replicate, more coming soon)
+- 🔍 **Web search**: Paste URL's into chat to ask question about them. Automatic web search integration using SearxNg
+- 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses (currently only supports ElevenLabs)
+- 🖼️ **Image Generation**: Generate images from text prompts (currently only supports Replicate)
 - 📁 **Image Gallery**: View images that have been generated
 - 🖥️ **Desktop Shortcut**: Alt + N to open a new chat
+- 📝 **Code Preview**: Preview generated html, css and javascript in a separate window
+
 ## Roadmap
 
 - 🎤 **Speech-to-Text (STT)**: Voice input capabilities
