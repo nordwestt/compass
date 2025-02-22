@@ -6,7 +6,7 @@ import { CoreMessage, createDataStream, embedMany, StreamData, streamText, tool 
 import { createOpenAI } from '@ai-sdk/openai';
 import { fetch as expoFetch } from 'expo/fetch';
 import { Platform as PlatformCust } from '@/src/utils/platform';
-import { streamResponse } from '@/src/services/chat/streamUtils';
+import { streamOpenAIResponse } from '@/src/services/chat/streamUtils';
 import { z } from 'zod';
 import { getProxyUrl } from '@/src/utils/proxy';
 
@@ -33,11 +33,15 @@ export class OpenAIProvider implements ChatProvider {
       if (PlatformCust.isMobile) {
         let url = `${model.provider.endpoint}/v1/chat/completions`;
         if (PlatformCust.isTauri) url = await getProxyUrl(url);
-        yield* streamResponse(url, {
+        yield* streamOpenAIResponse(url, {
           model: model.id,
           messages: newMessages,
-          stream: true
-        });
+          stream: true,
+        }, {
+          headers:{
+          'Authorization': `Bearer ${model.provider.apiKey}`
+        }
+      });
       } else {
         const openai = createOpenAI({
           baseURL: model.provider.endpoint+'/v1',

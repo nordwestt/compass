@@ -14,7 +14,7 @@ import { embed } from 'ai';
 
 
 import {Platform as PlatformCust} from '@/src/utils/platform';
-import {streamResponse} from '@/src/services/chat/streamUtils';
+import {streamOllamaResponse} from '@/src/services/chat/streamUtils';
 
 
 export class OllamaProvider implements ChatProvider {
@@ -40,7 +40,7 @@ export class OllamaProvider implements ChatProvider {
       if(PlatformCust.isMobile){
         let url = `${model.provider.endpoint}/api/chat`;
         if(PlatformCust.isTauri) url = await getProxyUrl(url);
-        yield* streamResponse(url, {
+        yield* streamOllamaResponse(url, {
           model: model.id,
           messages: newMessages,
           stream: true
