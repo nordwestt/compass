@@ -23,7 +23,7 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
   );
 
   return (
-    <>
+    <View>
       <TouchableOpacity 
         onPress={() => setIsModalVisible(true)}
         className={`flex-row items-center px-4 py-2 rounded-lg bg-background border-2 border-gray-200 dark:border-gray-700 ${className}`}
@@ -137,6 +137,6 @@ export function ProviderTypeSelector({ className, selectedType, onTypeSelect }: 
           </Text>
         </TouchableOpacity>
       </Modal>
-    </>
+    </View>
   );
 } 
