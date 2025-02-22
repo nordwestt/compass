@@ -72,7 +72,6 @@ export default function RootLayout() {
             },
             headerTintColor: theme.text,
             headerShadowVisible: false,
-            headerBackTitleVisible: false,
             header: () => <CustomHeader />
           }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
