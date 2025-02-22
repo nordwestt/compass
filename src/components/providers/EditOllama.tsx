@@ -40,6 +40,7 @@ export function EditOllama({ provider }: EditOllamaProps) {
         setLocalModels(data.models);
       }
     } catch (error: any) {
+      console.log("Error fetching local models", provider.endpoint);
       LogService.log(error, { component: 'EditOllama', function: 'fetchLocalModels' }, 'error');
       toastService.danger({
         title: 'Failed to fetch models',
@@ -140,7 +141,7 @@ export function EditOllama({ provider }: EditOllamaProps) {
           {availableModels.map((model) => (
             <View key={model.id} className="bg-surface p-4 rounded-lg mb-2 border border-border">
               <View className="flex-row justify-between items-center">
-                <Text className="font-medium text-text">{model.id}</Text>
+                <Text className="font-medium text-text flex-1 mr-2" numberOfLines={1} ellipsizeMode="tail">{model.id}</Text>
                 <TouchableOpacity
                   onPress={() => pullModel(model.id)}
                   disabled={isPulling === model.id}
@@ -149,10 +150,10 @@ export function EditOllama({ provider }: EditOllamaProps) {
                   {isPulling === model.id ? (
                     <ActivityIndicator size="small" color="white" />
                   ) : (
-                    <>
+                    <View className="flex-row items-center">
                       <Ionicons name="download" size={20} color="white" />
                       <Text className="text-white ml-2">Pull</Text>
-                    </>
+                    </View>
                   )}
                 </TouchableOpacity>
               </View>
