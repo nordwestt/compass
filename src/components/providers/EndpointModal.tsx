@@ -53,7 +53,6 @@ export function EndpointModal({ visible, onClose, onSave, provider, editing }: E
     <Modal isVisible={visible} onClose={onClose} maxHeight="85%">
       
       <ScrollView className="p-6">
-      
         <View className="flex-row items-center mb-6">
           {provider && provider.source !== 'custom' && PROVIDER_LOGOS[provider.source] && (
             <Image
@@ -81,7 +80,9 @@ export function EndpointModal({ visible, onClose, onSave, provider, editing }: E
           <EditOllama provider={provider} />
         )}
 
-        <View className="flex-row space-x-4 mt-6">
+        
+      </ScrollView>
+      <View className="flex-row space-x-4 mt-6">
           <TouchableOpacity
             onPress={onClose}
             className="flex-1 p-4 rounded-lg bg-gray-200 dark:bg-gray-700"
@@ -99,7 +100,6 @@ export function EndpointModal({ visible, onClose, onSave, provider, editing }: E
             </Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
     </Modal>
   );
 } 
