@@ -25,6 +25,8 @@ import { FlashList } from '@shopify/flash-list';
 import { VoiceSelector } from './VoiceSelector';
 import { CodePreview } from './CodePreview';
 import { parseCodeBlocks } from '@/src/utils/codeParser';
+import { Modal } from '@/src/components/ui/Modal';
+import { useWindowDimensions } from 'react-native';
 
 
 
@@ -44,6 +46,9 @@ export const ChatThread: React.FC = () => {
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
 
   const [previewCode, setPreviewCode] = useAtom(previewCodeAtom);
+
+  const { width } = useWindowDimensions();
+  const isDesktop = Platform.OS === 'web' && width >= 768;
 
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
@@ -219,14 +224,29 @@ export const ChatThread: React.FC = () => {
       />
       
     </View>
+    {/* Show side panel on desktop, modal on mobile */}
     {previewCode && (
+      isDesktop ? (
         <View className="flex-1 p-4 overflow-hidden w-1/3 h-screen">
-        <CodePreview
-          {...previewCode}
-          onClose={() => setPreviewCode(null)}
-        />
+          <CodePreview
+            {...previewCode}
+            onClose={() => setPreviewCode(null)}
+          />
         </View>
-      )}
+      ) : (
+        <Modal
+          isVisible={!!previewCode}
+          onClose={() => setPreviewCode(null)}
+        >
+          <View className="flex-1">
+            <CodePreview
+              {...previewCode}
+              onClose={() => setPreviewCode(null)}
+            />
+          </View>
+        </Modal>
+      )
+    )}
       </View>
   );
 }; 
