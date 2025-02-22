@@ -2,7 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Platform, SectionList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
-import { threadsAtom, currentThreadAtom, threadActionsAtom } from '@/src/hooks/atoms';
+import { threadsAtom, currentThreadAtom, threadActionsAtom, previewCodeAtom } from '@/src/hooks/atoms';
 import { modalService } from '@/src/services/modalService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/src/types/core';
@@ -21,6 +21,7 @@ const ChatThreads: React.FC = () => {
   const [threads] = useAtom(threadsAtom);
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
+  const setPreviewCode = useSetAtom(previewCodeAtom);
   const scrollViewRef = useRef<SectionList>(null);
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -110,6 +111,7 @@ const ChatThreads: React.FC = () => {
   };
 
   const handleThreadSelect = (thread: Thread) => {
+    setPreviewCode(null);
     if (Platform.OS === 'web' && window.innerWidth >= 768) {
       dispatchThread({ type: 'setCurrent', payload: thread });
     } else {

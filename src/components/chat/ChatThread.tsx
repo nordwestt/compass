@@ -17,15 +17,16 @@ import {
   isGeneratingAtom,
   availableProvidersAtom,
   ttsEnabledAtom,
-  defaultVoiceAtom
+  defaultVoiceAtom,
+  previewCodeAtom
 } from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
-import { Ionicons } from '@expo/vector-icons';
-import { toastService } from '@/src/services/toastService';
 import { VoiceSelector } from './VoiceSelector';
 import { CodePreview } from './CodePreview';
 import { parseCodeBlocks } from '@/src/utils/codeParser';
+
+
 
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlashList<any>>(null);
@@ -42,11 +43,7 @@ export const ChatThread: React.FC = () => {
 
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
 
-  const [previewCode, setPreviewCode] = useState<{
-    html?: string;
-    css?: string;
-    javascript?: string;
-  } | null>(null);
+  const [previewCode, setPreviewCode] = useAtom(previewCodeAtom);
 
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {

@@ -137,9 +137,13 @@ export const firstMessageTransform: MessageTransform = {
       const title = await ctx.provider.sendSimpleMessage(ctx.message, ctx.thread.selectedModel, systemPrompt);
       await new Promise(resolve => setTimeout(resolve, 200));
 
+      // limit title to 5 words
+      const titleWords = title.split(' ');
+      const limitedTitle = titleWords.slice(0, 5).join(' ');
+
       await ctx.metadata.dispatchThread({
         type: 'update',
-        payload: { ...ctx.metadata.updatedThread, title: title }
+        payload: { ...ctx.metadata.updatedThread, title: limitedTitle }
       });
     } catch (error: any) {
       toastService.danger({
