@@ -47,24 +47,24 @@ ${css}
 ${javascript}`;
 
   return (
-    <View className="w-1/3 h-screen p-2 bg-surface border border-border rounded-lg shadow-xl overflow-hidden">
+    <View className="bg-surface flex-1 border border-border rounded-lg shadow-xl overflow-hidden">
       <View className="flex-row justify-between items-center p-2 bg-background border-b border-border">
         <View className="flex-row bg-surface rounded-full">
           <TouchableOpacity 
             onPress={() => setShowPreview(true)}
-            className={`px-3 py-1 rounded-full ${showPreview ? 'bg-primary' : 'bg-transparent'}`}
+            className={`px-3 py-1 rounded-full hover:opacity-70 ${showPreview ? 'bg-primary' : 'bg-transparent'}`}
           >
             <Text className={`${showPreview ? 'text-white' : 'text-text'}`}>Preview</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => setShowPreview(false)}
-            className={`px-3 py-1 rounded-full ${!showPreview ? 'bg-primary' : 'bg-transparent'}`}
+            className={`px-3 py-1 rounded-full hover:opacity-70 ${!showPreview ? 'bg-primary' : 'bg-transparent'}`}
           >
             <Text className={`${!showPreview ? 'text-white' : 'text-text'}`}>Code</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={onClose}>
-          <Ionicons name="close" size={24} className="text-text" />
+          <Ionicons name="close" size={24} className="text-text rounded-full hover:opacity-70" />
         </TouchableOpacity>
       </View>
 

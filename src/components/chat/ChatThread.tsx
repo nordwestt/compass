@@ -223,10 +223,12 @@ export const ChatThread: React.FC = () => {
       
     </View>
     {previewCode && (
+        <View className="flex-1 p-4 overflow-hidden w-1/3 h-screen">
         <CodePreview
           {...previewCode}
           onClose={() => setPreviewCode(null)}
         />
+        </View>
       )}
       </View>
   );
