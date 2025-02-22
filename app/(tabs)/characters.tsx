@@ -142,28 +142,28 @@ export default function CharactersScreen() {
         <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {customPrompts.map((prompt) => (
             <TouchableOpacity 
-            onPress={() => handleEdit(prompt)} 
-            onLongPress={() => startChat(prompt)} 
-            key={prompt.id} 
-            className="w-full mb-4"
-          >
-            <View className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg">
-              <View className="flex-col items-center my-2">
-              <CharacterAvatar character={prompt} size={64} className="my-auto shadow-2xl" />
-                <Text className="font-extrabold text-primary">
-                    {prompt.name}
-                </Text>
+              onPress={() => handleEdit(prompt)} 
+              onLongPress={() => startChat(prompt)} 
+              key={prompt.id} 
+              className="w-full mb-4"
+            >
+              <View className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg" pointerEvents="none">
+                <View className="flex-col items-center my-2">
+                <CharacterAvatar character={prompt} size={64} className="my-auto shadow-2xl" />
+                  <Text className="font-extrabold text-primary">
+                      {prompt.name}
+                  </Text>
+                </View>
+                <View className="flex-1 ml-4">
+                  <Text 
+                    numberOfLines={20} 
+                    className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2 overflow-y-auto"
+                  >
+                    {prompt.content}
+                  </Text>
+                </View>
               </View>
-              <View className="flex-1 ml-4">
-                <Text 
-                  numberOfLines={20} 
-                  className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2 overflow-y-auto"
-                >
-                  {prompt.content}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
           ))}
         </View>
         </ScrollView>
