@@ -147,7 +147,10 @@ export default function CharactersScreen() {
               key={prompt.id} 
               className="w-full mb-4"
             >
-              <View className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg" pointerEvents="none">
+              <View 
+                className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg" 
+                pointerEvents={Platform.OS === 'web' ? 'auto' : 'none'}
+              >
                 <View className="flex-col items-center my-2">
                 <CharacterAvatar character={prompt} size={64} className="my-auto shadow-2xl" />
                   <Text className="font-extrabold text-primary">
