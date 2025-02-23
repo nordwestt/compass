@@ -39,10 +39,10 @@ export function ProviderFormFields({
                 setSelectedType(value.source);
                 setCustomEndpoint(value.endpoint);
               }}
-              className={`mr-2 p-3 rounded-lg border border-border ${
+              className={`mr-2 p-3 rounded-lg border-2 bg-surface ${
                 selectedType === value.source 
-                  ? 'bg-primary' 
-                  : 'bg-surface'
+                  ? 'border-primary' 
+                  : 'border-border'
               }`}
             >
               <View className="flex-row items-center">
@@ -52,51 +52,37 @@ export function ProviderFormFields({
                     className="!w-[24px] !h-[24px] rounded-full mr-2"
                   />
                 )}
-                <TouchableOpacity onPress={() => value.signupUrl && Linking.openURL(value.signupUrl)}>
-                  <Text 
-                    className={`${selectedType === value.source ? 'text-white' : 'text-text'} underline`}
-                  >
+                  <Text className={'text-text'}>
                     {value.name}
                   </Text>
-                </TouchableOpacity>
               </View>
               
               <View className="flex-row mt-2 space-x-2">
-                {value.capabilities?.llm && (
-                  <Ionicons 
-                    name="chatbubble-outline" 
-                    size={16} 
-                    color={selectedType === value.source ? '#fff' : '#666'} 
-                  />
-                )}
-                {value.capabilities?.tts && (
-                  <Ionicons 
-                    name="volume-high-outline" 
-                    size={16} 
-                    color={selectedType === value.source ? '#fff' : '#666'} 
-                  />
-                )}
-                {value.capabilities?.stt && (
-                  <Ionicons 
-                    name="mic-outline" 
-                    size={16} 
-                    color={selectedType === value.source ? '#fff' : '#666'} 
-                  />
-                )}
-                {value.capabilities?.image && (
-                  <Ionicons 
-                    name="image-outline" 
-                    size={16} 
-                    color={selectedType === value.source ? '#fff' : '#666'} 
-                  />
-                )}
-                {value.capabilities?.search && (
-                  <Ionicons 
-                    name="search-outline" 
-                    size={16} 
-                    color={selectedType === value.source ? '#fff' : '#666'} 
-                  />
-                )}
+                <Ionicons 
+                  name={value.capabilities?.llm ? 'chatbubble' : 'chatbubble-outline'} 
+                  size={16} 
+                  className={value.capabilities?.llm ? 'text-primary' : 'text-gray-300'}
+                />
+                <Ionicons 
+                  name={value.capabilities?.tts ? 'volume-high' : 'volume-high-outline'} 
+                  size={16} 
+                  className={value.capabilities?.tts ? 'text-primary' : 'text-gray-300'}
+                />
+                <Ionicons 
+                  name={value.capabilities?.stt ? 'mic' : 'mic-outline'} 
+                  size={16} 
+                  className={value.capabilities?.stt ? 'text-primary' : 'text-gray-300'}
+                />
+                <Ionicons 
+                  name={value.capabilities?.image ? 'image' : 'image-outline'} 
+                  size={16} 
+                  className={value.capabilities?.image ? 'text-primary' : 'text-gray-300'}
+                />
+                <Ionicons 
+                  name={value.capabilities?.search ? 'search' : 'search-outline'} 
+                  size={16} 
+                  className={value.capabilities?.search ? 'text-primary' : 'text-gray-300'}
+                />
               </View>
             </TouchableOpacity>
           ))}
@@ -116,6 +102,14 @@ export function ProviderFormFields({
       )}
 
       <View>
+      {PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS]?.signupUrl && (
+          <TouchableOpacity 
+            onPress={() => Linking.openURL(PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS].signupUrl!)}
+            className="mb-2"
+          >
+            <Text className="text-primary underline">Click here to sign up for an {PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS]?.name} API key</Text>
+          </TouchableOpacity>
+        )}
         <Text className="text-sm font-medium text-text mb-2">API Key</Text>
         <TextInput
           value={apiKey}

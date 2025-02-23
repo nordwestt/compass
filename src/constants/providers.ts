@@ -12,7 +12,7 @@ export const PREDEFINED_PROVIDERS = {
     },
     logo: PROVIDER_LOGOS.anthropic,
     keyRequired: true,
-    signupUrl: 'https://console.anthropic.com/signup'
+    signupUrl: 'https://console.anthropic.com/'
   } as Provider,
   openai: {
     name: 'OpenAI',
@@ -38,8 +38,7 @@ export const PREDEFINED_PROVIDERS = {
       stt: false
     },
     logo: PROVIDER_LOGOS.ollama,
-    keyRequired: false,
-    signupUrl: 'https://ollama.ai'
+    keyRequired: false
   } as Provider,
   elevenlabs: {
     name: 'ElevenLabs',
@@ -66,7 +65,6 @@ export const PREDEFINED_PROVIDERS = {
     },
     logo: PROVIDER_LOGOS.searxng,
     keyRequired: false,
-    signupUrl: 'https://docs.searxng.org/admin/installation.html'
   } as Provider,
   replicate: {
     name: 'Replicate',
