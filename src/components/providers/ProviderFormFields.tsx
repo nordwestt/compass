@@ -106,6 +106,42 @@ export function ProviderFormFields({
 
       <View>
 
+        <View>
+          <Text className="text-sm font-medium text-text mb-2">You have chosen {selectedProvider.name}. With this provider, you will be able to:</Text>
+          <View className="mb-4 flex-row flex-wrap gap-2">
+            {selectedProvider.capabilities?.llm && (
+              <View className="flex-row items-center">
+                <Ionicons name="chatbubble" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Chat with AI models</Text>
+              </View>
+            )}
+            {selectedProvider.capabilities?.tts && (
+              <View className="flex-row items-center">
+                <Ionicons name="volume-high" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Convert text to speech</Text>
+              </View>
+            )}
+            {selectedProvider.capabilities?.stt && (
+              <View className="flex-row items-center">
+                <Ionicons name="mic" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Convert speech to text</Text>
+              </View>
+            )}
+            {selectedProvider.capabilities?.image && (
+              <View className="flex-row items-center">
+                <Ionicons name="image" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Generate images</Text>
+              </View>
+            )}
+            {selectedProvider.capabilities?.search && (
+              <View className="flex-row items-center">
+                <Ionicons name="search" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Search the web</Text>
+              </View>
+            )}
+          </View>
+        </View>
+
 
       {selectedProvider.signupUrl && (
           <TouchableOpacity 
