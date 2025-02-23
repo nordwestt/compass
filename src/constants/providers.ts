@@ -10,7 +10,8 @@ export const PREDEFINED_PROVIDERS = {
       tts: false,
       stt: false
     },
-    logo: PROVIDER_LOGOS.anthropic
+    logo: PROVIDER_LOGOS.anthropic,
+    keyRequired: true
   } as Provider,
   openai: {
     name: 'OpenAI',
@@ -22,7 +23,8 @@ export const PREDEFINED_PROVIDERS = {
       stt: false,
       image: true
     },
-    logo: PROVIDER_LOGOS.openai
+    logo: PROVIDER_LOGOS.openai,
+    keyRequired: true
   } as Provider,
   ollama: {
     name: 'Ollama',
@@ -33,7 +35,8 @@ export const PREDEFINED_PROVIDERS = {
       tts: false,
       stt: false
     },
-    logo: PROVIDER_LOGOS.ollama
+    logo: PROVIDER_LOGOS.ollama,
+    keyRequired: false
   } as Provider,
   elevenlabs: {
     name: 'ElevenLabs',
@@ -44,7 +47,8 @@ export const PREDEFINED_PROVIDERS = {
       tts: true,
       stt: false
     },
-    logo: PROVIDER_LOGOS.elevenlabs
+    logo: PROVIDER_LOGOS.elevenlabs,
+    keyRequired: true
   } as Provider,
   searxng: {
     name: 'SearXNG',
@@ -56,7 +60,8 @@ export const PREDEFINED_PROVIDERS = {
       stt: false,
       search: true
     },
-    logo: PROVIDER_LOGOS.searxng
+    logo: PROVIDER_LOGOS.searxng,
+    keyRequired: false
   } as Provider,
   replicate: {
     name: 'Replicate',
@@ -68,6 +73,7 @@ export const PREDEFINED_PROVIDERS = {
       stt: false,
       image: true
     },
-    logo: PROVIDER_LOGOS.replicate
+    logo: PROVIDER_LOGOS.replicate,
+    keyRequired: true
   } as Provider
 } as const; 

@@ -50,4 +50,5 @@ export interface Thread {
     apiKey?: string;
     endpoint: string;
     logo?: any;
+    keyRequired?: boolean;
   }

@@ -6,7 +6,7 @@ import { ProviderFormFields } from './ProviderFormFields';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { Modal } from '@/src/components/ui/Modal';
 import { EditOllama } from './EditOllama';
-
+import { toastService } from '@/src/services/toastService';
 interface EndpointModalProps {
   visible: boolean;
   onClose: () => void;
@@ -38,10 +38,15 @@ export function EndpointModal({ visible, onClose, onSave, provider, editing }: E
   }, [visible, provider]);
 
   const handleSave = () => {
-    const capabilities = PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS].capabilities;
+    const provider = PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS];
+    if(provider.keyRequired && !apiKey) {
+      toastService.danger({title: 'API Key Required', description: 'Please enter an API key for this provider.'});
+      return;
+    }
+    const capabilities = provider.capabilities;
     onSave({
       id: provider?.id ?? '',
-      name: name || PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS].name,
+      name: name || provider.name,
       endpoint: customEndpoint,
       apiKey,
       source: selectedType,
