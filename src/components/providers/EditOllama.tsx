@@ -27,8 +27,8 @@ export function EditOllama({ provider }: EditOllamaProps) {
 
   const availableModels: AvailableModel[] = [
     { id: "TheAzazel/l3.2-rogue-creative-instruct-abliterated-7b"},
-    { id: "llama2:3b" },
-    { id: "llama2:1b" },
+    { id: "llama3.2:3b" },
+    { id: "llama3.2:1b" },
   ];
 
   const fetchLocalModels = async () => {
@@ -65,8 +65,8 @@ export function EditOllama({ provider }: EditOllamaProps) {
         })
       });
       toastService.success({
-        title: 'Model pulled successfully',
-        description: `${modelId} has been downloaded`
+        title: 'Model is being downloaded',
+        description: `${modelId} is being downloaded in the background`
       });
       fetchLocalModels();
     } catch (error: any) {
@@ -138,7 +138,7 @@ export function EditOllama({ provider }: EditOllamaProps) {
 
         <View>
           <Text className="text-xl font-bold text-text mb-2">Available Models</Text>
-          {availableModels.map((model) => (
+          {availableModels.filter((model) => !localModels.some((localModel) => localModel.name === model.id)).map((model) => (
             <View key={model.id} className="bg-surface p-4 rounded-lg mb-2 border border-border">
               <View className="flex-row justify-between items-center">
                 <Text className="font-medium text-text flex-1 mr-2" numberOfLines={1} ellipsizeMode="tail">{model.id}</Text>
