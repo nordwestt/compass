@@ -48,7 +48,7 @@ export default function SettingsScreen() {
         />
 
         <SettingItem
-          title="API Providers"
+          title="Providers"
           description="Manage your AI model providers"
           icon="server"
           onPress={() => router.push('/settings/providers')}

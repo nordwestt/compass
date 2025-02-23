@@ -125,7 +125,7 @@ export default function Providers({ className }: ProvidersProps) {
         
         <View className="flex-row justify-between items-center mb-4">
           <Text className="text-2xl font-bold mb-4 text-text">
-            API Providers
+            Providers
           </Text>
           <TouchableOpacity
                 onPress={() => {
