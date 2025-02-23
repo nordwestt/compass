@@ -52,7 +52,7 @@ export function Modal({
         >
           <View 
             className={`
-              ${position === 'center' ? 'w-3/4 h-3/4 mx-auto' : 'w-full'}
+              ${position === 'center' ? 'w-3/4 my-auto mx-auto' : 'w-full'}
               ${position === 'bottom' ? 'rounded-t-xl' : 'rounded-xl'} 
               bg-background 
               ${className}

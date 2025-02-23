@@ -56,7 +56,7 @@ export function WelcomeIntroduction() {
     <Modal
       isVisible={isVisible}
       onClose={handleClose}
-      className={Platform.OS === 'web' ? "w-[70%] max-w-3xl mx-auto" : "m-4"}
+      className={Platform.OS === 'web' ? "w-[70%] mx-auto" : "m-4"}
       position={Platform.OS === 'web' ? 'center' : 'bottom'}
     >
       <View className={`p-6 ${Platform.OS === 'web' ? 'max-h-[70vh]' : ''}`}>
