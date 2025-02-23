@@ -71,7 +71,11 @@ export function WelcomeIntroduction() {
           <Ionicons 
             name={ONBOARDING_PAGES[currentPage].icon as any} 
             size={64} 
-            className="!text-primary mb-4" 
+            className={`!text-primary mb-4 ${
+              Platform.OS === 'web' && currentPage === 0
+                ? 'hover:rotate-180 transition-transform duration-[2000ms] ease-in-out animate-spin-once'
+                : ''
+            }`}
           />
           <Text className="text-2xl font-bold text-text mb-2">
             {ONBOARDING_PAGES[currentPage].title}
