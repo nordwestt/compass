@@ -5,7 +5,7 @@ import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { useState } from 'react';
 interface ProviderFormFieldsProps {
   name: string;
   setName: (value: string) => void;
@@ -27,6 +27,8 @@ export function ProviderFormFields({
   customEndpoint,
   setCustomEndpoint,
 }: ProviderFormFieldsProps) {
+
+  const [selectedProvider, setSelectedProvider] = useState<Provider>(PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS]);
   return (
     <View className="space-y-4">
       <View>
@@ -38,6 +40,7 @@ export function ProviderFormFields({
               onPress={() => {
                 setSelectedType(value.source);
                 setCustomEndpoint(value.endpoint);
+                setSelectedProvider(value);
               }}
               className={`mr-2 p-3 rounded-lg border-2 bg-surface ${
                 selectedType === value.source 
@@ -102,12 +105,14 @@ export function ProviderFormFields({
       )}
 
       <View>
-      {PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS]?.signupUrl && (
+
+
+      {selectedProvider.signupUrl && (
           <TouchableOpacity 
-            onPress={() => Linking.openURL(PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS].signupUrl!)}
+            onPress={() => Linking.openURL(selectedProvider.signupUrl!)}
             className="mb-2"
           >
-            <Text className="text-primary underline">Click here to sign up for an {PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS]?.name} API key</Text>
+            <Text className="text-primary underline">Click here to sign up for an {selectedProvider.name} API key</Text>
           </TouchableOpacity>
         )}
         <Text className="text-sm font-medium text-text mb-2">API Key</Text>
