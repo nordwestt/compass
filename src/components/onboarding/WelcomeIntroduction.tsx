@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import { Modal } from '@/src/components/ui/Modal';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom } from 'jotai';
@@ -56,9 +56,10 @@ export function WelcomeIntroduction() {
     <Modal
       isVisible={isVisible}
       onClose={handleClose}
-      className="m-4"
+      className={Platform.OS === 'web' ? "w-[70%] max-w-3xl mx-auto" : "m-4"}
+      position={Platform.OS === 'web' ? 'center' : 'bottom'}
     >
-      <View className="p-6">
+      <View className={`p-6 ${Platform.OS === 'web' ? 'max-h-[70vh]' : ''}`}>
         <TouchableOpacity 
           onPress={handleClose}
           className="absolute right-4 top-4"

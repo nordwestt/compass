@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import RNModal from 'react-native-modal';
 
 import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
@@ -19,6 +19,11 @@ interface ModalProps {
    */
   maxHeight?: string;
   className?: string;
+  /**
+   * Position of the modal on the screen
+   * @default 'bottom'
+   */
+  position?: 'bottom' | 'center';
 }
 
 export function Modal({ 
@@ -26,17 +31,32 @@ export function Modal({
   onClose, 
   children,
   maxHeight = '70%',
-  className
+  className,
+  position = 'bottom'
 }: ModalProps) {
   return (
     <RNModal
       isVisible={isVisible}
       onModalHide={onClose}
-      style={{margin:0}}
+      style={{
+        margin: 0,
+        justifyContent: position === 'center' ? 'center' : 'flex-end'
+      }}
     >
       <ThemeProvider>
-        <View className="flex-1 justify-end">
-          <View className={`rounded-t-xl bg-background max-h-[70%] ${className}`}>
+        <View 
+          className={`
+            ${position === 'bottom' ? 'justify-end' : 'justify-center'} 
+            flex-1
+          `}
+        >
+          <View 
+            className={`
+              ${position === 'bottom' ? 'rounded-t-xl' : 'rounded-xl'} 
+              bg-background 
+              ${className}
+            `}
+          >
             {children}
           </View>
         </View>
