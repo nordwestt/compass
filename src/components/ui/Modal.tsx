@@ -18,13 +18,15 @@ interface ModalProps {
    * Defaults to 70% of screen height.
    */
   maxHeight?: string;
+  className?: string;
 }
 
 export function Modal({ 
   isVisible, 
   onClose, 
   children,
-  maxHeight = '70%'
+  maxHeight = '70%',
+  className
 }: ModalProps) {
   return (
     <RNModal
@@ -34,7 +36,7 @@ export function Modal({
     >
       <ThemeProvider>
         <View className="flex-1 justify-end">
-          <View className={`rounded-t-xl bg-background max-h-[70%]`}>
+          <View className={`rounded-t-xl bg-background max-h-[70%] ${className}`}>
             {children}
           </View>
         </View>

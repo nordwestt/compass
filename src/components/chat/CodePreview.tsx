@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import WebView from 'react-native-webview';
+import { Modal } from '../ui/Modal';
 
 interface CodePreviewProps {
   html?: string;
@@ -10,6 +11,52 @@ interface CodePreviewProps {
   onClose: () => void;
 }
 
+const ToggleButtons: React.FC<{
+  showPreview: boolean;
+  setShowPreview: (show: boolean) => void;
+}> = ({ showPreview, setShowPreview }) => (
+  <View className="flex-row bg-surface rounded-full">
+    <TouchableOpacity 
+      onPress={() => setShowPreview(true)}
+      className={`px-3 py-1 rounded-full hover:opacity-70 ${showPreview ? 'bg-primary' : 'bg-transparent'}`}
+    >
+      <Text className={`${showPreview ? 'text-white' : 'text-text'}`}>Preview</Text>
+    </TouchableOpacity>
+    <TouchableOpacity 
+      onPress={() => setShowPreview(false)}
+      className={`px-3 py-1 rounded-full hover:opacity-70 ${!showPreview ? 'bg-primary' : 'bg-transparent'}`}
+    >
+      <Text className={`${!showPreview ? 'text-white' : 'text-text'}`}>Code</Text>
+    </TouchableOpacity>
+  </View>
+);
+
+const Header: React.FC<{
+  showPreview: boolean;
+  setShowPreview: (show: boolean) => void;
+  onClose: () => void;
+  isFullscreen?: boolean;
+  onToggleFullscreen: () => void;
+}> = ({ showPreview, setShowPreview, onClose, isFullscreen, onToggleFullscreen }) => (
+  <View className="flex-row justify-between items-center p-2 bg-background border-b border-border rounded-lg">
+    <ToggleButtons showPreview={showPreview} setShowPreview={setShowPreview} />
+    <View className="flex-row items-center gap-2">
+      <TouchableOpacity onPress={onToggleFullscreen}>
+        <Ionicons 
+          name={isFullscreen ? "contract" : "expand"} 
+          size={24} 
+          className="text-text rounded-full hover:opacity-70" 
+        />
+      </TouchableOpacity>
+      {!isFullscreen && (
+        <TouchableOpacity onPress={onClose}>
+          <Ionicons name="close" size={24} className="text-text rounded-full hover:opacity-70" />
+        </TouchableOpacity>
+      )}
+    </View>
+  </View>
+);
+
 export const CodePreview: React.FC<CodePreviewProps> = ({
   html = '',
   css = '',
@@ -17,6 +64,7 @@ export const CodePreview: React.FC<CodePreviewProps> = ({
   onClose
 }) => {
   const [showPreview, setShowPreview] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const webViewRef = useRef<WebView>(null);
 
   const combinedContent = `
@@ -46,28 +94,8 @@ ${css}
 // JavaScript
 ${javascript}`;
 
-  return (
-    <View className="bg-surface flex-1 border border-border rounded-lg shadow-xl overflow-hidden">
-      <View className="flex-row justify-between items-center p-2 bg-background border-b border-border">
-        <View className="flex-row bg-surface rounded-full">
-          <TouchableOpacity 
-            onPress={() => setShowPreview(true)}
-            className={`px-3 py-1 rounded-full hover:opacity-70 ${showPreview ? 'bg-primary' : 'bg-transparent'}`}
-          >
-            <Text className={`${showPreview ? 'text-white' : 'text-text'}`}>Preview</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => setShowPreview(false)}
-            className={`px-3 py-1 rounded-full hover:opacity-70 ${!showPreview ? 'bg-primary' : 'bg-transparent'}`}
-          >
-            <Text className={`${!showPreview ? 'text-white' : 'text-text'}`}>Code</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={onClose}>
-          <Ionicons name="close" size={24} className="text-text rounded-full hover:opacity-70" />
-        </TouchableOpacity>
-      </View>
-
+  const previewContent = (
+    <>
       {showPreview ? (
         Platform.OS === 'web' ? (
           <iframe
@@ -92,6 +120,38 @@ ${javascript}`;
           </ScrollView>
         </View>
       )}
-    </View>
+    </>
+  );
+
+  return (
+    <>
+      <View className="bg-surface border border-border rounded-lg shadow-xl overflow-hidden flex-1">
+        <Header 
+          showPreview={showPreview}
+          setShowPreview={setShowPreview}
+          onClose={onClose}
+          onToggleFullscreen={() => setIsFullscreen(true)}
+        />
+        {previewContent}
+      </View>
+
+      <Modal 
+        isVisible={isFullscreen} 
+        onClose={() => setIsFullscreen(false)}
+        maxHeight="100%"
+        className="flex-1 m-2 rounded-lg max-h-[100%]"
+      >
+        <View className="flex-1 rounded-lg">
+          <Header 
+            showPreview={showPreview}
+            setShowPreview={setShowPreview}
+            onClose={onClose}
+            isFullscreen={true}
+            onToggleFullscreen={() => setIsFullscreen(false)}
+          />
+          {previewContent}
+        </View>
+      </Modal>
+    </>
   );
 }; 
