@@ -4,22 +4,16 @@ import { Model } from '@/src/types/core';
 import { getDefaultStore, useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/src/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
-import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
 import { Provider } from '@/src/types/core';
 import { DropdownElement } from '@/src/components/ui/Dropdown';
 
-import Animated, { 
-  FadeIn,
-  FadeOut,
-  SlideInDown,
-  SlideOutDown
-} from 'react-native-reanimated';
 import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
 import { scanLocalOllama, scanNetworkOllama } from '@/src/components/providers/providers';
 import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';
 import { Platform as PlatformUtils } from '@/src/utils/platform';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 
 
@@ -44,12 +38,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       
       const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
       setModels(models);
-
-
-      if(!models.length && !providers.length && !PlatformUtils.isWeb) {
-        
-      }
-      
     };
     fetchModels();
   }, []);
@@ -109,18 +97,24 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
 
 
-  if(!providers.filter(p => p.capabilities?.llm).length) return <TouchableOpacity className="flex-row items-center gap-2 bg-primary hover:opacity-80 text-white rounded-lg p-2 border border-border" onPress={scanOllamaProviders}>
-    <Ionicons name="radio-outline" size={24} color="white" />
-    <Text>Scan for Ollama</Text>
-    </TouchableOpacity>;
+  if(!providers.filter(p => p.capabilities?.llm).length) {
+    return (
+    <View className='flex flex-row gap-2'>
+      <TouchableOpacity className="flex-row items-center gap-2 bg-primary hover:opacity-80 text-text rounded-lg p-2 border border-border" onPress={scanOllamaProviders}>
+        <Ionicons name="radio-outline" size={24} color="white" />
+        <Text className='text-white pt-1'>Scan for Ollama</Text>
+      </TouchableOpacity>
+      <TouchableOpacity className='flex-row items-center gap-2 bg-background hover:opacity-80 rounded-lg p-2 border border-border' onPress={()=>router.push('/settings/providers')}>
+        <Ionicons name="server-outline" size={24} className='!text-text' />
+        <Text className='text-text pt-1'>Manage providers</Text>
+        </TouchableOpacity>
+    </View>);
+  }
   
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
   }
 
-  // Remove the model selection logic from render phase
-  const currentModel = models.find(m => m.id === selectedModel.id);
-  
 
   let modelList = models.map((model) => ({
     title: model.name,
@@ -140,8 +134,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       description: "The selected model will now be used for new threads"
     });
   }
-
-  // modelList = [...modelList, ...(modelList.map(x=>({...x, id: "wuut"})))];
 
 
   return (

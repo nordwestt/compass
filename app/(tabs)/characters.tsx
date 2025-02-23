@@ -138,7 +138,7 @@ export default function CharactersScreen() {
               <Text className="text-white ml-2 font-medium">New Character</Text>
             </TouchableOpacity>
         </View>
-        <ScrollView className="flex-1 p-1">
+        <ScrollView className="flex-1 p-4">
         <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {customPrompts.map((prompt) => (
             <TouchableOpacity 
