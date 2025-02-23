@@ -52,7 +52,7 @@ export const ConfirmationModal = () => {
         />
       )}
 
-      <View className="flex-row justify-end space-x-2">
+      <View className="flex-row justify-around">
         <TouchableOpacity
           onPress={() => modalService.handleResponse(null)}
           className="px-4 py-2 rounded-lg bg-surface text-text w-1/2 mr-2"
