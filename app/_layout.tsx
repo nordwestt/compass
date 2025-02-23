@@ -19,6 +19,7 @@ import { useKeyboardShortcuts } from "@/src/hooks/useKeyboardShortcuts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 import { Platform } from '@/src/utils/platform';
+import { WelcomeIntroduction } from "@/src/components/onboarding/WelcomeIntroduction";
 
 export default function RootLayout() {
   const { themePreset } = useThemePreset();
@@ -80,6 +81,7 @@ export default function RootLayout() {
       </View>
       <ConfirmationModal />
       <Toast />
+      <WelcomeIntroduction />
     </ThemeProvider>
     </GestureHandlerRootView>
   );
