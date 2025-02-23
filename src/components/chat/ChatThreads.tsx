@@ -138,7 +138,7 @@ const ChatThreads: React.FC = () => {
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`flex-row shadow-md flex-1 items-center rounded-lg bg-surface hover:bg-background ${
+              className={`flex-row shadow-md flex-1 items-center rounded-lg rounded-r-none bg-surface hover:bg-background h-12 ${
                 currentThread.id === thread.id 
                   ? 'web:border-primary web:border-2' 
                   : ''
@@ -147,16 +147,17 @@ const ChatThreads: React.FC = () => {
               <Text className="font-bold text-text p-2 text-center">
                 {thread.title}
               </Text>
-              <TouchableOpacity 
+              
+            </TouchableOpacity>
+            <TouchableOpacity 
               onPress={() => deleteThread(thread.id)}
-              className="ml-auto h-full p-4 bg-red-100 dark:bg-red-900 rounded-r-lg hover:opacity-60"
+              className="h-12 p-4 shadow-md items-center justify-center bg-red-100 dark:bg-red-900 rounded-r-lg hover:opacity-60"
             >
               <Ionicons 
                 name="trash-outline" 
                 size={20} 
                 className="!text-red-500 dark:!text-red-300"
               />
-            </TouchableOpacity>
             </TouchableOpacity>
             
           </View>
