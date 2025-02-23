@@ -142,16 +142,20 @@ export default function Providers({ className }: ProvidersProps) {
             <Text className="text-text flex-1 font-medium pt-1">
               Providers provide different services to the app, such as text generation, image generation, search, and more.
             </Text>
-          </View>
+        </View>
 
-        {providers.map((provider, index) => (
-          <ProviderCard className={`border-b border-border bg-surface`}
-            key={provider.id}
-            provider={provider}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
+        <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {providers.map((provider, index) => (
+            <View key={provider.id} className="w-full">
+              <ProviderCard
+                className="bg-surface rounded-xl shadow-lg"
+                provider={provider}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            </View>
+          ))}
+        </View>
       </ScrollView>
       <View className="bg-primary/10 dark:bg-primary/20 rounded-lg p-4 mb-6">
           <TouchableOpacity 
