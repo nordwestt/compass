@@ -13,17 +13,17 @@ const ONBOARDING_PAGES = [
   },
   {
     title: 'Add a Provider',
-    description: 'First, you\'ll need to add an AI provider. Go to Settings > Providers to add Ollama, OpenAI, or other supported services.',
+    description: "First, you'll need to add an AI provider. I highly recommend setting up Ollama as it's free and private. Go to Settings > Help to see how to set it up. Alternatively, you can use OpenAI or other providers.",
     icon: 'server'
   },
   {
     title: 'Choose a Character',
-    description: 'Select or create a character to chat with. Each character has their own personality and expertise.',
+    description: 'Select or create a character to chat with. There are 8 starter characters to choose from, each with their own personality and expertise.',
     icon: 'people'
   },
   {
     title: 'Start Chatting',
-    description: 'That\'s it! You\'re ready to start chatting. Use @ to mention other characters in your conversation.',
+    description: "That's it! You're ready to start chatting. You can past URLs into the chat to ask about it, or just start chatting with your computer.",
     icon: 'chatbubbles'
   }
 ];
@@ -64,14 +64,14 @@ export function WelcomeIntroduction() {
           onPress={handleClose}
           className="absolute right-4 top-4"
         >
-          <Text className="text-primary">Skip</Text>
+          <Text className="!text-primary">Skip</Text>
         </TouchableOpacity>
 
         <View className="items-center mb-8">
           <Ionicons 
             name={ONBOARDING_PAGES[currentPage].icon as any} 
             size={64} 
-            className="text-primary mb-4" 
+            className="!text-primary mb-4" 
           />
           <Text className="text-2xl font-bold text-text mb-2">
             {ONBOARDING_PAGES[currentPage].title}
@@ -99,7 +99,7 @@ export function WelcomeIntroduction() {
                 onPress={handleBack}
                 className="border border-primary px-6 py-3 rounded-lg flex-row items-center"
               >
-                <Ionicons name="arrow-back" size={20} className="text-primary" />
+                <Ionicons name="arrow-back" size={20} className="!text-primary" />
                 <Text className="text-primary font-medium ml-2">
                   Back
                 </Text>
@@ -113,7 +113,7 @@ export function WelcomeIntroduction() {
               <Text className="text-white font-medium mr-2">
                 {currentPage === ONBOARDING_PAGES.length - 1 ? 'Get Started' : 'Next'}
               </Text>
-              <Ionicons name="arrow-forward" size={20} color="white" />
+              <Ionicons name="arrow-forward" size={20} className='!text-white' />
             </TouchableOpacity>
           </View>
         </View>
