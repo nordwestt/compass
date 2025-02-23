@@ -47,7 +47,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
         className="flex-row items-center px-4 py-2 h-12 rounded-lg bg-background border border-border hover:bg-surface"
       >
         <CharacterAvatar character={selectedPrompt} size={32} />
-        <Text className="ml-2 text-black dark:text-white">
+        <Text className="ml-2 text-text">
           {selectedPrompt.name}
         </Text>
       </TouchableOpacity>
@@ -59,7 +59,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
           
           <View className="flex-1 justify-end">
               <View className="p-4 border-b border-border">
-                <Text className="text-lg font-bold text-center text-black dark:text-white">
+                <Text className="text-lg font-bold text-center text-text">
                   Select Character
                 </Text>
               </View>
