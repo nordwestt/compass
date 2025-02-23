@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
 import { allPromptsAtom, customPromptsAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
@@ -15,6 +15,7 @@ import Animated, {
   SlideOutDown
 } from 'react-native-reanimated';
 import { CharacterAvatar } from './CharacterAvatar';
+import { Modal } from '../ui/Modal';
 
 interface CharacterSelectorProps {
   selectedPrompt: Character;
@@ -52,24 +53,12 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
       </TouchableOpacity>
 
       <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="none"
-        onRequestClose={() => setIsModalVisible(false)}
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
       >
-        <ThemeProvider>
-          <Animated.View 
-            entering={FadeIn.duration(200)}
-            exiting={FadeOut.duration(200)}
-            className="absolute inset-0 bg-black/50"
-          />
+          
           <View className="flex-1 justify-end">
-            <Animated.View 
-              entering={SlideInDown.springify().damping(15)}
-              exiting={SlideOutDown.duration(200)}
-              className="rounded-t-xl max-h-[70%] bg-background"
-            >
-              <View className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <View className="p-4 border-b border-border">
                 <Text className="text-lg font-bold text-center text-black dark:text-white">
                   Select Character
                 </Text>
@@ -103,15 +92,13 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
 
               <TouchableOpacity
                 onPress={() => setIsModalVisible(false)}
-                className="p-4 border-t border-gray-200 dark:border-gray-700 bg-surface"
+                className="p-4 m-2 rounded-lg border-t border-border bg-surface"
               >
                 <Text className="text-center text-text">
                   Cancel
                 </Text>
               </TouchableOpacity>
-            </Animated.View>
           </View>
-        </ThemeProvider>
       </Modal>
     </View>
   );
