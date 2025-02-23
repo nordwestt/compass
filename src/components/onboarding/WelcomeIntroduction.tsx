@@ -23,7 +23,7 @@ const ONBOARDING_PAGES = [
   },
   {
     title: 'Start Chatting',
-    description: "That's it! You're ready to start chatting. You can past URLs into the chat to ask about it, or just start chatting with your computer.",
+    description: "That's it! You're ready to start chatting. You can paste URLs into the chat to ask about it, or just start chatting with your computer. You can always revisit this onboarding by going to Settings > Help.",
     icon: 'chatbubbles'
   }
 ];
