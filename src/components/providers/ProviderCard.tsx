@@ -22,16 +22,22 @@ export function ProviderCard({ provider, onEdit, onDelete, className }: Provider
               className="mr-2 !h-[48px] !w-[48px]"
             />
           )}
-          <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+          <Text className="text-lg font-semibold text-text">
             {provider.name || provider.source}
           </Text>
         </View>
-        <View className="flex-row">
-          <TouchableOpacity onPress={() => onEdit(provider)} className="p-2">
-            <Ionicons name="pencil" size={20} color="#4B5563" />
+        <View className="flex-row gap-2">
+          <TouchableOpacity 
+            onPress={() => onEdit(provider)} 
+            className="p-2 rounded-lg hover:bg-background"
+          >
+            <Ionicons name="pencil" size={20} className="!text-secondary" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => onDelete(provider.id ?? '')} className="p-2">
-            <Ionicons name="trash" size={20} color="#EF4444" />
+          <TouchableOpacity 
+            onPress={() => onDelete(provider.id ?? '')} 
+            className="p-2 rounded-lg hover:bg-red-100 hover:dark:bg-red-900"
+          >
+            <Ionicons name="trash" size={20} className="!text-red-500 dark:!text-red-300" />
           </TouchableOpacity>
         </View>
       </View>

@@ -145,7 +145,7 @@ export default function Providers({ className }: ProvidersProps) {
           </View>
 
         {providers.map((provider, index) => (
-          <ProviderCard className={`border-b border-border ${index % 2 === 1 ? 'bg-surface' : ''}`}
+          <ProviderCard className={`border-b border-border bg-surface`}
             key={provider.id}
             provider={provider}
             onEdit={handleEdit}
