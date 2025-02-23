@@ -51,4 +51,5 @@ export interface Thread {
     endpoint: string;
     logo?: any;
     keyRequired?: boolean;
+    signupUrl?: string;
   }

@@ -3,6 +3,8 @@ import { Provider } from '@/src/types/core';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Linking } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface ProviderFormFieldsProps {
   name: string;
@@ -37,21 +39,65 @@ export function ProviderFormFields({
                 setSelectedType(value.source);
                 setCustomEndpoint(value.endpoint);
               }}
-              className={`mr-2 p-3 rounded-lg flex-row items-center ${
+              className={`mr-2 p-3 rounded-lg border border-border ${
                 selectedType === value.source 
                   ? 'bg-primary' 
-                  : 'bg-background'
+                  : 'bg-surface'
               }`}
             >
-              {PROVIDER_LOGOS[value.source as keyof typeof PROVIDER_LOGOS] && (
-                <Image
-                  source={PROVIDER_LOGOS[value.source as keyof typeof PROVIDER_LOGOS]}
-                  className="!w-[24px] !h-[24px] rounded-full mr-2"
-                />
-              )}
-              <Text className={selectedType === value.source ? 'text-white' : 'text-text'}>
-                {value.name}
-              </Text>
+              <View className="flex-row items-center">
+                {PROVIDER_LOGOS[value.source as keyof typeof PROVIDER_LOGOS] && (
+                  <Image
+                    source={PROVIDER_LOGOS[value.source as keyof typeof PROVIDER_LOGOS]}
+                    className="!w-[24px] !h-[24px] rounded-full mr-2"
+                  />
+                )}
+                <TouchableOpacity onPress={() => value.signupUrl && Linking.openURL(value.signupUrl)}>
+                  <Text 
+                    className={`${selectedType === value.source ? 'text-white' : 'text-text'} underline`}
+                  >
+                    {value.name}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              
+              <View className="flex-row mt-2 space-x-2">
+                {value.capabilities?.llm && (
+                  <Ionicons 
+                    name="chatbubble-outline" 
+                    size={16} 
+                    color={selectedType === value.source ? '#fff' : '#666'} 
+                  />
+                )}
+                {value.capabilities?.tts && (
+                  <Ionicons 
+                    name="volume-high-outline" 
+                    size={16} 
+                    color={selectedType === value.source ? '#fff' : '#666'} 
+                  />
+                )}
+                {value.capabilities?.stt && (
+                  <Ionicons 
+                    name="mic-outline" 
+                    size={16} 
+                    color={selectedType === value.source ? '#fff' : '#666'} 
+                  />
+                )}
+                {value.capabilities?.image && (
+                  <Ionicons 
+                    name="image-outline" 
+                    size={16} 
+                    color={selectedType === value.source ? '#fff' : '#666'} 
+                  />
+                )}
+                {value.capabilities?.search && (
+                  <Ionicons 
+                    name="search-outline" 
+                    size={16} 
+                    color={selectedType === value.source ? '#fff' : '#666'} 
+                  />
+                )}
+              </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
