@@ -10,6 +10,7 @@ import Animated, {
 import { toastService } from '@/src/services/toastService';
 import { ToastMessage } from '@/src/types/toast';
 import { Ionicons } from '@expo/vector-icons';
+import RNModal from 'react-native-modal';
 
 const getToastColor = (type: ToastMessage['type']) => {
   switch (type) {
@@ -40,25 +41,6 @@ const getToastIcon = (type: ToastMessage['type']) => {
       return 'information-circle';
   }
 };
-
-const styles = StyleSheet.create({
-  container: {
-    ...Platform.select({
-      web: {
-        position: 'absolute' as any, // Type assertion to avoid TypeScript error
-        left: 0,
-        right: 0,
-        zIndex: 50,
-      },
-      default: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        zIndex: 50,
-      },
-    }),
-  },
-});
 
 export const Toast = () => {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -115,17 +97,33 @@ export const Toast = () => {
   const bottomToasts = toasts.filter(t => t.options.position === 'bottom');
 
   return (
-    <View style={styles.container}>
-      <View className="p-4">
-        {topToasts.map(toast => (
-          <ToastItem key={toast.id} toast={toast} />
-        ))}
+    <RNModal
+      isVisible={toasts.length > 0}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
+      hasBackdrop={true}
+      backdropOpacity={0.0}
+      coverScreen={true}
+      useNativeDriver={true}
+      statusBarTranslucent={true}
+      onBackdropPress={() => toastService.dismissAll()}
+      style={{ 
+        margin: 0,
+        zIndex: 9999,
+      }}
+    >
+      <View className="absolute inset-0 pointer-events-none" style={{ elevation: 9999 }}>
+        <View className="p-4 pointer-events-auto">
+          {topToasts.map(toast => (
+            <ToastItem key={toast.id} toast={toast} />
+          ))}
+        </View>
+        <View className="absolute bottom-0 inset-x-0 p-4 pointer-events-auto">
+          {bottomToasts.map(toast => (
+            <ToastItem key={toast.id} toast={toast} />
+          ))}
+        </View>
       </View>
-      <View className="absolute bottom-0 inset-x-0 p-4">
-        {bottomToasts.map(toast => (
-          <ToastItem key={toast.id} toast={toast} />
-        ))}
-      </View>
-    </View>
+    </RNModal>
   );
 }; 
