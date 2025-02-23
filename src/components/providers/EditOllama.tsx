@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, TextInput } from 'react-native';
 import { useState, useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Provider } from '@/src/types/core';
@@ -24,8 +24,9 @@ export function EditOllama({ provider }: EditOllamaProps) {
   const [localModels, setLocalModels] = useState<OllamaModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isPulling, setPulling] = useState<string | null>(null);
+  const [customModelId, setCustomModelId] = useState('');
 
-  const availableModels: AvailableModel[] = [
+  const recommendedModels: AvailableModel[] = [
     { id: "TheAzazel/l3.2-rogue-creative-instruct-abliterated-7b"},
     { id: "llama3.2:3b" },
     { id: "llama3.2:1b" },
@@ -136,9 +137,43 @@ export function EditOllama({ provider }: EditOllamaProps) {
           )}
         </View>
 
+        <View className="mb-6">
+          <Text className="text-xl font-bold text-text mb-2">Pull Custom Model</Text>
+          <View className="flex-row items-center bg-surface p-4 rounded-lg border border-border">
+            <TextInput
+              className="flex-1 mr-2 text-text h-full outline-none"
+              placeholder="Enter model name (e.g., phi3.5)"
+              placeholderTextColor="#666"
+              value={customModelId}
+              onChangeText={setCustomModelId}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                if (customModelId.trim()) {
+                  pullModel(customModelId.trim());
+                  setCustomModelId('');
+                }
+              }}
+              disabled={isPulling === customModelId || !customModelId.trim()}
+              className={`p-2 rounded-lg flex-row items-center ${
+                !customModelId.trim() ? 'bg-gray-500' : 'bg-primary'
+              }`}
+            >
+              {isPulling === customModelId ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <View className="flex-row items-center">
+                  <Ionicons name="download" size={20} color="white" />
+                  <Text className="text-white ml-2">Pull</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <View>
-          <Text className="text-xl font-bold text-text mb-2">Available Models</Text>
-          {availableModels.filter((model) => !localModels.some((localModel) => localModel.name === model.id)).map((model) => (
+          <Text className="text-xl font-bold text-text mb-2">Recommended Models</Text>
+          {recommendedModels.filter((model) => !localModels.some((localModel) => localModel.name === model.id)).map((model) => (
             <View key={model.id} className="bg-surface p-4 rounded-lg mb-2 border border-border">
               <View className="flex-row justify-between items-center">
                 <Text className="font-medium text-text flex-1 mr-2" numberOfLines={1} ellipsizeMode="tail">{model.id}</Text>
