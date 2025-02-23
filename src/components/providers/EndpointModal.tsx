@@ -87,7 +87,7 @@ export function EndpointModal({ visible, onClose, onSave, provider, editing }: E
 
         
       </ScrollView>
-      <View className="flex-row space-x-4 mt-6">
+      <View className="flex-row space-x-4 mt-6 m-2">
           <TouchableOpacity
             onPress={onClose}
             className="flex-1 p-4 rounded-lg bg-gray-200 dark:bg-gray-700"

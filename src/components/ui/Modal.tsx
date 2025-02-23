@@ -32,7 +32,7 @@ export function Modal({
   children,
   maxHeight = '70%',
   className,
-  position = 'bottom'
+  position = Platform.OS === 'web' ? 'center' : 'bottom'
 }: ModalProps) {
   return (
     <RNModal
@@ -52,6 +52,7 @@ export function Modal({
         >
           <View 
             className={`
+              ${position === 'center' ? 'w-3/4 h-3/4 mx-auto' : 'w-full'}
               ${position === 'bottom' ? 'rounded-t-xl' : 'rounded-xl'} 
               bg-background 
               ${className}
