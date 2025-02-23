@@ -13,9 +13,9 @@ interface ProviderCardProps {
 
 export function ProviderCard({ provider, onEdit, onDelete, className }: ProviderCardProps) {
   return (
-    <View key={provider.id} className={`rounded-lg p-4 shadow-sm ${className}`}>
+    <View key={provider.id} className={`rounded-lg shadow-sm ${className}`}>
       <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center">
+        <View className="flex-row items-center p-2">
           {provider.source !== 'custom' && (
             <Image
               source={PROVIDER_LOGOS[provider.source]}
@@ -26,16 +26,16 @@ export function ProviderCard({ provider, onEdit, onDelete, className }: Provider
             {provider.name || provider.source}
           </Text>
         </View>
-        <View className="flex-row gap-2">
+        <View className="flex-row h-full items-center">
           <TouchableOpacity 
             onPress={() => onEdit(provider)} 
-            className="p-2 rounded-lg hover:bg-background"
+            className="p-2 hover:opacity-60 bg-background h-full justify-center items-center w-12"
           >
             <Ionicons name="pencil" size={20} className="!text-secondary" />
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => onDelete(provider.id ?? '')} 
-            className="p-2 rounded-lg hover:bg-red-100 hover:dark:bg-red-900"
+            className="p-2 w-12 hover:opacity-60 rounded-lg rounded-l-none h-full justify-center items-center bg-red-100 "
           >
             <Ionicons name="trash" size={20} className="!text-red-500 dark:!text-red-300" />
           </TouchableOpacity>
