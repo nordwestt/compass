@@ -35,7 +35,7 @@ export function ProviderCard({ provider, onEdit, onDelete, className }: Provider
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => onDelete(provider.id ?? '')} 
-            className="p-2 w-12 hover:opacity-60 rounded-lg rounded-l-none h-full justify-center items-center bg-red-100 "
+            className="p-2 w-12 hover:opacity-60 rounded-lg rounded-l-none h-full justify-center items-center dark:bg-red-900 bg-red-100 "
           >
             <Ionicons name="trash" size={20} className="!text-red-500 dark:!text-red-300" />
           </TouchableOpacity>
