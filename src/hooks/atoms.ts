@@ -206,3 +206,6 @@ export const previewCodeAtom = atom<{
   css?: string;
   javascript?: string;
 } | null>(null);
+
+// Add this with the other atoms
+export const hasSeenOnboardingAtom = atomWithAsyncStorage<boolean>('hasSeenOnboarding', false);

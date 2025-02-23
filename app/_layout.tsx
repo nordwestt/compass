@@ -17,6 +17,8 @@ import { CustomHeader } from "@/src/components/navigation/CustomHeader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useKeyboardShortcuts } from "@/src/hooks/useKeyboardShortcuts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useAtomValue } from 'jotai';
+import { hasSeenOnboardingAtom } from '@/src/hooks/atoms';
 SplashScreen.preventAutoHideAsync();
 import { Platform } from '@/src/utils/platform';
 import { WelcomeIntroduction } from "@/src/components/onboarding/WelcomeIntroduction";
@@ -57,6 +59,8 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+  const hasSeenOnboarding = useAtomValue(hasSeenOnboardingAtom);
+
   if (!loaded) {
     return null;
   }
@@ -81,7 +85,7 @@ export default function RootLayout() {
       </View>
       <ConfirmationModal />
       <Toast />
-      <WelcomeIntroduction />
+      {!hasSeenOnboarding && <WelcomeIntroduction />}
     </ThemeProvider>
     </GestureHandlerRootView>
   );

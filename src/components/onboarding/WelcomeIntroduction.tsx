@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Modal } from '@/src/components/ui/Modal';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAtom } from 'jotai';
+import { hasSeenOnboardingAtom } from '@/src/hooks/atoms';
 
 const ONBOARDING_PAGES = [
   {
@@ -30,10 +31,11 @@ const ONBOARDING_PAGES = [
 export function WelcomeIntroduction() {
   const [isVisible, setIsVisible] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+  const [, setHasSeenOnboarding] = useAtom(hasSeenOnboardingAtom);
 
-  const handleClose = async () => {
+  const handleClose = () => {
     setIsVisible(false);
-    await AsyncStorage.setItem('hasSeenIntro', 'true');
+    setHasSeenOnboarding(true);
   };
 
   const handleNext = () => {
@@ -44,11 +46,17 @@ export function WelcomeIntroduction() {
     }
   };
 
+  const handleBack = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <Modal
       isVisible={isVisible}
       onClose={handleClose}
-      className="m-4 max-h-[100%] h-full"
+      className="m-4"
     >
       <View className="p-6">
         <TouchableOpacity 
@@ -84,15 +92,29 @@ export function WelcomeIntroduction() {
             ))}
           </View>
           
-          <TouchableOpacity
-            onPress={handleNext}
-            className="bg-primary px-6 py-3 rounded-lg flex-row items-center"
-          >
-            <Text className="text-white font-medium mr-2">
-              {currentPage === ONBOARDING_PAGES.length - 1 ? 'Get Started' : 'Next'}
-            </Text>
-            <Ionicons name="arrow-forward" size={20} color="white" />
-          </TouchableOpacity>
+          <View className="flex-row gap-2">
+            {currentPage > 0 && (
+              <TouchableOpacity
+                onPress={handleBack}
+                className="border border-primary px-6 py-3 rounded-lg flex-row items-center"
+              >
+                <Ionicons name="arrow-back" size={20} className="text-primary" />
+                <Text className="text-primary font-medium ml-2">
+                  Back
+                </Text>
+              </TouchableOpacity>
+            )}
+            
+            <TouchableOpacity
+              onPress={handleNext}
+              className="bg-primary px-6 py-3 rounded-lg flex-row items-center"
+            >
+              <Text className="text-white font-medium mr-2">
+                {currentPage === ONBOARDING_PAGES.length - 1 ? 'Get Started' : 'Next'}
+              </Text>
+              <Ionicons name="arrow-forward" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
