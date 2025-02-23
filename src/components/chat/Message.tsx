@@ -10,6 +10,7 @@ import { InteractionManager, Clipboard } from 'react-native';
 import { toastService } from '@/src/services/toastService';
 import { Ionicons } from '@expo/vector-icons';
 import { CharacterAvatar } from '../character/CharacterAvatar';
+import { MessageActions } from './MessageActions';
 
 interface MessageProps {
   content: string;
@@ -135,33 +136,13 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         )}
         
         {isHovered && (
-          <View className="absolute -bottom-4 right-0 flex-row bg-surface border border-border rounded-lg shadow-lg overflow-hidden">
-            <TouchableOpacity 
-              onPress={handleCopyMessage}
-              className="p-2 flex-row items-center"
-            >
-              <Ionicons name="copy-outline" size={16} color={isDark ? "#fff" : "#000"} />
-              <Text className="text-xs ml-1 text-text">Copy</Text>
-            </TouchableOpacity>
-            {!isUser && hasPreviewableCode && (
-              <TouchableOpacity 
-                onPress={onPreviewCode}
-                className="p-2 flex-row items-center border-l border-border"
-              >
-                <Ionicons name="code-outline" size={16} color={isDark ? "#fff" : "#000"} />
-                <Text className="text-xs ml-1 text-text">Preview</Text>
-              </TouchableOpacity>
-            )}
-            {isUser && (
-              <TouchableOpacity 
-                onPress={() => onEdit?.(index)}
-                className="p-2 flex-row items-center border-l border-border"
-              >
-                <Ionicons name="pencil-outline" size={16} color={isDark ? "#fff" : "#000"} />
-                <Text className="text-xs ml-1 text-text">Edit</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <MessageActions
+            isUser={isUser}
+            hasPreviewableCode={hasPreviewableCode}
+            onCopy={handleCopyMessage}
+            onPreviewCode={onPreviewCode}
+            onEdit={() => onEdit?.(index)}
+          />
         )}
       </View>
     </View>
