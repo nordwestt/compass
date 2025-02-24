@@ -69,36 +69,21 @@ export function ProviderFormFields({
               </View>
 
               <View className="flex-row mt-2 space-x-2">
-                <Ionicons
-                  name={provider.capabilities?.llm ? "chatbubble" : "chatbubble-outline"}
-                  size={16}
-                  className={provider.capabilities?.llm ? "text-primary" : "text-gray-300"}
-                />
-                <Ionicons
-                  name={provider.capabilities?.tts ? "volume-high" : "volume-high-outline"}
-                  size={16}
-                  className={provider.capabilities?.tts ? "text-primary" : "text-gray-300"}
-                />
-                <Ionicons
-                  name={provider.capabilities?.stt ? "mic" : "mic-outline"}
-                  size={16}
-                  className={provider.capabilities?.stt ? "text-primary" : "text-gray-300"}
-                />
-                <Ionicons
-                  name={provider.capabilities?.image ? "image" : "image-outline"}
-                  size={16}
-                  className={provider.capabilities?.image ? "text-primary" : "text-gray-300"}
-                />
-                <Ionicons
-                  name={provider.capabilities?.search ? "search" : "search-outline"}
-                  size={16}
-                  className={provider.capabilities?.search ? "text-primary" : "text-gray-300"}
-                />
-                <Ionicons
-                  name={provider.capabilities?.embedding ? "barcode" : "barcode-outline"}
-                  size={16}
-                  className={provider.capabilities?.embedding ? "text-primary" : "text-gray-300"}
-                />
+                {[
+                  { key: 'llm', icon: 'chatbubble' },
+                  { key: 'tts', icon: 'volume-high' },
+                  { key: 'stt', icon: 'mic' },
+                  { key: 'image', icon: 'image' },
+                  { key: 'search', icon: 'search' },
+                  { key: 'embedding', icon: 'barcode' },
+                ].map(({ key, icon }) => (
+                  <Ionicons
+                    key={key}
+                    name={provider.capabilities?.[key as keyof Provider['capabilities']] ? icon : `${icon}-outline` as any}
+                    size={16}
+                    className={provider.capabilities?.[key as keyof Provider['capabilities']] ? "text-primary" : "text-gray-300"}
+                  />
+                ))}
               </View>
             </TouchableOpacity>
           ))}
