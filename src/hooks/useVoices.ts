@@ -16,8 +16,8 @@ export const fetchAvailableVoices = async (
 
     for (const provider of providers) {
       try {
-        switch (provider.source) {
-          case 'elevenlabs':
+        switch (provider.name) {
+          case 'ElevenLabs':
             const elevenLabsVoices = await ttsService.getVoiceList();
             voices.push(...elevenLabsVoices.map(voice => ({
               ...voice,
@@ -26,12 +26,12 @@ export const fetchAvailableVoices = async (
             break;
 
           // Add other TTS providers here as needed
-          case 'openai':
+          case 'OpenAI':
             // OpenAI TTS voices when implemented
             break;
         }
       } catch (error) {
-        console.error(`Error fetching voices for ${provider.source}:`, error);
+        console.error(`Error fetching voices for ${provider.name}:`, error);
       }
     }
 

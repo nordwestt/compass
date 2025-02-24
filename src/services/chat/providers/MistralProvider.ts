@@ -10,7 +10,7 @@ import { streamOpenAIResponse } from '@/src/services/chat/streamUtils';
 import { z } from 'zod';
 import { getProxyUrl } from '@/src/utils/proxy';
 
-export class OpenAIProvider implements ChatProvider {
+export class MistralProvider implements ChatProvider {
   provider: Provider;
   constructor(provider: Provider) {
     this.provider = provider;
