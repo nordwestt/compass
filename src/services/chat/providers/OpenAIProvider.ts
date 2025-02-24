@@ -2,7 +2,7 @@ import { ChatProvider } from '@/src/types/chat';
 import { Character, Provider } from '@/src/types/core';
 import { ChatMessage, Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
-import { CoreMessage, createDataStream, embedMany, StreamData, streamText, tool } from 'ai';
+import { CoreMessage, CoreUserMessage, createDataStream, embedMany, StreamData, streamText, tool } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { fetch as expoFetch } from 'expo/fetch';
 import { Platform as PlatformCust } from '@/src/utils/platform';
@@ -51,22 +51,22 @@ export class OpenAIProvider implements ChatProvider {
 
         const {textStream, steps} = streamText({
           model: openai(model.id),
-          messages: newMessages as CoreMessage[],
-          tools: {
-            weather: tool({
-              description: 'Get the weather in a location (celsius)',
-              parameters: z.object({
-                location: z.string().describe('The location to get the weather for'),
-              }),
-              execute: async ({ location }) => {
-                console.log("location", location);
-                const temperature = 21.69;
-                return `${temperature} degrees celsius`;
-              },
-            }),
-          },
-          toolChoice: 'auto',
-          maxSteps: 5
+          messages: newMessages as CoreUserMessage[],
+          // tools: {
+          //   weather: tool({
+          //     description: 'Get the weather in a location (celsius)',
+          //     parameters: z.object({
+          //       location: z.string().describe('The location to get the weather for'),
+          //     }),
+          //     execute: async ({ location }) => {
+          //       console.log("location", location);
+          //       const temperature = 21.69;
+          //       return `${temperature} degrees celsius`;
+          //     },
+          //   }),
+          // },
+          // toolChoice: 'auto',
+          // maxSteps: 5
         });
 
         for await (const textPart of textStream) {
