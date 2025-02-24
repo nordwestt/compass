@@ -168,4 +168,19 @@ export class OllamaProvider implements ChatProvider {
     return embeddings;
 
   }
+
+  async getAvailableModels(): Promise<string[]> {
+
+    const ollamaResponse = await fetch(`${this.provider.endpoint}/api/tags`, {
+      headers: {
+        'Accept': 'application/json',
+      }
+    });
+    const ollamaData = await ollamaResponse.json();
+    
+    if (!(ollamaData && Array.isArray(ollamaData.models))) return [];
+    return ollamaData.models
+      .filter((model: any) => model && typeof model.name === 'string')
+      .map((model: any) => model.name);
+  }
 } 

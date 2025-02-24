@@ -4,11 +4,11 @@ import { ReplicateProvider } from './providers/ReplicateProvider';
 
 export class ImageProviderFactory {
   static getProvider(model: Model): ImageProvider {
-    switch (model.provider.source) {
-      case 'replicate':
+    switch (model.provider.name) {
+      case 'Replicate':
         return new ReplicateProvider();
       default:
-        throw new Error(`Unsupported provider: ${model.provider.source}`);
+        throw new Error(`Unsupported provider: ${model.provider.name}`);
     }
   }
 } 

@@ -1,20 +1,31 @@
-import { Model } from '@/src/types/core';
+import { Model, Provider } from '@/src/types/core';
 import { ChatProvider } from '@/src/types/chat';
 import { OllamaProvider } from './providers/OllamaProvider';
 import { OpenAIProvider } from './providers/OpenAIProvider';
 import { AnthropicProvider } from './providers/AnthropicProvider';
-
+import { GroqProvider } from './providers/GroqProvider';
+import { CerebrasProvider } from './providers/CerebrasProvider';
+import { MistralProvider } from './providers/MistralProvider';
+import { XAIProvider } from './providers/XAIProvider';
 export class ChatProviderFactory {
-  static getProvider(model: Model): ChatProvider {
-    switch (model.provider.source) {
-      case 'ollama':
-        return new OllamaProvider(model.provider);
-      case 'openai':
-        return new OpenAIProvider(model.provider);
-      case 'anthropic':
-        return new AnthropicProvider(model.provider);
+  static getProvider(provider: Provider): ChatProvider {
+    switch (provider.name) {
+      case 'Ollama':
+        return new OllamaProvider(provider);
+      case 'OpenAI':
+        return new OpenAIProvider(provider);
+      case 'Anthropic':
+        return new AnthropicProvider(provider);
+      case 'Groq':
+        return new GroqProvider(provider);
+      case 'Cerebras':
+        return new CerebrasProvider(provider);
+      case 'Mistral':
+        return new MistralProvider(provider);
+      case 'XAI':
+        return new XAIProvider(provider);
       default:
-        throw new Error(`Unsupported provider: ${model.provider.source}`);
+        throw new Error(`Unsupported provider: ${provider.name}`);
     }
   }
 } 

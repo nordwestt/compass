@@ -1,83 +1,127 @@
-import { Provider } from '@/src/types/core';
-import { PROVIDER_LOGOS } from '@/src/constants/logos';
+import { Provider } from "@/src/types/core";
+import { PROVIDER_LOGOS } from "@/src/constants/logos";
 export const PREDEFINED_PROVIDERS = {
-  anthropic: {
-    name: 'Anthropic',
-    endpoint: 'https://api.anthropic.com',
-    source: 'anthropic' as const,
-    capabilities: {
-      llm: true,
-      tts: false,
-      stt: false
-    },
-    logo: PROVIDER_LOGOS.anthropic,
-    keyRequired: true,
-    signupUrl: 'https://console.anthropic.com/'
-  } as Provider,
-  openai: {
-    name: 'OpenAI',
-    endpoint: 'https://api.openai.com',
-    source: 'openai' as const,
+  ollama: {
+    name: "Ollama",
+    endpoint: "http://localhost:11434",
     capabilities: {
       llm: true,
       tts: false,
       stt: false,
-      image: true
+      embedding: true,
     },
-    logo: PROVIDER_LOGOS.openai,
-    keyRequired: true,
-    signupUrl: 'https://platform.openai.com/signup'
+    logo: "https://ollama.com/public/icon-48x48.png",
+    keyRequired: false,
   } as Provider,
-  ollama: {
-    name: 'Ollama',
-    endpoint: 'http://localhost:11434',
-    source: 'ollama' as const,
+  anthropic: {
+    name: "Anthropic",
+    endpoint: "https://api.anthropic.com",
     capabilities: {
       llm: true,
       tts: false,
-      stt: false
+      stt: false,
     },
-    logo: PROVIDER_LOGOS.ollama,
-    keyRequired: false
+    logo: "https://www.anthropic.com/images/icons/favicon-32x32.png",
+    keyRequired: true,
+    signupUrl: "https://console.anthropic.com/",
+  } as Provider,
+  openai: {
+    name: "OpenAI",
+    endpoint: "https://api.openai.com",
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+      image: true,
+      embedding: true,
+    },
+    logo: "https://openai.com/icon.svg",
+    keyRequired: true,
+    signupUrl: "https://platform.openai.com/signup",
   } as Provider,
   elevenlabs: {
-    name: 'ElevenLabs',
-    endpoint: 'https://api.elevenlabs.io/v1/text-to-speech',
-    source: 'elevenlabs' as const,
+    name: "ElevenLabs",
+    endpoint: "https://api.elevenlabs.io/v1/text-to-speech",
     capabilities: {
       llm: false,
       tts: true,
-      stt: false
+      stt: false,
     },
-    logo: PROVIDER_LOGOS.elevenlabs,
+    logo: "https://elevenlabs.io/icon.svg",
     keyRequired: true,
-    signupUrl: 'https://elevenlabs.io/sign-up'
+    signupUrl: "https://elevenlabs.io/sign-up",
   } as Provider,
   searxng: {
-    name: 'SearXNG',
-    endpoint: 'https://baresearch.org',
-    source: 'searxng' as const,
+    name: "SearXNG",
+    endpoint: "https://baresearch.org",
     capabilities: {
       llm: false,
       tts: false,
       stt: false,
-      search: true
+      search: true,
     },
-    logo: PROVIDER_LOGOS.searxng,
+    logo: "https://searx.bndkt.io/static/themes/simple/img/favicon.svg",
     keyRequired: false,
   } as Provider,
   replicate: {
-    name: 'Replicate',
-    endpoint: 'https://api.replicate.com',
-    source: 'replicate' as const,
+    name: "Replicate",
+    endpoint: "https://api.replicate.com",
     capabilities: {
       llm: false,
       tts: false,
       stt: false,
-      image: true
+      image: true,
     },
-    logo: PROVIDER_LOGOS.replicate,
+    logo: "https://replicate.com/assets/favicon-dark-mode.png",
     keyRequired: true,
-    signupUrl: 'https://replicate.com/signin'
-  } as Provider
-} as const; 
+    signupUrl: "https://replicate.com/signin",
+  } as Provider,
+  cerebras: {
+    name: "Cerebras",
+    endpoint: "https://api.cerebras.ai",
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+    },
+    logo: "https://inference.cerebras.ai/images/logo/cb-fav-144.png",
+    keyRequired: true,
+    signupUrl: "https://inference.cerebras.ai/",
+  } as Provider,
+  xai: {
+    name: "xAI",
+    endpoint: "https://api.x.ai",
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+    },
+    logo: "https://accounts.x.ai/favicon.ico",
+    keyRequired: true,
+    signupUrl: "https://accounts.x.ai/sign-in",
+  } as Provider,
+  groq: {
+    name: "Groq",
+    endpoint: "https://groq.com",
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+    },
+    logo: "https://groq.com/wp-content/uploads/2024/02/android-icon-192x192-1.png",
+    keyRequired: true,
+    signupUrl: "https://console.groq.com/login",
+  } as Provider,
+  mistral: {
+    name: "Mistral",
+    endpoint: "https://api.mistral.ai",
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+    },
+    logo: "https://docs.mistral.ai/img/favicon.ico",
+    keyRequired: true,
+    signupUrl: "https://console.mistral.ai/",
+  } as Provider,
+} as const;

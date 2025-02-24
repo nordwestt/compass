@@ -43,7 +43,7 @@ export function useChat() {
     abortController.current = new AbortController();
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
 
-    const provider = ChatProviderFactory.getProvider(currentThread.selectedModel);
+    const provider = ChatProviderFactory.getProvider(currentThread.selectedModel.provider);
 
     const initialContext: MessageContext = {
       message,

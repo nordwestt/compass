@@ -1,19 +1,16 @@
 import { ChatProvider } from '@/src/types/chat';
 import { Character, Provider } from '@/src/types/core';
-import { ChatMessage } from '@/src/types/core';
-import { Model } from '@/src/types/core';
+import { ChatMessage, Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
-import { Platform } from 'react-native';
-import { anthropic } from '@ai-sdk/anthropic';
-import { createAnthropic } from '@ai-sdk/anthropic';
-import { CoreMessage, embedMany, tool } from 'ai';
-import { streamText } from 'ai';
-import { z } from 'zod';
+import { CoreMessage, createDataStream, embedMany, StreamData, streamText, tool } from 'ai';
+import { createMistral } from '@ai-sdk/mistral';
 import { fetch as expoFetch } from 'expo/fetch';
 import { Platform as PlatformCust } from '@/src/utils/platform';
+import { streamOpenAIResponse } from '@/src/services/chat/streamUtils';
+import { z } from 'zod';
 import { getProxyUrl } from '@/src/utils/proxy';
 
-export class AnthropicProvider implements ChatProvider {
+export class MistralProvider implements ChatProvider {
   provider: Provider;
   constructor(provider: Provider) {
     this.provider = provider;
@@ -33,35 +30,47 @@ export class AnthropicProvider implements ChatProvider {
     }
 
     try {
-      
-      const anthropic = createAnthropic({
-        baseURL: model.provider.endpoint+'/v1',
-        apiKey: model.provider.apiKey,
-        fetch: expoFetch as unknown as typeof globalThis.fetch
+      if (PlatformCust.isMobile) {
+        let url = `${model.provider.endpoint}/v1/chat/completions`;
+        if (PlatformCust.isTauri) url = await getProxyUrl(url);
+        yield* streamOpenAIResponse(url, {
+          model: model.id,
+          messages: newMessages,
+          stream: true,
+        }, {
+          headers:{
+          'Authorization': `Bearer ${model.provider.apiKey}`
+        }
       });
-
-      const {textStream, steps} = streamText({
-        model: anthropic(model.id),
-        messages: newMessages as CoreMessage[],
-        tools: {
-          weather: tool({
-            description: 'Get the weather in a location (celsius)',
-            parameters: z.object({
-              location: z.string().describe('The location to get the weather for'),
+      } else {
+        const mistral = createMistral({
+          baseURL: model.provider.endpoint+'/v1',
+          apiKey: model.provider.apiKey,
+          fetch: expoFetch as unknown as typeof globalThis.fetch
+        });
+        const {textStream, steps} = streamText({
+          model: mistral(model.id) as any, // Type assertion needed due to version mismatch between @ai-sdk packages
+          messages: newMessages as CoreMessage[],
+          tools: {
+            weather: tool({
+              description: 'Get the weather in a location (celsius)',
+              parameters: z.object({
+                location: z.string().describe('The location to get the weather for'),
+              }),
+              execute: async ({ location }) => {
+                console.log("location", location);
+                const temperature = 21.69;
+                return `${temperature} degrees celsius`;
+              },
             }),
-            execute: async ({ location }) => {
-              console.log("location", location);
-              const temperature = 21.69;
-              return `${temperature} degrees celsius`;
-            },
-          }),
-        },
-        toolChoice: 'auto',
-        maxSteps: 5
-      });
+          },
+          toolChoice: 'auto',
+          maxSteps: 5
+        });
 
-      for await (const textPart of textStream) {
-        yield textPart;
+        for await (const textPart of textStream) {
+          yield textPart;
+        }
       }
     } catch (error: any) {
       LogService.log(error, { component: 'OpenAIProvider', function: 'sendMessage' }, 'error');
@@ -126,8 +135,18 @@ export class AnthropicProvider implements ChatProvider {
   }
 
   async embedText(texts: string[]): Promise<number[][]> {
-    // anthropic does not support embedding
-    return [];
+    const mistral = createMistral({
+      baseURL: this.provider.endpoint+'/v1',
+      apiKey: this.provider.apiKey,
+      fetch: expoFetch as unknown as typeof globalThis.fetch
+    });
+
+    const { embeddings } = await embedMany({
+      model: mistral.embedding('mistral-embed'),
+      values: texts,
+    });
+
+    return embeddings;
   }
 
   async getAvailableModels(): Promise<string[]> {
@@ -138,7 +157,7 @@ export class AnthropicProvider implements ChatProvider {
     });
     const data = await response.json();
     return data.data
-      .filter((model: any) => model.id.includes('claude') && model.type == 'model')
+      .filter((model: any) => model.capabilities.completion_chat)
       .map((model: any) => model.id);
   }
 } 

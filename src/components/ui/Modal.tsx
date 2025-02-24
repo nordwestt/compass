@@ -51,7 +51,7 @@ export function Modal({
           `}
         >
           <View 
-            className={`
+            className={`overflow-y-auto max-h-[90%]
               ${position === 'center' ? 'w-3/4 my-auto mx-auto' : 'w-full'}
               ${position === 'bottom' ? 'rounded-t-xl' : 'rounded-xl'} 
               bg-background 

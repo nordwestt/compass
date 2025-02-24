@@ -4,6 +4,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, logsAtom } from '@/src/hooks/atoms';
 import { useEffect, useCallback, useRef, useMemo } from 'react';
 import LogService from '@/utils/LogService';
+import { ChatProviderFactory } from '../services/chat/ChatProviderFactory';
 
 export const loadDefaultModel = async (): Promise<Model | null> => {
   try {
@@ -62,67 +63,16 @@ export const fetchAvailableModelsV2 = async (
 
     for (const provider of endpoints) {
       try {
-        switch (provider.source) {
-          case 'ollama':
-            const ollamaResponse = await fetch(`${provider.endpoint}/api/tags`, {
-              headers: {
-                'Accept': 'application/json',
-              }
-            });
-            const ollamaData = await ollamaResponse.json();
-            
-            if (ollamaData && Array.isArray(ollamaData.models)) {
-              models.push(...ollamaData.models
-                .filter((model: any) => model && typeof model.name === 'string')
-                .map((model: any) => ({
-                  id: model.name,
-                  name: model.name,
-                  provider: provider
-                })));
-            } else {
-              LogService.log(
-                `Invalid Ollama response structure: ${JSON.stringify(ollamaData)}`,
-                {component: 'useModelFetching', function: 'fetchAvailableModelsV2'},
-                'error'
-              );
-            }
-            break;
+        const providerInstance = ChatProviderFactory.getProvider(provider);
 
-          case 'openai':
-            const openaiResponse = await fetch('https://api.openai.com/v1/models', {
-              headers: {
-                'Authorization': `Bearer ${provider.apiKey}`
-              }
-            });
-            const openaiData = await openaiResponse.json();
-            models.push(...openaiData.data
-              .filter((model: any) => model.id.includes('gpt'))
-              .map((model: any) => ({
-                id: model.id,
-                name: model.id,
-                provider: provider
-              })));
-            break;
+        const availableModels = await providerInstance.getAvailableModels();
 
-          case 'anthropic':
-            // Anthropic API call commented out, using static data
-            const anthropicData: any[] = [{
-              model: 'claude-3-5-haiku-20241022',
-              name: 'claude-3-5-haiku-20241022'
-            },{
-              model: 'claude-3-5-sonnet-20241022',
-              name: 'claude-3-5-sonnet-20241022'
-            },{
-              model: 'claude-3-opus-20240229',
-              name: 'claude-3-opus-20240229'
-            }];
-            models.push(...anthropicData.map((model: any) => ({
-              id: model.name,
-              name: model.name,
-              provider: provider
-            })));
-            break;
-        }
+        models.push(...availableModels.map((model: any) => ({
+          id: model,
+          name: model,
+          provider: provider
+        })));
+
       } catch (error: any) {
         LogService.log(error, {component: 'useModelFetching', function: 'fetchAvailableModelsV2'}, 'error');
       }

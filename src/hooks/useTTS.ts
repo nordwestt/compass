@@ -12,7 +12,7 @@ export function useTTS() {
   const selectedVoice = useAtomValue(defaultVoiceAtom);
 
   const getElevenLabsProvider = useCallback(() => {
-    return providers.find(p => p.source === 'elevenlabs');
+    return providers.find(p => p.name?.toLowerCase().includes('elevenlabs'));
   }, [providers]);
 
   const streamText = useCallback(async (text: string) => {
