@@ -68,7 +68,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
             endpoint,
             id: Date.now().toString(),
             name: "Ollama",
-            source: "ollama",
             capabilities: {
               llm: true,
               tts: false,
