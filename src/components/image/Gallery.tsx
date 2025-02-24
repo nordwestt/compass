@@ -95,10 +95,11 @@ export function Gallery() {
     isVisible={isImageViewVisible}
     onBackdropPress={() => setIsImageViewVisible(false)}
     onSwipeComplete={() => setIsImageViewVisible(false)}
+    coverScreen={true}
     swipeDirection={['down']}
     className="m-0 flex items-center justify-center"
   >
-    <View className="w-[70vw] flex-1 mx-auto flex items-center justify-center">
+    <View className="flex-1 mx-auto flex items-center justify-center">
     <TouchableOpacity 
         onPress={() => setIsImageViewVisible(false)}
         className="absolute right-4 top-4 z-10 bg-black/50 rounded-full p-2"

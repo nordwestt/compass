@@ -4,21 +4,16 @@ import { Model } from '@/src/types/core';
 import { getDefaultStore, useAtom, useAtomValue } from 'jotai';
 import { availableProvidersAtom, availableModelsAtom, defaultModelAtom } from '@/src/hooks/atoms';
 import { PROVIDER_LOGOS } from '@/src/constants/logos';
-import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
 import { Provider } from '@/src/types/core';
 import { DropdownElement } from '@/src/components/ui/Dropdown';
 
-import Animated, { 
-  FadeIn,
-  FadeOut,
-  SlideInDown,
-  SlideOutDown
-} from 'react-native-reanimated';
 import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
-import { scanForOllamaInstances } from '@/src/components/providers/providers';
+import { scanLocalOllama, scanNetworkOllama } from '@/src/components/providers/providers';
 import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';
 import { Platform as PlatformUtils } from '@/src/utils/platform';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 
 
@@ -43,40 +38,39 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       
       const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
       setModels(models);
-
-
-      if(!models.length && !providers.length && !PlatformUtils.isWeb) {
-        let ollamaEndpoints = await scanForOllamaInstances();
-        const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
-          endpoint,
-          id: Date.now().toString(),
-          name: "Ollama",
-          source: 'ollama',
-          capabilities: {
-            llm: true,
-            tts: false,
-            stt: false,
-            search: false
-          }
-        } as Provider)).filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
-  
-        if(newProviders.length > 0) {
-          setProviders([...providers, ...newProviders]);
-          
-          const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
-          setModels(models);
-        }
-        else{
-          toastService.info({
-            title: 'Couldn\'t find any providers',
-            description: 'Tried to scan, but found no providers'
-          });
-        }
-      }
-      
     };
     fetchModels();
   }, []);
+
+  async function scanOllamaProviders(){
+    let ollamaEndpoints = await scanLocalOllama();
+    if(!ollamaEndpoints.length) ollamaEndpoints = await scanNetworkOllama();
+    const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
+      endpoint,
+      id: Date.now().toString(),
+      name: "Ollama",
+      source: 'ollama',
+      capabilities: {
+        llm: true,
+        tts: false,
+        stt: false,
+        search: false
+      }
+    } as Provider)).filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
+
+    if(newProviders.length > 0) {
+      setProviders([...providers, ...newProviders]);
+      
+      const models = await fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom));
+      setModels(models);
+    }
+    else{
+      toastService.info({
+        title: 'Couldn\'t find any ollama instances',
+        description: 'Please check the help section in Settings for information on how to install and enable ollama'
+      });
+    }
+  }
 
   function setDropdownModell(model: Model) {
     setDropdownModel({
@@ -103,15 +97,24 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
 
 
-  if(!providers.length) return <Text className="text-gray-500">No providers configured</Text>;
+  if(!providers.filter(p => p.capabilities?.llm).length) {
+    return (
+    <View className='flex flex-row gap-2'>
+      <TouchableOpacity className="flex-row items-center gap-2 bg-primary hover:opacity-80 text-text rounded-lg p-2 border border-border" onPress={scanOllamaProviders}>
+        <Ionicons name="radio-outline" size={24} color="white" />
+        <Text className='text-white pt-1'>Scan for Ollama</Text>
+      </TouchableOpacity>
+      <TouchableOpacity className='flex-row items-center gap-2 bg-background hover:opacity-80 rounded-lg p-2 border border-border' onPress={()=>router.push('/settings/providers')}>
+        <Ionicons name="server-outline" size={24} className='!text-text' />
+        <Text className='text-text pt-1'>Manage providers</Text>
+        </TouchableOpacity>
+    </View>);
+  }
   
   if (!models.length) {
     return <Text className="text-gray-500">Loading models...</Text>;
   }
 
-  // Remove the model selection logic from render phase
-  const currentModel = models.find(m => m.id === selectedModel.id);
-  
 
   let modelList = models.map((model) => ({
     title: model.name,
@@ -124,12 +127,26 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     onSetModel(models.find(m => m.id === model.id)!);
   }
 
-  // modelList = [...modelList, ...(modelList.map(x=>({...x, id: "wuut"})))];
+  function setCurrentModelAsDefault() {
+    setDefaultModel(selectedModel);
+    toastService.success({
+      title: "Default model set",
+      description: "The selected model will now be used for new threads"
+    });
+  }
 
 
   return (
-    <View className={className}>
-      <Dropdown showSearch={true} selected={dropdownModel} onSelect={onModelSelect} children={modelList} />
+    <View className={`flex-row gap-2 items-center ${className}`}>
+      <Dropdown showSearch={true} selected={dropdownModel} onSelect={onModelSelect} children={modelList}/>
+      {selectedModel.id !== defaultModel?.id && (
+          <TouchableOpacity 
+            onPress={setCurrentModelAsDefault}
+            className="p-2 flex items-center justify-center bg-primary hover:opacity-80 rounded-lg border border-border h-12"
+          >
+            <Text className="text-white">Set as default model</Text>
+          </TouchableOpacity>
+        )}
     </View>
   );
 }; 

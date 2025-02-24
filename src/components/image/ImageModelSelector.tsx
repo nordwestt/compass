@@ -11,6 +11,7 @@ import { DropdownElement } from '@/src/components/ui/Dropdown';
 import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
 import { toastService } from '@/src/services/toastService';
 import { Dropdown } from '@/src/components/ui/Dropdown';
+import { router } from 'expo-router';
 
 
 const replicateModels = ['black-forest-labs/flux-schnell', 'black-forest-labs/flux-dev', 'black-forest-labs/flux-pro', 'black-forest-labs/flux-1.1-pro'];
@@ -78,7 +79,7 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
   if(!providers.length) return <Text className="text-gray-500">No providers configured</Text>;
 
   if (!models.length) {
-    return <Text className="text-gray-500">No models found</Text>;
+    return <TouchableOpacity onPress={()=>router.push('/settings/providers')} className="bg-primary hover:opacity-80 rounded-lg p-2 border border-border text-white">Add image provider</TouchableOpacity>;
   }
 
   let modelList = models.map((model) => ({
@@ -94,7 +95,7 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
 
   return (
     <View className={className}>
-      <Dropdown selected={dropdownModel} onSelect={onModelSelect} children={modelList} />
+      <Dropdown selected={dropdownModel} onSelect={onModelSelect} children={modelList} className='bg-surface'/>
     </View>
   );
 }; 

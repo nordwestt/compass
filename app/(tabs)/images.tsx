@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { useAtomValue } from 'jotai';
 import { generatedImagesAtom } from '@/src/hooks/atoms';
 import { format } from 'date-fns';
@@ -43,10 +43,10 @@ export default function ImageGenerationScreen() {
         <Text className="text-2xl font-bold text-primary">
             Images
         </Text>
-        <View className="ms-4 flex-row border-border">
+        { Platform.OS == 'web' && <View className="ms-4 flex-row border-border">
           <TabButton tab="generator" label="Generate" />
           <TabButton tab="gallery" label="Gallery" />
-        </View>
+        </View>}
       </View>
       
       <View className="flex-1 relative">
@@ -69,6 +69,13 @@ export default function ImageGenerationScreen() {
           <Gallery />
         </View>
       </View>
+      { Platform.OS !== 'web' && <View className="ms-4 flex-row border-border">
+        <View className="flex-row mx-auto">
+          <TabButton tab="generator" label="Generate" />
+          <TabButton tab="gallery" label="Gallery" />
+          </View>
+        </View>
+      }
     </View>
   );
 }

@@ -17,9 +17,10 @@ interface DropdownProps {
     selected: DropdownElement | null;
     onSelect: (child: DropdownElement) => void;
     showSearch?: boolean;
+    className?: string;
 }
 
-export const Dropdown = ({ children, selected, onSelect, showSearch = false }: DropdownProps) => {
+export const Dropdown = ({ children, selected, onSelect, showSearch = false, className }: DropdownProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -146,7 +147,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false }: D
         onPress={() => {
           setIsOpen(!isOpen)
         }}
-        className="flex-row items-center px-2 h-12 py-2 rounded-lg bg-background hover:bg-surface border border-border"
+        className={`flex-row items-center px-2 h-12 py-2 rounded-lg bg-background hover:opacity-70 border border-border ${className}`}
       >
         {selected?.image && (
           <Image source={selected.image as any} className="!h-[32px] !w-[32px] rounded-full mr-3"/>

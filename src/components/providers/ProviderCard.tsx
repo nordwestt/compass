@@ -13,25 +13,31 @@ interface ProviderCardProps {
 
 export function ProviderCard({ provider, onEdit, onDelete, className }: ProviderCardProps) {
   return (
-    <View key={provider.id} className={`rounded-lg p-4 shadow-sm ${className}`}>
+    <View key={provider.id} className={`rounded-lg shadow-sm ${className}`}>
       <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center">
+        <View className="flex-row items-center p-2">
           {provider.source !== 'custom' && (
             <Image
               source={PROVIDER_LOGOS[provider.source]}
               className="mr-2 !h-[48px] !w-[48px]"
             />
           )}
-          <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+          <Text className="text-lg font-semibold text-text">
             {provider.name || provider.source}
           </Text>
         </View>
-        <View className="flex-row">
-          <TouchableOpacity onPress={() => onEdit(provider)} className="p-2">
-            <Ionicons name="pencil" size={20} color="#4B5563" />
+        <View className="flex-row h-full items-center">
+          <TouchableOpacity 
+            onPress={() => onEdit(provider)} 
+            className="p-2 hover:opacity-60 bg-background h-full justify-center items-center w-12"
+          >
+            <Ionicons name="pencil" size={20} className="!text-secondary" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => onDelete(provider.id ?? '')} className="p-2">
-            <Ionicons name="trash" size={20} color="#EF4444" />
+          <TouchableOpacity 
+            onPress={() => onDelete(provider.id ?? '')} 
+            className="p-2 w-12 hover:opacity-60 rounded-lg rounded-l-none h-full justify-center items-center dark:bg-red-900 bg-red-100 "
+          >
+            <Ionicons name="trash" size={20} className="!text-red-500 dark:!text-red-300" />
           </TouchableOpacity>
         </View>
       </View>

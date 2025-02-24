@@ -1,23 +1,27 @@
 import { ChatProvider } from '@/src/types/chat';
-import { Character } from '@/src/types/core';
+import { Character, Provider } from '@/src/types/core';
 import { ChatMessage } from '@/src/types/core';
 import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
-import { CoreMessage, generateText, streamText, tool } from 'ai';
+import { CoreMessage, embedMany, generateText, streamText, tool } from 'ai';
 import { createOllama } from 'ollama-ai-provider';
 import { fetch as expoFetch } from 'expo/fetch';
 import { z } from 'zod';
+import { getProxyUrl } from '@/src/utils/proxy';
+import { embed } from 'ai';
 
 
 
 import {Platform as PlatformCust} from '@/src/utils/platform';
-import {streamResponse} from '@/src/services/chat/streamUtils';
-
-const PROXY_URL = "http://localhost:9493/";
+import {streamOllamaResponse} from '@/src/services/chat/streamUtils';
 
 
 export class OllamaProvider implements ChatProvider {
+  provider: Provider;
+  constructor(provider: Provider) {
+    this.provider = provider;
+  }
   async *sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string> {
     const newMessages = [
       { role: 'system', content: character.content },
@@ -35,8 +39,8 @@ export class OllamaProvider implements ChatProvider {
     try{
       if(PlatformCust.isMobile){
         let url = `${model.provider.endpoint}/api/chat`;
-        if(PlatformCust.isTauri) url = PROXY_URL+url;
-        yield* streamResponse(url, {
+        if(PlatformCust.isTauri) url = await getProxyUrl(url);
+        yield* streamOllamaResponse(url, {
           model: model.id,
           messages: newMessages,
           stream: true
@@ -54,21 +58,21 @@ export class OllamaProvider implements ChatProvider {
         const { textStream, steps } = streamText({
           model: ollama(model.id),
           messages: newMessages as CoreMessage[],
-          tools: {
-            weather: tool({
-              description: 'Get the weather in a location (celsius)',
-              parameters: z.object({
-                location: z.string().describe('The location to get the weather for'),
-              }),
-              execute: async ({ location }) => {
-                console.log("location", location);
-                const temperature = 21.69;
-                return `${temperature} degrees celsius`;
-              },
-            }),
-          },
-          toolChoice: 'auto',
-          maxSteps: 5
+          // tools: {
+          //   weather: tool({
+          //     description: 'Get the weather in a location (celsius)',
+          //     parameters: z.object({
+          //       location: z.string().describe('The location to get the weather for'),
+          //     }),
+          //     execute: async ({ location }) => {
+          //       console.log("location", location);
+          //       const temperature = 21.69;
+          //       return `${temperature} degrees celsius`;
+          //     },
+          //   }),
+          // },
+          // toolChoice: 'auto',
+          // maxSteps: 5
         }
       );
 
@@ -89,7 +93,7 @@ export class OllamaProvider implements ChatProvider {
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
     let url = `${model.provider.endpoint}/api/chat`;
-    if(PlatformCust.isTauri) url = PROXY_URL+url;
+    if(PlatformCust.isTauri) url = await getProxyUrl(url);
 
     if(!PlatformCust.isMobile){
     const ollama = createOllama({
@@ -106,7 +110,7 @@ export class OllamaProvider implements ChatProvider {
     return result.text;
   }
 
-    if(PlatformCust.isTauri) url = PROXY_URL+url;
+    if(PlatformCust.isTauri) url = await getProxyUrl(url);
     let response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -126,7 +130,7 @@ export class OllamaProvider implements ChatProvider {
   
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>{
     let url = `${model.provider.endpoint}/api/chat`;
-    if(PlatformCust.isTauri) url = PROXY_URL+url;
+    if(PlatformCust.isTauri) url = await getProxyUrl(url);
     let response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -146,4 +150,22 @@ export class OllamaProvider implements ChatProvider {
     }
   }
 
+  async embedText(texts: string[]): Promise<number[][]> {
+    let url = `${this.provider.endpoint}/api/embed`;
+    if(PlatformCust.isTauri) url = await getProxyUrl(url);
+
+    const ollama = createOllama({
+      // optional settings, e.g.
+      baseURL: this.provider.endpoint+'/api',
+      fetch: expoFetch as unknown as typeof globalThis.fetch,
+    });
+    
+    const { embeddings } = await embedMany({
+      model: ollama.embedding('all-minilm'),
+      values: texts,
+    });
+
+    return embeddings;
+
+  }
 } 

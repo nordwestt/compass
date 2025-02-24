@@ -1,8 +1,11 @@
-import { View, Text, TextInput } from 'react-native';
-import { ProviderTypeSelector } from './ProviderTypeSelector';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Provider } from '@/src/types/core';
 import { PREDEFINED_PROVIDERS } from '@/src/constants/providers';
-
+import { PROVIDER_LOGOS } from '@/src/constants/logos';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Linking } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 interface ProviderFormFieldsProps {
   name: string;
   setName: (value: string) => void;
@@ -24,43 +27,147 @@ export function ProviderFormFields({
   customEndpoint,
   setCustomEndpoint,
 }: ProviderFormFieldsProps) {
+
+  const [selectedProvider, setSelectedProvider] = useState<Provider>(PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS]);
   return (
-    <View className="m-4">
-      <ProviderTypeSelector className="mb-4" selectedType={selectedType} onTypeSelect={(type) => {
-        setSelectedType(type);
-        setCustomEndpoint(PREDEFINED_PROVIDERS[type as keyof typeof PREDEFINED_PROVIDERS].endpoint);
-        }} />
+    <View className="space-y-4">
+      <View>
+        <Text className="text-sm font-medium text-text mb-2">Provider Type</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-4">
+          {Object.entries(PREDEFINED_PROVIDERS).map(([key, value]) => (
+            <TouchableOpacity
+              key={key}
+              onPress={() => {
+                setSelectedType(value.source);
+                setCustomEndpoint(value.endpoint);
+                setSelectedProvider(value);
+              }}
+              className={`mr-2 p-3 rounded-lg border-2 bg-surface ${
+                selectedType === value.source 
+                  ? 'border-primary' 
+                  : 'border-border'
+              }`}
+            >
+              <View className="flex-row items-center">
+                {PROVIDER_LOGOS[value.source as keyof typeof PROVIDER_LOGOS] && (
+                  <Image
+                    source={PROVIDER_LOGOS[value.source as keyof typeof PROVIDER_LOGOS]}
+                    className="!w-[24px] !h-[24px] rounded-full mr-2"
+                  />
+                )}
+                  <Text className={'text-text'}>
+                    {value.name}
+                  </Text>
+              </View>
+              
+              <View className="flex-row mt-2 space-x-2">
+                <Ionicons 
+                  name={value.capabilities?.llm ? 'chatbubble' : 'chatbubble-outline'} 
+                  size={16} 
+                  className={value.capabilities?.llm ? 'text-primary' : 'text-gray-300'}
+                />
+                <Ionicons 
+                  name={value.capabilities?.tts ? 'volume-high' : 'volume-high-outline'} 
+                  size={16} 
+                  className={value.capabilities?.tts ? 'text-primary' : 'text-gray-300'}
+                />
+                <Ionicons 
+                  name={value.capabilities?.stt ? 'mic' : 'mic-outline'} 
+                  size={16} 
+                  className={value.capabilities?.stt ? 'text-primary' : 'text-gray-300'}
+                />
+                <Ionicons 
+                  name={value.capabilities?.image ? 'image' : 'image-outline'} 
+                  size={16} 
+                  className={value.capabilities?.image ? 'text-primary' : 'text-gray-300'}
+                />
+                <Ionicons 
+                  name={value.capabilities?.search ? 'search' : 'search-outline'} 
+                  size={16} 
+                  className={value.capabilities?.search ? 'text-primary' : 'text-gray-300'}
+                />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
-      {selectedType == 'custom' && <View className="mb-4">
-        <Text className="text-sm font-medium text-text mb-2">Name</Text>
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          className="border border-border rounded-lg p-3 bg-white"
-          placeholder="Enter name"
-        />
-      </View>}
+      {selectedType === 'custom' && (
+        <View>
+          <Text className="text-sm font-medium text-text mb-2">Name</Text>
+          <TextInput
+            value={name}
+            onChangeText={setName}
+            className="border border-border rounded-lg p-3 bg-surface text-text"
+            placeholder="Enter name"
+          />
+        </View>
+      )}
 
-      <View className="mb-4">
+      <View>
+
+        <View>
+          <Text className="text-sm font-medium text-text mb-2">You have chosen {selectedProvider.name}. With this provider, you will be able to:</Text>
+          <View className="mb-4 flex-row flex-wrap gap-2">
+            {selectedProvider.capabilities?.llm && (
+              <View className="flex-row items-center">
+                <Ionicons name="chatbubble" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Chat with AI models</Text>
+              </View>
+            )}
+            {selectedProvider.capabilities?.tts && (
+              <View className="flex-row items-center">
+                <Ionicons name="volume-high" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Convert text to speech</Text>
+              </View>
+            )}
+            {selectedProvider.capabilities?.stt && (
+              <View className="flex-row items-center">
+                <Ionicons name="mic" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Convert speech to text</Text>
+              </View>
+            )}
+            {selectedProvider.capabilities?.image && (
+              <View className="flex-row items-center">
+                <Ionicons name="image" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Generate images</Text>
+              </View>
+            )}
+            {selectedProvider.capabilities?.search && (
+              <View className="flex-row items-center">
+                <Ionicons name="search" size={16} className="text-secondary mr-2" />
+                <Text className="text-secondary">Search the web</Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+
+      {selectedProvider.signupUrl && (
+          <TouchableOpacity 
+            onPress={() => Linking.openURL(selectedProvider.signupUrl!)}
+            className="mb-2"
+          >
+            <Text className="text-primary underline">Click here to sign up for an {selectedProvider.name} API key</Text>
+          </TouchableOpacity>
+        )}
         <Text className="text-sm font-medium text-text mb-2">API Key</Text>
         <TextInput
           value={apiKey}
           onChangeText={setApiKey}
-          className="border border-border rounded-lg p-3 bg-white"
+          className="border border-border rounded-lg p-3 bg-surface text-text"
           placeholder="Enter API key, if required"
           secureTextEntry
         />
       </View>
 
       {(selectedType === 'custom' || selectedType === 'ollama') && (
-        <View className="mb-4">
-          <Text className="text-sm font-medium text-text mb-2">
-            Endpoint URL
-          </Text>
+        <View>
+          <Text className="text-sm font-medium text-text mb-2">Endpoint URL</Text>
           <TextInput
             value={customEndpoint}
             onChangeText={setCustomEndpoint}
-            className="border border-border rounded-lg p-3 bg-white"
+            className="border border-border rounded-lg p-3 bg-surface text-text"
             placeholder="Enter endpoint URL"
           />
         </View>

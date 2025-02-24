@@ -1,4 +1,5 @@
-import { Modal as RNModal, View, Text } from 'react-native';
+import { View, Text, Platform } from 'react-native';
+import RNModal from 'react-native-modal';
 
 import { ThemeProvider } from '@/src/components/ui/ThemeProvider';
 import Animated, { 
@@ -17,35 +18,48 @@ interface ModalProps {
    * Defaults to 70% of screen height.
    */
   maxHeight?: string;
+  className?: string;
+  /**
+   * Position of the modal on the screen
+   * @default 'bottom'
+   */
+  position?: 'bottom' | 'center';
 }
 
 export function Modal({ 
   isVisible, 
   onClose, 
   children,
-  maxHeight = '70%'
+  maxHeight = '70%',
+  className,
+  position = Platform.OS === 'web' ? 'center' : 'bottom'
 }: ModalProps) {
   return (
     <RNModal
-      visible={isVisible}
-      transparent={true}
-      animationType="none"
-      onRequestClose={onClose}
+      isVisible={isVisible}
+      onModalHide={onClose}
+      style={{
+        margin: 0,
+        justifyContent: position === 'center' ? 'center' : 'flex-end'
+      }}
     >
       <ThemeProvider>
-      <Animated.View 
-          entering={FadeIn.duration(200)}
-          exiting={FadeOut.duration(200)}
-          className="absolute bg-black/50 flex-1 w-full h-full"
-        ></Animated.View>
-        <View className="flex-1 justify-end">
-          <Animated.View 
-            entering={SlideInDown.springify().damping(15)}
-            exiting={SlideOutDown.duration(200)}
-            className={`rounded-t-xl bg-background max-h-[70%]`}
+        <View 
+          className={`
+            ${position === 'bottom' ? 'justify-end' : 'justify-center'} 
+            flex-1
+          `}
+        >
+          <View 
+            className={`
+              ${position === 'center' ? 'w-3/4 my-auto mx-auto' : 'w-full'}
+              ${position === 'bottom' ? 'rounded-t-xl' : 'rounded-xl'} 
+              bg-background 
+              ${className}
+            `}
           >
             {children}
-          </Animated.View>
+          </View>
         </View>
       </ThemeProvider>
     </RNModal>

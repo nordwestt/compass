@@ -9,6 +9,7 @@ import { modalService } from '@/src/services/modalService';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import EditCharacter from '@/src/components/character/EditCharacter';
+import { CharacterAvatar } from '@/src/components/character/CharacterAvatar';
 
 export default function CharactersScreen() {
   const router = useRouter();
@@ -36,8 +37,13 @@ export default function CharactersScreen() {
   };
 
   const handleEdit = (prompt: Character) => {
-    if(Platform.OS == 'web'){
-      setEditingCharacter(prompt);
+    if (Platform.OS == 'web') {
+      // Close the pane if clicking on the same character
+      if (editingCharacter?.id === prompt.id) {
+        setEditingCharacter(null);
+      } else {
+        setEditingCharacter(prompt);
+      }
     } else {
       router.push(`/edit-character?id=${prompt.id}`);
     }
@@ -132,33 +138,35 @@ export default function CharactersScreen() {
               <Text className="text-white ml-2 font-medium">New Character</Text>
             </TouchableOpacity>
         </View>
-        <ScrollView className="flex-1 p-1">
+        <ScrollView className="flex-1 p-4">
         <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {customPrompts.map((prompt) => (
             <TouchableOpacity 
-            onPress={() => handleEdit(prompt)} 
-            onLongPress={() => startChat(prompt)} 
-            key={prompt.id} 
-            className="w-full mb-4"
-          >
-            <View className="flex-row bg-surface rounded-xl p-4 border border-gray-200 shadow-lg">
-              <Image 
-                source={prompt.image} 
-                className="!h-[64px] !w-[64px] rounded-full my-auto"
-              />
-              <View className="flex-1 ml-4">
-                <Text className="font-bold text-text">
-                  {prompt.name}
-                </Text>
-                <Text 
-                  numberOfLines={2} 
-                  className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2"
-                >
-                  {prompt.content}
-                </Text>
+              onPress={() => handleEdit(prompt)} 
+              onLongPress={() => startChat(prompt)} 
+              key={prompt.id} 
+              className="w-full mb-4"
+            >
+              <View 
+                className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg" 
+                pointerEvents={Platform.OS === 'web' ? 'auto' : 'none'}
+              >
+                <View className="flex-col items-center my-2">
+                <CharacterAvatar character={prompt} size={64} className="my-auto shadow-2xl" />
+                  <Text className="font-extrabold text-primary">
+                      {prompt.name}
+                  </Text>
+                </View>
+                <View className="flex-1 ml-4">
+                  <Text 
+                    numberOfLines={20} 
+                    className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2 overflow-y-auto"
+                  >
+                    {prompt.content}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
           ))}
         </View>
         </ScrollView>

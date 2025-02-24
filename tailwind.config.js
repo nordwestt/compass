@@ -11,6 +11,18 @@ module.exports = {
         surface: 'var(--surface)',
         text: 'var(--text)',
         border: 'var(--border)',
+      },
+      rotate: {
+        '180': '180deg',
+      },
+      animation: {
+        'spin-once': 'spin 2s ease-in-out',
+      },
+      keyframes: {
+        spin: {
+          'from': { transform: 'rotate(0deg)' },
+          'to': { transform: 'rotate(180deg)' },
+        }
       }
     },
   },

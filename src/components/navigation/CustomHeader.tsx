@@ -16,7 +16,6 @@ export function CustomHeader() {
 
 
   const Title = () => (
-    <TouchableOpacity onPress={() => navigation.goBack()}>
       <View className="flex-row items-center">
         {segments.map((segment, index) => (
           <View key={segment} className="flex-row items-center">
@@ -33,23 +32,19 @@ export function CustomHeader() {
           </View>
         ))}
       </View>
-    </TouchableOpacity>
   );
 
   return (
     <SafeAreaView className="flex-row items-center px-4 py-3 bg-surface">
-      <View className="flex-row items-center flex-1 h-12">
+      <TouchableOpacity className="flex-row items-center h-12 hover:bg-background rounded-lg px-2" onPress={() => navigation.goBack()}>
         {canGoBack && (
-          <TouchableOpacity 
-            onPress={() => navigation.goBack()}
-            className="mr-3"
-          >
+          <View className="mr-3">
             <Ionicons name="chevron-back" size={24} className="!text-primary" />
-          </TouchableOpacity>
+          </View>
         )}
         
         <Title />
-      </View>
+      </TouchableOpacity>
       
       {/* Add any right-side buttons here */}
       {/* Example:

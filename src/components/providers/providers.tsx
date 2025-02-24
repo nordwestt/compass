@@ -82,7 +82,7 @@ export default function Providers({ className }: ProvidersProps) {
 
     setScanning(true);
     try{
-    scanForOllamaInstances().then((ollamaEndpoints) => {
+      scanNetworkOllama().then((ollamaEndpoints) => {
       const newProviders: Provider[] = ollamaEndpoints.map((endpoint) => ({
         endpoint,
         id: Date.now().toString() + endpoint,
@@ -125,7 +125,7 @@ export default function Providers({ className }: ProvidersProps) {
         
         <View className="flex-row justify-between items-center mb-4">
           <Text className="text-2xl font-bold mb-4 text-text">
-            API Providers
+            Providers
           </Text>
           <TouchableOpacity
                 onPress={() => {
@@ -134,18 +134,28 @@ export default function Providers({ className }: ProvidersProps) {
                 }}
                 className="bg-primary px-4 py-2 rounded-lg flex-row items-center">
                 <Ionicons name="add" size={20} color="white" />
-                <Text className="text-white ml-2 font-medium">New Provider</Text>
+                <Text className="text-white ml-2 font-medium">Add Provider</Text>
               </TouchableOpacity>
-          </View>
+        </View>
+        <View className="flex-row items-center py-2">
+          <Ionicons name="information-circle-outline" size={20} className="text-primary mr-2" />
+            <Text className="text-text flex-1 font-medium pt-1">
+              Providers provide different services to the app, such as text generation, image generation, search, and more.
+            </Text>
+        </View>
 
-        {providers.map((provider, index) => (
-          <ProviderCard className={`border-b border-border ${index % 2 === 1 ? 'bg-surface' : ''}`}
-            key={provider.id}
-            provider={provider}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
+        <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {providers.map((provider, index) => (
+            <View key={provider.id} className="w-full">
+              <ProviderCard
+                className="bg-surface rounded-xl shadow-lg"
+                provider={provider}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            </View>
+          ))}
+        </View>
       </ScrollView>
       <View className="bg-primary/10 dark:bg-primary/20 rounded-lg p-4 mb-6">
           <TouchableOpacity 
@@ -191,14 +201,39 @@ export default function Providers({ className }: ProvidersProps) {
 
 }
 
+export async function scanLocalOllama(): Promise<string[]> {
+  const localEndpoints = [
+    'http://localhost:11434'
+  ];
 
-export async function scanForOllamaInstances(): Promise<string[]> {
+  const testEndpoint = async (endpoint: string): Promise<string | null> => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 500);
+
+      const response = await fetch(endpoint, {
+        headers: {
+          'Accept': 'application/text',
+        },
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      return response.status === 200 ? endpoint : null;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const results = await Promise.all(localEndpoints.map(testEndpoint));
+  return results.filter(result => result !== null) as string[];
+}
+
+
+export async function scanNetworkOllama(): Promise<string[]> {
   // Get network info
   const networkState = await NetInfo.fetch();
-  const networkPatterns: string[] = [
-    'http://localhost:11434',
-    'http://127.0.0.1:11434',
-  ];
+  const networkPatterns: string[] = [];
 
   if (networkState.type === 'wifi' && networkState.details?.ipAddress && networkState.details?.subnet) {
     // Extract subnet from IP and subnet mask

@@ -1,17 +1,20 @@
 import { ChatProvider } from '@/src/types/chat';
-import { Character } from '@/src/types/core';
+import { Character, Provider } from '@/src/types/core';
 import { ChatMessage, Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
-import { CoreMessage, createDataStream, StreamData, streamText, tool } from 'ai';
+import { CoreMessage, createDataStream, embedMany, StreamData, streamText, tool } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { fetch as expoFetch } from 'expo/fetch';
 import { Platform as PlatformCust } from '@/src/utils/platform';
-import { streamResponse } from '@/src/services/chat/streamUtils';
+import { streamOpenAIResponse } from '@/src/services/chat/streamUtils';
 import { z } from 'zod';
-
-const PROXY_URL = "http://localhost:9493/";
+import { getProxyUrl } from '@/src/utils/proxy';
 
 export class OpenAIProvider implements ChatProvider {
+  provider: Provider;
+  constructor(provider: Provider) {
+    this.provider = provider;
+  }
   async *sendMessage(messages: ChatMessage[], model: Model, character: Character, signal?: AbortSignal): AsyncGenerator<string> {
     const newMessages = [
       { role: 'system', content: character.content },
@@ -29,12 +32,16 @@ export class OpenAIProvider implements ChatProvider {
     try {
       if (PlatformCust.isMobile) {
         let url = `${model.provider.endpoint}/v1/chat/completions`;
-        if (PlatformCust.isTauri) url = PROXY_URL + url;
-        yield* streamResponse(url, {
+        if (PlatformCust.isTauri) url = await getProxyUrl(url);
+        yield* streamOpenAIResponse(url, {
           model: model.id,
           messages: newMessages,
-          stream: true
-        });
+          stream: true,
+        }, {
+          headers:{
+          'Authorization': `Bearer ${model.provider.apiKey}`
+        }
+      });
       } else {
         const openai = createOpenAI({
           baseURL: model.provider.endpoint+'/v1',
@@ -74,7 +81,7 @@ export class OpenAIProvider implements ChatProvider {
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
     let url = `${model.provider.endpoint}`;
-    if(PlatformCust.isMobile) url = PROXY_URL+url;
+    if(PlatformCust.isMobile) url = await getProxyUrl(url);
     const response = await fetch(url+"/v1/chat/completions", {
       method: 'POST',
       headers: {
@@ -101,7 +108,7 @@ export class OpenAIProvider implements ChatProvider {
 
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any> {
     let url = `${model.provider.endpoint}`;
-    if(PlatformCust.isMobile) url = PROXY_URL+url;
+    if(PlatformCust.isMobile) url = await getProxyUrl(url);
     const response = await fetch(url+"/v1/chat/completions", {
       method: 'POST',
       headers: {
@@ -126,5 +133,20 @@ export class OpenAIProvider implements ChatProvider {
     } catch (error) {
       return { query: "", searchRequired: false };
     }
+  }
+
+  async embedText(texts: string[]): Promise<number[][]> {
+    const openai = createOpenAI({
+      baseURL: this.provider.endpoint+'/v1',
+      apiKey: this.provider.apiKey,
+      fetch: expoFetch as unknown as typeof globalThis.fetch
+    });
+
+    const { embeddings } = await embedMany({
+      model: openai.embedding('text-embedding-3-small'),
+      values: texts,
+    });
+
+    return embeddings;
   }
 } 

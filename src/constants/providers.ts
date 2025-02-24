@@ -1,5 +1,5 @@
 import { Provider } from '@/src/types/core';
-
+import { PROVIDER_LOGOS } from '@/src/constants/logos';
 export const PREDEFINED_PROVIDERS = {
   anthropic: {
     name: 'Anthropic',
@@ -9,7 +9,10 @@ export const PREDEFINED_PROVIDERS = {
       llm: true,
       tts: false,
       stt: false
-    }
+    },
+    logo: PROVIDER_LOGOS.anthropic,
+    keyRequired: true,
+    signupUrl: 'https://console.anthropic.com/'
   } as Provider,
   openai: {
     name: 'OpenAI',
@@ -20,7 +23,10 @@ export const PREDEFINED_PROVIDERS = {
       tts: false,
       stt: false,
       image: true
-    }
+    },
+    logo: PROVIDER_LOGOS.openai,
+    keyRequired: true,
+    signupUrl: 'https://platform.openai.com/signup'
   } as Provider,
   ollama: {
     name: 'Ollama',
@@ -30,7 +36,9 @@ export const PREDEFINED_PROVIDERS = {
       llm: true,
       tts: false,
       stt: false
-    }
+    },
+    logo: PROVIDER_LOGOS.ollama,
+    keyRequired: false
   } as Provider,
   elevenlabs: {
     name: 'ElevenLabs',
@@ -40,7 +48,10 @@ export const PREDEFINED_PROVIDERS = {
       llm: false,
       tts: true,
       stt: false
-    }
+    },
+    logo: PROVIDER_LOGOS.elevenlabs,
+    keyRequired: true,
+    signupUrl: 'https://elevenlabs.io/sign-up'
   } as Provider,
   searxng: {
     name: 'SearXNG',
@@ -51,7 +62,9 @@ export const PREDEFINED_PROVIDERS = {
       tts: false,
       stt: false,
       search: true
-    }
+    },
+    logo: PROVIDER_LOGOS.searxng,
+    keyRequired: false,
   } as Provider,
   replicate: {
     name: 'Replicate',
@@ -62,6 +75,9 @@ export const PREDEFINED_PROVIDERS = {
       tts: false,
       stt: false,
       image: true
-    }
+    },
+    logo: PROVIDER_LOGOS.replicate,
+    keyRequired: true,
+    signupUrl: 'https://replicate.com/signin'
   } as Provider
 } as const; 

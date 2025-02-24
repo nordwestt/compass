@@ -4,8 +4,8 @@ import { ChatMessage } from '@/src/types/core';
 import { Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { Platform } from 'react-native';
-import { anthropic } from '@ai-sdk/anthropic';
-import { createAnthropic } from '@ai-sdk/anthropic';
+import { groq } from '@ai-sdk/groq';
+import { createGroq } from '@ai-sdk/groq';
 import { CoreMessage, embedMany, tool } from 'ai';
 import { streamText } from 'ai';
 import { z } from 'zod';
@@ -13,7 +13,7 @@ import { fetch as expoFetch } from 'expo/fetch';
 import { Platform as PlatformCust } from '@/src/utils/platform';
 import { getProxyUrl } from '@/src/utils/proxy';
 
-export class AnthropicProvider implements ChatProvider {
+export class GroqProvider implements ChatProvider {
   provider: Provider;
   constructor(provider: Provider) {
     this.provider = provider;
@@ -34,14 +34,14 @@ export class AnthropicProvider implements ChatProvider {
 
     try {
       
-      const anthropic = createAnthropic({
+      const groq = createGroq({
         baseURL: model.provider.endpoint+'/v1',
         apiKey: model.provider.apiKey,
         fetch: expoFetch as unknown as typeof globalThis.fetch
       });
 
       const {textStream, steps} = streamText({
-        model: anthropic(model.id),
+        model: groq(model.id),
         messages: newMessages as CoreMessage[],
         tools: {
           weather: tool({

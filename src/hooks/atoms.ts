@@ -57,9 +57,9 @@ export const threadActionsAtom = atom(
         const updatedThreads = threads.map(t => 
           t.id === action.payload.id ? action.payload : t
         )
-        set(threadsAtom, updatedThreads)
+        await set(threadsAtom, updatedThreads)
         if((await get(currentThreadAtom)).id === action.payload.id) {
-          set(currentThreadAtom, action.payload)
+          await set(currentThreadAtom, action.payload)
         }
         break
       
@@ -69,16 +69,16 @@ export const threadActionsAtom = atom(
         
         if((await get(currentThreadAtom)).id === action.payload) {
           if(newThreads.length > 0) {
-            set(currentThreadAtom, newThreads[newThreads.length - 1])
+            await set(currentThreadAtom, newThreads[newThreads.length - 1])
           } else {
-            set(currentThreadAtom, createDefaultThread())
+            await set(currentThreadAtom, createDefaultThread())
           }
         }
         
         break
         
       case 'setCurrent':
-        set(currentThreadAtom, action.payload)
+        await set(currentThreadAtom, action.payload)
         break
 
       case 'updateMessages':
@@ -87,9 +87,9 @@ export const threadActionsAtom = atom(
             ? { ...t, messages: action.payload.messages }
             : t
         )
-        set(threadsAtom, threadsWithUpdatedMessages)
+        await set(threadsAtom, threadsWithUpdatedMessages)
         if ((await get(currentThreadAtom)).id === action.payload.threadId) {
-          set(currentThreadAtom, {
+          await set(currentThreadAtom, {
             ...(await get(currentThreadAtom)),
             messages: action.payload.messages
           })
@@ -167,7 +167,7 @@ export const availableProvidersAtom = atomWithAsyncStorage<Provider[]>('provider
 export const defaultModelAtom = atomWithAsyncStorage<Model>('defaultModel', createDefaultThread().selectedModel);
 
 export const fontPreferencesAtom = atom({
-  fontFamily: 'Caveat-Medium',
+  fontFamily: 'System',
   fontSize: 18,
   lineHeight: 24,
   letterSpacing: 0.8,
@@ -195,5 +195,17 @@ export interface GeneratedImage {
   createdAt: string;
 }
 
-// Add this with other atoms
 export const generatedImagesAtom = atomWithAsyncStorage<GeneratedImage[]>('generatedImages', []);
+
+export const selectedImageModelAtom = atomWithAsyncStorage<Model | undefined>('selectedImageModel', undefined);
+
+export const proxyUrlAtom = atomWithAsyncStorage<string>('proxyUrl', 'https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/');
+
+export const previewCodeAtom = atom<{
+  html?: string;
+  css?: string;
+  javascript?: string;
+} | null>(null);
+
+// Add this with the other atoms
+export const hasSeenOnboardingAtom = atomWithAsyncStorage<boolean>('hasSeenOnboarding', false);

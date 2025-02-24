@@ -23,7 +23,8 @@ export interface Thread {
     id: string;
     name: string;
     content: string;
-    image: any | string;
+    image?: any | string;
+    icon?: string;
     voice?: Voice;
   }
 
@@ -48,4 +49,7 @@ export interface Thread {
     };
     apiKey?: string;
     endpoint: string;
+    logo?: any;
+    keyRequired?: boolean;
+    signupUrl?: string;
   }

@@ -17,13 +17,18 @@ import {
   isGeneratingAtom,
   availableProvidersAtom,
   ttsEnabledAtom,
-  defaultVoiceAtom
+  defaultVoiceAtom,
+  previewCodeAtom
 } from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
-import { Ionicons } from '@expo/vector-icons';
-import { toastService } from '@/src/services/toastService';
 import { VoiceSelector } from './VoiceSelector';
+import { CodePreview } from './CodePreview';
+import { parseCodeBlocks } from '@/src/utils/codeParser';
+import { Modal } from '@/src/components/ui/Modal';
+import { useWindowDimensions } from 'react-native';
+
+
 
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlashList<any>>(null);
@@ -39,6 +44,11 @@ export const ChatThread: React.FC = () => {
   const previousThreadId = useRef(currentThread.id);
 
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
+
+  const [previewCode, setPreviewCode] = useAtom(previewCodeAtom);
+
+  const { width } = useWindowDimensions();
+  const isDesktop = Platform.OS === 'web' && width >= 768;
 
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
@@ -62,30 +72,25 @@ export const ChatThread: React.FC = () => {
     if(!providers.length) {
       return;
     }
+    let messages = [...currentThread.messages];
 
-    if (editingMessageIndex !== -1) {
-      const updatedMessages = [...currentThread.messages];
-      //updatedMessages[editingMessageIndex].content = message;
-      updatedMessages.splice(editingMessageIndex);
-      
-      await dispatchThread({
-        type: 'update',
-        payload: { ...currentThread, messages: updatedMessages }
-      });
-      
+    const isEditing = editingMessageIndex !== -1;
+
+    if (isEditing) {
+      messages.splice(editingMessageIndex);
       setEditingMessageIndex(-1);
-    } else if (currentThread.messages.length === 0 && threads.filter(t => t.id === currentThread.id).length === 0) {
+    }
 
-      dispatchThread({ 
+    if (currentThread.messages.length === 0 && threads.filter(t => t.id === currentThread.id).length === 0) {
+      await dispatchThread({ 
         type: 'add', 
         payload: currentThread 
       });
-
     }
 
     setIsGenerating(true);
-    try{
-      await handleSend(message, mentionedCharacters);
+    try {
+      await handleSend(messages, message, mentionedCharacters);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -94,7 +99,6 @@ export const ChatThread: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 200));
         debouncedScrollToEnd();
       }
-      
     }
   };
 
@@ -115,6 +119,7 @@ export const ChatThread: React.FC = () => {
 
   const handleMessagePress = (index: number, message: ChatMessage) =>{
     if (message.isUser) {
+      console.log("User pressed message", message, index);
       setEditingMessageIndex(index);
 
       chatInputRef.current?.setEditMessage(message.content);
@@ -122,19 +127,21 @@ export const ChatThread: React.FC = () => {
     }
   };
 
-  const renderItem = ({ item: message, index }: { item: any; index: number }) => (
-    <TouchableOpacity 
-      onPress={() => handleMessagePress(index, message)}
-      activeOpacity={message.isUser ? 0.7 : 1}
-    >
+  const renderItem = ({ item: message, index }: { item: any; index: number }) => {
+    const parsedCode = !message.isUser ? parseCodeBlocks(message.content) : null;
+
+    return (
       <Message
         content={message.content}
         isUser={message.isUser}
         character={message.character}
         index={index}
+        onEdit={() => handleMessagePress(index, message)}
+        onPreviewCode={() => parsedCode && setPreviewCode(parsedCode)}
+        hasPreviewableCode={!!parsedCode}
       />
-    </TouchableOpacity>
-  );
+    );
+  };
 
   const scrollToEnd = useCallback(() => {
     if (flatListRef.current) {
@@ -157,6 +164,8 @@ export const ChatThread: React.FC = () => {
   const messages = currentThread?.messages || [];
 
   return (
+    <View className="flex-row flex-1">
+
     <View className="flex-1 bg-background">
       <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
         <View className="flex-row items-center gap-2">
@@ -180,7 +189,7 @@ export const ChatThread: React.FC = () => {
           className="w-40 overflow-hidden"
         />
       </View>
-
+      
       <FlashList
         ref={flatListRef}
         data={messages}
@@ -196,8 +205,8 @@ export const ChatThread: React.FC = () => {
           minIndexForVisible: 0,
           autoscrollToTopThreshold: 10
         }}
-        className="flex-1 -mt-4 pt-4"
-        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+        className="flex-1 -mt-4"
+        contentContainerStyle={{ padding: 16, paddingBottom: 50, paddingTop: 100 }}
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center p-4">
             {/* Optional: Add an empty state message */}
@@ -205,13 +214,40 @@ export const ChatThread: React.FC = () => {
         }
       />
 
+      
+
       <ChatInput 
         ref={chatInputRef}
         onSend={wrappedHandleSend} 
         isGenerating={isGenerating}
         onInterrupt={handleInterrupt}
       />
+      
     </View>
+    {/* Show side panel on desktop, modal on mobile */}
+    {previewCode && (
+      isDesktop ? (
+        <View className="flex-1 p-4 overflow-hidden w-1/3 h-screen">
+          <CodePreview
+            {...previewCode}
+            onClose={() => setPreviewCode(null)}
+          />
+        </View>
+      ) : (
+        <Modal
+          isVisible={!!previewCode}
+          onClose={() => setPreviewCode(null)}
+        >
+          <View className="flex-1">
+            <CodePreview
+              {...previewCode}
+              onClose={() => setPreviewCode(null)}
+            />
+          </View>
+        </Modal>
+      )
+    )}
+      </View>
   );
 }; 
 

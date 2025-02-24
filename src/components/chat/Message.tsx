@@ -9,14 +9,20 @@ import { useAtomValue } from 'jotai';
 import { InteractionManager, Clipboard } from 'react-native';
 import { toastService } from '@/src/services/toastService';
 import { Ionicons } from '@expo/vector-icons';
+import { CharacterAvatar } from '../character/CharacterAvatar';
+import { MessageActions } from './MessageActions';
+
 interface MessageProps {
   content: string;
   isUser: boolean;
   character?: Character;
   index: number;
+  onEdit?: (index: number) => void;
+  onPreviewCode?: () => void;
+  hasPreviewableCode?: boolean;
 }
 
-export const Message: React.FC<MessageProps> = ({ content, isUser, character, index }) => {
+export const Message: React.FC<MessageProps> = ({ content, isUser, character, index, onEdit, onPreviewCode, hasPreviewableCode }) => {
   const { colorScheme } = useColorScheme();
   const currentThread = useAtomValue(currentThreadAtom);
   const preferences = useAtomValue(fontPreferencesAtom);
@@ -52,6 +58,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
   };
 
   const [displayContent, setDisplayContent] = useState('');
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -85,13 +92,21 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
     );
   };
 
+  const handleCopyMessage = () => {
+    Clipboard.setString(content);
+    toastService.success({
+      title: 'Message copied to clipboard',
+      description: ""
+    });
+  };
+
   return (
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
       {!isUser && (
         <View className="mr-2 items-center my-auto">
-          <Image 
-            source={character?.image ||currentThread.character?.image} 
-            className="!w-[32px] !h-[32px] rounded-full"
+          <CharacterAvatar 
+            character={character || currentThread.character} 
+            size={32} 
           />
           <Text className="text-xs mt-1 text-gray-600 dark:text-gray-400 font-bold">
             {character?.name || currentThread.character?.name}
@@ -99,9 +114,11 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         </View>
       )}
       <View 
-        className={`px-4 py-2 rounded-2xl max-w-[80%] ${
+        className={`relative px-4 py-2 mb-4 rounded-2xl max-w-[80%] ${
           isUser ? "bg-primary rounded-tr-none" : "bg-surface rounded-tl-none"
         } ${editingMessageIndex === index ? "bg-yellow-500" : ""}`}
+        onPointerEnter={() => setIsHovered(true)}
+        onPointerLeave={() => setIsHovered(false)}
       >
         {editingMessageIndex === index && (
           <Text className="text-yellow-400 text-xs mb-1">Editing...</Text>
@@ -116,6 +133,16 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         >
             {displayContent}
           </Markdown>
+        )}
+        
+        {isHovered && (
+          <MessageActions
+            isUser={isUser}
+            hasPreviewableCode={hasPreviewableCode}
+            onCopy={handleCopyMessage}
+            onPreviewCode={onPreviewCode}
+            onEdit={() => onEdit?.(index)}
+          />
         )}
       </View>
     </View>

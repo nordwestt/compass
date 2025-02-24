@@ -39,7 +39,7 @@ export default function SettingsScreen() {
         <Text className="text-secondary">Customize your chat experience</Text>
       </View>
 
-      <View className="space-y-4">
+      <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <SettingItem
           title="Font Settings"
           description="Customize text appearance and size"
@@ -48,7 +48,7 @@ export default function SettingsScreen() {
         />
 
         <SettingItem
-          title="API Providers"
+          title="Providers"
           description="Manage your AI model providers"
           icon="server"
           onPress={() => router.push('/settings/providers')}
@@ -66,6 +66,20 @@ export default function SettingsScreen() {
           description="View application logs"
           icon="list"
           onPress={() => router.push('/settings/logs')}
+        />
+
+        <SettingItem
+          title="General"
+          description="General settings"
+          icon="settings"
+          onPress={() => router.push('/settings/general')}
+        />
+
+        <SettingItem
+          title="Help"
+          description="Install and configure ollama"
+          icon="help-circle"
+          onPress={() => router.push('/settings/help')}
         />
 
         {/* <SettingItem

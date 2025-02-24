@@ -8,11 +8,11 @@ export class ChatProviderFactory {
   static getProvider(model: Model): ChatProvider {
     switch (model.provider.source) {
       case 'ollama':
-        return new OllamaProvider();
+        return new OllamaProvider(model.provider);
       case 'openai':
-        return new OpenAIProvider();
+        return new OpenAIProvider(model.provider);
       case 'anthropic':
-      return new AnthropicProvider();
+        return new AnthropicProvider(model.provider);
       default:
         throw new Error(`Unsupported provider: ${model.provider.source}`);
     }

@@ -26,7 +26,7 @@ export function FontSelector({ className }: FontSelectorProps) {
   const [preferences, setPreferences] = useAtom(fontPreferencesAtom);
 
   const renderSelectors = () => {
-    return <>
+    return <View>
     <Selector
         title="Font Family"
         options={AVAILABLE_FONTS.map(font => ({
@@ -71,7 +71,7 @@ export function FontSelector({ className }: FontSelectorProps) {
         horizontal
       />
 
-    </>
+    </View>
   }
 
   return (
@@ -89,10 +89,12 @@ export function FontSelector({ className }: FontSelectorProps) {
         <Message
           content={EXAMPLE_MESSAGE}
           isUser={false}
+          index={0}
         />
         <Message
           content="This is how your messages will look!"
           isUser={true}
+          index={0}
         />
       </View>
     </View>

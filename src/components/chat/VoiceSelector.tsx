@@ -38,7 +38,7 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
 
 
   return (
-    <>
+    <View>
     <View className="flex-row items-center flex-1 justify-between border border-border rounded-lg">
       <TouchableOpacity 
         onPress={() => ttsProviders().length ? setIsModalVisible(true) : showTTSDisabledToast()}
@@ -141,6 +141,6 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
         </View>
         </ThemeProvider>
       </Modal>
-    </>
+    </View>
   );
 }; 

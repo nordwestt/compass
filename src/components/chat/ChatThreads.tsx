@@ -2,7 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Platform, SectionList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom, useSetAtom } from 'jotai';
-import { threadsAtom, currentThreadAtom, threadActionsAtom } from '@/src/hooks/atoms';
+import { threadsAtom, currentThreadAtom, threadActionsAtom, previewCodeAtom } from '@/src/hooks/atoms';
 import { modalService } from '@/src/services/modalService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/src/types/core';
@@ -21,6 +21,7 @@ const ChatThreads: React.FC = () => {
   const [threads] = useAtom(threadsAtom);
   const [currentThread] = useAtom(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
+  const setPreviewCode = useSetAtom(previewCodeAtom);
   const scrollViewRef = useRef<SectionList>(null);
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -110,6 +111,7 @@ const ChatThreads: React.FC = () => {
   };
 
   const handleThreadSelect = (thread: Thread) => {
+    setPreviewCode(null);
     if (Platform.OS === 'web' && window.innerWidth >= 768) {
       dispatchThread({ type: 'setCurrent', payload: thread });
     } else {
@@ -132,23 +134,24 @@ const ChatThreads: React.FC = () => {
           </View>
         )}
         renderItem={({ item: thread }) => (
-          <View className="flex-row items-center mb-2 px-4">
+          <View className="flex-row items-center mb-2 mx-4 rounded-lg shadow-md">
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`shadow-md flex-1 p-4 rounded-lg bg-surface web:bg-background hover:bg-background ${
+              className={`flex-row flex-1 items-center rounded-lg rounded-r-none bg-surface hover:bg-background h-12 ${
                 currentThread.id === thread.id 
                   ? 'web:border-primary web:border-2' 
                   : ''
               }`}
             >
-              <Text className="font-bold text-text">
+              <Text className="font-bold text-text p-2 text-center">
                 {thread.title}
               </Text>
+              
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => deleteThread(thread.id)}
-              className="ml-2 p-2 rounded-full bg-background hover:bg-red-100 hover:dark:bg-red-900"
+              className="h-12 p-4 items-center justify-center bg-red-100 dark:bg-red-900 rounded-r-lg hover:opacity-60"
             >
               <Ionicons 
                 name="trash-outline" 
@@ -156,10 +159,11 @@ const ChatThreads: React.FC = () => {
                 className="!text-red-500 dark:!text-red-300"
               />
             </TouchableOpacity>
+            
           </View>
         )}
         onScrollToIndexFailed={(info) => {
-          console.warn('Failed to scroll to index', info);
+          //console.warn('Failed to scroll to index', info);
           // Fallback to scrollToEnd if scrollToLocation fails
           setTimeout(() => {
           }, 100);
@@ -168,7 +172,6 @@ const ChatThreads: React.FC = () => {
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
         onContentSizeChange={() => {
           const lastSectionIndex = groupThreadsByDate(threads).length - 1;
-          console.log(lastSectionIndex);
           const lastSection = groupThreadsByDate(threads)[lastSectionIndex];
           if (lastSection?.data.length > 0) {
             scrollViewRef.current?.scrollToLocation({ 
