@@ -1,35 +1,42 @@
 import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import { Provider } from "@/src/types/core";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
-import { PROVIDER_LOGOS } from "@/src/constants/logos";
 import { ScrollView } from "react-native-gesture-handler";
 import { Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+
 interface ProviderFormFieldsProps {
-  name: string;
-  setName: (value: string) => void;
-  apiKey: string;
-  setApiKey: (value: string) => void;
-  selectedType: Provider["source"];
-  setSelectedType: (type: Provider["source"]) => void;
-  customEndpoint: string;
-  setCustomEndpoint: (value: string) => void;
+  formData: Omit<Provider, 'id'>;
+  onChange: (updates: Partial<Omit<Provider, 'id'>>) => void;
 }
 
 export function ProviderFormFields({
-  name,
-  setName,
-  apiKey,
-  setApiKey,
-  selectedType,
-  setSelectedType,
-  customEndpoint,
-  setCustomEndpoint,
+  formData,
+  onChange,
 }: ProviderFormFieldsProps) {
-  const [selectedProvider, setSelectedProvider] = useState<Provider>(
-    PREDEFINED_PROVIDERS[selectedType as keyof typeof PREDEFINED_PROVIDERS],
+  const [selectedProvider, setSelectedProvider] = useState(() => {
+    // Find the matching predefined provider based on endpoint
+    return Object.values(PREDEFINED_PROVIDERS).find(
+      p => p.endpoint === formData.endpoint
+    ) || PREDEFINED_PROVIDERS.ollama;
+  });
+
+  const handleProviderSelect = (provider: Provider) => {
+    setSelectedProvider(provider);
+    console.log("provider", provider);
+    onChange({
+      name: provider.name,
+      endpoint: provider.endpoint,
+      capabilities: provider.capabilities,
+      logo: provider.logo,
+    });
+  };
+
+  const isCustom = !Object.values(PREDEFINED_PROVIDERS).some(
+    p => p.endpoint === formData.endpoint
   );
+
   return (
     <View className="space-y-4">
       <View>
@@ -41,90 +48,56 @@ export function ProviderFormFields({
           showsHorizontalScrollIndicator={false}
           className="mb-4"
         >
-          {Object.entries(PREDEFINED_PROVIDERS).map(([key, value]) => (
+          {Object.entries(PREDEFINED_PROVIDERS).map(([key, provider]) => (
             <TouchableOpacity
               key={key}
-              onPress={() => {
-                setSelectedType(value.source);
-                setCustomEndpoint(value.endpoint);
-                setSelectedProvider(value);
-              }}
+              onPress={() => handleProviderSelect(provider)}
               className={`mr-2 p-3 rounded-lg border-2 bg-surface ${
-                selectedType === value.source
+                selectedProvider.endpoint === provider.endpoint
                   ? "border-primary"
                   : "border-border"
               }`}
             >
               <View className="flex-row items-center">
-                {value.logo && (
+                {provider.logo && (
                   <Image
-                    source={{ uri: value.logo }}
+                    source={{ uri: provider.logo }}
                     className="!w-[24px] !h-[24px] rounded-full mr-2"
                   />
                 )}
-                <Text className={"text-text"}>{value.name}</Text>
+                <Text className="text-text">{provider.name}</Text>
               </View>
 
               <View className="flex-row mt-2 space-x-2">
                 <Ionicons
-                  name={
-                    value.capabilities?.llm
-                      ? "chatbubble"
-                      : "chatbubble-outline"
-                  }
+                  name={provider.capabilities?.llm ? "chatbubble" : "chatbubble-outline"}
                   size={16}
-                  className={
-                    value.capabilities?.llm ? "text-primary" : "text-gray-300"
-                  }
+                  className={provider.capabilities?.llm ? "text-primary" : "text-gray-300"}
                 />
                 <Ionicons
-                  name={
-                    value.capabilities?.tts
-                      ? "volume-high"
-                      : "volume-high-outline"
-                  }
+                  name={provider.capabilities?.tts ? "volume-high" : "volume-high-outline"}
                   size={16}
-                  className={
-                    value.capabilities?.tts ? "text-primary" : "text-gray-300"
-                  }
+                  className={provider.capabilities?.tts ? "text-primary" : "text-gray-300"}
                 />
                 <Ionicons
-                  name={value.capabilities?.stt ? "mic" : "mic-outline"}
+                  name={provider.capabilities?.stt ? "mic" : "mic-outline"}
                   size={16}
-                  className={
-                    value.capabilities?.stt ? "text-primary" : "text-gray-300"
-                  }
+                  className={provider.capabilities?.stt ? "text-primary" : "text-gray-300"}
                 />
                 <Ionicons
-                  name={value.capabilities?.image ? "image" : "image-outline"}
+                  name={provider.capabilities?.image ? "image" : "image-outline"}
                   size={16}
-                  className={
-                    value.capabilities?.image ? "text-primary" : "text-gray-300"
-                  }
+                  className={provider.capabilities?.image ? "text-primary" : "text-gray-300"}
                 />
                 <Ionicons
-                  name={
-                    value.capabilities?.search ? "search" : "search-outline"
-                  }
+                  name={provider.capabilities?.search ? "search" : "search-outline"}
                   size={16}
-                  className={
-                    value.capabilities?.search
-                      ? "text-primary"
-                      : "text-gray-300"
-                  }
+                  className={provider.capabilities?.search ? "text-primary" : "text-gray-300"}
                 />
                 <Ionicons
-                  name={
-                    value.capabilities?.embedding
-                      ? "barcode"
-                      : "barcode-outline"
-                  }
+                  name={provider.capabilities?.embedding ? "barcode" : "barcode-outline"}
                   size={16}
-                  className={
-                    value.capabilities?.embedding
-                      ? "text-primary"
-                      : "text-gray-300"
-                  }
+                  className={provider.capabilities?.embedding ? "text-primary" : "text-gray-300"}
                 />
               </View>
             </TouchableOpacity>
@@ -132,12 +105,12 @@ export function ProviderFormFields({
         </ScrollView>
       </View>
 
-      {selectedType === "custom" && (
+      {isCustom && (
         <View>
           <Text className="text-sm font-medium text-text mb-2">Name</Text>
           <TextInput
-            value={name}
-            onChangeText={setName}
+            value={formData.name}
+            onChangeText={(value) => onChange({ name: value })}
             className="border border-border rounded-lg p-3 bg-surface text-text"
             placeholder="Enter name"
           />
@@ -228,22 +201,22 @@ export function ProviderFormFields({
         )}
         <Text className="text-sm font-medium text-text mb-2">API Key</Text>
         <TextInput
-          value={apiKey}
-          onChangeText={setApiKey}
+          value={formData.apiKey}
+          onChangeText={(value) => onChange({ apiKey: value })}
           className="border border-border rounded-lg p-3 bg-surface text-text"
           placeholder={`Enter API key${selectedProvider.keyRequired ? "" : ", if required"}`}
           secureTextEntry
         />
       </View>
 
-      {(selectedType === "custom" || selectedType === "ollama") && (
+      {(isCustom || selectedProvider.name?.toLowerCase().includes('ollama')) && (
         <View>
           <Text className="text-sm font-medium text-text mb-2">
             Endpoint URL
           </Text>
           <TextInput
-            value={customEndpoint}
-            onChangeText={setCustomEndpoint}
+            value={formData.endpoint}
+            onChangeText={(value) => onChange({ endpoint: value })}
             className="border border-border rounded-lg p-3 bg-surface text-text"
             placeholder="Enter endpoint URL"
           />

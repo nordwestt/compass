@@ -22,7 +22,7 @@ export default function Providers({ className }: ProvidersProps) {
   const [providers, setProviders] = useAtom(availableProvidersAtom);
   const [logs, setLogs] = useAtom(logsAtom);
   const [showModal, setShowModal] = useState(false);
-  const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
+  const [editingProvider, setEditingProvider] = useState<Provider | undefined>(undefined);
   const [scanning, setScanning] = useState(false);
   const [models, setModels] = useAtom(availableModelsAtom);
   
@@ -33,7 +33,7 @@ export default function Providers({ className }: ProvidersProps) {
     } else {
       await setProviders([...providers, { ...provider, id: Date.now().toString() }]);
     }
-    setEditingProvider(null);
+    setEditingProvider(undefined);
     setShowModal(false);
 
     fetchAvailableModelsV2(await getDefaultStore().get(availableProvidersAtom)).then((modelsFound) => {
@@ -129,7 +129,7 @@ export default function Providers({ className }: ProvidersProps) {
           </Text>
           <TouchableOpacity
                 onPress={() => {
-                  setEditingProvider(null);
+                  setEditingProvider(undefined);
                   setShowModal(true);
                 }}
                 className="bg-primary px-4 py-2 rounded-lg flex-row items-center">
@@ -190,11 +190,10 @@ export default function Providers({ className }: ProvidersProps) {
         visible={showModal}
         onClose={() => {
           setShowModal(false);
-          setEditingProvider(null);
+          setEditingProvider(undefined);
         }}
         onSave={handleSave}
-        provider={editingProvider}
-        editing={editingProvider != null}
+        initialProvider={editingProvider}
       />
     </View>
   );
