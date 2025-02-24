@@ -18,7 +18,7 @@ const ONBOARDING_PAGES = [
   },
   {
     title: 'Choose a Character',
-    description: 'Select or create a character to chat with. There are 8 starter characters to choose from, each with their own personality and expertise.',
+    description: 'Select or create a character to chat with. There are 8 starter characters to choose from, each with their own personality.',
     icon: 'people'
   },
   {
