@@ -231,7 +231,7 @@ export function ProviderFormFields({
           value={apiKey}
           onChangeText={setApiKey}
           className="border border-border rounded-lg p-3 bg-surface text-text"
-          placeholder="Enter API key, if required"
+          placeholder={`Enter API key${selectedProvider.keyRequired ? "" : ", if required"}`}
           secureTextEntry
         />
       </View>

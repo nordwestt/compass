@@ -1,6 +1,19 @@
 import { Provider } from "@/src/types/core";
 import { PROVIDER_LOGOS } from "@/src/constants/logos";
 export const PREDEFINED_PROVIDERS = {
+  ollama: {
+    name: "Ollama",
+    endpoint: "http://localhost:11434",
+    source: "ollama" as const,
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+      embedding: true,
+    },
+    logo: "https://ollama.com/public/icon-48x48.png",
+    keyRequired: false,
+  } as Provider,
   anthropic: {
     name: "Anthropic",
     endpoint: "https://api.anthropic.com",
@@ -28,19 +41,6 @@ export const PREDEFINED_PROVIDERS = {
     logo: "https://openai.com/icon.svg",
     keyRequired: true,
     signupUrl: "https://platform.openai.com/signup",
-  } as Provider,
-  ollama: {
-    name: "Ollama",
-    endpoint: "http://localhost:11434",
-    source: "ollama" as const,
-    capabilities: {
-      llm: true,
-      tts: false,
-      stt: false,
-      embedding: true,
-    },
-    logo: "https://ollama.com/public/icon-48x48.png",
-    keyRequired: false,
   } as Provider,
   elevenlabs: {
     name: "ElevenLabs",
