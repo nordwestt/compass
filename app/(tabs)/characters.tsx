@@ -172,7 +172,21 @@ export default function CharactersScreen() {
         </ScrollView>
 
       </View>
-      {editingCharacter && <EditCharacter id={editingCharacter.id} onSave={() => setEditingCharacter(null)} className="flex-1 bg-surface rounded-xl m-4 shadow-lg" />}
+      {editingCharacter && (
+        <View className="flex-1 m-4 relative">
+          <EditCharacter 
+            id={editingCharacter.id} 
+            onSave={() => setEditingCharacter(null)} 
+            className="flex-1 bg-surface rounded-xl shadow-lg" 
+          />
+          <TouchableOpacity 
+            onPress={() => setEditingCharacter(null)}
+            className="absolute top-2 right-2 bg-surface/80 dark:bg-surface/60 p-2 rounded-full z-10"
+          >
+            <Ionicons name="close" size={24} className="text-text" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 } 
