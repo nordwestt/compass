@@ -2,7 +2,6 @@
     "cli": {
       "appVersionSource": "remote"
     },
-    "owner": "nordwestt",
     "build": {
       "preview": {
         "android": {
