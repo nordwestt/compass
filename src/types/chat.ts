@@ -11,6 +11,7 @@ export interface ChatProvider {
   sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string>;
   sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>;
   embedText(texts: string[]): Promise<number[][]>;
+  getAvailableModels(): Promise<string[]>;
 }
 
 export interface MessageStreamHandler {

@@ -129,4 +129,16 @@ export class GroqProvider implements ChatProvider {
     // anthropic does not support embedding
     return [];
   }
+
+  async getAvailableModels(): Promise<string[]> {
+    const response = await fetch(`${this.provider.endpoint}/v1/models`, {
+      headers: {
+        'Authorization': `Bearer ${this.provider.apiKey}`
+      }
+    });
+    const data = await response.json();
+    return data.data
+      .filter((model: any) => model.object == 'model' && model.active == true)
+      .map((model: any) => model.id);
+  }
 } 

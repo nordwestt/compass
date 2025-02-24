@@ -1,20 +1,20 @@
-import { Model } from '@/src/types/core';
+import { Model, Provider } from '@/src/types/core';
 import { ChatProvider } from '@/src/types/chat';
 import { OllamaProvider } from './providers/OllamaProvider';
 import { OpenAIProvider } from './providers/OpenAIProvider';
 import { AnthropicProvider } from './providers/AnthropicProvider';
 
 export class ChatProviderFactory {
-  static getProvider(model: Model): ChatProvider {
-    switch (model.provider.source) {
+  static getProvider(provider: Provider): ChatProvider {
+    switch (provider.source) {
       case 'ollama':
-        return new OllamaProvider(model.provider);
+        return new OllamaProvider(provider);
       case 'openai':
-        return new OpenAIProvider(model.provider);
+        return new OpenAIProvider(provider);
       case 'anthropic':
-        return new AnthropicProvider(model.provider);
+        return new AnthropicProvider(provider);
       default:
-        throw new Error(`Unsupported provider: ${model.provider.source}`);
+        throw new Error(`Unsupported provider: ${provider.source}`);
     }
   }
 } 

@@ -149,4 +149,16 @@ export class OpenAIProvider implements ChatProvider {
 
     return embeddings;
   }
+
+  async getAvailableModels(): Promise<string[]> {
+    const openaiResponse = await fetch(`${this.provider.endpoint}/v1/models`, {
+      headers: {
+        'Authorization': `Bearer ${this.provider.apiKey}`
+      }
+    });
+    const openaiData = await openaiResponse.json();
+    return openaiData.data
+      .filter((model: any) => model.id.includes('gpt'))
+      .map((model: any) => model.id);
+  }
 } 

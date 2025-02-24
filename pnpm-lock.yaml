@@ -14,9 +14,15 @@ importers:
       '@ai-sdk/groq':
         specifier: ^1.1.10
         version: 1.1.10(zod@3.24.2)
+      '@ai-sdk/mistral':
+        specifier: ^1.1.12
+        version: 1.1.12(zod@3.24.2)
       '@ai-sdk/openai':
         specifier: ^1.1.5
         version: 1.1.13(zod@3.24.2)
+      '@ai-sdk/xai':
+        specifier: ^1.1.11
+        version: 1.1.11(zod@3.24.2)
       '@expo/vector-icons':
         specifier: ^14.0.2
         version: 14.0.4
@@ -215,6 +221,18 @@ packages:
     peerDependencies:
       zod: ^3.0.0
 
+  '@ai-sdk/mistral@1.1.12':
+    resolution: {integrity: sha512-6qoT2gNrwzXPpJ3dJTEYuuYZVXrAGgV9UTqAzzD+ybHuJcoAtdjns3woF7fOuTJ9TcrESpaaD4p7Cg5ZsGgqug==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+
+  '@ai-sdk/openai-compatible@0.1.11':
+    resolution: {integrity: sha512-r9kIDPdKCM1tbZEEKUauGzXp+w1ADrFPPfSxVeVr7of4QIvKzXqLaH/jR/HtdZ1JR5i9uywHijOAZtw7ZcDvQQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+
   '@ai-sdk/openai@1.1.13':
     resolution: {integrity: sha512-IdChK1pJTW3NQis02PG/hHTG0gZSyQIMOLPt7f7ES56C0xH2yaKOU1Tp2aib7pZzWGwDlzTOW2h5TtAB8+V6CQ==}
     engines: {node: '>=18'}
@@ -254,6 +272,12 @@ packages:
     peerDependenciesMeta:
       zod:
         optional: true
+
+  '@ai-sdk/xai@1.1.11':
+    resolution: {integrity: sha512-eag7OmwoDXvqXX9p/WQIYHrmX3Q3ZdTRWX01BiMCY5qri/+/FK/2CkGuxxMI3PHy2bqvWaK85A02j3AALafVIw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -4658,6 +4682,18 @@ snapshots:
       '@ai-sdk/provider-utils': 2.1.9(zod@3.24.2)
       zod: 3.24.2
 
+  '@ai-sdk/mistral@1.1.12(zod@3.24.2)':
+    dependencies:
+      '@ai-sdk/provider': 1.0.8
+      '@ai-sdk/provider-utils': 2.1.9(zod@3.24.2)
+      zod: 3.24.2
+
+  '@ai-sdk/openai-compatible@0.1.11(zod@3.24.2)':
+    dependencies:
+      '@ai-sdk/provider': 1.0.8
+      '@ai-sdk/provider-utils': 2.1.9(zod@3.24.2)
+      zod: 3.24.2
+
   '@ai-sdk/openai@1.1.13(zod@3.24.2)':
     dependencies:
       '@ai-sdk/provider': 1.0.8
@@ -4693,6 +4729,13 @@ snapshots:
       '@ai-sdk/provider-utils': 2.1.9(zod@3.24.2)
       zod-to-json-schema: 3.24.3(zod@3.24.2)
     optionalDependencies:
+      zod: 3.24.2
+
+  '@ai-sdk/xai@1.1.11(zod@3.24.2)':
+    dependencies:
+      '@ai-sdk/openai-compatible': 0.1.11(zod@3.24.2)
+      '@ai-sdk/provider': 1.0.8
+      '@ai-sdk/provider-utils': 2.1.9(zod@3.24.2)
       zod: 3.24.2
 
   '@alloc/quick-lru@5.2.0': {}
