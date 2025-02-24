@@ -56,7 +56,7 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
       modells = [
         ...modells,
         ...providers
-          .filter((x) => x.source === "replicate")
+          .filter((x) => x.name?.toLowerCase().includes("replicate"))
           .map((provider) => {
             return {
               id: replicateModel,

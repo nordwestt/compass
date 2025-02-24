@@ -16,14 +16,14 @@ export function ProviderCard({ provider, onEdit, onDelete, className }: Provider
     <View key={provider.id} className={`rounded-lg shadow-sm ${className}`}>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center p-2">
-          {provider.source !== 'custom' && (
+          {provider.logo && (
             <Image
-              source={PROVIDER_LOGOS[provider.source]}
+              source={{ uri: provider.logo }}
               className="mr-2 !h-[48px] !w-[48px]"
             />
           )}
           <Text className="text-lg font-semibold text-text">
-            {provider.name || provider.source}
+            {provider.name}
           </Text>
         </View>
         <View className="flex-row h-full items-center">
