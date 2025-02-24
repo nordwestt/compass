@@ -44,49 +44,50 @@ export function ProviderFormFields({
           Provider Type
         </Text>
         <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           className="mb-4"
         >
-          {Object.entries(PREDEFINED_PROVIDERS).map(([key, provider]) => (
-            <TouchableOpacity
-              key={key}
-              onPress={() => handleProviderSelect(provider)}
-              className={`mr-2 p-3 rounded-lg border-2 bg-surface ${
-                selectedProvider.endpoint === provider.endpoint
-                  ? "border-primary"
-                  : "border-border"
-              }`}
-            >
-              <View className="flex-row items-center">
-                {provider.logo && (
-                  <Image
-                    source={{ uri: provider.logo }}
-                    className="!w-[24px] !h-[24px] rounded-full mr-2"
-                  />
-                )}
-                <Text className="text-text">{provider.name}</Text>
-              </View>
+          <View className="flex-row flex-wrap gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            {Object.entries(PREDEFINED_PROVIDERS).map(([key, provider]) => (
+              <TouchableOpacity
+                key={key}
+                onPress={() => handleProviderSelect(provider)}
+                className={`p-3 rounded-lg border-2 bg-surface ${
+                  selectedProvider.endpoint === provider.endpoint
+                    ? "border-primary"
+                    : "border-border"
+                }`}
+              >
+                <View className="flex-row items-center">
+                  {provider.logo && (
+                    <Image
+                      source={{ uri: provider.logo }}
+                      className="!w-[24px] !h-[24px] rounded-full mr-2"
+                    />
+                  )}
+                  <Text className="text-text">{provider.name}</Text>
+                </View>
 
-              <View className="flex-row mt-2 space-x-2">
-                {[
-                  { key: 'llm', icon: 'chatbubble' },
-                  { key: 'tts', icon: 'volume-high' },
-                  { key: 'stt', icon: 'mic' },
-                  { key: 'image', icon: 'image' },
-                  { key: 'search', icon: 'search' },
-                  { key: 'embedding', icon: 'barcode' },
-                ].map(({ key, icon }) => (
-                  <Ionicons
-                    key={key}
-                    name={provider.capabilities?.[key as keyof Provider['capabilities']] ? icon : `${icon}-outline` as any}
-                    size={16}
-                    className={provider.capabilities?.[key as keyof Provider['capabilities']] ? "text-primary" : "text-gray-300"}
-                  />
-                ))}
-              </View>
-            </TouchableOpacity>
-          ))}
+                <View className="flex-row mt-2 space-x-2">
+                  {[
+                    { key: 'llm', icon: 'chatbubble' },
+                    { key: 'tts', icon: 'volume-high' },
+                    { key: 'stt', icon: 'mic' },
+                    { key: 'image', icon: 'image' },
+                    { key: 'search', icon: 'search' },
+                    { key: 'embedding', icon: 'barcode' },
+                  ].map(({ key, icon }) => (
+                    <Ionicons
+                      key={key}
+                      name={provider.capabilities?.[key as keyof Provider['capabilities']] ? icon : `${icon}-outline` as any}
+                      size={16}
+                      className={provider.capabilities?.[key as keyof Provider['capabilities']] ? "text-primary" : "text-gray-300"}
+                    />
+                  ))}
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         </ScrollView>
       </View>
 
