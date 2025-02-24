@@ -4,7 +4,6 @@ export const PREDEFINED_PROVIDERS = {
   ollama: {
     name: "Ollama",
     endpoint: "http://localhost:11434",
-    source: "ollama" as const,
     capabilities: {
       llm: true,
       tts: false,
@@ -17,7 +16,6 @@ export const PREDEFINED_PROVIDERS = {
   anthropic: {
     name: "Anthropic",
     endpoint: "https://api.anthropic.com",
-    source: "anthropic" as const,
     capabilities: {
       llm: true,
       tts: false,
@@ -30,7 +28,6 @@ export const PREDEFINED_PROVIDERS = {
   openai: {
     name: "OpenAI",
     endpoint: "https://api.openai.com",
-    source: "openai" as const,
     capabilities: {
       llm: true,
       tts: false,
@@ -45,7 +42,6 @@ export const PREDEFINED_PROVIDERS = {
   elevenlabs: {
     name: "ElevenLabs",
     endpoint: "https://api.elevenlabs.io/v1/text-to-speech",
-    source: "elevenlabs" as const,
     capabilities: {
       llm: false,
       tts: true,
@@ -58,7 +54,6 @@ export const PREDEFINED_PROVIDERS = {
   searxng: {
     name: "SearXNG",
     endpoint: "https://baresearch.org",
-    source: "searxng" as const,
     capabilities: {
       llm: false,
       tts: false,
@@ -71,7 +66,6 @@ export const PREDEFINED_PROVIDERS = {
   replicate: {
     name: "Replicate",
     endpoint: "https://api.replicate.com",
-    source: "replicate" as const,
     capabilities: {
       llm: false,
       tts: false,
@@ -85,7 +79,6 @@ export const PREDEFINED_PROVIDERS = {
   cerebras: {
     name: "Cerebras",
     endpoint: "https://api.cerebras.ai",
-    source: "cerebras" as const,
     capabilities: {
       llm: true,
       tts: false,
@@ -98,7 +91,6 @@ export const PREDEFINED_PROVIDERS = {
   xai: {
     name: "xAI",
     endpoint: "https://api.x.ai",
-    source: "xai" as const,
     capabilities: {
       llm: true,
       tts: false,
@@ -111,7 +103,6 @@ export const PREDEFINED_PROVIDERS = {
   groq: {
     name: "Groq",
     endpoint: "https://groq.com",
-    source: "groq" as const,
     capabilities: {
       llm: true,
       tts: false,
@@ -124,7 +115,6 @@ export const PREDEFINED_PROVIDERS = {
   mistral: {
     name: "Mistral",
     endpoint: "https://api.mistral.ai",
-    source: "mistral" as const,
     capabilities: {
       llm: true,
       tts: false,

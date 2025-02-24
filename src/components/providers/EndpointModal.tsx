@@ -27,7 +27,6 @@ export function EndpointModal({
     apiKey: '',
     capabilities: PREDEFINED_PROVIDERS.ollama.capabilities,
     logo: PREDEFINED_PROVIDERS.ollama.logo,
-    source: PREDEFINED_PROVIDERS.ollama.source,
   });
 
   useEffect(() => {
@@ -38,7 +37,6 @@ export function EndpointModal({
         apiKey: '',
         capabilities: PREDEFINED_PROVIDERS.ollama.capabilities,
         logo: PREDEFINED_PROVIDERS.ollama.logo,
-        source: PREDEFINED_PROVIDERS.ollama.source,
       });
     }
   }, [visible, initialProvider]);

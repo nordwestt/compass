@@ -39,19 +39,6 @@ export interface Voice {
 export interface Provider {
   id: string;
   name?: string;
-  source:
-    | "ollama"
-    | "openai"
-    | "anthropic"
-    | "elevenlabs"
-    | "serper"
-    | "searxng"
-    | "custom"
-    | "replicate"
-    | "cerebras"
-    | "xai"
-    | "groq"
-    | "mistral";
   capabilities?: {
     llm: boolean;
     tts: boolean;
