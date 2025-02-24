@@ -28,13 +28,20 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build Android APK
-        run: npm run build:android
+        id: eas-build
+        run: |
+          OUTPUT=$(eas build -p android --profile preview --non-interactive)
+          APK_URL=$(echo "$OUTPUT" | grep -o 'https://expo.dev/artifacts/eas/[^[:space:]]*\.apk')
+          echo "APK_URL=$APK_URL" >> $GITHUB_ENV
+
+      - name: Download APK
+        run: |
+          curl -L -o compass.apk "${{ env.APK_URL }}"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            *.apk
+          files: compass.apk
           tag_name: v${{ github.run_number }}
           draft: false
           prerelease: false
