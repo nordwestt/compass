@@ -100,6 +100,41 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
     });
   };
 
+  function parseContent(content: string): Array<{ type: 'text' | 'annotation'; content: string }> {
+    const parts: { type: 'text' | 'annotation'; content: string }[] = [];
+    const regex = /\*(.*?)\*/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(content)) !== null) {
+      // Add text before the annotation if any
+      if (match.index > lastIndex) {
+        parts.push({
+          type: 'text',
+          content: content.slice(lastIndex, match.index)
+        });
+      }
+
+      // Add the annotation without asterisks
+      parts.push({
+        type: 'annotation',
+        content: match[1]
+      });
+
+      lastIndex = match.index + match[0].length;
+    }
+
+    // Add remaining text if any
+    if (lastIndex < content.length) {
+      parts.push({
+        type: 'text',
+        content: content.slice(lastIndex)
+      });
+    }
+
+    return parts;
+  }
+
   return (
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
       {!isUser && (
@@ -124,15 +159,37 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
           <Text className="text-yellow-400 text-xs mb-1">Editing...</Text>
         )}
         {editingMessageIndex !== index && (
-          <Markdown 
-            style={markdownStyles}
-            rules={{
-              fence: renderCodeBlock,
-            code_block: renderCodeBlock,
-          }}
-        >
-            {displayContent}
-          </Markdown>
+          <View>
+            {parseContent(displayContent).map((part, idx) => (
+              part.type === 'text' ? (
+                <Markdown 
+                  key={idx}
+                  style={markdownStyles}
+                  rules={{
+                    fence: renderCodeBlock,
+                    code_block: renderCodeBlock,
+                  }}
+                >
+                  {part.content}
+                </Markdown>
+              ) : (
+                <View 
+                  key={idx} 
+                  className={`bg-opacity-10 ${
+                    isUser ? 'bg-blue-200' : 'bg-gray-200'
+                  } rounded-lg px-2 py-1 my-1`}
+                >
+                  <Text 
+                    className={`italic opacity-75 ${
+                      isUser ? 'text-blue-100' : 'text-gray-500'
+                    }`}
+                  >
+                    {part.content}
+                  </Text>
+                </View>
+              )
+            ))}
+          </View>
         )}
         
         {isHovered && (
