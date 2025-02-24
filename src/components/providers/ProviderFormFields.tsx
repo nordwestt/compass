@@ -56,9 +56,7 @@ export function ProviderFormFields({
               }`}
             >
               <View className="flex-row items-center">
-                {PROVIDER_LOGOS[
-                  value.source as keyof typeof PROVIDER_LOGOS
-                ] && (
+                {value.logo && (
                   <Image
                     source={{ uri: value.logo }}
                     className="!w-[24px] !h-[24px] rounded-full mr-2"

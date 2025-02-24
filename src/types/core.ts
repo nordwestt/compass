@@ -48,7 +48,9 @@ export interface Provider {
     | "searxng"
     | "custom"
     | "replicate"
-    | "cerebras";
+    | "cerebras"
+    | "xai"
+    | "groq";
   capabilities?: {
     llm: boolean;
     tts: boolean;
@@ -59,7 +61,7 @@ export interface Provider {
   };
   apiKey?: string;
   endpoint: string;
-  logo?: any;
+  logo: any;
   keyRequired?: boolean;
   signupUrl?: string;
 }

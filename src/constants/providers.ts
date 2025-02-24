@@ -39,7 +39,7 @@ export const PREDEFINED_PROVIDERS = {
       stt: false,
       embedding: true,
     },
-    logo: PROVIDER_LOGOS.ollama,
+    logo: "https://ollama.com/public/icon-48x48.png",
     keyRequired: false,
   } as Provider,
   elevenlabs: {
@@ -94,5 +94,31 @@ export const PREDEFINED_PROVIDERS = {
     logo: "https://inference.cerebras.ai/images/logo/cb-fav-144.png",
     keyRequired: true,
     signupUrl: "https://inference.cerebras.ai/",
+  } as Provider,
+  xai: {
+    name: "xAI",
+    endpoint: "https://api.x.ai",
+    source: "xai" as const,
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+    },
+    logo: "https://accounts.x.ai/favicon.ico",
+    keyRequired: true,
+    signupUrl: "https://accounts.x.ai/sign-in",
+  } as Provider,
+  groq: {
+    name: "Groq",
+    endpoint: "https://groq.com/",
+    source: "groq" as const,
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+    },
+    logo: "https://groq.com/wp-content/uploads/2024/02/android-icon-192x192-1.png",
+    keyRequired: true,
+    signupUrl: "https://console.groq.com/login",
   } as Provider,
 } as const;
