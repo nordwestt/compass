@@ -134,15 +134,15 @@ const ChatThreads: React.FC = () => {
           </View>
         )}
         renderItem={({ item: thread }) => (
-          <View className="flex-row items-center mb-2 mx-4 rounded-lg shadow-md">
+          <View className={`flex-row items-center mb-2 mx-4 rounded-lg shadow-md ${
+            currentThread.id === thread.id 
+              ? 'web:border-primary web:border-2' 
+              : ''
+          }`}>
             <TouchableOpacity 
               onPress={() => handleThreadSelect(thread)}
               onLongPress={() => editThreadTitle(thread)}
-              className={`flex-row flex-1 items-center rounded-lg rounded-r-none bg-surface hover:bg-background h-12 ${
-                currentThread.id === thread.id 
-                  ? 'web:border-primary web:border-2' 
-                  : ''
-              }`}
+              className={`flex-row flex-1 items-center rounded-lg rounded-r-none bg-surface hover:bg-background h-12`}
             >
               <Text className="font-bold text-text p-2 text-center">
                 {thread.title}
