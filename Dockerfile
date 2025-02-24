@@ -13,16 +13,16 @@ RUN npm install
 # Copy project files
 COPY . .
 
-# Build the web version
-RUN npm run build:web
+# Build the web version with the correct public URL
+RUN PUBLIC_URL=/compass npm run build:web
 
 # Production stage
 FROM nginx:alpine
 
-# Copy built static files from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy built static files from builder stage to the compass subdirectory
+COPY --from=builder /app/dist /usr/share/nginx/html/compass
 
-# Copy a custom nginx config if needed
+# Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
