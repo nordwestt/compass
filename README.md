@@ -36,6 +36,17 @@ Try it out [here](https://nordwestt.com/compass) (only for visual demo, since br
 - 🔍 **RAG Support**: Document analysis
 - ⚙️ **Custom Filters**: Self-programmable filters and data processing pipes
 
+# Installation 
+
+## Docker
+```bash
+docker pull ghcr.io/nordwestt/compass:latest
+```
+
+
+
+# Development
+
 ## Get Started
 
 It is recommended that you install Ollama and open up access, following the [guide](https://github.com/nordwestt/compass/wiki/Ollama) 
