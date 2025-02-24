@@ -50,7 +50,8 @@ export interface Provider {
     | "replicate"
     | "cerebras"
     | "xai"
-    | "groq";
+    | "groq"
+    | "mistral";
   capabilities?: {
     llm: boolean;
     tts: boolean;

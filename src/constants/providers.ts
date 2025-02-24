@@ -110,7 +110,7 @@ export const PREDEFINED_PROVIDERS = {
   } as Provider,
   groq: {
     name: "Groq",
-    endpoint: "https://groq.com/",
+    endpoint: "https://groq.com",
     source: "groq" as const,
     capabilities: {
       llm: true,
@@ -120,5 +120,18 @@ export const PREDEFINED_PROVIDERS = {
     logo: "https://groq.com/wp-content/uploads/2024/02/android-icon-192x192-1.png",
     keyRequired: true,
     signupUrl: "https://console.groq.com/login",
+  } as Provider,
+  mistral: {
+    name: "Mistral",
+    endpoint: "https://api.mistral.ai",
+    source: "mistral" as const,
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+    },
+    logo: "https://docs.mistral.ai/img/favicon.ico",
+    keyRequired: true,
+    signupUrl: "https://console.mistral.ai/",
   } as Provider,
 } as const;
