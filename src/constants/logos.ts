@@ -6,4 +6,5 @@ export const PROVIDER_LOGOS = {
     replicate: require('@/assets/providers/replicate.png'),
     serper: require('@/assets/providers/ollama.png'),
     searxng: require('@/assets/providers/searxng.png'),
+    cerebras: require('@/assets/providers/ollama.png'),
   };
