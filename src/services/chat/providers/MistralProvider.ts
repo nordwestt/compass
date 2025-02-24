@@ -48,9 +48,8 @@ export class MistralProvider implements ChatProvider {
           apiKey: model.provider.apiKey,
           fetch: expoFetch as unknown as typeof globalThis.fetch
         });
-
         const {textStream, steps} = streamText({
-          model: mistral(model.id),
+          model: mistral(model.id) as any, // Type assertion needed due to version mismatch between @ai-sdk packages
           messages: newMessages as CoreMessage[],
           tools: {
             weather: tool({

@@ -4,10 +4,10 @@ import { SerperSearchService } from './SerperSearchService';
 import { SearxngSearchService } from './SearxngSearchService';
 
 export function createSearchService(provider: Provider): SearchService | null {
-  switch (provider.source) {
-    case 'serper':
+  switch (provider.name) {
+    case 'Serper':
       return new SerperSearchService(provider.apiKey || '');
-    case 'searxng':
+    case 'SearXNG':
       return new SearxngSearchService(provider.endpoint);
     default:
       return null;

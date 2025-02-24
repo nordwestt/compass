@@ -6,7 +6,7 @@ import { AnthropicProvider } from './providers/AnthropicProvider';
 import { GroqProvider } from './providers/GroqProvider';
 import { CerebrasProvider } from './providers/CerebrasProvider';
 import { MistralProvider } from './providers/MistralProvider';
-
+import { XAIProvider } from './providers/XAIProvider';
 export class ChatProviderFactory {
   static getProvider(provider: Provider): ChatProvider {
     switch (provider.name) {
@@ -22,6 +22,8 @@ export class ChatProviderFactory {
         return new CerebrasProvider(provider);
       case 'Mistral':
         return new MistralProvider(provider);
+      case 'XAI':
+        return new XAIProvider(provider);
       default:
         throw new Error(`Unsupported provider: ${provider.name}`);
     }
