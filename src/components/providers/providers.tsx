@@ -143,7 +143,7 @@ export default function Providers({ className }: ProvidersProps) {
             </Text>
         </View>
 
-        <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <View className="md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {providers.map((provider, index) => (
             <View key={provider.id} className="w-full">
               <ProviderCard

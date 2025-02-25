@@ -40,7 +40,7 @@ export default function SettingsScreen() {
         <Text className="text-secondary">Customize your chat experience</Text>
       </View>
 
-      <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <View className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-8">
         <SettingItem
           title="Font Settings"
           description="Customize text appearance and size"
