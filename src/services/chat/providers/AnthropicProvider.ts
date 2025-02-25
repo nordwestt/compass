@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { fetch as expoFetch } from 'expo/fetch';
 import { Platform as PlatformCust } from '@/src/utils/platform';
 import { getProxyUrl } from '@/src/utils/proxy';
+import { Cache } from '@/src/utils/cache';
 
 export class AnthropicProvider implements ChatProvider {
   provider: Provider;
@@ -131,14 +132,20 @@ export class AnthropicProvider implements ChatProvider {
   }
 
   async getAvailableModels(): Promise<string[]> {
-    const response = await fetch(`${this.provider.endpoint}/v1/models`, {
-      headers: {
-        'Authorization': `Bearer ${this.provider.apiKey}`
-      }
-    });
-    const data = await response.json();
-    return data.data
-      .filter((model: any) => model.id.includes('claude') && model.type == 'model')
-      .map((model: any) => model.id);
+    return Cache.withCache(
+      `models-cache-anthropic-${this.provider.endpoint}`,
+      async () => {
+        const response = await fetch(`${this.provider.endpoint}/v1/models`, {
+          headers: {
+            'Authorization': `Bearer ${this.provider.apiKey}`
+          }
+        });
+        const data = await response.json();
+        return data.data
+          .filter((model: any) => model.id.includes('claude') && model.type == 'model')
+          .map((model: any) => model.id);
+      },
+      5 * 60 * 1000 // 5 minutes
+    );
   }
 } 

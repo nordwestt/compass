@@ -9,6 +9,7 @@ import { Platform as PlatformCust } from '@/src/utils/platform';
 import { streamOpenAIResponse } from '@/src/services/chat/streamUtils';
 import { z } from 'zod';
 import { getProxyUrl } from '@/src/utils/proxy';
+import { Cache } from '@/src/utils/cache';
 
 export class OpenAIProvider implements ChatProvider {
   provider: Provider;
@@ -151,14 +152,20 @@ export class OpenAIProvider implements ChatProvider {
   }
 
   async getAvailableModels(): Promise<string[]> {
-    const openaiResponse = await fetch(`${this.provider.endpoint}/v1/models`, {
-      headers: {
-        'Authorization': `Bearer ${this.provider.apiKey}`
-      }
-    });
-    const openaiData = await openaiResponse.json();
-    return openaiData.data
-      .filter((model: any) => model.id.includes('gpt'))
-      .map((model: any) => model.id);
+    return Cache.withCache(
+      `models-cache-openai-${this.provider.endpoint}`,
+      async () => {
+        const openaiResponse = await fetch(`${this.provider.endpoint}/v1/models`, {
+          headers: {
+            'Authorization': `Bearer ${this.provider.apiKey}`
+          }
+        });
+        const openaiData = await openaiResponse.json();
+        return openaiData.data
+          .filter((model: any) => model.id.includes('gpt'))
+          .map((model: any) => model.id);
+      },
+      5 * 60 * 1000 // 5 minutes
+    );
   }
 } 
