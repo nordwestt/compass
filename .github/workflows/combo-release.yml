@@ -67,8 +67,8 @@ jobs:
   #       run: |
   #         curl -L -o compass.apk "${{ env.APK_URL }}"
 
-  #     - name: Install qrencode
-  #       run: sudo apt-get install -y qrencode
+      # - name: Install qrencode
+      #   run: sudo apt-get install -y qrencode
 
       # - name: Generate QR Code
       #   run: |
@@ -129,6 +129,9 @@ jobs:
           npm run deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install qrencode
+        run: sudo apt-get install -y qrencode
       
       - name: Generate QR Code
         run: |
