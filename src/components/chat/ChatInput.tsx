@@ -163,7 +163,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       ) : (
         <Pressable
           onPress={handleSend}
-          className="w-12 h-12 rounded-full bg-primary dark:bg-blue-600 items-center justify-center"
+          className="w-12 h-12 rounded-full bg-primary items-center justify-center"
         >
           <Ionicons name="send" size={26} color="white" />
         </Pressable>
