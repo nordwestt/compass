@@ -34,85 +34,85 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-  # android-build:
-  #   needs: setup
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  android-build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '18.19.0'
-  #         cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: 'npm'
 
-  #     - name: Install dependencies
-  #       run: npm install
+      - name: Install dependencies
+        run: npm install
 
-  #     - name: Setup EAS
-  #       uses: expo/expo-github-action@v8
-  #       with:
-  #         eas-version: latest
-  #         token: ${{ secrets.EXPO_TOKEN }}
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-  #     - name: Build Android APK
-  #       id: eas-build
-  #       run: |
-  #         OUTPUT=$(eas build -p android --profile preview --non-interactive)
-  #         APK_URL=$(echo "$OUTPUT" | grep -o 'https://expo.dev/artifacts/eas/[^[:space:]]*\.apk')
-  #         echo "APK_URL=$APK_URL" >> $GITHUB_ENV
+      - name: Build Android APK
+        id: eas-build
+        run: |
+          OUTPUT=$(eas build -p android --profile preview --non-interactive)
+          APK_URL=$(echo "$OUTPUT" | grep -o 'https://expo.dev/artifacts/eas/[^[:space:]]*\.apk')
+          echo "APK_URL=$APK_URL" >> $GITHUB_ENV
 
-  #     - name: Download APK
-  #       run: |
-  #         curl -L -o compass.apk "${{ env.APK_URL }}"
+      - name: Download APK
+        run: |
+          curl -L -o compass.apk "${{ env.APK_URL }}"
 
-  #     - name: Install qrencode
-  #       run: sudo apt-get install -y qrencode
+      - name: Install qrencode
+        run: sudo apt-get install -y qrencode
 
-  #     - name: Generate QR Code
-  #       run: |
-  #         qrencode -o compass-qr.png "${{ env.APK_URL }}"
+      - name: Generate QR Code
+        run: |
+          qrencode -o compass-qr.png "https://github.com/nordwestt/compass/releases/download/v${{ needs.setup.outputs.version }}/compass.apk"
         
-  #     - name: Upload APK
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: compass-apk
-  #         path: compass.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: compass-apk
+          path: compass.apk
 
-  #     - name: Upload QR Code
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: compass-qr
-  #         path: compass-qr.png
+      - name: Upload QR Code
+        uses: actions/upload-artifact@v4
+        with:
+          name: compass-qr
+          path: compass-qr.png
 
-  # docker-build:
-  #   needs: setup
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  docker-build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  #     - name: Login to GitHub Container Registry
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Build and push Docker image
-  #       uses: docker/build-push-action@v5
-  #       with:
-  #         context: .
-  #         push: true
-  #         tags: |
-  #           ghcr.io/${{ github.repository }}:latest
-  #           ghcr.io/${{ github.repository }}:v${{ needs.setup.outputs.version }}
-  #         cache-from: type=gha
-  #         cache-to: type=gha,mode=max
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:v${{ needs.setup.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   web-deploy:
     needs: setup
@@ -158,14 +158,13 @@ jobs:
     
 
   create-release:
-    # needs: [setup, docker-build, web-deploy, android-build]
-    needs: [setup, web-deploy]
+    needs: [setup, docker-build, web-deploy, android-build]
     runs-on: ubuntu-latest
     steps:
-      # - name: Download APK
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: compass-apk
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: compass-apk
           
       - name: Download QR Code
         uses: actions/download-artifact@v4
@@ -176,6 +175,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
+            compass.apk
             compass-qr.png
           tag_name: v${{ needs.setup.outputs.version }}
           name: Release v${{ needs.setup.outputs.version }}
@@ -183,7 +183,7 @@ jobs:
             Android APK and Docker image are now available.
 
             📱 Android APK QR code:
-            ![QR Code](https://github.com/nordwestt/compass/releases/download/vv${{ needs.setup.outputs.version }}/compass-qr.png)
+            ![QR Code](https://github.com/nordwestt/compass/releases/download/v${{ needs.setup.outputs.version }}/compass-qr.png)
 
             🐋 Docker image:
             - `ghcr.io/${{ github.repository }}:latest`
