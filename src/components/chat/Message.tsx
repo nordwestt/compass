@@ -22,6 +22,53 @@ interface MessageProps {
   hasPreviewableCode?: boolean;
 }
 
+interface CodeBlockProps {
+  content: string;
+  sourceInfo?: string;
+  isDark: boolean;
+  style: any;
+}
+
+const CodeBlock: React.FC<CodeBlockProps> = ({ content, sourceInfo, isDark, style }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleCopy = () => {
+    Clipboard.setString(content);
+    toastService.success({
+      title: 'Copied to clipboard',
+      description: ""
+    });
+  };
+
+  return (
+    <View style={style} className="border-border border">
+      <View className="flex-row justify-between items-center">
+        <TouchableOpacity 
+          onPress={() => setIsExpanded(!isExpanded)}
+          className="mr-2 p-1 flex-row items-center"
+        >
+          <Ionicons 
+            name={isExpanded ? "chevron-down" : "chevron-forward"} 
+            size={16} 
+            color={isDark ? "#fff" : "#000"}
+          />
+          {sourceInfo && <Text className="pl-2 text-md pt-1 opacity-50">Generated {sourceInfo} code </Text>}
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={handleCopy}
+          className="bg-surface border-border border px-2 py-1 rounded flex-row items-center"
+        >
+          <Ionicons name="copy" size={16} color={isDark ? "#fff" : "#000"}/>
+          <Text className="text-xs ml-1">Copy</Text>
+        </TouchableOpacity>
+      </View>
+      {isExpanded && (
+        <Text style={{ fontFamily: 'monospace' }}>{content}</Text>
+      )}
+    </View>
+  );
+};
+
 export const Message: React.FC<MessageProps> = ({ content, isUser, character, index, onEdit, onPreviewCode, hasPreviewableCode }) => {
   const { colorScheme } = useColorScheme();
   const currentThread = useAtomValue(currentThreadAtom);
@@ -66,31 +113,15 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
     });
   }, [content]);
 
-  const renderCodeBlock = (node: any) => {
-    const handleCopy = () => {
-      Clipboard.setString(node.content);
-      toastService.success({
-        title: 'Copied to clipboard',
-        description: ""
-      });
-    };
-
-    return (
-      <View key={node.content} style={markdownStyles.code_block} className="border-border border">
-        <View className="flex-row justify-between items-center mb-2">
-          {node.sourceInfo && <Text className="text-xs opacity-50">{node.sourceInfo}</Text>}
-          <TouchableOpacity 
-            onPress={handleCopy}
-            className="bg-surface border-border border px-2 py-1 rounded flex-row items-center"
-          >
-            <Ionicons name="copy" size={16} color={isDark ? "#fff" : "#000"}/>
-            <Text className="text-xs ml-1">Copy</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={{ fontFamily: 'monospace' }}>{node.content}</Text>
-      </View>
-    );
-  };
+  const renderCodeBlock = (node: any) => (
+    <CodeBlock 
+      key={node.content}
+      content={node.content}
+      sourceInfo={node.sourceInfo}
+      isDark={isDark}
+      style={markdownStyles.code_block}
+    />
+  );
 
   const handleCopyMessage = () => {
     Clipboard.setString(content);
