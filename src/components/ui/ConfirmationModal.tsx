@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Modal, TextInput, Platform } from 'react-native';
 import { modalService } from '@/src/services/modalService';
 
@@ -18,6 +18,7 @@ export const ConfirmationModal = () => {
     type: 'confirm'
   });
   const [inputText, setInputText] = useState('');
+  const confirmButtonRef = useRef<View>(null);
   
   useEffect(() => {
     modalService.setUpdateCallback(setModalState);
@@ -25,8 +26,14 @@ export const ConfirmationModal = () => {
   }, []);
 
   useEffect(() => {
-    if (modalState.isVisible && modalState.type === 'prompt') {
-      setInputText(modalState.defaultValue || '');
+    if (modalState.isVisible && Platform.OS === 'web') {
+      if (modalState.type === 'prompt') {
+        setInputText(modalState.defaultValue || '');
+      } else {
+        // For web platform, use DOM focus
+        const element = confirmButtonRef.current as unknown as HTMLElement;
+        setTimeout(() => element?.focus(), 0);
+      }
     }
   }, [modalState.isVisible]);
 
@@ -60,6 +67,7 @@ export const ConfirmationModal = () => {
           <Text className="text-black dark:text-white text-center">Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          ref={confirmButtonRef}
           onPress={() => modalService.handleResponse(
             modalState.type === 'prompt' ? inputText : true
           )}
