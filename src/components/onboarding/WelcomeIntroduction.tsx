@@ -74,6 +74,8 @@ export function WelcomeIntroduction() {
             className={`!text-primary mb-4 ${
               Platform.OS === 'web' && currentPage === 0
                 ? 'hover:rotate-180 transition-transform duration-[2000ms] ease-in-out animate-spin-once'
+                : Platform.OS === 'web' && currentPage === ONBOARDING_PAGES.length - 1
+                ? 'animate-[hover_2000ms_ease-in-out_1_forwards] motion-reduce:animate-none'
                 : ''
             }`}
           />
@@ -112,7 +114,7 @@ export function WelcomeIntroduction() {
             
             <TouchableOpacity
               onPress={handleNext}
-              className="bg-primary px-6 py-3 rounded-lg flex-row items-center"
+              className="bg-primary px-6 py-3 rounded-lg flex-row items-center outline-none"
             >
               <Text className="text-white font-medium mr-2">
                 {currentPage === ONBOARDING_PAGES.length - 1 ? 'Get Started' : 'Next'}
