@@ -86,8 +86,33 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  web-deploy:
+    needs: get-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and Deploy
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          npm run predeploy
+          npm run deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   create-release:
-    needs: [get-version, docker-build]
+    needs: [get-version, docker-build, web-deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
