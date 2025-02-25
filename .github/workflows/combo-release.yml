@@ -11,45 +11,55 @@ permissions:
   packages: write
 
 jobs:
-  # android-build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.package-version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Get Version
+        id: package-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '18.19.0'
-  #         cache: 'npm'
+  android-build:
+    needs: get-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Install dependencies
-  #       run: npm install
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: 'npm'
 
-  #     - name: Setup EAS
-  #       uses: expo/expo-github-action@v8
-  #       with:
-  #         eas-version: latest
-  #         token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install dependencies
+        run: npm install
 
-  #     - name: Build Android APK
-  #       id: eas-build
-  #       run: |
-  #         OUTPUT=$(eas build -p android --profile preview --non-interactive)
-  #         APK_URL=$(echo "$OUTPUT" | grep -o 'https://expo.dev/artifacts/eas/[^[:space:]]*\.apk')
-  #         echo "APK_URL=$APK_URL" >> $GITHUB_ENV
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-  #     - name: Download APK
-  #       run: |
-  #         curl -L -o compass.apk "${{ env.APK_URL }}"
+      - name: Build Android APK
+        id: eas-build
+        run: |
+          OUTPUT=$(eas build -p android --profile preview --non-interactive)
+          APK_URL=$(echo "$OUTPUT" | grep -o 'https://expo.dev/artifacts/eas/[^[:space:]]*\.apk')
+          echo "APK_URL=$APK_URL" >> $GITHUB_ENV
 
-  #     - name: Get Version
-  #       id: package-version
-  #       run: |
-  #         VERSION=$(node -p "require('./package.json').version")
-  #         echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Download APK
+        run: |
+          curl -L -o compass.apk "${{ env.APK_URL }}"
 
   docker-build:
+    needs: get-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -72,33 +82,34 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:v${{ env.VERSION }}
+            ghcr.io/${{ github.repository }}:v${{ needs.get-version.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   create-release:
-    # needs: [android-build, docker-build]
-    needs: [docker-build]
+    needs: [get-version, docker-build]
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: compass.apk
-          tag_name: v${{ env.VERSION }}
-          name: Release v${{ env.VERSION }}
+          tag_name: v${{ needs.get-version.outputs.version }}
+          name: Release v${{ needs.get-version.outputs.version }}
           body: |
             Android APK and Docker image are now available.
 
             Docker image:
             - `ghcr.io/${{ github.repository }}:latest`
-            - `ghcr.io/${{ github.repository }}:v${{ env.VERSION }}`
+            - `ghcr.io/${{ github.repository }}:v${{ needs.get-version.outputs.version }}`
             
             To pull and run the Docker image:
             ```bash
             docker pull ghcr.io/${{ github.repository }}:latest
             docker run -p 80:80 ghcr.io/${{ github.repository }}:latest
             ```
+
+            Then you can use compass by visiting "http://localhost/compass" in your browser.
           draft: false
           prerelease: false
         env:
