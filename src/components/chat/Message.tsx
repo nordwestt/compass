@@ -52,7 +52,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ content, sourceInfo, isDark, styl
             size={16} 
             color={isDark ? "#fff" : "#000"}
           />
-          {sourceInfo && <Text className="pl-2 text-md pt-1 opacity-50">Generated {sourceInfo} code </Text>}
+          {sourceInfo && <Text className="pl-2 text-md pt-1 text-text opacity-50">Generated {sourceInfo} code </Text>}
         </TouchableOpacity>
         <TouchableOpacity 
           onPress={handleCopy}
@@ -63,7 +63,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ content, sourceInfo, isDark, styl
         </TouchableOpacity>
       </View>
       {isExpanded && (
-        <Text style={{ fontFamily: 'monospace' }}>{content}</Text>
+        <Text className='text-text' style={{ fontFamily: 'monospace' }}>{content}</Text>
       )}
     </View>
   );
