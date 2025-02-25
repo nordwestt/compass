@@ -186,7 +186,7 @@ const ChatThreads: React.FC = () => {
       
       <TouchableOpacity 
         onPress={addNewThread} 
-        className="mb-2 p-2 rounded-full bg-background hover:bg-surface hover:border-primary hover:border-2"
+        className="mb-2 p-2 rounded-full bg-background hover:bg-surface hover:border-primary hover:border-2 items-center"
       >
         <Ionicons 
           className="!text-text" 
