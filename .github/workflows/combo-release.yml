@@ -182,6 +182,9 @@ jobs:
           body: |
             Android APK and Docker image are now available.
 
+            Download APK with this QR code:
+            ![QR Code](https://github.com/nordwestt/compass/releases/download/vv${{ needs.setup.outputs.version }}/compass-qr.png)
+
             Docker image:
             - `ghcr.io/${{ github.repository }}:latest`
             - `ghcr.io/${{ github.repository }}:v${{ needs.setup.outputs.version }}`
