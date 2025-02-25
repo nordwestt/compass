@@ -13,9 +13,9 @@ export const createDefaultThread = (name: string="New thread"): Thread => {
     name: '',
     provider: {
         id: '',
-        source: 'ollama',
         endpoint: '',
-        apiKey: ''
+        apiKey: '',
+        logo: ''
       }
     },
     character: PREDEFINED_PROMPTS[0]

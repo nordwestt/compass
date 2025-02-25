@@ -102,7 +102,7 @@ export const PREDEFINED_PROVIDERS = {
   } as Provider,
   groq: {
     name: "Groq",
-    endpoint: "https://groq.com",
+    endpoint: "https://api.groq.com",
     capabilities: {
       llm: true,
       tts: false,

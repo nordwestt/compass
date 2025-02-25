@@ -139,7 +139,7 @@ export default function CharactersScreen() {
             </TouchableOpacity>
         </View>
         <ScrollView className="flex-1 p-4">
-        <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <View className="md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {customPrompts.map((prompt) => (
             <TouchableOpacity 
               onPress={() => handleEdit(prompt)} 

@@ -14,7 +14,7 @@ interface ProviderCardProps {
 export function ProviderCard({ provider, onEdit, onDelete, className }: ProviderCardProps) {
   return (
     <View key={provider.id} className={`rounded-lg shadow-sm ${className}`}>
-      <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center justify-between h-14">
         <View className="flex-row items-center p-2">
           {provider.logo && (
             <Image

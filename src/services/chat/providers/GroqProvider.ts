@@ -6,7 +6,7 @@ import LogService from '@/utils/LogService';
 import { Platform } from 'react-native';
 import { groq } from '@ai-sdk/groq';
 import { createGroq } from '@ai-sdk/groq';
-import { CoreMessage, embedMany, tool } from 'ai';
+import { CoreMessage, embedMany, generateText, tool } from 'ai';
 import { streamText } from 'ai';
 import { z } from 'zod';
 import { fetch as expoFetch } from 'expo/fetch';
@@ -35,34 +35,36 @@ export class GroqProvider implements ChatProvider {
     try {
       
       const groq = createGroq({
-        baseURL: model.provider.endpoint+'/v1',
+        baseURL: model.provider.endpoint+'/openai/v1',
         apiKey: model.provider.apiKey,
         fetch: expoFetch as unknown as typeof globalThis.fetch
       });
 
-      const {textStream, steps} = streamText({
+      const {text, steps} = await generateText({
         model: groq(model.id),
         messages: newMessages as CoreMessage[],
-        tools: {
-          weather: tool({
-            description: 'Get the weather in a location (celsius)',
-            parameters: z.object({
-              location: z.string().describe('The location to get the weather for'),
-            }),
-            execute: async ({ location }) => {
-              console.log("location", location);
-              const temperature = 21.69;
-              return `${temperature} degrees celsius`;
-            },
-          }),
-        },
-        toolChoice: 'auto',
-        maxSteps: 5
+        // tools: {
+        //   weather: tool({
+        //     description: 'Get the weather in a location (celsius)',
+        //     parameters: z.object({
+        //       location: z.string().describe('The location to get the weather for'),
+        //     }),
+        //     execute: async ({ location }) => {
+        //       console.log("location", location);
+        //       const temperature = 21.69;
+        //       return `${temperature} degrees celsius`;
+        //     },
+        //   }),
+        // },
+        // toolChoice: 'auto',
+        // maxSteps: 5
       });
 
-      for await (const textPart of textStream) {
-        yield textPart;
-      }
+      yield text;
+
+      // for await (const textPart of textStream) {
+      //   yield textPart;
+      // }
     } catch (error: any) {
       LogService.log(error, { component: 'OpenAIProvider', function: 'sendMessage' }, 'error');
       throw error;
@@ -70,30 +72,21 @@ export class GroqProvider implements ChatProvider {
   }
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
-    let url = `${model.provider.endpoint}`;
-    if(PlatformCust.isMobile) url = await getProxyUrl(url);
-    const response = await fetch(url+"/v1/chat/completions", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${model.provider.apiKey}`
-      },
-      body: JSON.stringify({
-        model: model.id,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
-        ],
-        stream: false
-      }),
+    const groq = createGroq({
+      baseURL: model.provider.endpoint+'/openai/v1',
+      apiKey: model.provider.apiKey,
+      fetch: expoFetch as unknown as typeof globalThis.fetch
     });
 
-    const data = await response.json();
-    console.log("endpoint", model.provider.endpoint);
-    if(!data.choices) {
-      throw new Error(`Unexpected format: ${data}`);
-    }
-    return data.choices[0].message.content;
+    const {text, steps} = await generateText({
+      model: groq(model.id),
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: message }
+      ],
+    });
+
+    return text;
   }
 
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any> {
@@ -131,7 +124,7 @@ export class GroqProvider implements ChatProvider {
   }
 
   async getAvailableModels(): Promise<string[]> {
-    const response = await fetch(`${this.provider.endpoint}/v1/models`, {
+    const response = await fetch(`${this.provider.endpoint}/openai/v1/models`, {
       headers: {
         'Authorization': `Bearer ${this.provider.apiKey}`
       }

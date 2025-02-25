@@ -22,7 +22,11 @@ module.exports = {
         spin: {
           'from': { transform: 'rotate(0deg)' },
           'to': { transform: 'rotate(180deg)' },
-        }
+        },
+        hover: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-16px)' },
+        },
       }
     },
   },

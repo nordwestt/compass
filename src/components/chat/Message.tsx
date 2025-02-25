@@ -22,6 +22,53 @@ interface MessageProps {
   hasPreviewableCode?: boolean;
 }
 
+interface CodeBlockProps {
+  content: string;
+  sourceInfo?: string;
+  isDark: boolean;
+  style: any;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+}
+
+const CodeBlock: React.FC<CodeBlockProps> = ({ content, sourceInfo, isDark, style, isExpanded, onToggleExpand }) => {
+  const handleCopy = () => {
+    Clipboard.setString(content);
+    toastService.success({
+      title: 'Copied to clipboard',
+      description: ""
+    });
+  };
+
+  return (
+    <View style={style} className="border-border border">
+      <View className="flex-row justify-between items-center">
+        <TouchableOpacity 
+          onPress={onToggleExpand}
+          className="mr-2 p-1 flex-row items-center"
+        >
+          <Ionicons 
+            name={isExpanded ? "chevron-down" : "chevron-forward"} 
+            size={16} 
+            color={isDark ? "#fff" : "#000"}
+          />
+          {sourceInfo && <Text className="pl-2 text-md pt-1 opacity-50">Generated {sourceInfo} code </Text>}
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={handleCopy}
+          className="bg-surface border-border border px-2 py-1 rounded flex-row items-center hover:opacity-60"
+        >
+          <Ionicons name="copy" size={16} className='!text-text'/>
+          <Text className="text-xs text-text ml-1">Copy</Text>
+        </TouchableOpacity>
+      </View>
+      {isExpanded && (
+        <Text style={{ fontFamily: 'monospace' }}>{content}</Text>
+      )}
+    </View>
+  );
+};
+
 export const Message: React.FC<MessageProps> = ({ content, isUser, character, index, onEdit, onPreviewCode, hasPreviewableCode }) => {
   const { colorScheme } = useColorScheme();
   const currentThread = useAtomValue(currentThreadAtom);
@@ -59,6 +106,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
 
   const [displayContent, setDisplayContent] = useState('');
   const [isHovered, setIsHovered] = useState(false);
+  const [expandedCodeBlocks, setExpandedCodeBlocks] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -67,28 +115,30 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
   }, [content]);
 
   const renderCodeBlock = (node: any) => {
-    const handleCopy = () => {
-      Clipboard.setString(node.content);
-      toastService.success({
-        title: 'Copied to clipboard',
-        description: ""
+    const blockId = `${node.content}-${index}`;
+    
+    const handleToggleExpand = () => {
+      setExpandedCodeBlocks(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(blockId)) {
+          newSet.delete(blockId);
+        } else {
+          newSet.add(blockId);
+        }
+        return newSet;
       });
     };
 
     return (
-      <View key={node.content} style={markdownStyles.code_block} className="border-border border">
-        <View className="flex-row justify-between items-center mb-2">
-          {node.sourceInfo && <Text className="text-xs opacity-50">{node.sourceInfo}</Text>}
-          <TouchableOpacity 
-            onPress={handleCopy}
-            className="bg-surface border-border border px-2 py-1 rounded flex-row items-center"
-          >
-            <Ionicons name="copy" size={16} color={isDark ? "#fff" : "#000"}/>
-            <Text className="text-xs ml-1">Copy</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={{ fontFamily: 'monospace' }}>{node.content}</Text>
-      </View>
+      <CodeBlock 
+        key={blockId}
+        content={node.content}
+        sourceInfo={node.sourceInfo}
+        isDark={isDark}
+        style={markdownStyles.code_block}
+        isExpanded={expandedCodeBlocks.has(blockId)}
+        onToggleExpand={handleToggleExpand}
+      />
     );
   };
 
@@ -160,35 +210,15 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         )}
         {editingMessageIndex !== index && (
           <View>
-            {parseContent(displayContent).map((part, idx) => (
-              part.type === 'text' ? (
-                <Markdown 
-                  key={idx}
+            <Markdown 
                   style={markdownStyles}
                   rules={{
                     fence: renderCodeBlock,
                     code_block: renderCodeBlock,
                   }}
                 >
-                  {part.content}
+                  {displayContent}
                 </Markdown>
-              ) : (
-                <View 
-                  key={idx} 
-                  className={`bg-opacity-10 ${
-                    isUser ? 'bg-blue-200' : 'bg-gray-200'
-                  } rounded-lg px-2 py-1 my-1`}
-                >
-                  <Text 
-                    className={`italic opacity-75 ${
-                      isUser ? 'text-blue-100' : 'text-gray-500'
-                    }`}
-                  >
-                    {part.content}
-                  </Text>
-                </View>
-              )
-            ))}
           </View>
         )}
         

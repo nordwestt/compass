@@ -19,22 +19,25 @@ import { useKeyboardShortcuts } from "@/src/hooks/useKeyboardShortcuts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useAtomValue } from 'jotai';
 import { hasSeenOnboardingAtom } from '@/src/hooks/atoms';
-SplashScreen.preventAutoHideAsync();
 import { Platform } from '@/src/utils/platform';
 import { WelcomeIntroduction } from "@/src/components/onboarding/WelcomeIntroduction";
+import React from 'react';
+import { StatusBar } from 'expo-status-bar';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
   useKeyboardShortcuts();
 
-  let theme = {} as any;
-  if(!rawThemes[themePreset]){
-    theme = rawThemes['default'][colorScheme ?? 'light'];
-  }
-  else{
-    theme = rawThemes[themePreset][colorScheme ?? 'light'];
-  }
+  const theme = React.useMemo(() => {
+    if (!rawThemes[themePreset]) {
+      return rawThemes['default'][colorScheme ?? 'light'];
+    }
+    return rawThemes[themePreset][colorScheme ?? 'light'];
+  }, [themePreset, colorScheme]);
+
   const isDesktop = Platform.isWeb && window.innerWidth >= 768;
 
   const myFunc = async function() {
@@ -68,10 +71,11 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-    <ThemeProvider>
-      <View className="flex-row flex-1">
-      {isDesktop && <WebSidebar className="" />}
-      <Stack screenOptions={{
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <ThemeProvider>
+        <View className="flex-row flex-1">
+          {isDesktop && <WebSidebar className="" />}
+          <Stack screenOptions={{
             headerStyle: {
               backgroundColor: theme.surface,
             },
@@ -79,14 +83,14 @@ export default function RootLayout() {
             headerShadowVisible: false,
             header: () => <CustomHeader />
           }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      </View>
-      <ConfirmationModal />
-      <Toast />
-      {!hasSeenOnboarding && <WelcomeIntroduction />}
-    </ThemeProvider>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </View>
+        <ConfirmationModal />
+        <Toast />
+        {!hasSeenOnboarding && <WelcomeIntroduction />}
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 }

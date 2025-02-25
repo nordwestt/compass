@@ -156,7 +156,7 @@ const ChatThreads: React.FC = () => {
               <Ionicons 
                 name="trash-outline" 
                 size={20} 
-                className="!text-red-500 dark:!text-red-300"
+                className="!text-red-500"
               />
             </TouchableOpacity>
             
@@ -186,10 +186,10 @@ const ChatThreads: React.FC = () => {
       
       <TouchableOpacity 
         onPress={addNewThread} 
-        className="mb-2 p-2 rounded-full bg-background hover:bg-surface hover:border-primary hover:border-2"
+        className="mb-2 p-2 rounded-full bg-background hover:bg-surface hover:border-primary hover:border-2 items-center"
       >
         <Ionicons 
-          className="mx-auto !text-text" 
+          className="!text-text" 
           name="add" 
           size={24}
         />

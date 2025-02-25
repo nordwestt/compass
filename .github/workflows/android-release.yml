@@ -42,11 +42,18 @@ jobs:
         run: |
           curl -L -o compass.apk "${{ env.APK_URL }}"
 
+      - name: Get Version
+        id: package-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: compass.apk
-          tag_name: v${{ github.run_number }}
+          tag_name: v${{ env.VERSION }}
+          name: Release v${{ env.VERSION }}
           draft: false
           prerelease: false
         env:

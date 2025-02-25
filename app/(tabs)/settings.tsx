@@ -8,11 +8,12 @@ interface SettingItemProps {
   description: string;
   icon: ComponentProps<typeof Ionicons>['name'];
   onPress: () => void;
+  className?: string;
 }
 
-const SettingItem = ({ title, description, icon, onPress }: SettingItemProps) => (
+const SettingItem = ({ title, description, icon, onPress, className }: SettingItemProps) => (
   <TouchableOpacity 
-    className="flex-row items-center p-4 mb-2 bg-surface rounded-lg border border-border hover:bg-background hover:shadow-md"
+    className={`flex-row items-center h-32 p-4 mb-2 bg-surface rounded-lg border border-border hover:bg-background hover:shadow-md ${className}`}
     onPress={onPress}
   >
     <View className="bg-primary/10 p-3 rounded-full mr-4">
@@ -39,7 +40,7 @@ export default function SettingsScreen() {
         <Text className="text-secondary">Customize your chat experience</Text>
       </View>
 
-      <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <View className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-8">
         <SettingItem
           title="Font Settings"
           description="Customize text appearance and size"
