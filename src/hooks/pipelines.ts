@@ -61,7 +61,7 @@ export const relevantPassagesTransform: MessageTransform = {
       const relevantPassages = await searchRelevantPassages(
         messageWithoutUrls,
         webContent.join('\n'),
-        ChatProviderFactory.getProvider(ctx.thread.selectedModel),
+        ChatProviderFactory.getProvider(ctx.thread.selectedModel.provider),
         {
           maxChunkSize: 512,
           minSimilarity: 0.3,
