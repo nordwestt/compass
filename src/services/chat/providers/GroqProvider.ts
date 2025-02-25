@@ -130,23 +130,20 @@ export class GroqProvider implements ChatProvider {
   }
 
   async getAvailableModels(): Promise<string[]> {
-    // Try to get from cache first
-    const cached = await Cache.get<string[]>(this.modelsCacheKey, this.CACHE_EXPIRY);
-    if (cached) return cached;
-
-    // Fetch fresh data if cache miss
-    const response = await fetch(`${this.provider.endpoint}/openai/v1/models`, {
-      headers: {
-        'Authorization': `Bearer ${this.provider.apiKey}`
-      }
-    });
-    const data = await response.json();
-    const models = data.data
-      .filter((model: any) => model.object == 'model' && model.active == true)
-      .map((model: any) => model.id);
-
-    // Update cache
-    await Cache.set(this.modelsCacheKey, models, this.CACHE_EXPIRY);
-    return models;
+    return Cache.withCache(
+      `models-cache-groq-${this.provider.endpoint}`,
+      async () => {
+        const response = await fetch(`${this.provider.endpoint}/openai/v1/models`, {
+          headers: {
+            'Authorization': `Bearer ${this.provider.apiKey}`
+          }
+        });
+        const data = await response.json();
+        return data.data
+          .filter((model: any) => model.object == 'model' && model.active == true)
+          .map((model: any) => model.id);
+      },
+      5 * 60 * 1000 // 5 minutes
+    );
   }
 } 

@@ -35,4 +35,28 @@ export class Cache {
       return null;
     }
   }
+
+  static async withCache<T>(
+    key: string,
+    fetchFn: () => Promise<T>,
+    expiryMs: number
+  ): Promise<T> {
+    try {
+      // Try to get from cache first
+      const cached = await Cache.get<T>(key, expiryMs);
+      if (cached) return cached;
+
+      // Cache miss - fetch fresh data
+      const freshData = await fetchFn();
+      
+      // Cache the new data
+      await Cache.set(key, freshData, expiryMs);
+      
+      return freshData;
+    } catch (error) {
+      console.warn('Cache operation failed:', error);
+      // If cache operations fail, still try to get fresh data
+      return fetchFn();
+    }
+  }
 } 
