@@ -103,7 +103,7 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
         onPress={() => router.push("/settings/providers")}
         className="bg-primary hover:opacity-80 rounded-lg p-2 border border-border text-white"
       >
-        Add image provider
+        <Text className="text-white">Add image provider</Text>
       </TouchableOpacity>
     );
   }
