@@ -74,6 +74,12 @@ jobs:
         run: |
           qrencode -o compass-qr.png "${{ env.APK_URL }}"
         
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: compass-apk
+          path: compass.apk
+
       - name: Upload QR Code
         uses: actions/upload-artifact@v4
         with:
@@ -140,6 +146,16 @@ jobs:
     needs: [setup, docker-build, web-deploy, android-build]
     runs-on: ubuntu-latest
     steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: compass-apk
+          
+      - name: Download QR Code
+        uses: actions/download-artifact@v4
+        with:
+          name: compass-qr
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
