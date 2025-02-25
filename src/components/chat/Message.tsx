@@ -27,11 +27,11 @@ interface CodeBlockProps {
   sourceInfo?: string;
   isDark: boolean;
   style: any;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ content, sourceInfo, isDark, style }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+const CodeBlock: React.FC<CodeBlockProps> = ({ content, sourceInfo, isDark, style, isExpanded, onToggleExpand }) => {
   const handleCopy = () => {
     Clipboard.setString(content);
     toastService.success({
@@ -44,7 +44,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ content, sourceInfo, isDark, styl
     <View style={style} className="border-border border">
       <View className="flex-row justify-between items-center">
         <TouchableOpacity 
-          onPress={() => setIsExpanded(!isExpanded)}
+          onPress={onToggleExpand}
           className="mr-2 p-1 flex-row items-center"
         >
           <Ionicons 
@@ -106,6 +106,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
 
   const [displayContent, setDisplayContent] = useState('');
   const [isHovered, setIsHovered] = useState(false);
+  const [expandedCodeBlocks, setExpandedCodeBlocks] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -113,15 +114,33 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
     });
   }, [content]);
 
-  const renderCodeBlock = (node: any) => (
-    <CodeBlock 
-      key={node.content}
-      content={node.content}
-      sourceInfo={node.sourceInfo}
-      isDark={isDark}
-      style={markdownStyles.code_block}
-    />
-  );
+  const renderCodeBlock = (node: any) => {
+    const blockId = `${node.content}-${index}`;
+    
+    const handleToggleExpand = () => {
+      setExpandedCodeBlocks(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(blockId)) {
+          newSet.delete(blockId);
+        } else {
+          newSet.add(blockId);
+        }
+        return newSet;
+      });
+    };
+
+    return (
+      <CodeBlock 
+        key={blockId}
+        content={node.content}
+        sourceInfo={node.sourceInfo}
+        isDark={isDark}
+        style={markdownStyles.code_block}
+        isExpanded={expandedCodeBlocks.has(blockId)}
+        onToggleExpand={handleToggleExpand}
+      />
+    );
+  };
 
   const handleCopyMessage = () => {
     Clipboard.setString(content);
