@@ -67,6 +67,13 @@ jobs:
         run: |
           curl -L -o compass.apk "${{ env.APK_URL }}"
 
+      - name: Install qrencode
+        run: sudo apt-get install -y qrencode
+
+      - name: Generate QR Code
+        run: |
+          qrencode -o compass-qr.png "${{ env.APK_URL }}"
+
   docker-build:
     needs: setup
     runs-on: ubuntu-latest
@@ -127,11 +134,15 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: compass.apk
+          files: |
+            compass.apk
+            compass-qr.png
           tag_name: v${{ needs.setup.outputs.version }}
           name: Release v${{ needs.setup.outputs.version }}
           body: |
             Android APK and Docker image are now available.
+
+            Scan the QR code in the release assets to download the APK directly to your Android device.
 
             Docker image:
             - `ghcr.io/${{ github.repository }}:latest`
