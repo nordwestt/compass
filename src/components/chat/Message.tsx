@@ -160,35 +160,15 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
         )}
         {editingMessageIndex !== index && (
           <View>
-            {parseContent(displayContent).map((part, idx) => (
-              part.type === 'text' ? (
-                <Markdown 
-                  key={idx}
+            <Markdown 
                   style={markdownStyles}
                   rules={{
                     fence: renderCodeBlock,
                     code_block: renderCodeBlock,
                   }}
                 >
-                  {part.content}
+                  {displayContent}
                 </Markdown>
-              ) : (
-                <View 
-                  key={idx} 
-                  className={`bg-opacity-10 ${
-                    isUser ? 'bg-blue-200' : 'bg-gray-200'
-                  } rounded-lg px-2 py-1 my-1`}
-                >
-                  <Text 
-                    className={`italic opacity-75 ${
-                      isUser ? 'text-blue-100' : 'text-gray-500'
-                    }`}
-                  >
-                    {part.content}
-                  </Text>
-                </View>
-              )
-            ))}
           </View>
         )}
         
