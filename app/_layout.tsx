@@ -22,6 +22,7 @@ import { hasSeenOnboardingAtom } from '@/src/hooks/atoms';
 import { Platform } from '@/src/utils/platform';
 import { WelcomeIntroduction } from "@/src/components/onboarding/WelcomeIntroduction";
 import React from 'react';
+import { StatusBar } from 'expo-status-bar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -70,10 +71,11 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-    <ThemeProvider>
-      <View className="flex-row flex-1">
-      {isDesktop && <WebSidebar className="" />}
-      <Stack screenOptions={{
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <ThemeProvider>
+        <View className="flex-row flex-1">
+          {isDesktop && <WebSidebar className="" />}
+          <Stack screenOptions={{
             headerStyle: {
               backgroundColor: theme.surface,
             },
@@ -81,14 +83,14 @@ export default function RootLayout() {
             headerShadowVisible: false,
             header: () => <CustomHeader />
           }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      </View>
-      <ConfirmationModal />
-      <Toast />
-      {!hasSeenOnboarding && <WelcomeIntroduction />}
-    </ThemeProvider>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </View>
+        <ConfirmationModal />
+        <Toast />
+        {!hasSeenOnboarding && <WelcomeIntroduction />}
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 }
