@@ -11,13 +11,22 @@ permissions:
   packages: write
 
 jobs:
-  get-version:
+  setup:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.package-version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
         
       - name: Get Version
         id: package-version
@@ -26,7 +35,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
   android-build:
-    needs: get-version
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -59,7 +68,7 @@ jobs:
           curl -L -o compass.apk "${{ env.APK_URL }}"
 
   docker-build:
-    needs: get-version
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -82,12 +91,12 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:v${{ needs.get-version.outputs.version }}
+            ghcr.io/${{ github.repository }}:v${{ needs.setup.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   web-deploy:
-    needs: get-version
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -112,21 +121,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create-release:
-    needs: [get-version, docker-build, web-deploy]
+    needs: [setup, docker-build, web-deploy, android-build]
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: compass.apk
-          tag_name: v${{ needs.get-version.outputs.version }}
-          name: Release v${{ needs.get-version.outputs.version }}
+          tag_name: v${{ needs.setup.outputs.version }}
+          name: Release v${{ needs.setup.outputs.version }}
           body: |
             Android APK and Docker image are now available.
 
             Docker image:
             - `ghcr.io/${{ github.repository }}:latest`
-            - `ghcr.io/${{ github.repository }}:v${{ needs.get-version.outputs.version }}`
+            - `ghcr.io/${{ github.repository }}:v${{ needs.setup.outputs.version }}`
             
             To pull and run the Docker image:
             ```bash
