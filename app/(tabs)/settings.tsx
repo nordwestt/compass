@@ -8,11 +8,12 @@ interface SettingItemProps {
   description: string;
   icon: ComponentProps<typeof Ionicons>['name'];
   onPress: () => void;
+  className?: string;
 }
 
-const SettingItem = ({ title, description, icon, onPress }: SettingItemProps) => (
+const SettingItem = ({ title, description, icon, onPress, className }: SettingItemProps) => (
   <TouchableOpacity 
-    className="flex-row items-center p-4 mb-2 bg-surface rounded-lg border border-border hover:bg-background hover:shadow-md"
+    className={`flex-row items-center h-32 p-4 mb-2 bg-surface rounded-lg border border-border hover:bg-background hover:shadow-md ${className}`}
     onPress={onPress}
   >
     <View className="bg-primary/10 p-3 rounded-full mr-4">
