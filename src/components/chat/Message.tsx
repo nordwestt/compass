@@ -56,10 +56,10 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ content, sourceInfo, isDark, styl
         </TouchableOpacity>
         <TouchableOpacity 
           onPress={handleCopy}
-          className="bg-surface border-border border px-2 py-1 rounded flex-row items-center"
+          className="bg-surface border-border border px-2 py-1 rounded flex-row items-center hover:opacity-60"
         >
-          <Ionicons name="copy" size={16} color={isDark ? "#fff" : "#000"}/>
-          <Text className="text-xs ml-1">Copy</Text>
+          <Ionicons name="copy" size={16} className='!text-text'/>
+          <Text className="text-xs text-text ml-1">Copy</Text>
         </TouchableOpacity>
       </View>
       {isExpanded && (
