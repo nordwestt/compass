@@ -177,7 +177,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           onPress={setCurrentModelAsDefault}
           className="p-2 flex items-center justify-center bg-primary hover:opacity-80 rounded-lg border border-border h-12"
         >
-          <Text className="text-white">Set as default model</Text>
+          <Ionicons name="star" size={24} className="!text-yellow-500" />
+          {Platform.OS == 'web' && <Text className="text-white pt-1">Set as default model</Text>}
         </TouchableOpacity>
       )}
     </View>

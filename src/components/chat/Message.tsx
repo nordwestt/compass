@@ -187,7 +187,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
 
   return (
     <View className={`flex flex-row ${isUser ? "justify-end" : "justify-start"} mb-2`}>
-      {!isUser && (
+      {/* {!isUser && (
         <View className="mr-2 items-center my-auto">
           <CharacterAvatar 
             character={character || currentThread.character} 
@@ -197,7 +197,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
             {character?.name || currentThread.character?.name}
           </Text>
         </View>
-      )}
+      )} */}
       <View 
         className={`relative px-4 py-2 mb-4 rounded-2xl max-w-[80%] ${
           isUser ? "bg-primary rounded-tr-none" : "bg-surface rounded-tl-none"
