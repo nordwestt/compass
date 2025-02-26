@@ -70,7 +70,7 @@ export function EndpointModal({
 
   return (
     <Modal isVisible={visible} onClose={onClose} maxHeight="85%">
-      <ScrollView className="p-6">
+      <ScrollView className="p-6" contentContainerStyle={{ paddingBottom: 30 }}>
         <View className="flex-row items-center mb-6">
           {formData.logo && (
             <Image

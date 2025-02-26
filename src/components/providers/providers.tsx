@@ -137,7 +137,7 @@ export default function Providers({ className }: ProvidersProps) {
               </TouchableOpacity>
         </View>
         <View className="flex-row items-center py-2">
-          <Ionicons name="information-circle-outline" size={20} className="text-primary mr-2" />
+          <Ionicons name="information-circle-outline" size={20} className="!text-primary mr-2" />
             <Text className="text-text flex-1 font-medium pt-1">
               Providers provide different services to the app, such as text generation, image generation, search, and more.
             </Text>

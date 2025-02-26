@@ -81,7 +81,7 @@ export function ProviderFormFields({
                       key={key}
                       name={provider.capabilities?.[key as keyof Provider['capabilities']] ? icon : `${icon}-outline` as any}
                       size={16}
-                      className={provider.capabilities?.[key as keyof Provider['capabilities']] ? "text-primary" : "text-gray-300"}
+                      className={provider.capabilities?.[key as keyof Provider['capabilities']] ? "!text-primary" : "!text-gray-300"}
                     />
                   ))}
                 </View>
@@ -115,7 +115,7 @@ export function ProviderFormFields({
                 <Ionicons
                   name="chatbubble"
                   size={16}
-                  className="text-secondary mr-2"
+                  className="!text-secondary mr-2"
                 />
                 <Text className="text-secondary">Chat with AI models</Text>
               </View>
@@ -125,7 +125,7 @@ export function ProviderFormFields({
                 <Ionicons
                   name="volume-high"
                   size={16}
-                  className="text-secondary mr-2"
+                  className="!text-secondary mr-2"
                 />
                 <Text className="text-secondary">Convert text to speech</Text>
               </View>
@@ -135,7 +135,7 @@ export function ProviderFormFields({
                 <Ionicons
                   name="mic"
                   size={16}
-                  className="text-secondary mr-2"
+                  className="!text-secondary mr-2"
                 />
                 <Text className="text-secondary">Convert speech to text</Text>
               </View>
@@ -145,7 +145,7 @@ export function ProviderFormFields({
                 <Ionicons
                   name="image"
                   size={16}
-                  className="text-secondary mr-2"
+                  className="!text-secondary mr-2"
                 />
                 <Text className="text-secondary">Generate images</Text>
               </View>
@@ -155,7 +155,7 @@ export function ProviderFormFields({
                 <Ionicons
                   name="search"
                   size={16}
-                  className="text-secondary mr-2"
+                  className="!text-secondary mr-2"
                 />
                 <Text className="text-secondary">Search the web</Text>
               </View>
@@ -165,7 +165,7 @@ export function ProviderFormFields({
                 <Ionicons
                   name="barcode"
                   size={16}
-                  className="text-secondary mr-2"
+                  className="!text-secondary mr-2"
                 />
                 <Text className="text-secondary">
                   Embed text (required for web search)
