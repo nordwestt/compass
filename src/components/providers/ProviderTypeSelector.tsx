@@ -3,27 +3,79 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { Provider } from "@/src/types/core";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
+import { useState } from "react";
 
 interface ProviderTypeSelectorProps {
   selectedProvider: Provider;
   onProviderSelect: (provider: Provider) => void;
 }
 
+type CapabilityFilter = string | keyof Provider['capabilities'];
+
+const CAPABILITY_FILTERS: { key: CapabilityFilter; label: string; icon: string }[] = [
+  { key: 'all', label: 'All', icon: 'apps' },
+  { key: 'llm', label: 'Chat', icon: 'chatbubble' },
+  { key: 'image', label: 'Image', icon: 'image' },
+  { key: 'tts', label: 'Speech', icon: 'volume-high' },
+  { key: 'stt', label: 'Voice', icon: 'mic' },
+  { key: 'embedding', label: 'Embedding', icon: 'barcode' },
+  { key: 'search', label: 'Search', icon: 'search' },
+];
+
 export function ProviderTypeSelector({
   selectedProvider,
   onProviderSelect,
 }: ProviderTypeSelectorProps) {
+  const [activeFilter, setActiveFilter] = useState<CapabilityFilter>('all');
+
+  const filteredProviders = Object.entries(PREDEFINED_PROVIDERS).filter(([_, provider]) => {
+    if (activeFilter === 'all') return true;
+    return provider.capabilities?.[activeFilter as keyof Provider['capabilities']];
+  });
+
   return (
     <View>
       <Text className="text-sm font-medium text-text mb-2">
         Provider Type
       </Text>
+
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        className="mb-4"
+      >
+        <View className="flex-row gap-2">
+          {CAPABILITY_FILTERS.map(({ key, label, icon }) => (
+            <TouchableOpacity
+              key={key}
+              onPress={() => setActiveFilter(key)}
+              className={`px-2 py-2 rounded-lg border flex-row items-center min-w-20 h-10 ${
+                activeFilter === key
+                  ? "bg-primary/10 border-primary"
+                  : "border-border"
+              }`}
+            >
+              <Ionicons
+                name={icon as any}
+                size={16}
+                className={activeFilter === key ? "!text-primary" : "!text-secondary"}
+              />
+              <Text className={`text-sm ml-1 flex-1 ${
+                activeFilter === key ? "text-primary" : "text-secondary"
+              }`}>
+                {label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         className="mb-4"
       >
         <View className="flex-wrap flex-row gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-          {Object.entries(PREDEFINED_PROVIDERS).map(([key, provider]) => (
+          {filteredProviders.map(([key, provider]) => (
             <TouchableOpacity
               key={key}
               onPress={() => onProviderSelect(provider)}
