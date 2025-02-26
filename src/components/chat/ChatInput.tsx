@@ -1,5 +1,5 @@
 import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
-import { View, TextInput, Pressable, Text } from 'react-native';
+import { View, TextInput, Pressable, Text, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { allPromptsAtom, editingMessageIndexAtom } from '@/src/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
@@ -87,7 +87,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   };
 
   const handleKeyPress = ({ nativeEvent }: { nativeEvent: { key: string, shiftKey?: boolean } }) => {
-    if (nativeEvent.key === 'Enter') {
+    // Only handle Enter for sending on desktop/web platforms
+    if (Platform.OS === 'web' && nativeEvent.key === 'Enter') {
       if (!nativeEvent.shiftKey) {
         handleSend();
         return;
@@ -141,7 +142,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       <TextInput
         onBlur={handleBlur}
         ref={inputRef}
-        className={`flex-1 min-h-[60px] px-4 py-2 bg-background rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
+        className={`flex-1 min-h-[60px] px-4 pt-2 pb-2 bg-background rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
         placeholder="Type a message... "
         placeholderTextColor="#9CA3AF"
         value={message}
@@ -151,6 +152,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
           setCursorPosition(event.nativeEvent.selection.start);
         }}
         multiline
+        textAlignVertical="top"
         editable={!isGenerating}
       />
       {isGenerating ? (
