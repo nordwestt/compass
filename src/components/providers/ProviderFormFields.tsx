@@ -47,7 +47,7 @@ export function ProviderFormFields({
           showsVerticalScrollIndicator={false}
           className="mb-4"
         >
-          <View className="flex-row flex-wrap gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          <View className="flex-wrap flex-row gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
             {Object.entries(PREDEFINED_PROVIDERS).map(([key, provider]) => (
               <TouchableOpacity
                 key={key}
@@ -58,17 +58,17 @@ export function ProviderFormFields({
                     : "border-border"
                 }`}
               >
-                <View className="flex-row items-center">
+                <View className="flex-row items-center mb-1">
                   {provider.logo && (
                     <Image
                       source={{ uri: provider.logo }}
                       className="!w-[24px] !h-[24px] rounded-full mr-2"
                     />
                   )}
-                  <Text className="text-text">{provider.name}</Text>
+                  <Text className="text-text flex-1">{provider.name}</Text>
                 </View>
 
-                <View className="flex-row mt-2 space-x-2">
+                <View className="flex-row space-x-2 mt-auto">
                   {[
                     { key: 'llm', icon: 'chatbubble' },
                     { key: 'tts', icon: 'volume-high' },
@@ -91,7 +91,7 @@ export function ProviderFormFields({
         </ScrollView>
       </View>
 
-      {isCustom && (
+      {/* {isCustom && (
         <View>
           <Text className="text-sm font-medium text-text mb-2">Name</Text>
           <TextInput
@@ -101,7 +101,7 @@ export function ProviderFormFields({
             placeholder="Enter name"
           />
         </View>
-      )}
+      )} */}
 
       <View>
         <View>
@@ -191,6 +191,7 @@ export function ProviderFormFields({
           onChangeText={(value) => onChange({ apiKey: value })}
           className="border border-border rounded-lg p-3 bg-surface text-text"
           placeholder={`Enter API key${selectedProvider.keyRequired ? "" : ", if required"}`}
+          placeholderTextColor="#9CA3AF"
           secureTextEntry
         />
       </View>
@@ -205,6 +206,7 @@ export function ProviderFormFields({
             onChangeText={(value) => onChange({ endpoint: value })}
             className="border border-border rounded-lg p-3 bg-surface text-text"
             placeholder="Enter endpoint URL"
+            placeholderTextColor="#9CA3AF"
           />
         </View>
       )}

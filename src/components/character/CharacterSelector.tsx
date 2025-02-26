@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
 import { allPromptsAtom, customPromptsAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
@@ -42,15 +42,15 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
 
   return (
     <View className={className}>
-      <TouchableOpacity 
+      <Pressable 
         onPress={() => setIsModalVisible(true)}
         className="flex-row items-center px-4 py-2 h-12 rounded-lg bg-background border border-border hover:bg-surface"
       >
         <CharacterAvatar character={selectedPrompt} size={32} />
-        <Text className="ml-2 text-text">
+        <Text className="ml-2 text-text flex-1">
           {selectedPrompt.name}
         </Text>
-      </TouchableOpacity>
+      </Pressable>
 
       <Modal
         isVisible={isModalVisible}
