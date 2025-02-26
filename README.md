@@ -82,6 +82,20 @@ nvm use 18.19.0
 npm run build:linux
 ```
 
+## Building app for Docker
+
+```bash
+docker build -t my-app .
+```
+then you can run it with:
+
+```bash
+docker run -p 80:80 my-app
+```
+
+Make sure to update proxy in Settings to "http://<your-docker-app>/proxy"
+
+
 ## Contributing
 
 I don't currently accept contributions since I'm still working on the core functionality, but I welcome feedback and suggestions for now!
