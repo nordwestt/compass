@@ -50,7 +50,7 @@ export class OllamaProvider implements ChatProvider {
 
         const ollama = createOllama({
           // optional settings, e.g.
-          baseURL: model.provider.endpoint+'/api',
+          baseURL: await getProxyUrl(model.provider.endpoint+'/api'),
           fetch: expoFetch as unknown as typeof globalThis.fetch,
           
         });
@@ -171,7 +171,7 @@ export class OllamaProvider implements ChatProvider {
 
   async getAvailableModels(): Promise<string[]> {
 
-    const ollamaResponse = await fetch(`${this.provider.endpoint}/api/tags`, {
+    const ollamaResponse = await fetch(await getProxyUrl(`${this.provider.endpoint}/api/tags`), {
       headers: {
         'Accept': 'application/json',
       }
