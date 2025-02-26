@@ -130,8 +130,7 @@ export class OllamaProvider implements ChatProvider {
   
   async sendJSONMessage(message: string, model: Model, systemPrompt: string): Promise<any>{
     let url = `${model.provider.endpoint}/api/chat`;
-    if(PlatformCust.isTauri) url = await getProxyUrl(url);
-    let response = await fetch(url, {
+    let response = await fetch(await getProxyUrl(url), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -156,7 +155,7 @@ export class OllamaProvider implements ChatProvider {
 
     const ollama = createOllama({
       // optional settings, e.g.
-      baseURL: this.provider.endpoint+'/api',
+      baseURL: await getProxyUrl(this.provider.endpoint+'/api'),
       fetch: expoFetch as unknown as typeof globalThis.fetch,
     });
     

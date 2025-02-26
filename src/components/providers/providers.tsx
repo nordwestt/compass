@@ -12,7 +12,7 @@ import { fetchAvailableModelsV2 } from '@/src/hooks/useModels';
 import { toastService } from '@/src/services/toastService';
 import { EditOllama } from './EditOllama';
 import { router } from 'expo-router';
-
+import { getProxyUrl } from '@/src/utils/proxy';
 
 interface ProvidersProps {
   className?: string;
@@ -209,7 +209,7 @@ export async function scanLocalOllama(): Promise<string[]> {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 500);
 
-      const response = await fetch(endpoint, {
+      const response = await fetch(await getProxyUrl(endpoint), {
         headers: {
           'Accept': 'application/text',
         },
@@ -260,7 +260,7 @@ export async function scanNetworkOllama(): Promise<string[]> {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-      const response = await fetch(endpoint, {
+      const response = await fetch(await getProxyUrl(endpoint), {
         headers: {
           'Accept': 'application/text',
         },
@@ -283,18 +283,18 @@ export async function scanNetworkOllama(): Promise<string[]> {
   }
 
   // if we have both localhost and 127.0.0.1, remove 127.0.0.1
-  if (results.includes('http://localhost:11434') && results.includes('http://127.0.0.1:11434')) {
-    results = results.filter(result => result !== 'http://127.0.0.1:11434');
+  if (results.includes('localhost:11434') && results.includes('127.0.0.1:11434')) {
+    results = results.filter(result => !result.includes('127.0.0.1:11434'));
   }
 
-  if(results.length>1 && results.includes('http://localhost:11434')){
+  if(results.length>1 && results.includes('localhost:11434')){
     // make request to /api/tags
-    const localResponse = await fetch(`http://localhost:11434/api/tags`);
+    const localResponse = await fetch(await getProxyUrl(`http://localhost:11434/api/tags`));
     const localData = await localResponse.json();
 
-    const otherEndpoints = results.filter(result => result !== 'http://localhost:11434');
+    const otherEndpoints = results.filter(result => !result.includes('localhost:11434'));
     for(let i = 0; i < otherEndpoints.length; i++){
-      const response = await fetch(`${otherEndpoints[i]}/api/tags`);
+      const response = await fetch(await getProxyUrl(`${otherEndpoints[i]}/api/tags`));
       const responseData = await response.json();
       if(localData.toString() == responseData.toString()){
         results = results.filter(result => result != otherEndpoints[i]);

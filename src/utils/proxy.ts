@@ -12,7 +12,7 @@ export async function getProxyUrl(url: string): Promise<string> {
   const proxyUrl = await store.get(proxyUrlAtom);
   
   // If no proxy URL is set, return original URL
-  if (!proxyUrl) {
+  if (!proxyUrl || typeof proxyUrl !== 'string' || proxyUrl?.length == 0) {
     return url;
   }
 
