@@ -6,16 +6,16 @@ import { useState } from 'react';
 
 // Common Ionicon names that would make sense for character avatars
 const ICON_NAMES = [
-  'person', 'people', 'happy', 'sad', 'heart', 'star', 'planet',
+  'person', 'bulb', 'happy', 'sad', 'heart', 'star', 'planet',
   'rocket', 'flower', 'paw', 'game-controller', 'musical-notes',
   'book', 'library', 'school', 'glasses', 'baseball', 'football',
-  'basketball', 'bicycle', 'airplane', 'boat', 'car', 'bus',
-  'cafe', 'restaurant', 'pizza', 'ice-cream', 'beer', 'wine',
-  'fish', 'paw', 'leaf', 'rose', 'flower', 'sunny', 'rainy',
-  'cloud', 'moon', 'flash', 'umbrella', 'compass', 'map',
-  'camera', 'film', 'tv', 'radio', 'headset', 'mic', 'guitar',
-  'brush', 'color-palette', 'pencil', 'desktop', 'laptop', 'phone',
-  'tablet', 'watch', 'gift', 'ribbon', 'trophy', 'medal'
+  'basketball', 'bicycle', 'airplane', 'boat', 'pulse', 'magnet',
+  'cafe', 'restaurant', 'pizza', 'ice-cream', 'build', 'wine',
+  'fish', 'cart', 'leaf', 'rose', 'flower', 'sunny', 'rainy',
+  'skull', 'moon', 'flash', 'umbrella', 'compass', 'map',
+  'camera', 'film', 'tv', 'radio', 'headset', 'mic', 'beer',
+  'brush', 'color-palette', 'pencil', 'desktop', 'ear', 'megaphone',
+  'bug', 'watch', 'gift', 'ribbon', 'trophy', 'medal'
 ];
 
 interface IconSelectorProps {

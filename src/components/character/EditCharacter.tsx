@@ -28,17 +28,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   useEffect(() => {
     let chara = id 
       ? customPrompts.find(p => p.id === id) 
-      : { name: '', content: '', image: require('@/assets/characters/default.png'), icon: undefined };
-
-    if(id){
-      chara = customPrompts.find(p => p.id === id);
-      if(!chara){
-        chara = PREDEFINED_PROMPTS.find(p => p.id === id);
-      }
-    }
-    else{
-      chara = { name: '', content: '', image: require('@/assets/characters/default.png'), icon: undefined };
-    }
+      : { name: '', content: '', icon: 'person' };
 
     setCharacter(chara as Character);
     setUseIcon(!!chara?.icon);
@@ -116,7 +106,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
                 onImageSelected={handleImageSelected}
               />
             )}
-            <TouchableOpacity 
+            {/* <TouchableOpacity 
               onPress={() => setUseIcon(!useIcon)}
               className="absolute bottom-4 right-0 bg-primary rounded-full p-2"
             >
@@ -125,7 +115,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
                 size={16} 
                 color="white" 
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <Text className="text-sm text-text mt-2">
             {useIcon ? 'Tap to change icon' : 'Tap to change avatar'}

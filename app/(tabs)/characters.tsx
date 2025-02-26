@@ -67,7 +67,7 @@ export default function CharactersScreen() {
         id: "",
         name: '',
         content: '',
-        image: require('@/assets/characters/default.png')
+        icon: 'person',
       });
     } else {
       router.push('/edit-character');
