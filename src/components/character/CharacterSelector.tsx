@@ -55,9 +55,8 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
       <Modal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
+        maxHeight="85%"
       >
-          
-          <View className="flex-1 justify-end">
               <View className="p-4 border-b border-border">
                 <Text className="text-lg font-bold text-center text-text">
                   Select Character
@@ -90,15 +89,14 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
                 </View>
               </ScrollView>
 
-              <TouchableOpacity
-                onPress={() => setIsModalVisible(false)}
-                className="p-4 m-2 rounded-lg border-t border-border bg-surface"
-              >
-                <Text className="text-center text-text">
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-          </View>
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(false)}
+              className="p-4 m-2 rounded-lg border-t border-border bg-surface"
+            >
+              <Text className="text-center text-text">
+                Cancel
+              </Text>
+            </TouchableOpacity>
       </Modal>
     </View>
   );

@@ -30,6 +30,7 @@ import { Platform as PlatformUtils } from "@/src/utils/platform";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
+
 interface ModelSelectorProps {
   selectedModel: Model;
   onSetModel: (model: Model) => void;
@@ -127,14 +128,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           onPress={scanOllamaProviders}
         >
           <Ionicons name="radio-outline" size={24} color="white" />
-          <Text className="text-white pt-1">Scan for Ollama</Text>
+          {Platform.OS == 'web' && <Text className="text-white pt-1">Scan for Ollama</Text>}
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-row items-center gap-2 bg-background hover:opacity-80 rounded-lg p-2 border border-border"
           onPress={() => router.push("/settings/providers")}
         >
           <Ionicons name="server-outline" size={24} className="!text-text" />
-          <Text className="text-text pt-1">Manage providers</Text>
+          {Platform.OS == 'web' && <Text className="text-text pt-1">Manage providers</Text>}
         </TouchableOpacity>
       </View>
     );
