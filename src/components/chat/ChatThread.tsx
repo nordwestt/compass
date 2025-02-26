@@ -52,6 +52,8 @@ export const ChatThread: React.FC = () => {
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width >= 768;
 
+  const [userHasScrolled, setUserHasScrolled] = useState(false);
+
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
       dispatchThread({ type: 'add', payload: currentThread });
@@ -153,10 +155,10 @@ export const ChatThread: React.FC = () => {
   };
 
   const scrollToEnd = useCallback(() => {
-    if (flatListRef.current) {
+    if (flatListRef.current && !userHasScrolled) {
       flatListRef.current.scrollToOffset({ offset: 99999999, animated: true });
     }
-  }, []);
+  }, [userHasScrolled]);
 
   // Debounced version of scrollToEnd
   const debouncedScrollToEnd = useCallback(
@@ -169,6 +171,23 @@ export const ChatThread: React.FC = () => {
     })(),
     [scrollToEnd]
   );
+
+  const handleScroll = useCallback((event: any) => {
+    if (isGenerating) {
+      const currentOffset = event.nativeEvent.contentOffset.y;
+      const maxOffset = event.nativeEvent.contentSize.height - event.nativeEvent.layoutMeasurement.height;
+      
+      // If user has scrolled up more than 50 pixels from bottom, consider it as manual scroll
+      setUserHasScrolled(maxOffset - currentOffset > 50);
+    }
+  }, [isGenerating]);
+
+  // Reset userHasScrolled when generation stops
+  useEffect(() => {
+    if (!isGenerating) {
+      setUserHasScrolled(false);
+    }
+  }, [isGenerating]);
 
   const messages = currentThread?.messages || [];
 
@@ -220,6 +239,8 @@ export const ChatThread: React.FC = () => {
             {/* Optional: Add an empty state message */}
           </View>
         }
+        onScroll={handleScroll}
+        onScrollBeginDrag={() => setUserHasScrolled(true)}
       />
 
       
