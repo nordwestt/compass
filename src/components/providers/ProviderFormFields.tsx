@@ -132,7 +132,7 @@ export function ProviderFormFields({
         <TextInput
           value={formData.apiKey}
           onChangeText={(value) => onChange({ apiKey: value })}
-          className="border border-border flex-1 h-[40px] rounded-lg px-4 bg-surface text-text"
+          className="border border-border flex-1 h-[40px] py-2 rounded-lg px-4 bg-surface text-text"
           placeholder={`Enter API key${selectedProvider.keyRequired ? "" : ", if required"}`}
           placeholderTextColor="#9CA3AF"
           textAlignVertical="top"
