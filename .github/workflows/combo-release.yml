@@ -192,10 +192,11 @@ jobs:
             To pull and run the Docker image:
             ```bash
             docker pull ghcr.io/${{ github.repository }}:latest
-            docker run -p 80:80 ghcr.io/${{ github.repository }}:latest
+            docker run --network host -p 80:80 ghcr.io/${{ github.repository }}:latest
             ```
 
             Then you can use compass by visiting "http://localhost/compass" in your browser.
+            This image comes pre-packaged with a proxy server that allows you to use Ollama without any configuration.
           draft: false
           prerelease: false
         env:

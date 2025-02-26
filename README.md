@@ -39,10 +39,15 @@ Try it out [here](https://nordwestt.com/compass) (only for visual demo, since br
 # Installation 
 
 ## Docker
+To pull and run the Docker image:
+
 ```bash
 docker pull ghcr.io/nordwestt/compass:latest
+docker run --network host -p 80:80 ghcr.io/nordwestt/compass:latest
 ```
 
+Then you can use compass by visiting "http://localhost/compass" in your browser.
+The proxy server will be available on port 3001.
 
 
 # Development
