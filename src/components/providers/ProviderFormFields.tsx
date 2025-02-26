@@ -81,7 +81,7 @@ export function ProviderFormFields({
                       key={key}
                       name={provider.capabilities?.[key as keyof Provider['capabilities']] ? icon : `${icon}-outline` as any}
                       size={16}
-                      className={provider.capabilities?.[key as keyof Provider['capabilities']] ? "!text-primary" : "!text-gray-300"}
+                      className={provider.capabilities?.[key as keyof Provider['capabilities']] ? "!text-primary" : "!text-secondary opacity-60"}
                     />
                   ))}
                 </View>
@@ -111,7 +111,7 @@ export function ProviderFormFields({
           </Text>
           <View className="mb-4 flex-row flex-wrap gap-2">
             {selectedProvider.capabilities?.llm && (
-              <View className="flex-row items-center">
+              <View className="flex-row items-center flex-1">
                 <Ionicons
                   name="chatbubble"
                   size={16}
@@ -121,7 +121,7 @@ export function ProviderFormFields({
               </View>
             )}
             {selectedProvider.capabilities?.tts && (
-              <View className="flex-row items-center">
+              <View className="flex-row items-center flex-1">
                 <Ionicons
                   name="volume-high"
                   size={16}
@@ -131,7 +131,7 @@ export function ProviderFormFields({
               </View>
             )}
             {selectedProvider.capabilities?.stt && (
-              <View className="flex-row items-center">
+              <View className="flex-row items-center flex-1">
                 <Ionicons
                   name="mic"
                   size={16}
@@ -141,7 +141,7 @@ export function ProviderFormFields({
               </View>
             )}
             {selectedProvider.capabilities?.image && (
-              <View className="flex-row items-center">
+              <View className="flex-row items-center flex-1">
                 <Ionicons
                   name="image"
                   size={16}
@@ -151,7 +151,7 @@ export function ProviderFormFields({
               </View>
             )}
             {selectedProvider.capabilities?.search && (
-              <View className="flex-row items-center">
+              <View className="flex-row items-center flex-1">
                 <Ionicons
                   name="search"
                   size={16}
@@ -161,7 +161,7 @@ export function ProviderFormFields({
               </View>
             )}
             {selectedProvider.capabilities?.embedding && (
-              <View className="flex-row items-center">
+              <View className="flex-row items-center flex-1">
                 <Ionicons
                   name="barcode"
                   size={16}

@@ -99,9 +99,9 @@ export function EndpointModal({
       <View className="flex-row space-x-4 mt-6 m-2">
         <TouchableOpacity
           onPress={onClose}
-          className="flex-1 p-4 rounded-lg bg-gray-200 dark:bg-gray-700"
+          className="flex-1 p-4 rounded-lg bg-background mr-2"
         >
-          <Text className="text-center text-gray-800 dark:text-gray-200">
+          <Text className="text-center text-text">
             Cancel
           </Text>
         </TouchableOpacity>
