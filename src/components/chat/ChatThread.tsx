@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { View, ScrollView, Platform, TouchableOpacity, Text } from 'react-native';
+import { View, ScrollView, Platform, TouchableOpacity, Text, FlatList } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
 import { ModelSelector } from './ModelSelector';
@@ -31,7 +31,7 @@ import { useWindowDimensions } from 'react-native';
 
 
 export const ChatThread: React.FC = () => {
-  const flatListRef = useRef<FlashList<any>>(null);
+  const flatListRef = useRef<FlatList<any>>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
   const [currentThread, setCurrentThread] = useAtom(currentThreadAtom);
   const threads = useAtomValue(threadsAtom);
@@ -70,7 +70,7 @@ export const ChatThread: React.FC = () => {
 
     // WEIRD SHIT: need to change the content height to trigger a re-render of the list that fixes the scroll bug - but hey - it works!
     setTimeout(() => {
-      setContentHeight(51);
+      //setContentHeight(51);
     }, 200);
   }, [currentThread.id]);
 
@@ -199,11 +199,10 @@ export const ChatThread: React.FC = () => {
         />
       </View>
       
-      <FlashList
+      <FlatList
         ref={flatListRef}
         data={messages}
         renderItem={renderItem}
-        estimatedItemSize={contentHeight}
         onContentSizeChange={() => {
           if (messages.length > 0) {
             debouncedScrollToEnd();
