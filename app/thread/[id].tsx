@@ -1,10 +1,11 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { ChatThread } from '@/src/components/chat/ChatThread';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, Platform } from 'react-native';
 import { useAtomValue } from 'jotai';
 import { threadsAtom } from '@/src/hooks/atoms';
 import { useEffect, useLayoutEffect } from 'react';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ThreadScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -13,11 +14,11 @@ export default function ThreadScreen() {
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
-    // Set the header title based on the current thread
+    const isMobile = Platform.OS !== 'web' || window.innerWidth < 768;
     navigation.setOptions({
-      headerTitle: currentThread ? currentThread.title : 'Thread'
+      headerShown: !isMobile
     });
-  }, [navigation, currentThread]);
+  }, [navigation]);
 
   useEffect(() => {
     if (!currentThread) {
@@ -26,8 +27,10 @@ export default function ThreadScreen() {
   }, [id, currentThread]);
 
   return (
-    <View className="flex-1">
-      <ChatThread />
-    </View>
+    <SafeAreaView className="flex-1 bg-background">
+        <View className="flex-1">
+            <ChatThread />
+        </View>
+    </SafeAreaView>
   );
 }
