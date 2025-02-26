@@ -194,7 +194,7 @@ export const ChatThread: React.FC = () => {
         ref={flatListRef}
         data={messages}
         renderItem={renderItem}
-        estimatedItemSize={400}
+        estimatedItemSize={50}
         onContentSizeChange={() => {
           if (messages.length > 0) {
             debouncedScrollToEnd();
@@ -206,7 +206,7 @@ export const ChatThread: React.FC = () => {
           autoscrollToTopThreshold: 10
         }}
         className="flex-1 -mt-4"
-        contentContainerStyle={{ padding: 16, paddingBottom: 50, paddingTop: 100 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 50, paddingTop: 50 }}
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center p-4">
             {/* Optional: Add an empty state message */}
