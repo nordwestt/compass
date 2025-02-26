@@ -47,6 +47,8 @@ export const ChatThread: React.FC = () => {
 
   const [previewCode, setPreviewCode] = useAtom(previewCodeAtom);
 
+  const [contentHeight, setContentHeight] = useState(50);
+
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width >= 768;
 
@@ -61,8 +63,15 @@ export const ChatThread: React.FC = () => {
     if (previousThreadId.current !== currentThread.id) {
       
       previousThreadId.current = currentThread.id;
+
       setIsGenerating(false);
     }
+
+
+    // WEIRD SHIT: need to change the content height to trigger a re-render of the list that fixes the scroll bug - but hey - it works!
+    setTimeout(() => {
+      setContentHeight(51);
+    }, 200);
   }, [currentThread.id]);
 
 
@@ -194,7 +203,7 @@ export const ChatThread: React.FC = () => {
         ref={flatListRef}
         data={messages}
         renderItem={renderItem}
-        estimatedItemSize={50}
+        estimatedItemSize={contentHeight}
         onContentSizeChange={() => {
           if (messages.length > 0) {
             debouncedScrollToEnd();
