@@ -199,7 +199,18 @@ export const generatedImagesAtom = atomWithAsyncStorage<GeneratedImage[]>('gener
 
 export const selectedImageModelAtom = atomWithAsyncStorage<Model | undefined>('selectedImageModel', undefined);
 
-export const proxyUrlAtom = atomWithAsyncStorage<string>('proxyUrl', 'http://localhost:3001/'); //old one: 'https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/'
+const getDefaultProxyUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Check if we're running on the GitHub Pages deployment
+    if (window.location.hostname === 'nordwestt.com') {
+      return 'https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/';
+    }
+  }
+  // Default for Docker and local development
+  return 'http://localhost/proxy/';
+};
+
+export const proxyUrlAtom = atomWithAsyncStorage<string>('proxyUrl', getDefaultProxyUrl());
 
 export const previewCodeAtom = atom<{
   html?: string;
