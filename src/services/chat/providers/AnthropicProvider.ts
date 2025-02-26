@@ -36,7 +36,7 @@ export class AnthropicProvider implements ChatProvider {
     try {
       
       const anthropic = createAnthropic({
-        baseURL: model.provider.endpoint+'/v1',
+        baseURL: await getProxyUrl(model.provider.endpoint+'/v1'),
         apiKey: model.provider.apiKey,
         fetch: expoFetch as unknown as typeof globalThis.fetch
       });
@@ -135,9 +135,11 @@ export class AnthropicProvider implements ChatProvider {
     return Cache.withCache(
       `models-cache-anthropic-${this.provider.endpoint}`,
       async () => {
-        const response = await fetch(`${this.provider.endpoint}/v1/models`, {
+        const response = await fetch(await getProxyUrl(`${this.provider.endpoint}/v1/models`), {
           headers: {
-            'Authorization': `Bearer ${this.provider.apiKey}`
+            'x-api-key': `${this.provider.apiKey}`,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
           }
         });
         const data = await response.json();
