@@ -24,6 +24,7 @@ import { fetchAvailableModelsV2 } from "@/src/hooks/useModels";
 import { toastService } from "@/src/services/toastService";
 import { Dropdown } from "@/src/components/ui/Dropdown";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 const replicateModels = [
   "black-forest-labs/flux-schnell",
@@ -101,9 +102,10 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
     return (
       <TouchableOpacity
         onPress={() => router.push("/settings/providers")}
-        className="bg-primary hover:opacity-80 rounded-lg p-2 border border-border text-white"
+        className="bg-primary hover:opacity-80 rounded-lg p-2 border border-border text-white flex-row items-center"
       >
-        <Text className="text-white">Add image provider</Text>
+          <Ionicons name="add" size={16} color="white" className="mr-2" />
+          <Text className="text-white flex-1">Add image provider</Text>
       </TouchableOpacity>
     );
   }

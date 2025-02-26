@@ -39,7 +39,7 @@ export function ProviderFormFields({
 
   return (
     <View className="space-y-4">
-      <View>
+      { !formData.apiKey?.length && <View>
         <Text className="text-sm font-medium text-text mb-2">
           Provider Type
         </Text>
@@ -90,24 +90,12 @@ export function ProviderFormFields({
           </View>
         </ScrollView>
       </View>
-
-      {/* {isCustom && (
-        <View>
-          <Text className="text-sm font-medium text-text mb-2">Name</Text>
-          <TextInput
-            value={formData.name}
-            onChangeText={(value) => onChange({ name: value })}
-            className="border border-border rounded-lg p-3 bg-surface text-text"
-            placeholder="Enter name"
-          />
-        </View>
-      )} */}
+      }
 
       <View>
         <View>
           <Text className="text-sm font-medium text-text mb-2">
-            You have chosen {selectedProvider.name}. With this provider, you
-            will be able to:
+            With {selectedProvider.name}, you can:
           </Text>
           <View className="mb-4 flex-row flex-wrap gap-2">
             {selectedProvider.capabilities?.llm && (
@@ -117,7 +105,7 @@ export function ProviderFormFields({
                   size={16}
                   className="!text-secondary mr-2"
                 />
-                <Text className="text-secondary">Chat with AI models</Text>
+                <Text className="text-secondary flex-1">Chat with AI models</Text>
               </View>
             )}
             {selectedProvider.capabilities?.tts && (
@@ -127,7 +115,7 @@ export function ProviderFormFields({
                   size={16}
                   className="!text-secondary mr-2"
                 />
-                <Text className="text-secondary">Convert text to speech</Text>
+                <Text className="text-secondary flex-1">Convert text to speech</Text>
               </View>
             )}
             {selectedProvider.capabilities?.stt && (
@@ -137,7 +125,7 @@ export function ProviderFormFields({
                   size={16}
                   className="!text-secondary mr-2"
                 />
-                <Text className="text-secondary">Convert speech to text</Text>
+                <Text className="text-secondary flex-1">Convert speech to text</Text>
               </View>
             )}
             {selectedProvider.capabilities?.image && (
@@ -147,7 +135,7 @@ export function ProviderFormFields({
                   size={16}
                   className="!text-secondary mr-2"
                 />
-                <Text className="text-secondary">Generate images</Text>
+                <Text className="text-secondary flex-1">Generate images</Text>
               </View>
             )}
             {selectedProvider.capabilities?.search && (
@@ -157,7 +145,7 @@ export function ProviderFormFields({
                   size={16}
                   className="!text-secondary mr-2"
                 />
-                <Text className="text-secondary">Search the web</Text>
+                <Text className="text-secondary flex-1">Search the web</Text>
               </View>
             )}
             {selectedProvider.capabilities?.embedding && (
@@ -167,7 +155,7 @@ export function ProviderFormFields({
                   size={16}
                   className="!text-secondary mr-2"
                 />
-                <Text className="text-secondary">
+                <Text className="text-secondary flex-1">
                   Embed text (required for web search)
                 </Text>
               </View>
@@ -189,9 +177,10 @@ export function ProviderFormFields({
         <TextInput
           value={formData.apiKey}
           onChangeText={(value) => onChange({ apiKey: value })}
-          className="border border-border rounded-lg p-3 bg-surface text-text"
+          className="border border-border flex-1 h-[40px] rounded-lg px-4 bg-surface text-text"
           placeholder={`Enter API key${selectedProvider.keyRequired ? "" : ", if required"}`}
           placeholderTextColor="#9CA3AF"
+          textAlignVertical="top"
           secureTextEntry
         />
       </View>
