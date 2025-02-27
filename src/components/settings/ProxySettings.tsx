@@ -1,13 +1,15 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable } from 'react-native';
 import { useAtom } from 'jotai';
-import { proxyUrlAtom } from '@/src/hooks/atoms';
 import { toastService } from '@/src/services/toastService';
-
+import { proxyUrlAtom } from '@/src/hooks/atoms';
 export function ProxySettings() {
   const [proxyUrl, setProxyUrl] = useAtom(proxyUrlAtom);
   const [tempProxyUrl, setTempProxyUrl] = useState(proxyUrl);
+
+  useEffect(() => {
+    setTempProxyUrl(proxyUrl);
+  }, [proxyUrl]);
 
   const handleSave = () => {
     setProxyUrl(tempProxyUrl);
