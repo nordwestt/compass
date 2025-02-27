@@ -29,6 +29,7 @@ import { Dropdown } from "@/src/components/ui/Dropdown";
 import { Platform as PlatformUtils } from "@/src/utils/platform";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
 
 
 interface ModelSelectorProps {
@@ -63,23 +64,12 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     let ollamaEndpoints = await scanLocalOllama();
     if (!ollamaEndpoints.length) ollamaEndpoints = await scanNetworkOllama();
     const newProviders: Provider[] = ollamaEndpoints
-      .map(
-        (endpoint) =>
-          ({
-            endpoint,
-            id: Date.now().toString(),
-            name: "Ollama",
-            capabilities: {
-              llm: true,
-              tts: false,
-              stt: false,
-              search: false,
-            },
-          }) as Provider,
-      )
-      .filter(
-        (p) => providers.find((e) => e.endpoint === p.endpoint) === undefined,
-      );
+      .map(endpoint => ({
+        ...PREDEFINED_PROVIDERS.ollama,
+        endpoint,
+        id: Date.now().toString(),
+      }))
+      .filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
 
     if (newProviders.length > 0) {
       setProviders([...providers, ...newProviders]);

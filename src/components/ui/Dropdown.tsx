@@ -120,7 +120,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false, cla
               } hover:bg-surface`}
             >
               {child.image && (
-                <Image source={child.image as any} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
+                <Image source={{uri: child.image as any}} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
               )}
               <View className="flex-1">
                 <Text className="font-medium text-black dark:text-white">
