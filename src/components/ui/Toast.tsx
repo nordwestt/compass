@@ -112,13 +112,29 @@ export const Toast = () => {
         zIndex: 9999,
       }}
     >
-      <View className="absolute inset-0 pointer-events-none" style={{ elevation: 9999 }}>
-        <View className="p-4 pointer-events-auto">
+      <View 
+        className="absolute inset-0 pointer-events-none" 
+        style={[
+          { elevation: 9999 },
+          Platform.OS === 'web' && {
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+          }
+        ]}
+      >
+        <View 
+          className="p-4 pointer-events-auto"
+          style={Platform.OS === 'web' ? {
+            width: '30%',
+            minWidth: 300,
+            maxWidth: 400,
+            marginBottom: 60,
+            marginRight: 20,
+          } : undefined}
+        >
           {topToasts.map(toast => (
             <ToastItem key={toast.id} toast={toast} />
           ))}
-        </View>
-        <View className="absolute bottom-0 inset-x-0 p-4 pointer-events-auto">
           {bottomToasts.map(toast => (
             <ToastItem key={toast.id} toast={toast} />
           ))}
