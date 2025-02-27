@@ -127,7 +127,7 @@ export const Toast = () => {
           style={Platform.OS === 'web' ? {
             width: '30%',
             minWidth: 300,
-            maxWidth: 400,
+            maxWidth: 600,
             marginBottom: 60,
             marginRight: 20,
           } : undefined}
