@@ -4,6 +4,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Provider } from '@/src/types/core';
 import { toastService } from '@/src/services/toastService';
 import LogService from '@/utils/LogService';
+import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
+import { getProxyUrl } from '@/src/utils/proxy';
 
 interface EditOllamaProps {
   provider: Provider;
@@ -13,7 +15,7 @@ interface OllamaModel {
   name: string;
   digest: string;
   size: number;
-  modified_at: string;
+  modified_at?: string;
 }
 
 interface AvailableModel {
@@ -35,7 +37,7 @@ export function EditOllama({ provider }: EditOllamaProps) {
   const fetchLocalModels = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${provider.endpoint}/api/tags`);
+      const response = await fetch(await getProxyUrl(`${provider.endpoint}/api/tags`));
       const data = await response.json();
       if (data && Array.isArray(data.models)) {
         setLocalModels(data.models);
@@ -55,7 +57,7 @@ export function EditOllama({ provider }: EditOllamaProps) {
   const pullModel = async (modelId: string) => {
     setPulling(modelId);
     try {
-      await fetch(`${provider.endpoint}/api/pull`, {
+      await fetch(await getProxyUrl(`${provider.endpoint}/api/pull`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,6 +71,7 @@ export function EditOllama({ provider }: EditOllamaProps) {
         title: 'Model is being downloaded',
         description: `${modelId} is being downloaded in the background`
       });
+
       fetchLocalModels();
     } catch (error: any) {
       LogService.log(error, { component: 'EditOllama', function: 'pullModel' }, 'error');
@@ -83,7 +86,7 @@ export function EditOllama({ provider }: EditOllamaProps) {
 
   const deleteModel = async (modelName: string) => {
     try {
-      await fetch(`${provider.endpoint}/api/delete`, {
+      await fetch(await getProxyUrl(`${provider.endpoint}/api/delete`), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
