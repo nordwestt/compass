@@ -123,7 +123,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false, cla
                 <Image source={{uri: child.image as any}} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
               )}
               <View className="flex-1">
-                <Text className="font-medium text-black dark:text-white">
+                <Text className="font-medium text-text truncate" numberOfLines={1}>
                   {child.title}
                 </Text>
               </View>
@@ -152,7 +152,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false, cla
         {selected?.image && (
           <Image source={selected.image as any} className="!h-[32px] !w-[32px] rounded-full mr-3"/>
         )}
-        <Text className="font-medium text-black dark:text-white">
+        <Text className="font-medium text-black dark:text-white truncate" numberOfLines={1}>
           {selected?.title}
         </Text>
       </TouchableOpacity>

@@ -161,14 +161,17 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         selected={dropdownModel}
         onSelect={onModelSelect}
         children={modelList}
+        className="max-w-48 overflow-hidden"
       />
       {selectedModel.id !== defaultModel?.id && (
         <TouchableOpacity
           onPress={setCurrentModelAsDefault}
-          className="p-2 flex items-center justify-center bg-primary hover:opacity-80 rounded-lg border border-border h-12"
+          className="p-2 flex-row items-center gap-2 bg-background hover:bg-primary/20 rounded-lg border border-border h-12 shadow-sm"
         >
-          <Ionicons name="star" size={24} className="!text-yellow-500" />
-          {Platform.OS == 'web' && <Text className="text-white pt-1">Set as default model</Text>}
+          <Ionicons name="star" size={20} className="!text-primary" />
+          {Platform.OS == 'web' && (
+            <Text className="text-primary font-medium pt-1">Set default</Text>
+          )}
         </TouchableOpacity>
       )}
     </View>
