@@ -77,6 +77,13 @@ export default function SettingsScreen() {
         />
 
         <SettingItem
+          title="Data Export"
+          description="Download or backup your conversation history"
+          icon="download"
+          onPress={() => router.push('/settings/export')}
+        />
+
+        <SettingItem
           title="Help"
           description="Install and configure ollama"
           icon="help-circle"
