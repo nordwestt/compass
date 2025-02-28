@@ -1,6 +1,9 @@
-import { getDefaultStore } from 'jotai';
-import { proxyUrlAtom } from '@/src/hooks/atoms';
 import {Platform as PlatformCust} from '@/src/utils/platform';
+export let proxyUrl: string = "";
+
+export function setProxyUrl(newUrl: string) {
+  proxyUrl = newUrl;
+}
 
 export async function getProxyUrl(url: string): Promise<string> {
   // Only apply proxy for web or Tauri platforms
@@ -8,9 +11,6 @@ export async function getProxyUrl(url: string): Promise<string> {
     return url;
   }
 
-  const store = getDefaultStore();
-  const proxyUrl = await store.get(proxyUrlAtom);
-  
   // If no proxy URL is set, return original URL
   if (!proxyUrl || typeof proxyUrl !== 'string' || proxyUrl?.length == 0) {
     return url;

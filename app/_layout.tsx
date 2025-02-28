@@ -23,7 +23,7 @@ import { Platform } from '@/src/utils/platform';
 import { WelcomeIntroduction } from "@/src/components/onboarding/WelcomeIntroduction";
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-
+import { ProxyUrlSync } from "@/src/components/ProxyUrlSync";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -73,6 +73,7 @@ export default function RootLayout() {
     <GestureHandlerRootView>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
       <ThemeProvider>
+        <ProxyUrlSync />
         <View className="flex-row flex-1">
           {isDesktop && <WebSidebar className="" />}
           <Stack screenOptions={{
