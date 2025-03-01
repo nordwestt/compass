@@ -5,6 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { TextInput } from "react-native-gesture-handler";
 import { useAtom } from 'jotai';
 import { keyboardEventAtom } from '../../hooks/useKeyboardShortcuts';
+import { Ionicons } from "@expo/vector-icons";
 
 export interface DropdownElement {
     title: string;
@@ -155,6 +156,9 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false, cla
         <Text className="font-medium text-black dark:text-white truncate" numberOfLines={1}>
           {selected?.title}
         </Text>
+        <View className="ml-auto">
+          <Ionicons name={isOpen ? "chevron-back" : "chevron-down"} size={24} className="text-text" />
+        </View>
       </TouchableOpacity>
       {isOpen && <View className="z-200 absolute mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg">
         {scrollView()}
