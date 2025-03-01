@@ -69,11 +69,6 @@ export const ChatThread: React.FC = () => {
       setIsGenerating(false);
     }
 
-
-    // WEIRD SHIT: need to change the content height to trigger a re-render of the list that fixes the scroll bug - but hey - it works!
-    setTimeout(() => {
-      //setContentHeight(51);
-    }, 200);
   }, [currentThread.id]);
 
 
@@ -196,7 +191,14 @@ export const ChatThread: React.FC = () => {
 
     <View className="flex-1 bg-background">
       <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
+      <CharacterSelector
+          selectedPrompt={currentThread.character}
+          onSelectPrompt={handleSelectPrompt}
+          className="w-40 overflow-hidden"
+        />
         <View className="flex-row items-center gap-2">
+        
+          
           {currentThread?.selectedModel && (
             <ModelSelector 
               selectedModel={currentThread.selectedModel}
@@ -211,11 +213,7 @@ export const ChatThread: React.FC = () => {
             />
           )}
         </View>
-        <CharacterSelector
-          selectedPrompt={currentThread.character}
-          onSelectPrompt={handleSelectPrompt}
-          className="w-40 overflow-hidden"
-        />
+        
       </View>
       
       <FlatList

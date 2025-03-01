@@ -19,9 +19,10 @@ interface DropdownProps {
     onSelect: (child: DropdownElement) => void;
     showSearch?: boolean;
     className?: string;
+    position?: "left" | "right";
 }
 
-export const Dropdown = ({ children, selected, onSelect, showSearch = false, className }: DropdownProps) => {
+export const Dropdown = ({ children, selected, onSelect, showSearch = false, className, position = "left" }: DropdownProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -137,14 +138,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false, cla
   return ( 
   
   <View>
-    <TouchableOpacity onBlur={() => {
-      if(isOpen) {
-        console.log("isOpen", isOpen)
-        setTimeout(() => {
-          //setIsOpen(false)
-        }, 200)
-      }
-    }}
+    <TouchableOpacity 
         onPress={() => {
           setIsOpen(!isOpen)
         }}
@@ -160,7 +154,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false, cla
           <Ionicons name={isOpen ? "chevron-back" : "chevron-down"} size={24} className="text-text" />
         </View>
       </TouchableOpacity>
-      {isOpen && <View className="z-200 absolute mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg">
+      {isOpen && <View className={`z-200 ${position === "left" ? "" : "right-0"} absolute mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg`}>
         {scrollView()}
       </View>}
       

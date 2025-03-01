@@ -162,6 +162,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         onSelect={onModelSelect}
         children={modelList}
         className="max-w-48 overflow-hidden"
+        position="right"
       />
       {selectedModel.id !== defaultModel?.id && (
         <TouchableOpacity
