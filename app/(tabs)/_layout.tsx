@@ -12,18 +12,21 @@ import { rawThemes } from '@/constants/themes';
 import { currentIndexAtom } from '@/src/hooks/atoms';
 import { useAtom } from 'jotai';
 import ImagesRoute from './images';
+import DocumentsRoute from './documents';
 //import { useThemeValue } from '@/constants/themes';
 const renderScene = SceneMap({
   index: IndexRoute,
   characters: CharactersRoute,
   images: ImagesRoute,
   settings: SettingsRoute,
+  documents: DocumentsRoute,
 });
 
 export const routes = [
   { key: 'index', title: 'Chat', icon: 'chatbubble' },
   { key: 'characters', title: 'Characters', icon: 'people' },
   { key: 'images', title: 'Images', icon: 'image' },
+  { key: 'documents', title: 'Documents', icon: 'document-text' },
   { key: 'settings', title: 'Settings', icon: 'cog' },
 ];
 
@@ -61,7 +64,7 @@ export default function TabLayout() {
   );
 
   if (isDesktop) {
-    const CurrentScene = [IndexRoute, CharactersRoute, ImagesRoute, SettingsRoute][index];
+    const CurrentScene = [IndexRoute, CharactersRoute, ImagesRoute, DocumentsRoute, SettingsRoute][index];
     return (
       <CurrentScene />
     );

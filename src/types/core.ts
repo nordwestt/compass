@@ -53,3 +53,13 @@ export interface Provider {
   keyRequired?: boolean;
   signupUrl?: string;
 }
+
+export interface Document {
+  id: string;
+  name: string;
+  path: string;
+  pages: number;
+  type: 'pdf';
+  chunks?: string[];
+  embeddings?: number[][];
+}
