@@ -95,18 +95,21 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
     setDropdownModell(selectedModel);
   }, [models, selectedModel?.id, defaultModel, onSetModel]);
 
-  if (!providers.length)
-    return <Text className="text-gray-500">No providers configured</Text>;
+  // if (!providers.length)
+  //   return <Text className="text-gray-500">No providers configured</Text>;
 
   if (!models.length) {
     return (
+      <View className="flex-1 justify-center items-center mx-auto my-auto">
       <TouchableOpacity
         onPress={() => router.push("/settings/providers")}
-        className="bg-primary hover:opacity-80 rounded-lg p-2 border border-border text-white flex-row items-center"
+        className="bg-primary h-12 hover:opacity-80 rounded-lg p-2 border border-border text-white flex-row items-center"
       >
           <Ionicons name="add" size={16} color="white" className="mr-2" />
           <Text className="text-white flex-1">Add image provider</Text>
       </TouchableOpacity>
+      <Text className="text-gray-500 mt-2">You have no image providers configured</Text>
+      </View>
     );
   }
 
