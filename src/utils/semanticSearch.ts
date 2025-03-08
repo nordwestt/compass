@@ -10,7 +10,7 @@ interface SearchResult {
     similarity: number;
 }
   
-  function chunkText(text: string, maxChunkSize: number = 512): string[] {
+  export function chunkText(text: string, maxChunkSize: number = 512): string[] {
     // Split into sentences (basic implementation)
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
     const chunks: string[] = [];

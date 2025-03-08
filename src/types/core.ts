@@ -1,9 +1,18 @@
+export interface ThreadMetadata {
+  documentId?: string;
+  documentName?: string;
+  webContent?: string[];
+  urls?: string[];
+  [key: string]: any; // Allow for future extensibility
+}
+
 export interface Thread {
   id: string;
   title: string;
   messages: ChatMessage[];
   selectedModel: Model;
   character: Character;
+  metadata?: ThreadMetadata;
 }
 
 export interface ChatMessage {
