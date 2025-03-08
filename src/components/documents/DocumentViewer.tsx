@@ -1,6 +1,11 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Markdown from 'react-native-markdown-display';
+import { Text } from 'react-native';
+import { useColorScheme } from 'nativewind';
+import { useAtomValue } from 'jotai';
+import { fontPreferencesAtom } from '@/src/hooks/atoms';
 
 interface DocumentViewerProps {
   content: string[];
@@ -13,6 +18,33 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   title,
   onClose,
 }) => {
+  const { colorScheme } = useColorScheme();
+  const preferences = useAtomValue(fontPreferencesAtom);
+  const isDark = colorScheme === 'dark';
+
+  const markdownStyles = {
+    body: {
+      color: isDark ? '#fff' : '#1f2937',
+      fontFamily: preferences.fontFamily,
+      fontSize: preferences.fontSize,
+      lineHeight: preferences.lineHeight,
+      letterSpacing: preferences.letterSpacing
+    },
+    heading1: {
+      fontSize: preferences.fontSize * 1.5,
+      fontWeight: 'bold',
+      marginVertical: 10,
+    },
+    heading2: {
+      fontSize: preferences.fontSize * 1.3,
+      fontWeight: 'bold',
+      marginVertical: 8,
+    },
+    list_item: {
+      marginVertical: 4,
+    },
+  };
+
   return (
     <View className="flex-1 bg-background rounded-lg p-4">
       <View className="flex-row justify-between items-center mb-4">
@@ -27,9 +59,11 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
       
       <ScrollView className="flex-1 bg-surface rounded-lg p-4">
         {content.map((chunk, index) => (
-          <Text key={index} className="text-text mb-4 leading-6">
-            {chunk}
-          </Text>
+          <View key={index} className="mb-4">
+            <Markdown style={markdownStyles}>
+              {chunk}
+            </Markdown>
+          </View>
         ))}
       </ScrollView>
     </View>

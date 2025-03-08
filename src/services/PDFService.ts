@@ -39,14 +39,44 @@ export class PDFService {
         for (let i = 1; i <= numPages; i++) {
           const page = await pdf.getPage(i);
           const textContent = await page.getTextContent();
-          const pageText = textContent.items
-            .map((item: any) => item.str)
-            .join(' ');
+          
+          // Process text content with formatting
+          let pageText = '';
+          let currentY: number | null = null;
+          let isInList = false;
+
+          for (const item of textContent.items) {
+            const textItem = item as any;
+            
+            // Check for new paragraph based on Y position change
+            if (currentY !== null && Math.abs(textItem.transform[5] - currentY) > 12) {
+              pageText += '\n\n';
+            }
+            
+            // Check for bold text (fontName usually contains 'Bold' for bold text)
+            if (textItem.fontName?.toLowerCase().includes('bold')) {
+              pageText += `**${textItem.str}**`;
+            } 
+            // Check for potential list items
+            else if (textItem.str.trim().match(/^[•\-\*]\s/)) {
+              if (!isInList) pageText += '\n';
+              pageText += textItem.str;
+              isInList = true;
+            }
+            // Regular text
+            else {
+              pageText += textItem.str;
+              isInList = false;
+            }
+            
+            currentY = textItem.transform[5];
+          }
+          
           fullText += pageText + '\n\n';
         }
 
-        // Split text into chunks for better context handling
-        const chunks = chunkText(fullText, 1000); // Split into ~1000 character chunks
+        // Split into chunks while preserving markdown
+        const chunks = chunkText(fullText, 1000);
 
         return {
           ...doc,
