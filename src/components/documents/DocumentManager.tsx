@@ -10,12 +10,14 @@ import { toastService } from '@/src/services/toastService';
 import { createDefaultThread } from '@/src/hooks/atoms';
 import { router } from 'expo-router';
 import { Platform } from 'react-native';
+import { DocumentViewer } from './DocumentViewer';
 
 export const DocumentManager: React.FC = () => {
   const [documents, setDocuments] = useAtom(documentsAtom);
   const [isUploading, setIsUploading] = useState(false);
   const [, setCurrentThread] = useAtom(currentThreadAtom);
   const [, dispatchThread] = useAtom(threadActionsAtom);
+  const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
 
   const handleDocumentUpload = async (doc: Document) => {
     try {
@@ -77,39 +79,59 @@ export const DocumentManager: React.FC = () => {
         <Text className="text-text font-medium">{doc.name}</Text>
         <Text className="text-secondary text-sm">{doc.pages} pages</Text>
       </View>
-      <TouchableOpacity 
-        className="p-2 bg-primary rounded-lg"
-        onPress={() => startDocumentChat(doc)}
-      >
-        <Ionicons name="chatbubble" size={20} className="!text-white" />
-      </TouchableOpacity>
+      <View className="flex-row gap-2">
+        <TouchableOpacity 
+          className="p-2 bg-surface border border-primary rounded-lg"
+          onPress={() => setSelectedDoc(doc)}
+        >
+          <Ionicons name="eye" size={20} className="!text-primary" />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          className="p-2 bg-primary rounded-lg"
+          onPress={() => startDocumentChat(doc)}
+        >
+          <Ionicons name="chatbubble" size={20} className="!text-white" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
   return (
-    <View className="flex-1">
-      <View className="flex-row justify-between items-center mb-4">
-        <Text className="text-2xl font-bold text-text">Documents</Text>
-        <DocumentUploader 
-          onUpload={handleDocumentUpload}
-          isUploading={isUploading}
-          setIsUploading={setIsUploading}
+    <View className="flex-1 flex-row">
+      <View className={`${selectedDoc ? 'w-1/2' : 'flex-1'}`}>
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-2xl font-bold text-text">Documents</Text>
+          <DocumentUploader 
+            onUpload={handleDocumentUpload}
+            isUploading={isUploading}
+            setIsUploading={setIsUploading}
+          />
+        </View>
+
+        <FlatList
+          data={documents}
+          renderItem={renderDocument}
+          keyExtractor={doc => doc.id}
+          className="flex-1"
+          ListEmptyComponent={
+            <View className="flex-1 items-center justify-center p-8">
+              <Text className="text-secondary text-center">
+                No documents yet. Upload a PDF to get started.
+              </Text>
+            </View>
+          }
         />
       </View>
 
-      <FlatList
-        data={documents}
-        renderItem={renderDocument}
-        keyExtractor={doc => doc.id}
-        className="flex-1"
-        ListEmptyComponent={
-          <View className="flex-1 items-center justify-center p-8">
-            <Text className="text-secondary text-center">
-              No documents yet. Upload a PDF to get started.
-            </Text>
-          </View>
-        }
-      />
+      {selectedDoc && (
+        <View className="w-1/2 pl-4">
+          <DocumentViewer
+            content={selectedDoc.chunks || []}
+            title={selectedDoc.name}
+            onClose={() => setSelectedDoc(null)}
+          />
+        </View>
+      )}
     </View>
   );
 }; 
