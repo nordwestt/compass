@@ -40,7 +40,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   };
 
   const saveCharacter = async () => {
-    if (!character?.name.trim() || !character?.content.trim()) return;
+    if (!character?.name.trim()) return;
 
     try {
       let updatedPrompts: Character[];
