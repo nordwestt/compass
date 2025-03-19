@@ -112,7 +112,7 @@ export const DocumentManager: React.FC = () => {
           data={documents}
           renderItem={renderDocument}
           keyExtractor={doc => doc.id}
-          className="flex-1"
+          className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 gap-2"
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center p-8">
               <Text className="text-secondary text-center">

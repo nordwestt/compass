@@ -75,7 +75,29 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
       <View className="flex-row justify-between items-center mb-4">
         <Text className="text-xl font-semibold text-text">{title}</Text>
         <View className="flex-row gap-2">
+        <View className="flex-row bg-background rounded-full">
           <TouchableOpacity 
+            onPress={() => setShowPdf(true)}
+            className={`px-3 py-1 rounded-full hover:opacity-70 ${showPdf ? 'bg-primary' : 'bg-transparent'}`}
+          >
+            <Ionicons 
+              name={"document"} 
+              size={24} 
+              className={`${showPdf ? 'text-white' : 'text-text'}`} 
+            />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => setShowPdf(false)}
+            className={`px-3 py-1 rounded-full hover:opacity-70 ${!showPdf ? 'bg-primary' : 'bg-transparent'}`}
+          >
+            <Ionicons 
+              name={"document-text"} 
+              size={24} 
+              className={`${!showPdf ? 'text-white' : 'text-text'}`} 
+            />
+          </TouchableOpacity>
+        </View>
+          {/* <TouchableOpacity 
             onPress={() => setShowPdf(!showPdf)}
             className="p-2 hover:bg-surface rounded-full"
           >
@@ -84,7 +106,7 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
               size={24} 
               className="text-text" 
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity 
             onPress={onClose}
             className="p-2 hover:bg-surface rounded-full"
