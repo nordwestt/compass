@@ -71,7 +71,7 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   };
 
   return (
-    <View className="flex-1 bg-background rounded-lg p-4">
+    <View className="flex-1 bg-surface rounded-lg p-4 shadow-lg">
       <View className="flex-row justify-between items-center mb-4">
         <Text className="text-xl font-semibold text-text">{title}</Text>
         <View className="flex-row gap-2">
