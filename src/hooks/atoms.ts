@@ -221,4 +221,4 @@ export const previewCodeAtom = atom<{
 // Add this with the other atoms
 export const hasSeenOnboardingAtom = atomWithAsyncStorage<boolean>('hasSeenOnboarding', false);
 
-export const documentsAtom = atom<Document[]>([]);
+export const documentsAtom = atomWithAsyncStorage<Document[]>('documents', []);

@@ -4,6 +4,7 @@ import { ChatProviderFactory } from "../services/chat/ChatProviderFactory";
 import { Thread } from "../types/core";
 import { ChatMessage } from "../types/core";
 import { Character } from "../types/core";
+import { Document } from "../types/core";
 import { searchRelevantPassages } from "../utils/semanticSearch";
 import { toastService } from "../services/toastService";
 import { fetchSiteText } from "../utils/siteFetcher";
@@ -151,6 +152,49 @@ export const firstMessageTransform: MessageTransform = {
         description: "The AI service may be experiencing issues. Please try again later."
       });
       LogService.log(error, { component: 'firstMessageTransform', function: 'transform' }, 'error');
+    }
+
+    return ctx;
+  }
+};
+
+export const documentContextTransform: MessageTransform = {
+  name: 'documentContext',
+  transform: async (ctx: MessageContext): Promise<MessageContext> => {
+    const character = ctx.context.characterToUse;
+    
+    if (!character.documentIds?.length) return ctx;
+
+    const documents = ctx.metadata.documents || [];
+    const relevantDocs = documents.filter((doc: Document) => 
+      character.documentIds?.includes(doc.id)
+    );
+
+    console.log("enter documentContextTransform",character.documentIds, documents);
+
+    if (!relevantDocs.length) return ctx;
+
+    const allText = relevantDocs.map((doc: Document) => doc.chunks?.join('\n') || '').join('\n');
+    
+    const relevantPassages = await searchRelevantPassages(
+      ctx.message,
+      allText,
+      ctx.provider,
+      {
+        maxChunkSize: 512,
+        minSimilarity: 0.3,
+        maxResults: 3
+      }
+    );
+
+    console.log("relevantPassages",relevantPassages);
+
+    if (relevantPassages.length > 0) {
+      ctx.context.messagesToSend.push({
+        content: `Relevant document context:\n${relevantPassages.map(p => p.text).join('\n')}`,
+        isSystem: true,
+        isUser: false
+      });
     }
 
     return ctx;

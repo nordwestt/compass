@@ -23,7 +23,7 @@ export const DocumentManager: React.FC = () => {
     try {
       // Parse PDF and extract text
       const parsedDoc = await PDFService.parsePDF(doc);
-      setDocuments(prev => [...prev, parsedDoc]);
+      setDocuments([...documents, parsedDoc]);
       
       toastService.success({
         title: 'Document processed',

@@ -1,5 +1,5 @@
 import { getDefaultStore, useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { currentThreadAtom, threadActionsAtom, ThreadAction, searchEnabledAtom } from './atoms';
+import { currentThreadAtom, threadActionsAtom, ThreadAction, searchEnabledAtom, documentsAtom } from './atoms';
 import { useRef } from 'react';
 import { MentionedCharacter } from '@/src/components/chat/ChatInput';
 import { useTTS } from './useTTS';
@@ -7,14 +7,15 @@ import { CharacterContextManager } from '@/src/services/chat/CharacterContextMan
 import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
-import { Character, ChatMessage, Thread } from '@/src/types/core';
+import { Character, ChatMessage, Thread, Document } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
-import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform, searchTransform, threadUpdateTransform, firstMessageTransform } from './pipelines';
+import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform, searchTransform, threadUpdateTransform, firstMessageTransform, documentContextTransform  } from './pipelines';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
+  const documents = useAtomValue(documentsAtom);
   const [searchEnabled] = useAtom(searchEnabledAtom);
   const abortController = useRef<AbortController | null>(null);
   const { search } = useSearch();
@@ -33,11 +34,13 @@ export function useChat() {
 
 
   const pipeline = new MessageTransformPipeline()
+    .addTransform(documentContextTransform)  
     .addTransform(urlContentTransform)
     .addTransform(relevantPassagesTransform)
     .addTransform(searchTransform)
     .addTransform(threadUpdateTransform)
-    .addTransform(firstMessageTransform);
+    .addTransform(firstMessageTransform)
+    
 
   const handleSend = async (messages: ChatMessage[], message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
@@ -56,6 +59,7 @@ export function useChat() {
         searchEnabled,
         searchFunction: search,
         dispatchThread,
+        documents: documents.filter((doc: Document) => currentThread.character.documentIds?.includes(doc.id))
       }
     };
 

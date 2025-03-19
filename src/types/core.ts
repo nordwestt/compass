@@ -32,8 +32,9 @@ export interface Character {
   id: string;
   name: string;
   content: string;
-  image?: any | string;
+  image?: string;
   icon?: string;
+  documentIds?: string[];
   voice?: Voice;
 }
 

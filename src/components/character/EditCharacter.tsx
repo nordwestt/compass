@@ -11,6 +11,7 @@ import { ImagePickerButton } from '@/src/components/image/ImagePickerButton';
 import { useEffect } from 'react';
 import { toastService } from '@/src/services/toastService';
 import { IconSelector } from '@/src/components/character/IconSelector';
+import { DocumentSelector } from './DocumentSelector';
 
 
 interface EditCharacterProps {  
@@ -24,6 +25,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   const [character, setCharacter] = useState<Character | null>(null);
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);
+  const [selectedDocIds, setSelectedDocIds] = useState<string[]>([]);
+
 
   useEffect(() => {
     let chara = id 
@@ -33,6 +36,20 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     setCharacter(chara as Character);
     setUseIcon(!!chara?.icon);
   }, [id]);
+
+  useEffect(() => {
+    if (character?.documentIds) {
+      setSelectedDocIds(character.documentIds);
+    }
+  }, [character]);
+  
+  const handleDocumentToggle = (docId: string) => {
+    setSelectedDocIds(prev => 
+      prev.includes(docId) 
+        ? prev.filter(id => id !== docId)
+        : [...prev, docId]
+    );
+  };
 
 
   const handleImageSelected = (imageUri: string) => {
@@ -52,7 +69,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             name: character?.name || '', 
             content: character?.content || '',
             image: useIcon ? undefined : (character?.image || p.image),
-            icon: useIcon ? character?.icon : undefined
+            icon: useIcon ? character?.icon : undefined,
+            documentIds: selectedDocIds
           } : p
         );
       } else {
@@ -62,7 +80,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           name: character?.name || '',
           content: character?.content || '',
           image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
-          icon: useIcon ? character?.icon : undefined
+          icon: useIcon ? character?.icon : undefined,
+          documentIds: selectedDocIds
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
@@ -160,6 +179,10 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
               placeholderTextColor="#9CA3AF"
             />
           </View>
+          <DocumentSelector
+            selectedDocIds={selectedDocIds}
+            onSelectDoc={handleDocumentToggle}
+          />
         </View>
       </ScrollView>
 
