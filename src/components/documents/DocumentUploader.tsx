@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Platform, View } from 'react-native';
+import { TouchableOpacity, Platform, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { Document } from '@/src/types/core';
@@ -93,6 +93,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
         size={24} 
         className="!text-white" 
       />
+      <Text className="text-white">Upload</Text>
     </TouchableOpacity>
   );
 }; 

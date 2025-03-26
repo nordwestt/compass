@@ -106,24 +106,30 @@ export const DocumentManager: React.FC = () => {
             Documents
             </Text>
           </View>
-          <DocumentUploader 
+          {documents.length > 0 && <DocumentUploader 
             onUpload={handleDocumentUpload}
             isUploading={isUploading}
             setIsUploading={setIsUploading}
-          />
+          />}
         </View>
 
         <FlatList
           data={documents}
           renderItem={renderDocument}
           keyExtractor={doc => doc.id}
-          className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 gap-2"
+          className={documents.length > 0 ? 
+            "flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 gap-2" : 
+            "flex-1"}
+          contentContainerStyle={{ flex: 1 }}
           ListEmptyComponent={
-            <View className="flex-1 items-center justify-center p-8">
-              <Text className="text-secondary text-center">
-                No documents yet. Upload a PDF to get started.
-              </Text>
-            </View>
+            <View className="flex-1 justify-center items-center mx-auto my-auto">
+      <DocumentUploader 
+            onUpload={handleDocumentUpload}
+            isUploading={isUploading}
+            setIsUploading={setIsUploading}
+          />
+      <Text className="text-gray-500 mt-2">You have no documents. Upload a document to get started.</Text>
+      </View>
           }
         />
       </View>
