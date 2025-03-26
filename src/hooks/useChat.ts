@@ -65,7 +65,8 @@ export function useChat() {
 
     try {
       const transformedContext = await pipeline.process(initialContext);
-      
+
+      transformedContext.context.messagesToSend.push(transformedContext.context.assistantPlaceholder);
       
       const response = await provider.sendMessage(
         transformedContext.context.useMention ? 

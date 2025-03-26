@@ -18,11 +18,10 @@ export class CharacterContextManager implements ChatContextManager {
       };
       messagesToSend = [
         { content: contextMessage, isUser: false,isSystem: true },
-        newMessage,
-        assistantPlaceholder
+        newMessage
       ];
     } else {
-      messagesToSend = [newMessage, assistantPlaceholder];
+      messagesToSend = [newMessage];
     }
     
     let historyToSend: ChatMessage[] = [];
