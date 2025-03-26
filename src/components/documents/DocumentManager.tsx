@@ -100,7 +100,12 @@ export const DocumentManager: React.FC = () => {
     <View className="flex-1 flex-row">
       <View className={`${selectedDoc ? 'w-1/2' : 'flex-1'}`}>
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-2xl font-bold text-text">Documents</Text>
+          <View className="flex-row items-center p-4">
+            <Ionicons name="document-text" size={32} className="!text-primary mr-2 pb-2" />
+            <Text className="text-2xl font-bold text-primary">
+            Documents
+            </Text>
+          </View>
           <DocumentUploader 
             onUpload={handleDocumentUpload}
             isUploading={isUploading}
