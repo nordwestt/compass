@@ -85,8 +85,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
-      await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
-      setCustomPrompts(updatedPrompts);
+      //await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
+      await setCustomPrompts(updatedPrompts);
       onSave();
       toastService.success({ title: 'Character saved', description: 'Character saved successfully' });
     } catch (error) {
@@ -97,8 +97,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
 
   const deleteCharacter = async () => {
     const updatedPrompts = customPrompts.filter(p => p.id !== id);
-    await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
-    setCustomPrompts(updatedPrompts);
+    //await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
+    await setCustomPrompts(updatedPrompts);
     toastService.success({ title: 'Character deleted', description: 'Character deleted successfully' });
     onSave();
   };
