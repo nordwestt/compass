@@ -62,6 +62,7 @@ const ChatThreads: React.FC = () => {
       id: '',
       provider: { source: 'ollama', endpoint: '', apiKey: '' }
     };
+
     
     dispatchThread({ type: 'add', payload: newThread });
     

@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { customPromptsAtom } from '@/src/hooks/atoms';
+import { customPromptsAtom, saveCustomPrompts } from '@/src/hooks/atoms';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Character } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -25,7 +25,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   const [character, setCharacter] = useState<Character | null>(null);
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);
-
+  const dispatchCharacters = useSetAtom(saveCustomPrompts);
 
   useEffect(() => {
     let chara = id 
@@ -77,7 +77,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
       }
       //await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
       console.log('updatedPrompts', updatedPrompts, character?.documentIds);
-      await setCustomPrompts(updatedPrompts);
+      await dispatchCharacters(updatedPrompts);
+      //await setCustomPrompts(updatedPrompts);
       onSave();
       toastService.success({ title: 'Character saved', description: 'Character saved successfully' });
     } catch (error) {
