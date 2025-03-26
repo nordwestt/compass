@@ -162,6 +162,7 @@ export const documentContextTransform: MessageTransform = {
   name: 'documentContext',
   transform: async (ctx: MessageContext): Promise<MessageContext> => {
     const character = ctx.context.characterToUse;
+    console.log("character",character);
     
     if (!character.documentIds?.length) return ctx;
 

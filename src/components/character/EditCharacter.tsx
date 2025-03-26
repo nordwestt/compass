@@ -25,7 +25,6 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   const [character, setCharacter] = useState<Character | null>(null);
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);
-  const [selectedDocIds, setSelectedDocIds] = useState<string[]>([]);
 
 
   useEffect(() => {
@@ -37,18 +36,9 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     setUseIcon(!!chara?.icon);
   }, [id]);
 
-  useEffect(() => {
-    if (character?.documentIds) {
-      setSelectedDocIds(character.documentIds);
-    }
-  }, [character]);
   
   const handleDocumentToggle = (docId: string) => {
-    setSelectedDocIds(prev => 
-      prev.includes(docId) 
-        ? prev.filter(id => id !== docId)
-        : [...prev, docId]
-    );
+    setCharacter({ ...character!, documentIds: [...(character?.documentIds || []), docId] });
   };
 
 
@@ -70,7 +60,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             content: character?.content || '',
             image: useIcon ? undefined : (character?.image || p.image),
             icon: useIcon ? character?.icon : undefined,
-            documentIds: selectedDocIds
+            documentIds: character?.documentIds || []
           } : p
         );
       } else {
@@ -81,11 +71,12 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           content: character?.content || '',
           image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
           icon: useIcon ? character?.icon : undefined,
-          documentIds: selectedDocIds
+          documentIds: character?.documentIds || []
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
       //await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
+      console.log('updatedPrompts', updatedPrompts, character?.documentIds);
       await setCustomPrompts(updatedPrompts);
       onSave();
       toastService.success({ title: 'Character saved', description: 'Character saved successfully' });
@@ -180,7 +171,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             />
           </View>
           <DocumentSelector
-            selectedDocIds={selectedDocIds}
+            selectedDocIds={character?.documentIds || []}
             onSelectDoc={handleDocumentToggle}
           />
         </View>

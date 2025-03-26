@@ -79,6 +79,7 @@ export function useChat() {
       await streamHandler.handleStream(response, transformedContext.metadata.updatedThread, dispatchThread);
 
     } catch (error: any) {
+      console.log('error', error);
       toastService.danger({
         title: 'Error sending message',
         description: error.message
