@@ -44,7 +44,10 @@ export function useChat() {
 
   const handleSend = async (messages: ChatMessage[], message: string, mentionedCharacters: MentionedCharacter[] = []) => {
     abortController.current = new AbortController();
+    currentThread.messages = messages;
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
+    
+    
 
     const provider = ChatProviderFactory.getProvider(currentThread.selectedModel.provider);
 
