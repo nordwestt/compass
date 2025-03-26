@@ -193,8 +193,8 @@ export const documentContextTransform: MessageTransform = {
     if (relevantPassages.length > 0) {
       ctx.context.messagesToSend.push({
         content: `Relevant document context:\n${relevantPassages.map(p => p.text).join('\n')}`,
-        isSystem: true,
-        isUser: false
+        isSystem: false,
+        isUser: true
       });
     }
 
