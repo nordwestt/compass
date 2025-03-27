@@ -177,7 +177,7 @@ export const documentContextTransform: MessageTransform = {
       documentIds.includes(doc.id)
     );
 
-    console.log("enter documentContextTransform",documentIds, documents);
+    console.log("we have ", documentIds, "and these are relevant", relevantDocs.map((doc: Document) => doc.id));
 
     if (!relevantDocs.length) return ctx;
 

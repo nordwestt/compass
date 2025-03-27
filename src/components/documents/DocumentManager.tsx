@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DocumentUploader } from './DocumentUploader';
 import { useAtom } from 'jotai';
-import { documentsAtom, currentThreadAtom, threadActionsAtom, customPromptsAtom } from '@/src/hooks/atoms';
+import { documentsAtom, currentThreadAtom, threadActionsAtom, customPromptsAtom, currentIndexAtom } from '@/src/hooks/atoms';
 import { Document } from '@/src/types/core';
 import { PDFService } from '@/src/services/PDFService';
 import { toastService } from '@/src/services/toastService';
@@ -20,6 +20,7 @@ export const DocumentManager: React.FC = () => {
   const [, dispatchThread] = useAtom(threadActionsAtom);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
+  const [, setCurrentIndex] = useAtom(currentIndexAtom);
 
   const handleDocumentUpload = async (doc: Document) => {
     try {
@@ -102,13 +103,6 @@ export const DocumentManager: React.FC = () => {
       // Create new thread with document context
       const newThread = createDefaultThread(`Chat: ${doc.name}`);
       
-      // Add system message with document context
-      newThread.messages.push({
-        content: `Using document: ${doc.name}`,
-        isSystem: true,
-        isUser: false
-      });
-
       // Store document reference in thread metadata
       newThread.metadata = {
         documentIds: [doc.id]
@@ -119,6 +113,8 @@ export const DocumentManager: React.FC = () => {
 
       // Navigate to chat
       if (Platform.OS === 'web' && window.innerWidth >= 768) {
+        // Set the current index to 0 (Chat tab) before navigation
+        setCurrentIndex(0);
         router.replace('/');
       } else {
         router.push(`/thread/${newThread.id}`);
