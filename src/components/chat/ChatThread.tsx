@@ -27,6 +27,7 @@ import { CodePreview } from './CodePreview';
 import { parseCodeBlocks } from '@/src/utils/codeParser';
 import { Modal } from '@/src/components/ui/Modal';
 import { useWindowDimensions } from 'react-native';
+import { toastService } from '@/src/services/toastService';
 
 
 
@@ -53,6 +54,8 @@ export const ChatThread: React.FC = () => {
   const isDesktop = Platform.OS === 'web' && width >= 768;
 
   const [userHasScrolled, setUserHasScrolled] = useState(false);
+
+  const { getCompatibleModel } = useChat();
 
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
@@ -117,9 +120,33 @@ export const ChatThread: React.FC = () => {
   };
 
   const handleSelectPrompt = (prompt: Character) => {
+    // Check if the character has model preferences
+    const compatibleModel = getCompatibleModel(prompt, providers);
+    
+    if (compatibleModel === undefined) {
+      // No compatible model found for required preferences
+      toastService.warning({
+        title: "Incompatible Character",
+        description: "This character requires specific models that aren't available."
+      });
+      return;
+    }
+    
+    // Update the thread with the new character
+    const updatedThread = { ...currentThread, character: prompt };
+    
+    // If a compatible model is found, update the model too
+    if (compatibleModel) {
+      updatedThread.selectedModel = compatibleModel;
+      toastService.info({
+        title: "Model Updated",
+        description: `Switched to ${compatibleModel.name} as recommended for this character.`
+      });
+    }
+    
     dispatchThread({
       type: 'update',
-      payload: { ...currentThread, character: prompt }
+      payload: updatedThread
     });
   };
 

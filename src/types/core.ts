@@ -27,6 +27,11 @@ export interface Model {
   provider: Provider;
 }
 
+export interface ModelPreference {
+  modelId: string;
+  level: 'preferred' | 'required';
+}
+
 export interface Character {
   id: string;
   name: string;
@@ -35,6 +40,7 @@ export interface Character {
   icon?: string;
   documentIds?: string[];
   voice?: Voice;
+  modelPreferences?: ModelPreference[];
 }
 
 export interface Voice {

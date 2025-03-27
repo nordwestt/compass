@@ -7,7 +7,7 @@ import { CharacterContextManager } from '@/src/services/chat/CharacterContextMan
 import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
-import { Character, ChatMessage, Thread, Document } from '@/src/types/core';
+import { Character, ChatMessage, Thread, Document, Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
 import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform, searchTransform, threadUpdateTransform, firstMessageTransform, documentContextTransform  } from './pipelines';
@@ -95,6 +95,35 @@ export function useChat() {
     } finally {
       abortController.current = null;
     }
+  };
+
+  const getCompatibleModel = (character: Character, availableModels: Model[]): Model | null => {
+    // If character has no model preferences, any model is compatible
+    if (!character.modelPreferences || character.modelPreferences.length === 0) {
+      return null; // Null means any model is compatible
+    }
+
+    // Check for required models first
+    const requiredPreferences = character.modelPreferences.filter(p => p.level === 'required');
+    if (requiredPreferences.length > 0) {
+      // Find the first available required model
+      for (const pref of requiredPreferences) {
+        const model = availableModels.find(m => m.id === pref.modelId);
+        if (model) return model;
+      }
+      // If we have required models but none are available, we can't use this character
+      return null; // Null means no compatible model found
+    }
+
+    // Check for preferred models
+    const preferredPreferences = character.modelPreferences.filter(p => p.level === 'preferred');
+    for (const pref of preferredPreferences) {
+      const model = availableModels.find(m => m.id === pref.modelId);
+      if (model) return model;
+    }
+
+    // If we have preferences but none are available, any model is compatible
+    return null;
   };
 
   return { handleSend, handleInterrupt };

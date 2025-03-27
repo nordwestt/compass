@@ -1,17 +1,17 @@
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useAtom, useSetAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { customPromptsAtom, saveCustomPrompts } from '@/src/hooks/atoms';
+import { customPromptsAtom, saveCustomPrompts, availableModelsAtom } from '@/src/hooks/atoms';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Character } from '@/src/types/core';
+import { Character, ModelPreference } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { ImagePickerButton } from '@/src/components/image/ImagePickerButton';
-import { useEffect } from 'react';
 import { toastService } from '@/src/services/toastService';
 import { IconSelector } from '@/src/components/character/IconSelector';
 import { DocumentSelector } from './DocumentSelector';
+import { ModelPreferenceSelector } from './ModelPreferenceSelector';
 
 
 interface EditCharacterProps {  
@@ -25,12 +25,13 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   const [character, setCharacter] = useState<Character | null>(null);
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);
+  const [availableModels] = useAtom(availableModelsAtom);
   const dispatchCharacters = useSetAtom(saveCustomPrompts);
 
   useEffect(() => {
     let chara = id 
       ? customPrompts.find(p => p.id === id) 
-      : { name: '', content: '', icon: 'person' };
+      : { name: '', content: '', icon: 'person', modelPreferences: [] };
 
     setCharacter(chara as Character);
     setUseIcon(!!chara?.icon);
@@ -53,9 +54,38 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     }
   };
 
-
   const handleImageSelected = (imageUri: string) => {
     setCharacter({ ...character!, image: imageUri });
+  };
+
+  const handleModelPreferenceAdd = (modelId: string, level: 'preferred' | 'required') => {
+    const newPreference: ModelPreference = { modelId, level };
+    const currentPreferences = character?.modelPreferences || [];
+    
+    // Check if this model already has a preference
+    const existingIndex = currentPreferences.findIndex(p => p.modelId === modelId);
+    
+    if (existingIndex >= 0) {
+      // Update existing preference
+      const updatedPreferences = [...currentPreferences];
+      updatedPreferences[existingIndex] = newPreference;
+      setCharacter({ ...character!, modelPreferences: updatedPreferences });
+    } else {
+      // Add new preference
+      setCharacter({ 
+        ...character!, 
+        modelPreferences: [...currentPreferences, newPreference] 
+      });
+    }
+  };
+
+  const handleModelPreferenceRemove = (modelId: string) => {
+    if (!character?.modelPreferences) return;
+    
+    setCharacter({
+      ...character,
+      modelPreferences: character.modelPreferences.filter(p => p.modelId !== modelId)
+    });
   };
 
   const saveCharacter = async () => {
@@ -72,7 +102,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             content: character?.content || '',
             image: useIcon ? undefined : (character?.image || p.image),
             icon: useIcon ? character?.icon : undefined,
-            documentIds: character?.documentIds || []
+            documentIds: character?.documentIds || [],
+            modelPreferences: character?.modelPreferences || []
           } : p
         );
       } else {
@@ -83,14 +114,13 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           content: character?.content || '',
           image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
           icon: useIcon ? character?.icon : undefined,
-          documentIds: character?.documentIds || []
+          documentIds: character?.documentIds || [],
+          modelPreferences: character?.modelPreferences || []
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
-      //await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
       console.log('updatedPrompts', updatedPrompts, character?.documentIds);
       await dispatchCharacters(updatedPrompts);
-      //await setCustomPrompts(updatedPrompts);
       onSave();
       toastService.success({ title: 'Character saved', description: 'Character saved successfully' });
     } catch (error) {
@@ -101,7 +131,6 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
 
   const deleteCharacter = async () => {
     const updatedPrompts = customPrompts.filter(p => p.id !== id);
-    //await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
     await setCustomPrompts(updatedPrompts);
     toastService.success({ title: 'Character deleted', description: 'Character deleted successfully' });
     onSave();
@@ -129,16 +158,6 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
                 onImageSelected={handleImageSelected}
               />
             )}
-            {/* <TouchableOpacity 
-              onPress={() => setUseIcon(!useIcon)}
-              className="absolute bottom-4 right-0 bg-primary rounded-full p-2"
-            >
-              <Ionicons 
-                name={useIcon ? 'image' : 'apps'} 
-                size={16} 
-                color="white" 
-              />
-            </TouchableOpacity> */}
           </View>
           <Text className="text-sm text-text mt-2">
             {useIcon ? 'Tap to change icon' : 'Tap to change avatar'}
@@ -183,6 +202,14 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
               placeholderTextColor="#9CA3AF"
             />
           </View>
+          
+          <ModelPreferenceSelector
+            availableModels={availableModels}
+            selectedPreferences={character?.modelPreferences || []}
+            onAddPreference={handleModelPreferenceAdd}
+            onRemovePreference={handleModelPreferenceRemove}
+          />
+          
           <DocumentSelector
             selectedDocIds={character?.documentIds || []}
             onSelectDoc={handleDocumentToggle}
