@@ -163,15 +163,18 @@ export const documentContextTransform: MessageTransform = {
   transform: async (ctx: MessageContext): Promise<MessageContext> => {
     const character = ctx.context.characterToUse;
     console.log("character",character);
+
+    let documentIds = ctx.thread.metadata?.documentIds ?? [];
+    documentIds.push(...character.documentIds ?? []);
     
-    if (!character.documentIds?.length) return ctx;
+    if (!documentIds.length) return ctx;
 
     const documents = ctx.metadata.documents || [];
     const relevantDocs = documents.filter((doc: Document) => 
-      character.documentIds?.includes(doc.id)
+      documentIds.includes(doc.id)
     );
 
-    console.log("enter documentContextTransform",character.documentIds, documents);
+    console.log("enter documentContextTransform",documentIds, documents);
 
     if (!relevantDocs.length) return ctx;
 
