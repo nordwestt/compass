@@ -37,7 +37,7 @@ interface ModelDropdownElement extends DropdownElement {
 }
 
 interface ModelSelectorProps {
-  selectedModel: Model;
+  selectedModel: Model | null;
   onModelSelect: (model: Model) => void;
   character?: Character;
   className?: string;
@@ -55,6 +55,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [models, setModels] = useAtom(availableModelsAtom);
   const [modelOptions, setModelOptions] = useState<Model[]>(models);
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
 
   useEffect(() => {
     // Check if character has a required model
@@ -65,7 +66,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         const compatibleModels = getCompatibleModels(character, models);
         setModelOptions(compatibleModels);
 
-        if(compatibleModels.length == 0){
+        if(compatibleModels.length == 0 && models.length > 0){
           setIsDisabled(true);
           toastService.danger({
             title: "No compatible model found",
@@ -84,11 +85,11 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     } else {
       setIsDisabled(false);
     }
-  }, [character, models, selectedModel.id]);
+  }, [character, models, selectedModel?.id]);
 
   useEffect(() => {
     // Update dropdown model when selected model changes
-    const model = models.find(m => m.id === selectedModel.id);
+    const model = models.find(m => m.id === selectedModel?.id);
     if (model) {
       setDropdownModel({
         id: model.id,
@@ -97,6 +98,29 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       });
     }
   }, [selectedModel, models]);
+
+  // Add effect to automatically load models when we have providers but no models
+  useEffect(() => {
+    const llmProviders = providers.filter((p) => p.capabilities?.llm);
+    if (llmProviders.length > 0 && models.length === 0 && !isLoadingModels) {
+      
+      setIsLoadingModels(true);
+      fetchAvailableModelsV2(llmProviders)
+        .then((fetchedModels) => {
+          setModels(fetchedModels);
+        })
+        .catch((error) => {
+          console.error("Error fetching models:", error);
+          toastService.danger({
+            title: "Failed to load models",
+            description: "Could not fetch models from providers"
+          });
+        })
+        .finally(() => {
+          setIsLoadingModels(false);
+        });
+    }
+  }, [providers, models.length, isLoadingModels]);
 
   const modelList: ModelDropdownElement[] = modelOptions.map(model => ({
     id: model.id,
@@ -112,11 +136,13 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   };
 
   function setCurrentModelAsDefault() {
-    setDefaultModel(selectedModel);
-    toastService.success({
-      title: "Default model set",
-      description: "The selected model will now be used for new threads",
-    });
+    if(selectedModel){
+      setDefaultModel(selectedModel);
+      toastService.success({
+        title: "Default model set",
+        description: "The selected model will now be used for new threads",
+      });
+    }
   }
 
   function scanOllamaProviders() {
@@ -129,20 +155,16 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     if (!character.modelPreferences || character.modelPreferences.length === 0) {
       return availableModels; // Null means any model is compatible
     }
-    console.log("character preferences", character.modelPreferences);
 
     // Check for required models first
     const requiredPreferences = character.modelPreferences.filter(p => p.level === 'required');
     if (requiredPreferences.length > 0) {
       // Find the first available required model
-      console.log("Available models", availableModels);
       return availableModels.filter(m => requiredPreferences.some(p => p.modelId === m.id));
     }
 
     return [];
   };
-
-  console.log("We have providers", providers);
 
   if (!providers.filter((p) => p.capabilities?.llm).length) {
     return (
@@ -164,9 +186,29 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       </View>
     );
   }
+  
 
   if (!models.length) {
-    return <Text className="text-gray-500">Loading models...</Text>;
+    return (
+      <View className="flex-row gap-2 items-center">
+        <Text className="text-gray-500">Loading models...</Text>
+        <TouchableOpacity
+          className="ml-2 p-2 rounded-lg bg-background border border-border"
+          onPress={() => {
+            setIsLoadingModels(true);
+            fetchAvailableModelsV2(providers.filter(p => p.capabilities?.llm))
+              .then(fetchedModels => {
+                setModels(fetchedModels);
+              })
+              .finally(() => {
+                setIsLoadingModels(false);
+              });
+          }}
+        >
+          <Ionicons name="refresh-outline" size={16} className="!text-text" />
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
@@ -176,12 +218,12 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         selected={dropdownModel}
         onSelect={handleModelSelect}
         children={modelList}
-        className={`max-w-48 overflow-hidden ${isDisabled ? 'opacity-70' : ''}`}
+        className={`max-w-48 overflow-hidden`}
         position="right"
       />
       
       
-      {!isDisabled && selectedModel.id !== defaultModel?.id && (
+      {!isDisabled && selectedModel?.id !== defaultModel?.id && (
         <TouchableOpacity
           onPress={setCurrentModelAsDefault}
           className="p-2 flex-row items-center gap-2 bg-background hover:bg-primary/20 rounded-lg border border-border h-12 shadow-sm"

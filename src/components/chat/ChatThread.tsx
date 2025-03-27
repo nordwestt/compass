@@ -200,13 +200,13 @@ export const ChatThread: React.FC = () => {
         <View className="flex-row items-center gap-2">
         
           
-          {currentThread?.selectedModel && (
+          
             <ModelSelector 
               selectedModel={currentThread.selectedModel}
               onModelSelect={handleSelectModel}
               character={currentThread.character}
             />
-          )}
+          
           
           {ttsEnabled && (
             <VoiceSelector
