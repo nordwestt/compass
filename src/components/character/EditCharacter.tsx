@@ -38,7 +38,19 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
 
   
   const handleDocumentToggle = (docId: string) => {
-    setCharacter({ ...character!, documentIds: [...(character?.documentIds || []), docId] });
+    if (character?.documentIds?.includes(docId)) {
+      // Remove the document if it's already selected
+      setCharacter({
+        ...character!,
+        documentIds: character.documentIds.filter(id => id !== docId)
+      });
+    } else {
+      // Add the document if it's not already selected
+      setCharacter({
+        ...character!,
+        documentIds: [...(character?.documentIds || []), docId]
+      });
+    }
   };
 
 
@@ -174,6 +186,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           <DocumentSelector
             selectedDocIds={character?.documentIds || []}
             onSelectDoc={handleDocumentToggle}
+            onRemoveDoc={handleDocumentToggle}
           />
         </View>
       </ScrollView>

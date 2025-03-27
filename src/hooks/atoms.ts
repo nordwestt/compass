@@ -238,10 +238,31 @@ export const saveCustomPrompts = atom(
     const threads = await get(threadsAtom);
     const updatedThreads = threads.map(thread => {
       const updatedCharacter = prompts.find(p => p.id === thread.character.id);
-      return updatedCharacter ? { ...thread, character: updatedCharacter } : thread;
+      
+      // If the character was updated, update the thread
+      if (updatedCharacter) {
+        // Check if the thread has document metadata that's no longer valid
+        if (thread.metadata?.documentId && 
+            updatedCharacter.documentIds && 
+            !updatedCharacter.documentIds.includes(thread.metadata.documentId)) {
+          // The document referenced in the thread is no longer associated with the character
+          // We could either remove the metadata or keep it for historical purposes
+          return { 
+            ...thread, 
+            character: updatedCharacter,
+            // Optionally add a flag to indicate the document is no longer associated
+            metadata: {
+              ...thread.metadata,
+              documentReferenceValid: false
+            }
+          };
+        }
+        
+        return { ...thread, character: updatedCharacter };
+      }
+      
+      return thread;
     });
-
-    console.log('updatedThreads', updatedThreads);
 
     // Update threads and current thread if needed
     await set(threadsAtom, updatedThreads);
@@ -250,6 +271,5 @@ export const saveCustomPrompts = atom(
     if (updatedCurrentCharacter) {
       await set(currentThreadAtom, { ...currentThread, character: updatedCurrentCharacter });
     }
-
   }
 );

@@ -7,14 +7,20 @@ import { documentsAtom } from '@/src/hooks/atoms';
 interface DocumentSelectorProps {
   selectedDocIds: string[];
   onSelectDoc: (docId: string) => void;
+  onRemoveDoc?: (docId: string) => void;
 }
 
 export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
   selectedDocIds,
   onSelectDoc,
+  onRemoveDoc,
 }) => {
   const documents = useAtomValue(documentsAtom);
   
+  // Find any selected document IDs that no longer exist in the documents list
+  const missingDocIds = selectedDocIds.filter(
+    id => !documents.some(doc => doc.id === id)
+  );
 
   return (
     <View className="mt-6">
@@ -25,7 +31,13 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
         {documents.map(doc => (
           <TouchableOpacity
             key={doc.id}
-            onPress={() => onSelectDoc(doc.id)}
+            onPress={() => {
+              if (selectedDocIds.includes(doc.id)) {
+                onRemoveDoc ? onRemoveDoc(doc.id) : onSelectDoc(doc.id);
+              } else {
+                onSelectDoc(doc.id);
+              }
+            }}
             className="flex-row items-center p-3 border-b border-border"
           >
             <Ionicons
@@ -39,7 +51,18 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
             </View>
           </TouchableOpacity>
         ))}
-        {documents.length === 0 && (
+        
+        {/* Display missing documents with warning */}
+        {missingDocIds.length > 0 && (
+          <View className="p-3 bg-yellow-100 dark:bg-yellow-900 border-b border-border">
+            <Text className="text-yellow-800 dark:text-yellow-200 font-medium mb-1">Missing Documents</Text>
+            <Text className="text-yellow-700 dark:text-yellow-300 text-sm">
+              Some referenced documents are no longer available.
+            </Text>
+          </View>
+        )}
+        
+        {documents.length === 0 && missingDocIds.length === 0 && (
           <Text className="text-secondary p-3">
             No documents available. Upload documents in the Documents section.
           </Text>
