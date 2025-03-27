@@ -51,6 +51,9 @@ export function useChat() {
 
     const provider = ChatProviderFactory.getProvider(currentThread.selectedModel.provider);
 
+    let relevantDocuments = documents.filter((doc: Document) => currentThread.character.documentIds?.includes(doc.id));
+    relevantDocuments.push(...documents.filter((doc: Document) => currentThread.metadata?.documentIds?.includes(doc.id) ?? []));
+
     const initialContext: MessageContext = {
       message,
       provider,
@@ -62,7 +65,7 @@ export function useChat() {
         searchEnabled,
         searchFunction: search,
         dispatchThread,
-        documents: documents.filter((doc: Document) => currentThread.character.documentIds?.includes(doc.id))
+        documents: relevantDocuments
       }
     };
 
