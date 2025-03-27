@@ -166,6 +166,9 @@ export const documentContextTransform: MessageTransform = {
 
     let documentIds = ctx.thread.metadata?.documentIds ?? [];
     documentIds.push(...character.documentIds ?? []);
+
+    // remove duplicates
+    documentIds = [...new Set(documentIds)];
     
     if (!documentIds.length) return ctx;
 
