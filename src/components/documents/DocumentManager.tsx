@@ -111,8 +111,7 @@ export const DocumentManager: React.FC = () => {
 
       // Store document reference in thread metadata
       newThread.metadata = {
-        documentId: doc.id,
-        documentName: doc.name
+        documentIds: [doc.id]
       };
 
       await dispatchThread({ type: 'add', payload: newThread });

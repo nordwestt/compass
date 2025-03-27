@@ -231,33 +231,20 @@ export const documentsAtom = atomWithAsyncStorage<Document[]>('documents', []);
 
 export const saveCustomPrompts = atom(
   null,
-  async (get, set, prompts: Character[]) => {
-    await set(customPromptsAtom, prompts);
+  async (get, set, characters: Character[]) => {
+    // get existing characters
+    const existingCharacters = JSON.parse(JSON.stringify(await get(customPromptsAtom)));
+
+
+    await set(customPromptsAtom, characters);
     
     // Get all threads and update any that use the modified characters
     const threads = await get(threadsAtom);
     const updatedThreads = threads.map(thread => {
-      const updatedCharacter = prompts.find(p => p.id === thread.character.id);
+      const updatedCharacter = characters.find(p => p.id === thread.character.id);
       
       // If the character was updated, update the thread
       if (updatedCharacter) {
-        // Check if the thread has document metadata that's no longer valid
-        if (thread.metadata?.documentId && 
-            updatedCharacter.documentIds && 
-            !updatedCharacter.documentIds.includes(thread.metadata.documentId)) {
-          // The document referenced in the thread is no longer associated with the character
-          // We could either remove the metadata or keep it for historical purposes
-          return { 
-            ...thread, 
-            character: updatedCharacter,
-            // Optionally add a flag to indicate the document is no longer associated
-            metadata: {
-              ...thread.metadata,
-              documentReferenceValid: false
-            }
-          };
-        }
-        
         return { ...thread, character: updatedCharacter };
       }
       
@@ -267,7 +254,7 @@ export const saveCustomPrompts = atom(
     // Update threads and current thread if needed
     await set(threadsAtom, updatedThreads);
     const currentThread = await get(currentThreadAtom);
-    const updatedCurrentCharacter = prompts.find(p => p.id === currentThread.character.id);
+    const updatedCurrentCharacter = characters.find(p => p.id === currentThread.character.id);
     if (updatedCurrentCharacter) {
       await set(currentThreadAtom, { ...currentThread, character: updatedCurrentCharacter });
     }

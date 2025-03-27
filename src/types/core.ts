@@ -1,6 +1,5 @@
 export interface ThreadMetadata {
-  documentId?: string;
-  documentName?: string;
+  documentIds?: string[];
   webContent?: string[];
   urls?: string[];
   [key: string]: any; // Allow for future extensibility
