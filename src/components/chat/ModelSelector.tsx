@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import { Model } from "@/src/types/core";
+import { Model, Character } from "@/src/types/core";
 import { getDefaultStore, useAtom, useAtomValue } from "jotai";
 import {
   availableProvidersAtom,
@@ -31,84 +31,118 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
 
+// Extend DropdownElement to include a model property
+interface ModelDropdownElement extends DropdownElement {
+  model: Model;
+}
 
 interface ModelSelectorProps {
   selectedModel: Model;
-  onSetModel: (model: Model) => void;
+  onModelSelect: (model: Model) => void;
+  character?: Character;
   className?: string;
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({
   selectedModel,
-  onSetModel,
+  onModelSelect,
+  character,
   className,
 }) => {
   const [providers, setProviders] = useAtom(availableProvidersAtom);
-  const [models, setModels] = useAtom(availableModelsAtom);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
-  const [dropdownModel, setDropdownModel] = useState<DropdownElement | null>(
-    null,
-  );
+  const [dropdownModel, setDropdownModel] = useState<DropdownElement | null>(null);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [models, setModels] = useAtom(availableModelsAtom);
+  const [modelOptions, setModelOptions] = useState<Model[]>(models);
 
-  React.useEffect(() => {
-    const fetchModels = async () => {
-      const models = await fetchAvailableModelsV2(
-        await getDefaultStore().get(availableProvidersAtom),
-      );
-      setModels(models);
-    };
-    fetchModels();
-  }, []);
+  useEffect(() => {
+    // Check if character has a required model
+    if (character?.modelPreferences) {
+      const requiredPreference = character.modelPreferences.find(p => p.level === 'required');
+      
+      if (requiredPreference) {
+        const compatibleModels = getCompatibleModels(character, models);
+        setModelOptions(compatibleModels);
 
-  async function scanOllamaProviders() {
-    let ollamaEndpoints = await scanLocalOllama();
-    if (!ollamaEndpoints.length) ollamaEndpoints = await scanNetworkOllama();
-    const newProviders: Provider[] = ollamaEndpoints
-      .map(endpoint => ({
-        ...PREDEFINED_PROVIDERS.ollama,
-        endpoint,
-        id: Date.now().toString(),
-      }))
-      .filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
-
-    if (newProviders.length > 0) {
-      setProviders([...providers, ...newProviders]);
-
-      const models = await fetchAvailableModelsV2(
-        await getDefaultStore().get(availableProvidersAtom),
-      );
-      setModels(models);
+        if(compatibleModels.length == 0){
+          setIsDisabled(true);
+          toastService.danger({
+            title: "No compatible model found",
+            description: "This character requires a specific model that is not available."
+          });
+        }
+        else{
+          setIsDisabled(false);
+          onModelSelect(compatibleModels[0]);
+        }
+        
+        
+      } else {
+        setIsDisabled(false);
+      }
     } else {
-      toastService.info({
-        title: "Couldn't find any ollama instances",
-        description:
-          "Please check the help section in Settings for information on how to install and enable ollama",
+      setIsDisabled(false);
+    }
+  }, [character, models, selectedModel.id]);
+
+  useEffect(() => {
+    // Update dropdown model when selected model changes
+    const model = models.find(m => m.id === selectedModel.id);
+    if (model) {
+      setDropdownModel({
+        id: model.id,
+        title: model.name,
+        image: model.provider.logo
       });
     }
-  }
+  }, [selectedModel, models]);
 
-  function setDropdownModell(model: Model) {
-    setDropdownModel({
-      title: model.name,
-      id: model.id,
-      image: model.provider.logo,
+  const modelList: ModelDropdownElement[] = modelOptions.map(model => ({
+    id: model.id,
+    title: model.name,
+    image: model.provider.logo,
+    model: model
+  }));
+
+  const handleModelSelect = (item: DropdownElement) => {
+    if (isDisabled) return;
+    onModelSelect(modelOptions.find((m) => m.id === item.id)!);
+    setDropdownModel(item);
+  };
+
+  function setCurrentModelAsDefault() {
+    setDefaultModel(selectedModel);
+    toastService.success({
+      title: "Default model set",
+      description: "The selected model will now be used for new threads",
     });
   }
 
-  // Add useEffect to handle initial model selection
-  React.useEffect(() => {
-    if (!models.length) return;
+  function scanOllamaProviders() {
+    scanLocalOllama();
+    scanNetworkOllama();
+  }
 
-    const currentModel = models.find((m) => m.id === selectedModel.id);
-    if (!currentModel) {
-      if (defaultModel?.id && models.find((m) => m.id === defaultModel.id)) {
-        onSetModel(defaultModel);
-      } else {
-        onSetModel(models[0]);
-      }
+  const getCompatibleModels = (character: Character, availableModels: Model[]): Model[] => {
+    // If character has no model preferences, any model is compatible
+    if (!character.modelPreferences || character.modelPreferences.length === 0) {
+      return availableModels; // Null means any model is compatible
     }
-    setDropdownModell(selectedModel);
-  }, [models, selectedModel.id, defaultModel, onSetModel]);
+    console.log("character preferences", character.modelPreferences);
+
+    // Check for required models first
+    const requiredPreferences = character.modelPreferences.filter(p => p.level === 'required');
+    if (requiredPreferences.length > 0) {
+      // Find the first available required model
+      console.log("Available models", availableModels);
+      return availableModels.filter(m => requiredPreferences.some(p => p.modelId === m.id));
+    }
+
+    return [];
+  };
+
+  console.log("We have providers", providers);
 
   if (!providers.filter((p) => p.capabilities?.llm).length) {
     return (
@@ -135,36 +169,19 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     return <Text className="text-gray-500">Loading models...</Text>;
   }
 
-  let modelList = models.map((model) => ({
-    title: model.name,
-    id: model.id,
-    image: model.provider.logo,
-  }));
-
-  function onModelSelect(model: DropdownElement) {
-    setDropdownModel(model);
-    onSetModel(models.find((m) => m.id === model.id)!);
-  }
-
-  function setCurrentModelAsDefault() {
-    setDefaultModel(selectedModel);
-    toastService.success({
-      title: "Default model set",
-      description: "The selected model will now be used for new threads",
-    });
-  }
-
   return (
     <View className={`flex-row gap-2 items-center ${className}`}>
       <Dropdown
         showSearch={true}
         selected={dropdownModel}
-        onSelect={onModelSelect}
+        onSelect={handleModelSelect}
         children={modelList}
-        className="max-w-48 overflow-hidden"
+        className={`max-w-48 overflow-hidden ${isDisabled ? 'opacity-70' : ''}`}
         position="right"
       />
-      {selectedModel.id !== defaultModel?.id && (
+      
+      
+      {!isDisabled && selectedModel.id !== defaultModel?.id && (
         <TouchableOpacity
           onPress={setCurrentModelAsDefault}
           className="p-2 flex-row items-center gap-2 bg-background hover:bg-primary/20 rounded-lg border border-border h-12 shadow-sm"

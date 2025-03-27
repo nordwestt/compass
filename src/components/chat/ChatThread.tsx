@@ -55,8 +55,6 @@ export const ChatThread: React.FC = () => {
 
   const [userHasScrolled, setUserHasScrolled] = useState(false);
 
-  const { getCompatibleModel } = useChat();
-
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
       dispatchThread({ type: 'add', payload: currentThread });
@@ -119,34 +117,10 @@ export const ChatThread: React.FC = () => {
     });
   };
 
-  const handleSelectPrompt = (prompt: Character) => {
-    // Check if the character has model preferences
-    const compatibleModel = getCompatibleModel(prompt, providers);
-    
-    if (compatibleModel === undefined) {
-      // No compatible model found for required preferences
-      toastService.warning({
-        title: "Incompatible Character",
-        description: "This character requires specific models that aren't available."
-      });
-      return;
-    }
-    
-    // Update the thread with the new character
-    const updatedThread = { ...currentThread, character: prompt };
-    
-    // If a compatible model is found, update the model too
-    if (compatibleModel) {
-      updatedThread.selectedModel = compatibleModel;
-      toastService.info({
-        title: "Model Updated",
-        description: `Switched to ${compatibleModel.name} as recommended for this character.`
-      });
-    }
-    
+  const handleSelectCharacter = (character: Character) => {
     dispatchThread({
       type: 'update',
-      payload: updatedThread
+      payload: { ...currentThread, character: character }
     });
   };
 
@@ -220,7 +194,7 @@ export const ChatThread: React.FC = () => {
       <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
       <CharacterSelector
           selectedPrompt={currentThread.character}
-          onSelectPrompt={handleSelectPrompt}
+          onSelectPrompt={handleSelectCharacter}
           className="w-40 overflow-hidden"
         />
         <View className="flex-row items-center gap-2">
@@ -229,7 +203,8 @@ export const ChatThread: React.FC = () => {
           {currentThread?.selectedModel && (
             <ModelSelector 
               selectedModel={currentThread.selectedModel}
-              onSetModel={handleSelectModel}
+              onModelSelect={handleSelectModel}
+              character={currentThread.character}
             />
           )}
           
