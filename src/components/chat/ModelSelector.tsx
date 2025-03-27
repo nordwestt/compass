@@ -156,6 +156,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       return availableModels; // Null means any model is compatible
     }
 
+    console.log("Character preferences", character.modelPreferences);
+
     // Check for required models first
     const requiredPreferences = character.modelPreferences.filter(p => p.level === 'required');
     if (requiredPreferences.length > 0) {

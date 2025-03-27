@@ -19,11 +19,10 @@ export function ModelPreferenceSelector({
 }: ModelPreferenceSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedModelId, setSelectedModelId] = useState<string | null>(null);
-  const [preferenceLevel, setPreferenceLevel] = useState<'preferred' | 'required'>('preferred');
 
   const handleAddPreference = () => {
     if (selectedModelId) {
-      onAddPreference(selectedModelId, preferenceLevel);
+      onAddPreference(selectedModelId, 'required');
       setIsModalVisible(false);
       setSelectedModelId(null);
     }
@@ -40,12 +39,12 @@ export function ModelPreferenceSelector({
   return (
     <View className="mb-4">
       <Text className="text-base font-medium mb-2 text-text">
-        Model Preferences
+        Allowed Models
       </Text>
       
       <View className="bg-surface p-4 rounded-lg border-2 border-border">
         {selectedPreferences.length === 0 ? (
-          <Text className="text-secondary italic">No model preferences set</Text>
+          <Text className="text-secondary italic">No requirements set, all models are allowed</Text>
         ) : (
           <View className="space-y-2">
             {selectedPreferences.map(preference => {
@@ -62,8 +61,8 @@ export function ModelPreferenceSelector({
                     <View>
                       <Text className="text-text font-medium">{model?.name || preference.modelId}</Text>
                       <View className="flex-row items-center">
-                        <View className={`w-2 h-2 rounded-full ${preference.level === 'required' ? 'bg-red-500' : 'bg-green-500'} mr-1`} />
-                        <Text className="text-secondary text-xs">{getPreferenceLabel(preference.level)}</Text>
+                        <View className={`w-2 h-2 rounded-full bg-green-500 mr-1`} />
+                        <Text className="text-secondary text-xs">Allowed</Text>
                       </View>
                     </View>
                   </View>
@@ -84,7 +83,7 @@ export function ModelPreferenceSelector({
           className="mt-4 p-3 bg-primary rounded-lg flex-row items-center justify-center"
         >
           <Ionicons name="add" size={20} color="white" className="mr-2" />
-          <Text className="text-white font-medium">Add Model Preference</Text>
+          <Text className="text-white font-medium">Add Model Requirement</Text>
         </TouchableOpacity>
       </View>
 
@@ -94,7 +93,7 @@ export function ModelPreferenceSelector({
       >
         <View className="p-4 bg-surface rounded-lg">
           <Text className="text-lg font-bold text-text mb-4 text-center">
-            Add Model Preference
+            Add Model Requirement
           </Text>
           
           <Text className="text-base font-medium mb-2 text-text">
@@ -121,32 +120,6 @@ export function ModelPreferenceSelector({
               ))}
             </View>
           </ScrollView>
-          
-          <Text className="text-base font-medium mb-2 text-text">
-            Preference Level
-          </Text>
-          <View className="flex-row space-x-2 mb-4">
-            <TouchableOpacity
-              onPress={() => setPreferenceLevel('preferred')}
-              className={`flex-1 p-3 rounded-lg flex-row items-center justify-center ${
-                preferenceLevel === 'preferred' ? 'bg-primary' : 'bg-background border border-border'
-              }`}
-            >
-              <Text className={preferenceLevel === 'preferred' ? 'text-white' : 'text-text'}>
-                Preferred
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setPreferenceLevel('required')}
-              className={`flex-1 p-3 rounded-lg flex-row items-center justify-center ${
-                preferenceLevel === 'required' ? 'bg-primary' : 'bg-background border border-border'
-              }`}
-            >
-              <Text className={preferenceLevel === 'required' ? 'text-white' : 'text-text'}>
-                Required
-              </Text>
-            </TouchableOpacity>
-          </View>
           
           <View className="flex-row space-x-2">
             <TouchableOpacity
