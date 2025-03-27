@@ -59,31 +59,23 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   useEffect(() => {
     // Check if character has a required model
-    if (character?.modelPreferences) {
-      const requiredPreference = character.modelPreferences.find(p => p.level === 'required');
-      
-      if (requiredPreference) {
-        const compatibleModels = getCompatibleModels(character, models);
-        setModelOptions(compatibleModels);
+    console.log("Trigggered Models", models);
+    const compatibleModels = getCompatibleModels(character, models);
+    setModelOptions(compatibleModels);
+    console.log("Compatible models", compatibleModels);
 
-        if(compatibleModels.length == 0 && models.length > 0){
-          setIsDisabled(true);
-          toastService.danger({
-            title: "No compatible model found",
-            description: "This character requires a specific model that is not available."
-          });
-        }
-        else{
-          setIsDisabled(false);
-          onModelSelect(compatibleModels[0]);
-        }
-        
-        
-      } else {
-        setIsDisabled(false);
-      }
-    } else {
+    if(compatibleModels.length == 0 && models.length > 0){
+      setIsDisabled(true);
+      toastService.danger({
+        title: "No compatible model found",
+        description: "This character requires a specific model that is not available."
+      });
+    }
+    else{
       setIsDisabled(false);
+      if(!selectedModel || !compatibleModels.find(m => m.id === selectedModel?.id)){
+        onModelSelect(compatibleModels[0]);
+      }
     }
   }, [character, models, selectedModel?.id]);
 
@@ -145,14 +137,37 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     }
   }
 
-  function scanOllamaProviders() {
-    scanLocalOllama();
-    scanNetworkOllama();
+
+  async function scanOllamaProviders() {
+    let ollamaEndpoints = await scanLocalOllama();
+    if (!ollamaEndpoints.length) ollamaEndpoints = await scanNetworkOllama();
+    const newProviders: Provider[] = ollamaEndpoints
+      .map(endpoint => ({
+        ...PREDEFINED_PROVIDERS.ollama,
+        endpoint,
+        id: Date.now().toString(),
+      }))
+      .filter(p => providers.find(e => e.endpoint === p.endpoint) === undefined);
+
+    if (newProviders.length > 0) {
+      setProviders([...providers, ...newProviders]);
+
+      // const models = await fetchAvailableModelsV2(
+      //   await getDefaultStore().get(availableProvidersAtom),
+      // );
+      // setModels(models);
+    } else {
+      toastService.info({
+        title: "Couldn't find any ollama instances",
+        description:
+          "Please check the help section in Settings for information on how to install and enable ollama",
+      });
+    }
   }
 
-  const getCompatibleModels = (character: Character, availableModels: Model[]): Model[] => {
+  const getCompatibleModels = (character: Character | undefined, availableModels: Model[]): Model[] => {
     // If character has no model preferences, any model is compatible
-    if (!character.modelPreferences || character.modelPreferences.length === 0) {
+    if (!character?.modelPreferences || character.modelPreferences.length === 0) {
       return availableModels; // Null means any model is compatible
     }
 
