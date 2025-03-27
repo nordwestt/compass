@@ -132,35 +132,52 @@ export const DocumentManager: React.FC = () => {
     }
   };
 
-  const renderDocument = ({ item: doc }: { item: Document }) => (
-    <View className="flex-row items-center p-4 bg-surface rounded-lg mb-2">
-      <Ionicons name="document-text" size={24} className="!text-primary mr-3" />
-      <View className="flex-1">
-        <Text className="text-text font-medium">{doc.name}</Text>
-        <Text className="text-secondary text-sm">{doc.pages} pages</Text>
+  const renderDocument = ({ item: doc }: { item: Document }) => {
+    // Calculate the number of characters that depend on this document
+    const dependentCharactersCount = customPrompts.filter(
+      character => character.documentIds?.includes(doc.id)
+    ).length;
+
+    return (
+      <View className="flex-row items-center p-4 bg-surface rounded-lg mb-2">
+        <Ionicons name="document-text" size={24} className="!text-primary mr-3" />
+        <View className="flex-1">
+          <Text className="text-text font-medium">{doc.name}</Text>
+          <View className="flex-row items-center">
+            <Text className="text-secondary text-sm">{doc.pages} pages</Text>
+            {dependentCharactersCount > 0 && (
+              <View className="flex-row items-center ml-2">
+                <Text className="text-secondary text-sm">•</Text>
+                <Text className="text-secondary text-sm ml-2">
+                  Dependants: {dependentCharactersCount}
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+        <View className="flex-row gap-2">
+          <TouchableOpacity 
+            className="p-2 bg-surface border border-primary rounded-lg"
+            onPress={() => setSelectedDoc(doc)}
+          >
+            <Ionicons name="eye" size={20} className="!text-primary" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            className="p-2 bg-primary rounded-lg"
+            onPress={() => startDocumentChat(doc)}
+          >
+            <Ionicons name="chatbubble" size={20} className="!text-white" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            className="p-2 bg-red-500 rounded-lg"
+            onPress={() => handleDeleteDocument(doc)}
+          >
+            <Ionicons name="trash" size={20} className="!text-white" />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View className="flex-row gap-2">
-        <TouchableOpacity 
-          className="p-2 bg-surface border border-primary rounded-lg"
-          onPress={() => setSelectedDoc(doc)}
-        >
-          <Ionicons name="eye" size={20} className="!text-primary" />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          className="p-2 bg-primary rounded-lg"
-          onPress={() => startDocumentChat(doc)}
-        >
-          <Ionicons name="chatbubble" size={20} className="!text-white" />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          className="p-2 bg-red-500 rounded-lg"
-          onPress={() => handleDeleteDocument(doc)}
-        >
-          <Ionicons name="trash" size={20} className="!text-white" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View className="flex-1 flex-row">
