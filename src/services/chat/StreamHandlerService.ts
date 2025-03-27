@@ -3,6 +3,7 @@ import { MessageStreamHandler } from '@/src/types/chat';
 import { Thread } from '@/src/types/core';
 import { Readable } from 'stream';
 import LogService from '@/utils/LogService';
+import { toastService } from '../toastService';
 
 export class StreamHandlerService {
   constructor(private tts: any) {}
@@ -38,6 +39,17 @@ export class StreamHandlerService {
 
     } 
     catch(error:any){
+      console.log('error', error);
+      const vercelErrorResponse = error?.error?.lastError?.responseBody;
+      if(vercelErrorResponse){
+        try{
+          const json = JSON.parse(vercelErrorResponse);
+          toastService.warning({title: "Error", description: json.error.charAt(0).toUpperCase() + json.error.slice(1)});
+        }
+        catch(e){
+          toastService.danger({title: "Error", description: vercelErrorResponse});
+        }
+      }
       LogService.log(error, {component: 'StreamHandlerService', function: `handleStream`}, 'error');
     }
     finally {

@@ -1,9 +1,15 @@
 import { atom } from 'jotai'
 import { atomWithAsyncStorage } from './storage'
-import { Model, Thread, ChatMessage, Character, Provider, Voice } from '@/src/types/core'
+import { Model, Thread, ChatMessage, Character, Provider, Voice, Document } from '@/src/types/core'
 import { PREDEFINED_PROMPTS } from '@/constants/characters'
 
 export const createDefaultThread = (name: string="New thread"): Thread => {
+  // Get the first custom prompt if available, otherwise use the first predefined prompt
+  const defaultCharacter = 
+    (typeof window !== 'undefined' && localStorage.getItem('customPrompts')) 
+      ? JSON.parse(localStorage.getItem('customPrompts') || '[]')[0] 
+      : PREDEFINED_PROMPTS[0];
+
   return {
     id: Date.now().toString(),
     title: name,
@@ -18,7 +24,7 @@ export const createDefaultThread = (name: string="New thread"): Thread => {
         logo: ''
       }
     },
-    character: PREDEFINED_PROMPTS[0]
+    character: defaultCharacter
   }
 }
 
@@ -220,3 +226,37 @@ export const previewCodeAtom = atom<{
 
 // Add this with the other atoms
 export const hasSeenOnboardingAtom = atomWithAsyncStorage<boolean>('hasSeenOnboarding', false);
+
+export const documentsAtom = atomWithAsyncStorage<Document[]>('documents', []);
+
+export const saveCustomPrompts = atom(
+  null,
+  async (get, set, characters: Character[]) => {
+    // get existing characters
+    const existingCharacters = JSON.parse(JSON.stringify(await get(customPromptsAtom)));
+
+
+    await set(customPromptsAtom, characters);
+    
+    // Get all threads and update any that use the modified characters
+    const threads = await get(threadsAtom);
+    const updatedThreads = threads.map(thread => {
+      const updatedCharacter = characters.find(p => p.id === thread.character.id);
+      
+      // If the character was updated, update the thread
+      if (updatedCharacter) {
+        return { ...thread, character: updatedCharacter };
+      }
+      
+      return thread;
+    });
+
+    // Update threads and current thread if needed
+    await set(threadsAtom, updatedThreads);
+    const currentThread = await get(currentThreadAtom);
+    const updatedCurrentCharacter = characters.find(p => p.id === currentThread.character.id);
+    if (updatedCurrentCharacter) {
+      await set(currentThreadAtom, { ...currentThread, character: updatedCurrentCharacter });
+    }
+  }
+);

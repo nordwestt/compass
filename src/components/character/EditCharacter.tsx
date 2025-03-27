@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { customPromptsAtom } from '@/src/hooks/atoms';
+import { customPromptsAtom, saveCustomPrompts } from '@/src/hooks/atoms';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Character } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,6 +11,7 @@ import { ImagePickerButton } from '@/src/components/image/ImagePickerButton';
 import { useEffect } from 'react';
 import { toastService } from '@/src/services/toastService';
 import { IconSelector } from '@/src/components/character/IconSelector';
+import { DocumentSelector } from './DocumentSelector';
 
 
 interface EditCharacterProps {  
@@ -24,6 +25,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   const [character, setCharacter] = useState<Character | null>(null);
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);
+  const dispatchCharacters = useSetAtom(saveCustomPrompts);
 
   useEffect(() => {
     let chara = id 
@@ -33,6 +35,23 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     setCharacter(chara as Character);
     setUseIcon(!!chara?.icon);
   }, [id]);
+
+  
+  const handleDocumentToggle = (docId: string) => {
+    if (character?.documentIds?.includes(docId)) {
+      // Remove the document if it's already selected
+      setCharacter({
+        ...character!,
+        documentIds: character.documentIds.filter(id => id !== docId)
+      });
+    } else {
+      // Add the document if it's not already selected
+      setCharacter({
+        ...character!,
+        documentIds: [...(character?.documentIds || []), docId]
+      });
+    }
+  };
 
 
   const handleImageSelected = (imageUri: string) => {
@@ -52,7 +71,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             name: character?.name || '', 
             content: character?.content || '',
             image: useIcon ? undefined : (character?.image || p.image),
-            icon: useIcon ? character?.icon : undefined
+            icon: useIcon ? character?.icon : undefined,
+            documentIds: character?.documentIds || []
           } : p
         );
       } else {
@@ -62,12 +82,15 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           name: character?.name || '',
           content: character?.content || '',
           image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
-          icon: useIcon ? character?.icon : undefined
+          icon: useIcon ? character?.icon : undefined,
+          documentIds: character?.documentIds || []
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
-      await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
-      setCustomPrompts(updatedPrompts);
+      //await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
+      console.log('updatedPrompts', updatedPrompts, character?.documentIds);
+      await dispatchCharacters(updatedPrompts);
+      //await setCustomPrompts(updatedPrompts);
       onSave();
       toastService.success({ title: 'Character saved', description: 'Character saved successfully' });
     } catch (error) {
@@ -78,8 +101,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
 
   const deleteCharacter = async () => {
     const updatedPrompts = customPrompts.filter(p => p.id !== id);
-    await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
-    setCustomPrompts(updatedPrompts);
+    //await AsyncStorage.setItem('customPrompts', JSON.stringify(updatedPrompts));
+    await setCustomPrompts(updatedPrompts);
     toastService.success({ title: 'Character deleted', description: 'Character deleted successfully' });
     onSave();
   };
@@ -160,6 +183,11 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
               placeholderTextColor="#9CA3AF"
             />
           </View>
+          <DocumentSelector
+            selectedDocIds={character?.documentIds || []}
+            onSelectDoc={handleDocumentToggle}
+            onRemoveDoc={handleDocumentToggle}
+          />
         </View>
       </ScrollView>
 

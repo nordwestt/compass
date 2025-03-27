@@ -58,6 +58,9 @@ export class OllamaProvider implements ChatProvider {
         const { textStream, steps } = streamText({
           model: ollama(model.id),
           messages: newMessages as CoreMessage[],
+          onError: (error) => {
+            throw error;
+          },
           // tools: {
           //   weather: tool({
           //     description: 'Get the weather in a location (celsius)',
@@ -85,7 +88,6 @@ export class OllamaProvider implements ChatProvider {
     }
     catch(error:any){
       LogService.log(error, {component: 'OllamaProvider', function: `sendMessage: ${model.provider.endpoint}`}, 'error');
-      toastService.danger({title: "Could not send message", description: error.message});
       throw error;
     }
   }

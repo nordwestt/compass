@@ -1,6 +1,7 @@
 import { logsAtom } from '@/src/hooks/atoms';
 import { getDefaultStore, useAtom } from 'jotai';
 import { APICallError } from 'ai';
+import {toastService} from '@/src/services/toastService';
 
 type LogLevel = 'error' | 'info' | 'warn' | 'debug';
 
@@ -34,6 +35,7 @@ class LogService {
     };
 
     store.set(logsAtom, [...logs, logEntry]);
+    
     
     // Also log to console for development
     console[level](`[${context.component}:${context.function}]`, message);

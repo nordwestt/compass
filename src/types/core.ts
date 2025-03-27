@@ -1,9 +1,17 @@
+export interface ThreadMetadata {
+  documentIds?: string[];
+  webContent?: string[];
+  urls?: string[];
+  [key: string]: any; // Allow for future extensibility
+}
+
 export interface Thread {
   id: string;
   title: string;
   messages: ChatMessage[];
   selectedModel: Model;
   character: Character;
+  metadata?: ThreadMetadata;
 }
 
 export interface ChatMessage {
@@ -23,8 +31,9 @@ export interface Character {
   id: string;
   name: string;
   content: string;
-  image?: any | string;
+  image?: string;
   icon?: string;
+  documentIds?: string[];
   voice?: Voice;
 }
 
@@ -52,4 +61,14 @@ export interface Provider {
   logo: any;
   keyRequired?: boolean;
   signupUrl?: string;
+}
+
+export interface Document {
+  id: string;
+  name: string;
+  path: string;
+  pages: number;
+  type: 'pdf';
+  chunks?: string[];
+  embeddings?: number[][];
 }

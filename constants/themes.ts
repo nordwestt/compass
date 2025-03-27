@@ -16,7 +16,7 @@ export const rawThemes = {
       background: '#232323',
       surface: '#303030',
       text: '#F3F4F6',
-      border: '#374151',
+      border: '#374137',
     },
   },
   mossy: {

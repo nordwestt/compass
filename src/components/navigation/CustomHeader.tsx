@@ -35,8 +35,9 @@ export function CustomHeader() {
   );
 
   return (
-    <SafeAreaView className="flex-row items-center px-4 py-3 bg-surface web:rounded-lg">
-      <TouchableOpacity className="flex-row items-center h-12 hover:bg-background rounded-lg px-2" onPress={() => navigation.goBack()}>
+    <SafeAreaView className="flex-row items-center px-4 py-3 bg-background">
+      <View className='bg-surface web:rounded-lg w-full'>
+      <TouchableOpacity className="flex-row items-center h-12 hover:opacity-80 rounded-lg px-2" onPress={() => navigation.goBack()}>
         {canGoBack && (
           <View className="mr-3">
             <Ionicons name="chevron-back" size={24} className="!text-primary" />
@@ -52,6 +53,7 @@ export function CustomHeader() {
         <Ionicons name="settings-outline" size={24} className="!text-primary" />
       </TouchableOpacity>
       */}
+      </View>
     </SafeAreaView>
   );
 } 
