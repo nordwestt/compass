@@ -1,6 +1,18 @@
 import { Provider } from "@/src/types/core";
 import { PROVIDER_LOGOS } from "@/src/constants/logos";
 export const PREDEFINED_PROVIDERS = {
+  compass:{
+    name: "Compass",
+    endpoint: "https://api.compass.com",
+    capabilities: {
+      llm: true,
+      tts: false,
+      stt: false,
+    },
+    logo: "https://nordwestt.com/compass/favicon.ico",
+    keyRequired: true,
+    signupUrl: "https://nordwestt.com/compass/signup",
+  } as Provider,
   ollama: {
     name: "Ollama",
     endpoint: "http://localhost:11434",
