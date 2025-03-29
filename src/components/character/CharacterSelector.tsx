@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
-import { availableModelsAtom, charactersAtom } from '@/src/hooks/atoms';
+import { availableModelsAtom, charactersAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { rawThemes } from '@/constants/themes';
@@ -31,15 +31,16 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   className
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [allPrompts, setAllPrompts] = useAtom(charactersAtom);
+  const [characters, setCharacters] = useAtom(charactersAtom);
+  const syncToPolaris = useAtomValue(syncToPolarisAtom);
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
   const availableModels = useAtomValue(availableModelsAtom);
 
   useEffect(() => {
-    if(allPrompts.length === 0) {
-      setAllPrompts(PREDEFINED_PROMPTS);
+    if(characters.length === 0 && !syncToPolaris) {
+      setCharacters(PREDEFINED_PROMPTS);
     }
   }, []);
 
@@ -84,7 +85,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
               
               <ScrollView className="p-4">
                 <View className="flex-row flex-wrap justify-between">
-                  {allPrompts.map((prompt, index) => {
+                  {characters.map((prompt, index) => {
                     const isCompatible = isCharacterCompatible(prompt);
                     return (
                       <TouchableOpacity

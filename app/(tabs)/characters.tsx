@@ -3,13 +3,15 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { createDefaultThread, currentIndexAtom, charactersAtom, threadActionsAtom, threadsAtom } from '@/src/hooks/atoms';
+import { createDefaultThread, currentIndexAtom, charactersAtom, threadActionsAtom, threadsAtom, syncToPolarisAtom, saveCustomPrompts } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
 import { modalService } from '@/src/services/modalService';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import EditCharacter from '@/src/components/character/EditCharacter';
 import { CharacterAvatar } from '@/src/components/character/CharacterAvatar';
+import CharacterService from '@/src/services/character/CharacterService';
+import PolarisServer from '@/src/services/polaris/PolarisServer';
 
 export default function CharactersScreen() {
   const router = useRouter();
@@ -17,35 +19,35 @@ export default function CharactersScreen() {
   const dispatchThread = useSetAtom(threadActionsAtom);
   const threads = useAtomValue(threadsAtom);
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
+  const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
 
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
 
+  useEffect(() => {
+    const loadCharacters = async () => {
+      if (characters.length === 0 && !syncToPolaris) {
+        setCharacters(PREDEFINED_PROMPTS);
+      }
+    };
+    
+    loadCharacters();
+  }, [characters]);
 
-  useEffect(()=>{
-    if(characters.length === 0){
-      setCharacters(PREDEFINED_PROMPTS);
-    }
-  },[characters])
-
-  const saveCustomPrompts = async (prompts: Character[]) => {
+  const saveCharacters = async (characters: Character[]) => {
     try {
-      await AsyncStorage.setItem('customPrompts', JSON.stringify(prompts));
-      setCharacters(prompts);
+      await saveCharacters(characters);
     } catch (error) {
-      console.error('Error saving custom prompts:', error);
+      console.error('Error saving characters:', error);
     }
   };
 
-  const handleEdit = (prompt: Character) => {
-    if (Platform.OS == 'web') {
-      // Close the pane if clicking on the same character
-      if (editingCharacter?.id === prompt.id) {
-        setEditingCharacter(null);
-      } else {
-        setEditingCharacter(prompt);
-      }
-    } else {
-      router.push(`/edit-character?id=${prompt.id}`);
+  const handleSyncToServer = async (character: Character) => {
+    const updatedCharacter = await CharacterService.syncCharacterToServer(character);
+    if (updatedCharacter) {
+      const updatedCharacters = characters.map(c => 
+        c.id === character.id ? updatedCharacter : c
+      );
+      setCharacters(updatedCharacters);
     }
   };
 
@@ -56,8 +58,23 @@ export default function CharactersScreen() {
     });
 
     if (confirmed) {
-      const updated = characters.filter(p => p.id !== id);
-      await saveCustomPrompts(updated);
+      const success = await CharacterService.deleteCharacter(id);
+      if (success) {
+        const updated = characters.filter(p => p.id !== id);
+        setCharacters(updated);
+      }
+    }
+  };
+
+  const handleEdit = (prompt: Character) => {
+    if (Platform.OS == 'web') {
+      if (editingCharacter?.id === prompt.id) {
+        setEditingCharacter(null);
+      } else {
+        setEditingCharacter(prompt);
+      }
+    } else {
+      router.push(`/edit-character?id=${prompt.id}`);
     }
   };
 
@@ -77,7 +94,6 @@ export default function CharactersScreen() {
   const startChat = async (prompt: Character) => {
     const latestThread = threads[threads.length - 1];
     
-    // If the latest thread has no messages, update it instead of creating a new one
     if (latestThread && latestThread.messages.length === 0) {
       const defaultModel = await AsyncStorage.getItem('defaultModel');
       latestThread.selectedModel = defaultModel ? JSON.parse(defaultModel) : {
@@ -98,7 +114,6 @@ export default function CharactersScreen() {
       return;
     }
 
-    // Otherwise create a new thread as before
     const defaultModel = await AsyncStorage.getItem('defaultModel');
     const newThread = createDefaultThread();
     newThread.selectedModel = defaultModel ? JSON.parse(defaultModel) : {
@@ -109,7 +124,6 @@ export default function CharactersScreen() {
     
     await dispatchThread({ type: 'add', payload: newThread });
 
-    // wait for 100 ms before pushing to thread to allow propagation
     setTimeout(() => {
       if(Platform.OS == 'web'){
         setCurrentIndex(0);

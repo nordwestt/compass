@@ -2,6 +2,10 @@ import { atom } from 'jotai'
 import { atomWithAsyncStorage } from './storage'
 import { Model, Thread, ChatMessage, Character, Provider, Voice, Document } from '@/src/types/core'
 import { PREDEFINED_PROMPTS } from '@/constants/characters'
+import { CharacterService } from '@/src/services/character/CharacterService'
+import { ProviderService } from '@/src/services/provider/ProviderService'
+import LogService from '@/utils/LogService'
+import { toastService } from '@/src/services/toastService'
 
 export const createDefaultThread = (name: string="New thread"): Thread => {
   // Get the first custom prompt if available, otherwise use the first predefined prompt
@@ -151,8 +155,65 @@ export const chatActionsAtom = atom(
   }
 )
 
-// Add these new atoms
-export const charactersAtom = atomWithAsyncStorage<Character[]>('characters', [])
+export const userCharactersAtom = atomWithAsyncStorage<Character[]>('userCharacters', [])
+
+// Update the charactersAtom to be dynamic based on syncToPolaris
+export const charactersAtom = atom(
+  async (get) => {
+    const syncToPolaris = await get(syncToPolarisAtom);
+    
+    if (syncToPolaris) {
+      // Return characters from the service which will handle server fetching
+      return await CharacterService.getCharacters();
+    } else {
+      // Use the existing atomWithAsyncStorage implementation for local-only mode
+      return await get(userCharactersAtom);
+    }
+  },
+  async (get, set, characters: Character[]) => {
+    const syncToPolaris = await get(syncToPolarisAtom);
+    
+    if (syncToPolaris) {
+      // Save each character using the service
+      for (const character of characters) {
+        await CharacterService.saveCharacter(character);
+      }
+    } else {
+      // Use the existing atomWithAsyncStorage implementation for local-only mode
+      await set(userCharactersAtom, characters);
+    }
+  }
+);
+
+export const userProvidersAtom = atomWithAsyncStorage<Provider[]>('userProviders', [])
+
+// Similarly update the availableProvidersAtom
+export const availableProvidersAtom = atom(
+  async (get) => {
+    const syncToPolaris = await get(syncToPolarisAtom);
+    
+    if (syncToPolaris) {
+      // Return providers from the service which will handle server fetching
+      return await ProviderService.getProviders();
+    } else {
+      // Use the existing atomWithAsyncStorage implementation for local-only mode
+      return await get(userProvidersAtom);
+    }
+  },
+  async (get, set, providers: Provider[]) => {
+    const syncToPolaris = await get(syncToPolarisAtom);
+    
+    if (syncToPolaris) {
+      // Save each provider using the service
+      for (const provider of providers) {
+        await ProviderService.saveProvider(provider);
+      }
+    } else {
+      // Use the existing atomWithAsyncStorage implementation for local-only mode
+      await set(userProvidersAtom, providers);
+    }
+  }
+);
 
 export const modalStateAtom = atom<{
   isVisible: boolean;
@@ -166,8 +227,6 @@ export const modalStateAtom = atom<{
   title: '',
   message: ''
 })
-export const availableProvidersAtom = atomWithAsyncStorage<Provider[]>('providers', [])
-
 export const defaultModelAtom = atomWithAsyncStorage<Model>('defaultModel', createDefaultThread().selectedModel);
 
 export const fontPreferencesAtom = atom({
@@ -227,34 +286,40 @@ export const hasSeenOnboardingAtom = atomWithAsyncStorage<boolean>('hasSeenOnboa
 
 export const documentsAtom = atomWithAsyncStorage<Document[]>('documents', []);
 
+// Update the saveCustomPrompts atom to use the new charactersAtom
 export const saveCustomPrompts = atom(
   null,
   async (get, set, characters: Character[]) => {
-    // get existing characters
-    const existingCharacters = JSON.parse(JSON.stringify(await get(charactersAtom)));
-
-
-    await set(charactersAtom, characters);
-    
-    // Get all threads and update any that use the modified characters
-    const threads = await get(threadsAtom);
-    const updatedThreads = threads.map(thread => {
-      const updatedCharacter = characters.find(p => p.id === thread.character.id);
+    try {
+      // Set the characters using the updated atom
+      await set(charactersAtom, characters);
       
-      // If the character was updated, update the thread
-      if (updatedCharacter) {
-        return { ...thread, character: updatedCharacter };
+      // Get all threads and update any that use the modified characters
+      const threads = await get(threadsAtom);
+      const updatedThreads = threads.map(thread => {
+        const updatedCharacter = characters.find(p => p.id === thread.character.id);
+        
+        // If the character was updated, update the thread
+        if (updatedCharacter) {
+          return { ...thread, character: updatedCharacter };
+        }
+        
+        return thread;
+      });
+
+      // Update threads and current thread if needed
+      await set(threadsAtom, updatedThreads);
+      const currentThread = await get(currentThreadAtom);
+      const updatedCurrentCharacter = characters.find(p => p.id === currentThread.character.id);
+      if (updatedCurrentCharacter) {
+        await set(currentThreadAtom, { ...currentThread, character: updatedCurrentCharacter });
       }
-      
-      return thread;
-    });
-
-    // Update threads and current thread if needed
-    await set(threadsAtom, updatedThreads);
-    const currentThread = await get(currentThreadAtom);
-    const updatedCurrentCharacter = characters.find(p => p.id === currentThread.character.id);
-    if (updatedCurrentCharacter) {
-      await set(currentThreadAtom, { ...currentThread, character: updatedCurrentCharacter });
+    } catch (error: any) {
+      LogService.log(error, { component: 'saveCustomPrompts', function: 'execute' }, 'error');
+      toastService.danger({
+        title: 'Error',
+        description: 'Failed to save characters'
+      });
     }
   }
 );
