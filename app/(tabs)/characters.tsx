@@ -3,7 +3,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { createDefaultThread, currentIndexAtom, customPromptsAtom, threadActionsAtom, threadsAtom } from '@/src/hooks/atoms';
+import { createDefaultThread, currentIndexAtom, charactersAtom, threadActionsAtom, threadsAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
 import { modalService } from '@/src/services/modalService';
 import { useRouter } from 'expo-router';
@@ -13,7 +13,7 @@ import { CharacterAvatar } from '@/src/components/character/CharacterAvatar';
 
 export default function CharactersScreen() {
   const router = useRouter();
-  const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
+  const [characters, setCharacters] = useAtom(charactersAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const threads = useAtomValue(threadsAtom);
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
@@ -22,15 +22,15 @@ export default function CharactersScreen() {
 
 
   useEffect(()=>{
-    if(customPrompts.length === 0){
-      setCustomPrompts(PREDEFINED_PROMPTS);
+    if(characters.length === 0){
+      setCharacters(PREDEFINED_PROMPTS);
     }
-  },[customPrompts])
+  },[characters])
 
   const saveCustomPrompts = async (prompts: Character[]) => {
     try {
       await AsyncStorage.setItem('customPrompts', JSON.stringify(prompts));
-      setCustomPrompts(prompts);
+      setCharacters(prompts);
     } catch (error) {
       console.error('Error saving custom prompts:', error);
     }
@@ -56,7 +56,7 @@ export default function CharactersScreen() {
     });
 
     if (confirmed) {
-      const updated = customPrompts.filter(p => p.id !== id);
+      const updated = characters.filter(p => p.id !== id);
       await saveCustomPrompts(updated);
     }
   };
@@ -140,7 +140,7 @@ export default function CharactersScreen() {
         </View>
         <ScrollView className="flex-1 p-4">
         <View className="md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {customPrompts.map((prompt) => (
+          {characters.map((prompt) => (
             <TouchableOpacity 
               onPress={() => handleEdit(prompt)} 
               onLongPress={() => startChat(prompt)} 

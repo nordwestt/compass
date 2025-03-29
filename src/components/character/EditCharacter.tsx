@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useAtom, useSetAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { customPromptsAtom, saveCustomPrompts, availableModelsAtom } from '@/src/hooks/atoms';
+import { charactersAtom, saveCustomPrompts, availableModelsAtom } from '@/src/hooks/atoms';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Character, ModelPreference } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -21,7 +21,7 @@ interface EditCharacterProps {
 }
 
 export default function EditCharacter({ id, onSave, className }: EditCharacterProps) {
-  const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
+  const [customPrompts, setCustomPrompts] = useAtom(charactersAtom);
   const [character, setCharacter] = useState<Character | null>(null);
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DocumentUploader } from './DocumentUploader';
 import { useAtom } from 'jotai';
-import { documentsAtom, currentThreadAtom, threadActionsAtom, customPromptsAtom, currentIndexAtom } from '@/src/hooks/atoms';
+import { documentsAtom, currentThreadAtom, threadActionsAtom, charactersAtom, currentIndexAtom } from '@/src/hooks/atoms';
 import { Document } from '@/src/types/core';
 import { PDFService } from '@/src/services/PDFService';
 import { toastService } from '@/src/services/toastService';
@@ -19,7 +19,7 @@ export const DocumentManager: React.FC = () => {
   const [, setCurrentThread] = useAtom(currentThreadAtom);
   const [, dispatchThread] = useAtom(threadActionsAtom);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
-  const [customPrompts, setCustomPrompts] = useAtom(customPromptsAtom);
+  const [customPrompts, setCustomPrompts] = useAtom(charactersAtom);
   const [, setCurrentIndex] = useAtom(currentIndexAtom);
 
   const handleDocumentUpload = async (doc: Document) => {

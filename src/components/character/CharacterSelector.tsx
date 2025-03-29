@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
-import { allPromptsAtom, availableModelsAtom, customPromptsAtom } from '@/src/hooks/atoms';
+import { allPromptsAtom, availableModelsAtom, charactersAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { rawThemes } from '@/constants/themes';
@@ -31,7 +31,7 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   className
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [allPrompts, setAllPrompts] = useAtom(customPromptsAtom);
+  const [allPrompts, setAllPrompts] = useAtom(charactersAtom);
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];

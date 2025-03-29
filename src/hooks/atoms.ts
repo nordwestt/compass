@@ -152,9 +152,9 @@ export const chatActionsAtom = atom(
 )
 
 // Add these new atoms
-export const customPromptsAtom = atomWithAsyncStorage<Character[]>('customPrompts', [])
+export const charactersAtom = atomWithAsyncStorage<Character[]>('characters', [])
 export const allPromptsAtom = atom(
-  async (get) => [...PREDEFINED_PROMPTS, ...(await get(customPromptsAtom))]
+  async (get) => [...PREDEFINED_PROMPTS, ...(await get(charactersAtom))]
 )
 export const modalStateAtom = atom<{
   isVisible: boolean;
@@ -233,10 +233,10 @@ export const saveCustomPrompts = atom(
   null,
   async (get, set, characters: Character[]) => {
     // get existing characters
-    const existingCharacters = JSON.parse(JSON.stringify(await get(customPromptsAtom)));
+    const existingCharacters = JSON.parse(JSON.stringify(await get(charactersAtom)));
 
 
-    await set(customPromptsAtom, characters);
+    await set(charactersAtom, characters);
     
     // Get all threads and update any that use the modified characters
     const threads = await get(threadsAtom);
