@@ -67,6 +67,7 @@ export interface Provider {
   logo: any;
   keyRequired?: boolean;
   signupUrl?: string;
+  syncToPolaris?: boolean;
 }
 
 export interface Document {
@@ -77,4 +78,25 @@ export interface Document {
   type: 'pdf';
   chunks?: string[];
   embeddings?: number[][];
+}
+
+export interface ResourceMetadata {
+  id?: string;
+  ownerId?: string; // null for local-only resources
+  isServerResource?: boolean; // true if it exists on the server
+  isSynced?: boolean; // true if local changes are synced to server
+  lastSyncedAt?: number; // timestamp of last sync
+  serverResourceId?: string; // ID on the server (may differ from local ID)
+}
+
+export interface Provider extends ResourceMetadata {
+  // existing Provider properties
+}
+
+export interface Character extends ResourceMetadata {
+  // existing Character properties
+}
+
+export interface Model extends ResourceMetadata {
+  // existing Model properties
 }

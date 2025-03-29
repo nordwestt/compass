@@ -260,3 +260,14 @@ export const saveCustomPrompts = atom(
     }
   }
 );
+
+// Add to your atoms
+export const isAdminModeAtom = atom<boolean>(false);
+export const isServerConnectedAtom = atom<boolean>(false);
+export const serverConnectionAtom = atom<{
+  url: string;
+  token: string;
+  userId: string;
+} | null>(null);
+
+export const syncToPolarisAtom = atomWithAsyncStorage<boolean>('syncToPolaris', false);

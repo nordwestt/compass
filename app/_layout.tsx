@@ -17,8 +17,8 @@ import { CustomHeader } from "@/src/components/navigation/CustomHeader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useKeyboardShortcuts } from "@/src/hooks/useKeyboardShortcuts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useAtomValue } from 'jotai';
-import { hasSeenOnboardingAtom } from '@/src/hooks/atoms';
+import { useAtom, useAtomValue } from 'jotai';
+import { hasSeenOnboardingAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
 import { Platform } from '@/src/utils/platform';
 import { WelcomeIntroduction } from "@/src/components/onboarding/WelcomeIntroduction";
 import React from 'react';
@@ -29,6 +29,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
+  const [syncToPolaris] = useAtom(syncToPolarisAtom);
   useKeyboardShortcuts();
 
   const theme = React.useMemo(() => {
@@ -74,7 +75,7 @@ export default function RootLayout() {
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
       <ThemeProvider>
         <ProxyUrlSync />
-        <View className="flex-row flex-1">
+        <View className={`flex-row flex-1 ${syncToPolaris ? 'border-8 border-primary' : ''}`}>
           {isDesktop && <WebSidebar className="" />}
           <Stack screenOptions={{
             headerStyle: {

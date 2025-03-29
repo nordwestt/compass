@@ -90,6 +90,24 @@ export const rawThemes = {
       text: '#ebdbb2', // light beige
       border: '#504945', // medium brown
     },
+  },
+  polaris: {
+    light: {
+      primary: '#0066cc', // Strong blue
+      secondary: '#005299', // Darker blue
+      background: '#f5f7fa', // Light gray-blue
+      surface: '#e9ecf1', // Slightly darker gray-blue
+      text: '#1a1f36', // Near black
+      border: '#d1d5db', // Medium gray
+    },
+    dark: {
+      primary: '#2684ff', // Bright blue
+      secondary: '#1c64f2', // Vivid blue
+      background: '#111827', // Very dark blue-gray
+      surface: '#1f2937', // Dark blue-gray
+      text: '#f3f4f6', // Off white
+      border: '#374151', // Medium dark gray
+    },
   }
 } as const;
 

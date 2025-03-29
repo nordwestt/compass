@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, Switch } from "react-native";
 import { Provider } from "@/src/types/core";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
 import { ScrollView } from "react-native-gesture-handler";

@@ -1,0 +1,432 @@
+import { Character, Provider, Model } from '@/src/types/core';
+import { toastService } from '@/src/services/toastService';
+import LogService from '@/utils/LogService';
+import { getProxyUrl } from '@/src/utils/proxy';
+
+/**
+ * PolarisServer handles communication with the Compass server
+ * for syncing characters, providers, and models.
+ */
+export class PolarisServer {
+  private serverUrl: string;
+  private apiKey: string;
+  private isConnected: boolean = false;
+
+  constructor(serverUrl: string = '', apiKey: string = '') {
+    this.serverUrl = serverUrl;
+    this.apiKey = apiKey;
+  }
+
+  /**
+   * Initialize connection to the server
+   */
+  async connect(serverUrl: string, apiKey: string): Promise<boolean> {
+    try {
+      this.serverUrl = serverUrl;
+      this.apiKey = apiKey;
+      
+      // Validate connection
+      const response = await this.makeRequest('/api/admin/validate', 'GET');
+      this.isConnected = response.success;
+      
+      if (this.isConnected) {
+        toastService.success({
+          title: 'Connected to Server',
+          description: 'Successfully connected to Polaris server'
+        });
+      }
+      
+      return this.isConnected;
+    } catch (error) {
+      if (error instanceof Error) {
+        this.isConnected = false;
+        toastService.danger({
+          title: 'Connection Failed',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Connection Failed',
+          description: 'Unknown error'
+        });
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Check if connected to server
+   */
+  isServerConnected(): boolean {
+    return this.isConnected;
+  }
+
+  /**
+   * Get server connection info
+   */
+  getConnectionInfo() {
+    return {
+      serverUrl: this.serverUrl,
+      isConnected: this.isConnected
+    };
+  }
+
+  // ===== CHARACTER OPERATIONS =====
+
+  /**
+   * Get all characters from the server
+   */
+  async getCharacters(): Promise<Character[]> {
+    try {
+      const response = await this.makeRequest('/api/admin/characters', 'GET');
+      return response.characters.map((char: any) => ({
+        ...char,
+        isServerResource: true,
+        isSynced: true,
+        serverResourceId: char.id
+      }));
+    } catch (error) {
+      if (error instanceof Error) {
+        LogService.log(error, { component: 'PolarisServer', function: 'getCharacters' }, 'error');
+      }
+      return [];
+    }
+  }
+
+  /**
+   * Get a specific character from the server
+   */
+  async getCharacter(id: string): Promise<Character | null> {
+    try {
+      const response = await this.makeRequest(`/api/admin/characters/${id}`, 'GET');
+      return {
+        ...response.character,
+        isServerResource: true,
+        isSynced: true,
+        serverResourceId: response.character.id
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Create a new character on the server
+   */
+  async createCharacter(character: Character): Promise<Character | null> {
+    try {
+      const payload = {
+        name: character.name,
+        content: character.content,
+        icon: character.icon,
+        image: character.image,
+        documentIds: character.documentIds,
+        modelPreferences: character.modelPreferences
+      };
+      
+      const response = await this.makeRequest('/api/admin/characters', 'POST', payload);
+      
+      return {
+        ...character,
+        id: response.id,
+        isServerResource: true,
+        isSynced: true,
+        serverResourceId: response.id
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Update an existing character on the server
+   */
+  async updateCharacter(character: Character): Promise<Character | null> {
+    try {
+      const serverId = character.serverResourceId || character.id;
+      const payload = {
+        name: character.name,
+        content: character.content,
+        icon: character.icon,
+        image: character.image,
+        documentIds: character.documentIds,
+        modelPreferences: character.modelPreferences
+      };
+      
+      await this.makeRequest(`/api/admin/characters/${serverId}`, 'PUT', payload);
+      
+      return {
+        ...character,
+        isServerResource: true,
+        isSynced: true,
+        lastSyncedAt: Date.now()
+      };
+    } catch (error) {
+        if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Delete a character from the server
+   */
+  async deleteCharacter(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/characters/${id}`, 'DELETE');
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return false;
+    }
+  }
+
+  // ===== PROVIDER OPERATIONS =====
+
+  /**
+   * Get all providers from the server
+   */
+  async getProviders(): Promise<Provider[]> {
+    try {
+      const response = await this.makeRequest('/api/admin/providers', 'GET');
+      return response.providers.map((provider: any) => ({
+        ...provider,
+        isServerResource: true,
+        isSynced: true,
+        serverResourceId: provider.id
+      }));
+    } catch (error) {
+      if (error instanceof Error) {
+        LogService.log(error, { component: 'PolarisServer', function: 'getProviders' }, 'error');
+      }
+      return [];
+    }
+  }
+
+  /**
+   * Create a new provider on the server
+   */
+  async createProvider(provider: Provider): Promise<Provider | null> {
+    try {
+      // Don't send the API key in the payload if it's sensitive
+      const payload = {
+        name: provider.name,
+        endpoint: provider.endpoint,
+        capabilities: provider.capabilities,
+        logo: provider.logo,
+        apiKey: provider.apiKey // Note: This will be stored securely on the server
+      };
+      
+      const response = await this.makeRequest('/api/admin/providers', 'POST', payload);
+      
+      return {
+        ...provider,
+        id: response.id,
+        isServerResource: true,
+        isSynced: true,
+        serverResourceId: response.id
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Update an existing provider on the server
+   */
+  async updateProvider(provider: Provider): Promise<Provider | null> {
+    try {
+      const serverId = provider.serverResourceId || provider.id;
+      const payload = {
+        name: provider.name,
+        endpoint: provider.endpoint,
+        capabilities: provider.capabilities,
+        logo: provider.logo,
+        apiKey: provider.apiKey // Include API key for updates
+      };
+      
+      await this.makeRequest(`/api/admin/providers/${serverId}`, 'PUT', payload);
+      
+      return {
+        ...provider,
+        isServerResource: true,
+        isSynced: true,
+        lastSyncedAt: Date.now()
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Delete a provider from the server
+   */
+  async deleteProvider(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/providers/${id}`, 'DELETE');
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return false;
+    }
+  }
+
+  // ===== MODEL OPERATIONS =====
+
+  /**
+   * Get all models from the server
+   */
+  async getModels(): Promise<Model[]> {
+    try {
+      const response = await this.makeRequest('/api/admin/models', 'GET');
+      return response.models.map((model: any) => ({
+        ...model,
+        isServerResource: true,
+        isSynced: true,
+        serverResourceId: model.id
+      }));
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return [];
+    }
+  }
+
+  // ===== HELPER METHODS =====
+
+  /**
+   * Make a request to the server
+   */
+  private async makeRequest(
+    endpoint: string, 
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE', 
+    data?: any
+  ): Promise<any> {
+    if (!this.serverUrl && method !== 'GET') {
+      throw new Error('Server URL not configured');
+    }
+
+    try {
+      const url = await getProxyUrl(`${this.serverUrl}${endpoint}`);
+      
+      const options: RequestInit = {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`
+        }
+      };
+
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
+
+      const response = await fetch(url, options);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Server returned ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      throw error;
+    }
+  }
+}
+
+// Export a singleton instance
+export default new PolarisServer();

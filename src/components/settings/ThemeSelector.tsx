@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
-
+import { useAtom } from 'jotai';
+import { syncToPolarisAtom } from '@/src/hooks/atoms';
 export interface ThemeSelectorProps {
   className?: string;
 }
@@ -13,7 +14,7 @@ export function ThemeSelector({ className }: ThemeSelectorProps) {
     <View className={`p-4 flex-1 bg-background ${className}`}>
       <Text className="text-lg font-bold text-text mb-4">Theme</Text>
       <View className="flex-row flex-wrap md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {availableThemes.map((t) => (
+        {availableThemes.filter(t => t !== 'polaris').map((t) => (
           <TouchableOpacity
             key={t}
             onPress={() => setThemePreset(t)}

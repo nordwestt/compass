@@ -2,6 +2,8 @@ import { View, ScrollView, TouchableOpacity, Text } from 'react-native';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ComponentProps } from 'react';
+import { syncToPolarisAtom } from '@/src/hooks/atoms';
+import { useAtom } from 'jotai';
 
 interface SettingItemProps {
   title: string;
@@ -28,6 +30,9 @@ const SettingItem = ({ title, description, icon, onPress, className }: SettingIt
 );
 
 export default function SettingsScreen() {
+
+  const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
+
   return (
     <ScrollView className="flex-1 bg-background p-4">
       <View className="mb-6">
@@ -55,12 +60,12 @@ export default function SettingsScreen() {
           onPress={() => router.push('/settings/providers')}
         />
 
-        <SettingItem
+        {!syncToPolaris && <SettingItem
           title="Theme"
           description="Choose your preferred color scheme"
           icon="color-palette"
           onPress={() => router.push('/settings/theme')}
-        />
+        />}
 
         <SettingItem
           title="Logs"

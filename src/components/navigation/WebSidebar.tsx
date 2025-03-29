@@ -1,14 +1,14 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Switch } from 'react-native';
 import { TabBarIcon } from './TabBarIcon';
 import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
 import { useColorScheme } from 'nativewind';
 import { routes } from '@/app/(tabs)/_layout';
-import { currentIndexAtom } from '@/src/hooks/atoms';
+import { currentIndexAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
 import { useRouter } from 'expo-router';
-
+import { Ionicons } from '@expo/vector-icons';
 interface Route {
   key: string;
   title: string;
@@ -20,8 +20,21 @@ export function WebSidebar({ className }: { className?: string }) {
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
   const router = useRouter();
   const { colorScheme } = useColorScheme();
-  const { themePreset } = useThemePreset();
+  const { themePreset, setThemePreset, availableThemes } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
+
+  const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
+
+
+  const handleSetPolarisMode = (value: boolean) => {
+    setSyncToPolaris(value);
+    if (value) {
+      setThemePreset('polaris');
+    }
+    else{
+      setThemePreset(availableThemes[0]);
+    }
+  }
 
   return (
     <View className={`group h-full bg-background ${className}`}>
@@ -52,6 +65,19 @@ export function WebSidebar({ className }: { className?: string }) {
           </Text>
         </Pressable>
       ))}
+      <Pressable className="mt-auto mb-4" onPress={() => handleSetPolarisMode(!syncToPolaris)}>
+        <View className="flex-col">
+          <View className="flex-row items-center justify-start">
+            <Ionicons name={syncToPolaris ? "cloud" : "cloud-outline"} size={24} className={`mx-auto ${syncToPolaris ? 'text-primary' : 'text-text'}`} />
+          </View>
+          <Switch className="mx-auto"
+              value={syncToPolaris}
+              onValueChange={(value) => handleSetPolarisMode(value)}
+              trackColor={{ true: theme.primary }}
+              thumbColor={theme.surface}
+            />
+          </View>
+      </Pressable>
     </View>
   );
 } 
