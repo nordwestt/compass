@@ -33,39 +33,6 @@ export default function CharactersScreen() {
     loadCharacters();
   }, [characters]);
 
-  const saveCharacters = async (characters: Character[]) => {
-    try {
-      await saveCharacters(characters);
-    } catch (error) {
-      console.error('Error saving characters:', error);
-    }
-  };
-
-  const handleSyncToServer = async (character: Character) => {
-    const updatedCharacter = await CharacterService.syncCharacterToServer(character);
-    if (updatedCharacter) {
-      const updatedCharacters = characters.map(c => 
-        c.id === character.id ? updatedCharacter : c
-      );
-      setCharacters(updatedCharacters);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    const confirmed = await modalService.confirm({
-      title: 'Delete Character',
-      message: 'Are you sure you want to delete this character?'
-    });
-
-    if (confirmed) {
-      const success = await CharacterService.deleteCharacter(id);
-      if (success) {
-        const updated = characters.filter(p => p.id !== id);
-        setCharacters(updated);
-      }
-    }
-  };
-
   const handleEdit = (prompt: Character) => {
     if (Platform.OS == 'web') {
       if (editingCharacter?.id === prompt.id) {
