@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Pressable, Switch } from 'react-native';
 import { TabBarIcon } from './TabBarIcon';
 import { useThemePreset } from '@/src/components/ui/ThemeProvider';
@@ -9,6 +9,8 @@ import { currentIndexAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import CharacterService from '@/src/services/character/CharacterService';
+import { polarisCharactersAtom } from '@/src/hooks/atoms';
 interface Route {
   key: string;
   title: string;
@@ -22,9 +24,21 @@ export function WebSidebar({ className }: { className?: string }) {
   const { colorScheme } = useColorScheme();
   const { themePreset, setThemePreset, availableThemes } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
-
+  const [polarisCharacters, setPolarisCharacters] = useAtom(polarisCharactersAtom);
   const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
 
+  useEffect(() => {
+    const fetchCharacters = async () => {
+      if(syncToPolaris){
+        console.log('syncToPolaris', syncToPolaris);
+        const characters = await CharacterService.getCharacters();
+        console.log('characters', characters);
+        setPolarisCharacters(characters);
+      }
+    };
+    fetchCharacters();
+    
+  }, [syncToPolaris]);
 
   const handleSetPolarisMode = (value: boolean) => {
     setSyncToPolaris(value);

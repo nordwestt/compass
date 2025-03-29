@@ -155,7 +155,8 @@ export const chatActionsAtom = atom(
   }
 )
 
-export const userCharactersAtom = atomWithAsyncStorage<Character[]>('userCharacters', [])
+export const userCharactersAtom = atomWithAsyncStorage<Character[]>('userCharacters', []);
+export const polarisCharactersAtom = atom<Character[]>([]);
 
 // Update the charactersAtom to be dynamic based on syncToPolaris
 export const charactersAtom = atom(
@@ -164,7 +165,7 @@ export const charactersAtom = atom(
     
     if (syncToPolaris) {
       // Return characters from the service which will handle server fetching
-      return await CharacterService.getCharacters();
+      return await get(polarisCharactersAtom);
     } else {
       // Use the existing atomWithAsyncStorage implementation for local-only mode
       return await get(userCharactersAtom);
@@ -178,6 +179,8 @@ export const charactersAtom = atom(
       for (const character of characters) {
         await CharacterService.saveCharacter(character);
       }
+      const updatedCharacters = await CharacterService.getCharacters();
+      set(polarisCharactersAtom, updatedCharacters);
     } else {
       // Use the existing atomWithAsyncStorage implementation for local-only mode
       await set(userCharactersAtom, characters);
