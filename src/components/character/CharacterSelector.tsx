@@ -45,18 +45,15 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   }, []);
 
   const isCharacterCompatible = (character: Character): boolean => {
-    if (!character.modelPreferences || character.modelPreferences.length === 0) {
+    if (!character.allowedModelIds || character.allowedModelIds.length === 0) {
       return true; // No preferences means compatible with any model
     }
-    
-    const requiredPreferences = character.modelPreferences.filter(p => p.level === 'required');
-    if (requiredPreferences.length === 0) {
-      return true; // Only preferred models, so still compatible
-    }
+
+    console.log("Character", character);
     
     // Check if any required model is available
-    return requiredPreferences.some(pref => 
-      availableModels.some(model => model.id === pref.modelId)
+    return character.allowedModelIds.some(modelId => 
+      availableModels.some(availableModel => availableModel.id === modelId)
     );
   };
 

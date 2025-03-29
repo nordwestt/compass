@@ -16,9 +16,10 @@ export class CharacterService {
    * Get all available characters
    */
   static async getCharacters(): Promise<Character[]> {
-    return [];
     try {
       const syncToPolaris = await getDefaultStore().get(syncToPolarisAtom);
+
+      await PolarisServer.connect("http://localhost:3000", "your_api_key_here");
       
       // If syncing to Polaris and connected, get characters from server
       if (syncToPolaris && PolarisServer.isServerConnected()) {

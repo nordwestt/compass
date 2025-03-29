@@ -167,17 +167,16 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   const getCompatibleModels = (character: Character | undefined, availableModels: Model[]): Model[] => {
     // If character has no model preferences, any model is compatible
-    if (!character?.modelPreferences || character.modelPreferences.length === 0) {
+    if (!character?.allowedModelIds || character.allowedModelIds.length === 0) {
       return availableModels; // Null means any model is compatible
     }
 
-    console.log("Character preferences", character.modelPreferences);
+    console.log("Character preferences", character.allowedModelIds);
 
     // Check for required models first
-    const requiredPreferences = character.modelPreferences.filter(p => p.level === 'required');
-    if (requiredPreferences.length > 0) {
+    if (character.allowedModelIds?.length > 0) {
       // Find the first available required model
-      return availableModels.filter(m => requiredPreferences.some(p => p.modelId === m.id));
+      return availableModels.filter(m => character.allowedModelIds?.some(p => p === m.id));
     }
 
     return [];

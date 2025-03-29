@@ -31,7 +31,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   useEffect(() => {
     let chara = id 
       ? customPrompts.find(p => p.id === id) 
-      : { name: '', content: '', icon: 'person', modelPreferences: [] };
+      : { name: '', content: '', icon: 'person', allowedModelIds: [] };
 
     setCharacter(chara as Character);
     setUseIcon(!!chara?.icon);
@@ -58,33 +58,32 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     setCharacter({ ...character!, image: imageUri });
   };
 
-  const handleModelPreferenceAdd = (modelId: string, level: 'preferred' | 'required') => {
-    const newPreference: ModelPreference = { modelId, level };
-    const currentPreferences = character?.modelPreferences || [];
+  const handleAllowedModelAdd = (modelId: string) => {
+    const currentAllowedModelIds = character?.allowedModelIds || [];
     
     // Check if this model already has a preference
-    const existingIndex = currentPreferences.findIndex(p => p.modelId === modelId);
+    const existingIndex = currentAllowedModelIds.findIndex(p => p === modelId);
     
     if (existingIndex >= 0) {
       // Update existing preference
-      const updatedPreferences = [...currentPreferences];
-      updatedPreferences[existingIndex] = newPreference;
-      setCharacter({ ...character!, modelPreferences: updatedPreferences });
+      const updatedAllowedModelIds = [...currentAllowedModelIds];
+      updatedAllowedModelIds[existingIndex] = modelId;
+      setCharacter({ ...character!, allowedModelIds: updatedAllowedModelIds });
     } else {
       // Add new preference
       setCharacter({ 
         ...character!, 
-        modelPreferences: [...currentPreferences, newPreference] 
+        allowedModelIds: [...currentAllowedModelIds, modelId] 
       });
     }
   };
 
-  const handleModelPreferenceRemove = (modelId: string) => {
-    if (!character?.modelPreferences) return;
+  const handleAllowedModelRemove = (modelId: string) => {
+    if (!character?.allowedModelIds) return;
     
     setCharacter({
       ...character,
-      modelPreferences: character.modelPreferences.filter(p => p.modelId !== modelId)
+      allowedModelIds: character.allowedModelIds.filter(p => p !== modelId)
     });
   };
 
@@ -103,7 +102,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             image: useIcon ? undefined : (character?.image || p.image),
             icon: useIcon ? character?.icon : undefined,
             documentIds: character?.documentIds || [],
-            modelPreferences: character?.modelPreferences || []
+            allowedModelIds: character?.allowedModelIds || []
           } : p
         );
       } else {
@@ -115,7 +114,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
           icon: useIcon ? character?.icon : undefined,
           documentIds: character?.documentIds || [],
-          modelPreferences: character?.modelPreferences || []
+          allowedModelIds: character?.allowedModelIds || []
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
@@ -205,9 +204,9 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           
           <ModelPreferenceSelector
             availableModels={availableModels}
-            selectedPreferences={character?.modelPreferences || []}
-            onAddPreference={handleModelPreferenceAdd}
-            onRemovePreference={handleModelPreferenceRemove}
+            selectedPreferences={character?.allowedModelIds || []}
+            onAddPreference={handleAllowedModelAdd}
+            onRemovePreference={handleAllowedModelRemove}
           />
           
           <DocumentSelector

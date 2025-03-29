@@ -40,7 +40,7 @@ export interface Character {
   icon?: string;
   documentIds?: string[];
   voice?: Voice;
-  modelPreferences?: ModelPreference[];
+  allowedModelIds?: string[];
 }
 
 export interface Voice {

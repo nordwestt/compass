@@ -6,8 +6,8 @@ import { Modal } from '@/src/components/ui/Modal';
 import { Image } from 'react-native';
 interface ModelPreferenceSelectorProps {
   availableModels: Model[];
-  selectedPreferences: ModelPreference[];
-  onAddPreference: (modelId: string, level: 'preferred' | 'required') => void;
+  selectedPreferences: string[];
+  onAddPreference: (modelId: string) => void;
   onRemovePreference: (modelId: string) => void;
 }
 
@@ -22,7 +22,7 @@ export function ModelPreferenceSelector({
 
   const handleAddPreference = () => {
     if (selectedModelId) {
-      onAddPreference(selectedModelId, 'required');
+      onAddPreference(selectedModelId);
       setIsModalVisible(false);
       setSelectedModelId(null);
     }
@@ -48,9 +48,9 @@ export function ModelPreferenceSelector({
         ) : (
           <View className="space-y-2">
             {selectedPreferences.map(preference => {
-              const model = getModelById(preference.modelId);
+              const model = getModelById(preference);
               return (
-                <View key={preference.modelId} className="flex-row items-center justify-between bg-background p-3 rounded-lg">
+                <View key={preference} className="flex-row items-center justify-between bg-background p-3 rounded-lg">
                   <View className="flex-row items-center">
                     {model?.provider?.logo && (
                       <Image
@@ -59,7 +59,7 @@ export function ModelPreferenceSelector({
                     />
                     )}
                     <View>
-                      <Text className="text-text font-medium">{model?.name || preference.modelId}</Text>
+                      <Text className="text-text font-medium">{model?.name || preference}</Text>
                       <View className="flex-row items-center">
                         <View className={`w-2 h-2 rounded-full bg-green-500 mr-1`} />
                         <Text className="text-secondary text-xs">Allowed</Text>
@@ -67,7 +67,7 @@ export function ModelPreferenceSelector({
                     </View>
                   </View>
                   <TouchableOpacity 
-                    onPress={() => onRemovePreference(preference.modelId)}
+                    onPress={() => onRemovePreference(preference)}
                     className="p-2 bg-red-100 dark:bg-red-900 rounded-full"
                   >
                     <Ionicons name="close" size={16} className="!text-red-500 dark:!text-red-300" />
