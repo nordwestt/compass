@@ -1,7 +1,7 @@
 import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { View, TextInput, Pressable, Text, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { allPromptsAtom, editingMessageIndexAtom } from '@/src/hooks/atoms';
+import { charactersAtom, editingMessageIndexAtom } from '@/src/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
 import { CharacterMentionPopup } from '@/src/components/character/CharacterMentionPopup';
 import { Character } from '@/src/types/core';
@@ -30,7 +30,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   const [mentionedCharacters, setMentionedCharacters] = useState<MentionedCharacter[]>([]);
   const [cursorPosition, setCursorPosition] = useState(0);
   const inputRef = useRef<TextInput>(null);
-  const allCharacters = useAtomValue(allPromptsAtom);
+  const allCharacters = useAtomValue(charactersAtom);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);

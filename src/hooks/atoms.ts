@@ -153,9 +153,7 @@ export const chatActionsAtom = atom(
 
 // Add these new atoms
 export const charactersAtom = atomWithAsyncStorage<Character[]>('characters', [])
-export const allPromptsAtom = atom(
-  async (get) => [...PREDEFINED_PROMPTS, ...(await get(charactersAtom))]
-)
+
 export const modalStateAtom = atom<{
   isVisible: boolean;
   type: 'confirm' | 'prompt';
