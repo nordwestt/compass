@@ -27,9 +27,9 @@ export interface Model {
   provider: Provider;
 }
 
-export interface ModelPreference {
-  modelId: string;
-  level: 'preferred' | 'required';
+export interface AllowedModel {
+  id: string;
+  priority: number;
 }
 
 export interface Character {
@@ -40,7 +40,7 @@ export interface Character {
   icon?: string;
   documentIds?: string[];
   voice?: Voice;
-  allowedModelIds?: string[];
+  allowedModels?: AllowedModel[];
 }
 
 export interface Voice {

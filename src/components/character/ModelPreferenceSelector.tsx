@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { Model, ModelPreference } from '@/src/types/core';
+import { Model, AllowedModel } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Modal } from '@/src/components/ui/Modal';
 import { Image } from 'react-native';
 interface ModelPreferenceSelectorProps {
   availableModels: Model[];
-  selectedPreferences: string[];
-  onAddPreference: (modelId: string) => void;
-  onRemovePreference: (modelId: string) => void;
+  selectedPreferences: AllowedModel[];
+  onAddPreference: (model: AllowedModel) => void;
+  onRemovePreference: (model: AllowedModel) => void;
 }
 
 export function ModelPreferenceSelector({
@@ -22,7 +22,7 @@ export function ModelPreferenceSelector({
 
   const handleAddPreference = () => {
     if (selectedModelId) {
-      onAddPreference(selectedModelId);
+      onAddPreference({id: selectedModelId, priority: 0});
       setIsModalVisible(false);
       setSelectedModelId(null);
     }
@@ -48,9 +48,9 @@ export function ModelPreferenceSelector({
         ) : (
           <View className="space-y-2">
             {selectedPreferences.map(preference => {
-              const model = getModelById(preference);
+              const model = getModelById(preference.id);
               return (
-                <View key={preference} className="flex-row items-center justify-between bg-background p-3 rounded-lg">
+                <View key={preference.id} className="flex-row items-center justify-between bg-background p-3 rounded-lg">
                   <View className="flex-row items-center">
                     {model?.provider?.logo && (
                       <Image
@@ -59,7 +59,7 @@ export function ModelPreferenceSelector({
                     />
                     )}
                     <View>
-                      <Text className="text-text font-medium">{model?.name || preference}</Text>
+                      <Text className="text-text font-medium">{model?.name || preference.id}</Text>
                       <View className="flex-row items-center">
                         <View className={`w-2 h-2 rounded-full bg-green-500 mr-1`} />
                         <Text className="text-secondary text-xs">Allowed</Text>

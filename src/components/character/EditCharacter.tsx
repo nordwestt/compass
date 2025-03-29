@@ -3,7 +3,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { charactersAtom, saveCustomPrompts, availableModelsAtom } from '@/src/hooks/atoms';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Character, ModelPreference } from '@/src/types/core';
+import { AllowedModel, Character } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState, useEffect } from 'react';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
@@ -58,32 +58,32 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     setCharacter({ ...character!, image: imageUri });
   };
 
-  const handleAllowedModelAdd = (modelId: string) => {
-    const currentAllowedModelIds = character?.allowedModelIds || [];
+  const handleAllowedModelAdd = (model: AllowedModel) => {
+    const currentAllowedModels = character?.allowedModels || [];
     
     // Check if this model already has a preference
-    const existingIndex = currentAllowedModelIds.findIndex(p => p === modelId);
+    const existingIndex = currentAllowedModels.findIndex(p => p.id === model.id);
     
     if (existingIndex >= 0) {
       // Update existing preference
-      const updatedAllowedModelIds = [...currentAllowedModelIds];
-      updatedAllowedModelIds[existingIndex] = modelId;
-      setCharacter({ ...character!, allowedModelIds: updatedAllowedModelIds });
+      const updatedAllowedModelIds = [...currentAllowedModels];
+      updatedAllowedModelIds[existingIndex] = model;
+      setCharacter({ ...character!, allowedModels: updatedAllowedModelIds });
     } else {
       // Add new preference
       setCharacter({ 
         ...character!, 
-        allowedModelIds: [...currentAllowedModelIds, modelId] 
+        allowedModels: [...currentAllowedModels, model] 
       });
     }
   };
 
-  const handleAllowedModelRemove = (modelId: string) => {
-    if (!character?.allowedModelIds) return;
+  const handleAllowedModelRemove = (model: AllowedModel) => {
+    if (!character?.allowedModels) return;
     
     setCharacter({
       ...character,
-      allowedModelIds: character.allowedModelIds.filter(p => p !== modelId)
+      allowedModels: character.allowedModels.filter(p => p.id !== model.id)
     });
   };
 
@@ -102,7 +102,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             image: useIcon ? undefined : (character?.image || p.image),
             icon: useIcon ? character?.icon : undefined,
             documentIds: character?.documentIds || [],
-            allowedModelIds: character?.allowedModelIds || []
+            allowedModels: character?.allowedModels || []
           } : p
         );
       } else {
@@ -114,7 +114,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
           icon: useIcon ? character?.icon : undefined,
           documentIds: character?.documentIds || [],
-          allowedModelIds: character?.allowedModelIds || []
+          allowedModels: character?.allowedModels || []
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
@@ -204,7 +204,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           
           <ModelPreferenceSelector
             availableModels={availableModels}
-            selectedPreferences={character?.allowedModelIds || []}
+            selectedPreferences={character?.allowedModels || []}
             onAddPreference={handleAllowedModelAdd}
             onRemovePreference={handleAllowedModelRemove}
           />
