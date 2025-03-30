@@ -33,7 +33,7 @@ export function WebSidebar({ className }: { className?: string }) {
     const fetchCharacters = async () => {
       if(syncToPolaris){
 
-        
+
         console.log('syncToPolaris', syncToPolaris);
         const characters = await CharacterService.getCharacters();
         console.log('characters', characters);

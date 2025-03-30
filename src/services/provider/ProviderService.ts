@@ -121,31 +121,19 @@ export class ProviderService {
    */
   static async deleteProvider(id: string): Promise<boolean> {
     try {
-      const syncToPolaris = await getDefaultStore().get(syncToPolarisAtom);
-      const localProviders = await this.getLocalProviders();
-      const provider = localProviders.find(p => p.id === id);
       
-      if (!provider) {
+      console.log('deleting provider', id);
+      return true;
+      // If it's a server resource and we're syncing, delete from server
+      const success = await PolarisServer.deleteProvider(id);
+      
+      if (!success) {
+        toastService.danger({
+          title: 'Error',
+          description: 'Failed to delete provider from server'
+        });
         return false;
       }
-      
-      // If it's a server resource and we're syncing, delete from server
-      if (syncToPolaris && PolarisServer.isServerConnected() && provider.isServerResource) {
-        const serverId = provider.serverResourceId || provider.id;
-        const success = await PolarisServer.deleteProvider(serverId);
-        
-        if (!success) {
-          toastService.danger({
-            title: 'Error',
-            description: 'Failed to delete provider from server'
-          });
-          return false;
-        }
-      }
-      
-      // Always delete locally
-      const updatedProviders = localProviders.filter(p => p.id !== id);
-      await this.saveLocalProviders(updatedProviders);
       
       return true;
     } catch (error: any) {
