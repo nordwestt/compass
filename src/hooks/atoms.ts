@@ -175,6 +175,29 @@ export const charactersAtom = atom(
     const syncToPolaris = await get(syncToPolarisAtom);
     
     if (syncToPolaris) {
+
+      // Get current characters to compare for deletions
+      const existingCharacters = await get(polarisCharactersAtom);
+
+      // Find characters that exist in existingCharacters but not in the new characters array
+      const charactersToDelete = existingCharacters.filter(
+        existing => !characters.some(newChar => newChar.id === existing.id)
+      );
+
+      // Delete removed characters
+      for (const character of charactersToDelete) {
+        try {
+          await CharacterService.deleteCharacter(character.id);
+        } catch (error: any) {
+          LogService.log(error, { component: 'charactersAtom', function: 'setter' }, 'error');
+          toastService.danger({
+            title: 'Error',
+            description: `Failed to delete character: ${character.name}`
+          });
+        }
+      }
+
+
       // Save each character using the service
       for (const character of characters) {
         await CharacterService.saveCharacter(character);
