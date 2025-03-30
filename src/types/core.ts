@@ -41,6 +41,7 @@ export interface Character {
   documentIds?: string[];
   voice?: Voice;
   allowedModels?: AllowedModel[];
+  exposeAsModel?: boolean;
 }
 
 export interface Voice {

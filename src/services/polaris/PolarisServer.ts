@@ -132,7 +132,8 @@ export class PolarisServer {
         icon: character.icon,
         image: character.image,
         documentIds: character.documentIds,
-        allowedModels: character.allowedModels
+        allowedModels: character.allowedModels,
+        exposeAsModel: character.exposeAsModel
       };
       
       const response = await this.makeRequest('/api/admin/characters', 'POST', payload);
@@ -172,7 +173,8 @@ export class PolarisServer {
         icon: character.icon,
         image: character.image,
         documentIds: character.documentIds,
-        allowedModels: character.allowedModels
+        allowedModels: character.allowedModels,
+        exposeAsModel: character.exposeAsModel
       };
       
       await this.makeRequest(`/api/admin/characters/${serverId}`, 'PUT', payload);

@@ -12,7 +12,7 @@ import { toastService } from '@/src/services/toastService';
 import { IconSelector } from '@/src/components/character/IconSelector';
 import { DocumentSelector } from './DocumentSelector';
 import { ModelPreferenceSelector } from './ModelPreferenceSelector';
-
+import { Switch } from '@/src/components/ui/Switch';
 
 interface EditCharacterProps {  
   id: string | undefined;
@@ -102,7 +102,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             image: useIcon ? undefined : (character?.image || p.image),
             icon: useIcon ? character?.icon : undefined,
             documentIds: character?.documentIds || [],
-            allowedModels: character?.allowedModels || []
+            allowedModels: character?.allowedModels || [],
+            exposeAsModel: character?.exposeAsModel ?? false
           } : p
         );
       } else {
@@ -114,7 +115,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
           image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
           icon: useIcon ? character?.icon : undefined,
           documentIds: character?.documentIds || [],
-          allowedModels: character?.allowedModels || []
+          allowedModels: character?.allowedModels || [],
+          exposeAsModel: character?.exposeAsModel ?? false
         };
         updatedPrompts = [...customPrompts, newCharacter];
       }
@@ -202,12 +204,23 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
             />
           </View>
           
-          <ModelPreferenceSelector
-            availableModels={availableModels}
-            selectedPreferences={character?.allowedModels || []}
-            onAddPreference={handleAllowedModelAdd}
-            onRemovePreference={handleAllowedModelRemove}
-          />
+          <View>
+            <ModelPreferenceSelector
+              availableModels={availableModels}
+              selectedPreferences={character?.allowedModels || []}
+              onAddPreference={handleAllowedModelAdd}
+              onRemovePreference={handleAllowedModelRemove}
+            />
+            <View className="flex-row items-center justify-between">
+              <Text className="text-base font-medium mb-2 text-text">
+                Expose as Model
+              </Text>
+              <Switch className="mx-auto"
+                value={character?.exposeAsModel ?? false}
+                onValueChange={(value) => setCharacter({ ...character!, exposeAsModel: value })}
+              />
+            </View>
+          </View>
           
           <DocumentSelector
             selectedDocIds={character?.documentIds || []}
