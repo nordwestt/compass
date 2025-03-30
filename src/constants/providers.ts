@@ -2,8 +2,8 @@ import { Provider } from "@/src/types/core";
 import { PROVIDER_LOGOS } from "@/src/constants/logos";
 export const PREDEFINED_PROVIDERS = {
   compass:{
-    name: "Compass",
-    endpoint: "https://api.compass.com",
+    name: "Polaris",
+    endpoint: "http://localhost:3000",
     capabilities: {
       llm: true,
       tts: false,

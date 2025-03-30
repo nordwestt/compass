@@ -42,6 +42,8 @@ export class PolarisProvider implements ChatProvider {
         yield* streamOllamaResponse(url, {
           model: model.id,
           messages: newMessages
+        }, {
+          'Authorization': `Bearer ${this.provider.apiKey}`
         });
     }
     catch(error:any){
@@ -101,6 +103,7 @@ export class PolarisProvider implements ChatProvider {
     const response = await fetch(await getProxyUrl(`${this.provider.endpoint}/api/chat/characters`), {
       headers: {
         'Accept': 'application/json',
+        'Authorization': `Bearer ${this.provider.apiKey}`
       }
     });
     const data = await response.json();

@@ -71,12 +71,13 @@ export async function* streamOpenAIResponse(
 export async function* streamOllamaResponse(
   url: string,
   payload: any,
+  headers?: Record<string, string>,
   parseChunk: (parsed: any) => string = (parsed) => parsed.message?.content || '',signal?: AbortSignal
 ): AsyncGenerator<string> {
     
   const response =  await fetch(url, {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  headers: { 'Content-Type': 'application/json', ...headers },
   signal,
   body: JSON.stringify({
       ...payload,
@@ -93,6 +94,7 @@ export async function* streamOllamaResponse(
 
   while (true) {
     const { done, value } = await reader.read();
+    console.log("chunk", done, value);  
     if (done) break;
 
     const chunk = decoder.decode(value);
