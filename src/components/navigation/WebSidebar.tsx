@@ -10,7 +10,8 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import CharacterService from '@/src/services/character/CharacterService';
-import { polarisCharactersAtom } from '@/src/hooks/atoms';
+import { polarisCharactersAtom, polarisProvidersAtom } from '@/src/hooks/atoms';
+import ProviderService from '@/src/services/provider/ProviderService';
 interface Route {
   key: string;
   title: string;
@@ -25,15 +26,22 @@ export function WebSidebar({ className }: { className?: string }) {
   const { themePreset, setThemePreset, availableThemes } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
   const [polarisCharacters, setPolarisCharacters] = useAtom(polarisCharactersAtom);
+  const [polarisProviders, setPolarisProviders] = useAtom(polarisProvidersAtom);
   const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
 
   useEffect(() => {
     const fetchCharacters = async () => {
       if(syncToPolaris){
+
+        
         console.log('syncToPolaris', syncToPolaris);
         const characters = await CharacterService.getCharacters();
         console.log('characters', characters);
         setPolarisCharacters(characters);
+
+        const providers = await ProviderService.getProviders();
+        console.log('providers', providers);
+        setPolarisProviders(providers);
       }
     };
     fetchCharacters();

@@ -155,6 +155,10 @@ export const chatActionsAtom = atom(
   }
 )
 
+// ########################################
+// ############### Characters ###############
+// ########################################
+
 export const userCharactersAtom = atomWithAsyncStorage<Character[]>('userCharacters', []);
 export const polarisCharactersAtom = atom<Character[]>([]);
 
@@ -211,7 +215,12 @@ export const charactersAtom = atom(
   }
 );
 
+// ########################################
+// ############### Providers ###############
+// ########################################
+
 export const userProvidersAtom = atomWithAsyncStorage<Provider[]>('userProviders', [])
+export const polarisProvidersAtom = atom<Provider[]>([]);
 
 // Similarly update the availableProvidersAtom
 export const availableProvidersAtom = atom(
@@ -220,7 +229,7 @@ export const availableProvidersAtom = atom(
     
     if (syncToPolaris) {
       // Return providers from the service which will handle server fetching
-      return await ProviderService.getProviders();
+      return await get(polarisProvidersAtom);
     } else {
       // Use the existing atomWithAsyncStorage implementation for local-only mode
       return await get(userProvidersAtom);
@@ -230,6 +239,27 @@ export const availableProvidersAtom = atom(
     const syncToPolaris = await get(syncToPolarisAtom);
     
     if (syncToPolaris) {
+      // Get current providers to compare for deletions
+      const existingProviders = await get(polarisProvidersAtom);
+
+      // Find providers that exist in existingProviders but not in the new providers array
+      const providersToDelete = existingProviders.filter(
+        existing => !providers.some(newProvider => newProvider.id === existing.id)
+      );
+
+      // Delete removed providers
+      for (const provider of providersToDelete) {
+        try {
+          await ProviderService.deleteProvider(provider.id);
+        } catch (error: any) {
+          LogService.log(error, { component: 'providersAtom', function: 'setter' }, 'error');
+          toastService.danger({
+            title: 'Error',
+            description: `Failed to delete provider: ${provider.name}`
+          });
+        }
+      }
+
       // Save each provider using the service
       for (const provider of providers) {
         await ProviderService.saveProvider(provider);

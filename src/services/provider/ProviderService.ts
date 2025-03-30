@@ -16,9 +16,12 @@ export class ProviderService {
    * Get all available providers
    */
   static async getProviders(): Promise<Provider[]> {
-    return [];
     try {
       const syncToPolaris = await getDefaultStore().get(syncToPolarisAtom);
+
+      if(syncToPolaris && !PolarisServer.isServerConnected()){
+        await PolarisServer.connect("http://localhost:3000", "your_api_key_here");
+      }
       
       // If syncing to Polaris and connected, get providers from server
       if (syncToPolaris && PolarisServer.isServerConnected()) {

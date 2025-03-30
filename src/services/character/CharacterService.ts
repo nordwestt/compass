@@ -19,7 +19,9 @@ export class CharacterService {
     try {
       const syncToPolaris = await getDefaultStore().get(syncToPolarisAtom);
 
-      await PolarisServer.connect("http://localhost:3000", "your_api_key_here");
+      if(syncToPolaris && !PolarisServer.isServerConnected()){
+        await PolarisServer.connect("http://localhost:3000", "your_api_key_here");
+      }
       
       // If syncing to Polaris and connected, get characters from server
       if (syncToPolaris && PolarisServer.isServerConnected()) {
@@ -44,6 +46,10 @@ export class CharacterService {
   static async saveCharacter(character: Character): Promise<Character | null> {
     try {
       const syncToPolaris = await getDefaultStore().get(syncToPolarisAtom);
+
+      if(syncToPolaris && !PolarisServer.isServerConnected()){
+        await PolarisServer.connect("http://localhost:3000", "your_api_key_here");
+      }
       
       // If syncing to Polaris and connected, save to server
       if (syncToPolaris && PolarisServer.isServerConnected()) {
