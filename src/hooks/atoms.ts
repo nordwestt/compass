@@ -264,6 +264,9 @@ export const availableProvidersAtom = atom(
       for (const provider of providers) {
         await ProviderService.saveProvider(provider);
       }
+
+      const updatedProviders = await ProviderService.getProviders();
+      set(polarisProvidersAtom, updatedProviders);
     } else {
       // Use the existing atomWithAsyncStorage implementation for local-only mode
       await set(userProvidersAtom, providers);
