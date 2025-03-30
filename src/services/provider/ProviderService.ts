@@ -23,27 +23,7 @@ export class ProviderService {
         await PolarisServer.connect("http://localhost:3000", "your_api_key_here");
       }
       
-      // If syncing to Polaris and connected, get providers from server
-      if (syncToPolaris && PolarisServer.isServerConnected()) {
-        const serverProviders = await PolarisServer.getProviders();
-        
-        // Get local providers that aren't on the server
-        const localProviders = await this.getLocalProviders();
-        const localOnlyProviders = localProviders.filter(
-          local => !serverProviders.some(server => server.id === local.id || server.serverResourceId === local.id)
-        );
-        
-        // Combine server and local-only providers
-        const allProviders = [...serverProviders, ...localOnlyProviders];
-        
-        // Update local storage with the combined list
-        await this.saveLocalProviders(allProviders);
-        
-        return allProviders;
-      } else {
-        // Just get local providers
-        return await this.getLocalProviders();
-      }
+      return await PolarisServer.getProviders();
     } catch (error: any) {
       LogService.log(error, { component: 'ProviderService', function: 'getProviders' }, 'error');
       toastService.danger({

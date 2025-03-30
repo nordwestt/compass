@@ -41,6 +41,7 @@ export function WebSidebar({ className }: { className?: string }) {
 
         const providers = await ProviderService.getProviders();
         console.log('providers', providers);
+        
         setPolarisProviders(providers);
       }
     };
