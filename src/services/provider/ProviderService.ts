@@ -53,39 +53,9 @@ export class ProviderService {
           serverProvider = await PolarisServer.createProvider(provider);
         }
         
-        if (serverProvider) {
-          // Update local storage with the server provider
-          const localProviders = await this.getLocalProviders();
-          const updatedProviders = localProviders.map(p => 
-            p.id === provider.id ? serverProvider : p
-          );
-          
-          if (!updatedProviders.some(p => p.id === provider.id)) {
-            updatedProviders.push(serverProvider);
-          }
-          
-          await this.saveLocalProviders(updatedProviders);
-          return serverProvider;
-        }
-        return null;
-      } else {
-        // Save locally
-        const localProviders = await this.getLocalProviders();
-        
-        // Generate ID if it's a new provider
-        if (!provider.id) {
-          provider.id = Date.now().toString();
-        }
-        
-        // Update or add the provider
-        const providerExists = localProviders.some(p => p.id === provider.id);
-        const updatedProviders = providerExists
-          ? localProviders.map(p => p.id === provider.id ? provider : p)
-          : [...localProviders, provider];
-        
-        await this.saveLocalProviders(updatedProviders);
-        return provider;
-      }
+        return serverProvider;
+      } 
+      return null;
     } catch (error: any) {
       LogService.log(error, { component: 'ProviderService', function: 'saveProvider' }, 'error');
       toastService.danger({
@@ -102,12 +72,17 @@ export class ProviderService {
   static async deleteProvider(id: string): Promise<boolean> {
     try {
       
-      console.log('deleting provider', id);
-      return true;
       // If it's a server resource and we're syncing, delete from server
       const success = await PolarisServer.deleteProvider(id);
       
-      if (!success) {
+      if(success){
+        toastService.success({
+          title: 'Deleted',
+          description: 'Provider deleted from server'
+        });
+        return true;
+      }
+      else {
         toastService.danger({
           title: 'Error',
           description: 'Failed to delete provider from server'

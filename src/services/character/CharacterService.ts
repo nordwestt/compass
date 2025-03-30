@@ -106,7 +106,14 @@ export class CharacterService {
         const serverId = character.serverResourceId || character.id;
         const success = await PolarisServer.deleteCharacter(serverId);
         
-        if (!success) {
+        if(success){
+          toastService.success({
+            title: 'Deleted',
+            description: 'Character deleted from server'
+          });
+          return true;
+        }
+        else {
           toastService.danger({
             title: 'Error',
             description: 'Failed to delete character from server'
@@ -114,10 +121,6 @@ export class CharacterService {
           return false;
         }
       }
-      
-      // Always delete locally
-      const updatedCharacters = localCharacters.filter(c => c.id !== id);
-      await this.saveLocalCharacters(updatedCharacters);
       
       return true;
     } catch (error: any) {
