@@ -17,7 +17,7 @@ import {Platform as PlatformCust} from '@/src/utils/platform';
 import {streamOllamaResponse} from '@/src/services/chat/streamUtils';
 
 
-export class CompassProvider implements ChatProvider {
+export class PolarisProvider implements ChatProvider {
   provider: Provider;
   constructor(provider: Provider) {
     this.provider = provider;
@@ -37,12 +37,11 @@ export class CompassProvider implements ChatProvider {
     }
 
     try{
-        let url = `${model.provider.endpoint}/api/chat`;
+        let url = `${model.provider.endpoint}/api/chat/stream`;
         if(PlatformCust.isTauri) url = await getProxyUrl(url);
         yield* streamOllamaResponse(url, {
           model: model.id,
-          messages: newMessages,
-          stream: true
+          messages: newMessages
         });
     }
     catch(error:any){
@@ -53,39 +52,7 @@ export class CompassProvider implements ChatProvider {
 
 
   async sendSimpleMessage(message: string, model: Model, systemPrompt: string): Promise<string> {
-    let url = `${model.provider.endpoint}/api/chat`;
-    if(PlatformCust.isTauri) url = await getProxyUrl(url);
-
-    if(!PlatformCust.isMobile){
-    const ollama = createOllama({
-      // optional settings, e.g.
-      baseURL: model.provider.endpoint+'/api',
-      fetch: expoFetch as unknown as typeof globalThis.fetch,
-    });
-
-    const result = await generateText({
-      model: ollama(model.id),
-      messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: message }]
-    });
-
-    return result.text;
-  }
-
-    if(PlatformCust.isTauri) url = await getProxyUrl(url);
-    let response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: model.id,
-        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: message }],
-        stream: false
-      }),
-    });
-    let data = await response.json();
-    if(!data?.message){
-      throw new Error(`Unexpected format: ${data}`);
-    }
-    return data.message.content;
+    return "Test message";
   }
 
   
@@ -131,16 +98,16 @@ export class CompassProvider implements ChatProvider {
 
   async getAvailableModels(): Promise<string[]> {
 
-    const ollamaResponse = await fetch(await getProxyUrl(`${this.provider.endpoint}/api/tags`), {
+    const response = await fetch(await getProxyUrl(`${this.provider.endpoint}/api/chat/characters`), {
       headers: {
         'Accept': 'application/json',
       }
     });
-    const ollamaData = await ollamaResponse.json();
+    const data = await response.json();
     
-    if (!(ollamaData && Array.isArray(ollamaData.models))) return [];
-    return ollamaData.models
-      .filter((model: any) => model && typeof model.name === 'string')
-      .map((model: any) => model.name);
+    if (!(data && Array.isArray(data))) return [];
+    return data
+      .filter((character: any) => character && typeof character.name === 'string')
+      .map((character: any) => character.name);
   }
 } 

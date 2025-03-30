@@ -29,6 +29,7 @@ export interface Model {
 
 export interface AllowedModel {
   id: string;
+  providerId: string;
   priority: number;
 }
 

@@ -22,7 +22,7 @@ export function ModelPreferenceSelector({
 
   const handleAddPreference = () => {
     if (selectedModelId) {
-      onAddPreference({id: selectedModelId, priority: 0});
+      onAddPreference({id: selectedModelId, providerId: availableModels.find(model => model.id === selectedModelId)?.provider.id ?? '', priority: 0});
       setIsModalVisible(false);
       setSelectedModelId(null);
     }
