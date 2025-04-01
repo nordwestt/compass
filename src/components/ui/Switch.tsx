@@ -21,6 +21,7 @@ export function Switch({ value, onValueChange, className }: ThemedSwitchProps) {
       onValueChange={onValueChange}
       trackColor={{ true: theme.primary }}
       thumbColor={theme.surface}
+      activeThumbColor={theme.surface}
     />
   );
 }

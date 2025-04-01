@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useAtom, useSetAtom } from 'jotai';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { charactersAtom, saveCustomPrompts, availableModelsAtom } from '@/src/hooks/atoms';
+import { charactersAtom, saveCustomPrompts, availableModelsAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AllowedModel, Character } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -27,7 +27,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   const [useIcon, setUseIcon] = useState(false);
   const [availableModels] = useAtom(availableModelsAtom);
   const dispatchCharacters = useSetAtom(saveCustomPrompts);
-
+  const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
   useEffect(() => {
     let chara = id 
       ? customPrompts.find(p => p.id === id) 
@@ -211,7 +211,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
               onAddPreference={handleAllowedModelAdd}
               onRemovePreference={handleAllowedModelRemove}
             />
-            <View className="flex-row items-center justify-between">
+            { syncToPolaris && <View className="flex-row items-center justify-between">
               <Text className="text-base font-medium mb-2 text-text">
                 Expose as Model
               </Text>
@@ -219,7 +219,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
                 value={character?.exposeAsModel ?? false}
                 onValueChange={(value) => setCharacter({ ...character!, exposeAsModel: value })}
               />
-            </View>
+            </View>}
           </View>
           
           <DocumentSelector
