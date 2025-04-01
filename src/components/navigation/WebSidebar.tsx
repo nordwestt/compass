@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, Pressable, Switch } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { TabBarIcon } from './TabBarIcon';
 import { useThemePreset } from '@/src/components/ui/ThemeProvider';
 import { rawThemes } from '@/constants/themes';
@@ -13,6 +13,7 @@ import CharacterService from '@/src/services/character/CharacterService';
 import { polarisCharactersAtom, polarisProvidersAtom, polarisDocumentsAtom } from '@/src/hooks/atoms';
 import ProviderService from '@/src/services/provider/ProviderService';
 import { DocumentService } from '@/src/services/document/DocumentService';
+import { Switch } from '@/src/components/ui/Switch';
 interface Route {
   key: string;
   title: string;
@@ -95,8 +96,6 @@ export function WebSidebar({ className }: { className?: string }) {
           <Switch className="mx-auto"
               value={syncToPolaris}
               onValueChange={(value) => handleSetPolarisMode(value)}
-              trackColor={{ true: theme.primary }}
-              thumbColor={theme.surface}
             />
           </View>
       </Pressable>

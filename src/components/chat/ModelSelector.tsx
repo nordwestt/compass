@@ -59,10 +59,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   useEffect(() => {
     // Check if character has a required model
-    console.log("Trigggered Models", models);
     const compatibleModels = getCompatibleModels(character, models);
     setModelOptions(compatibleModels);
-    console.log("Compatible models", compatibleModels);
 
     if(compatibleModels.length == 0 && models.length > 0){
       setIsDisabled(true);
