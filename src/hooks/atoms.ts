@@ -6,6 +6,7 @@ import { CharacterService } from '@/src/services/character/CharacterService'
 import { ProviderService } from '@/src/services/provider/ProviderService'
 import LogService from '@/utils/LogService'
 import { toastService } from '@/src/services/toastService'
+import { DocumentService } from '../services/document/DocumentService'
 
 export const createDefaultThread = (name: string="New thread"): Thread => {
   // Get the first custom prompt if available, otherwise use the first predefined prompt
@@ -343,7 +344,54 @@ export const previewCodeAtom = atom<{
 // Add this with the other atoms
 export const hasSeenOnboardingAtom = atomWithAsyncStorage<boolean>('hasSeenOnboarding', false);
 
-export const documentsAtom = atomWithAsyncStorage<Document[]>('documents', []);
+// ########################################
+// ############### Documents ###############
+// ########################################
+
+export const polarisDocumentsAtom = atom<Document[]>([]);
+export const userDocumentsAtom = atomWithAsyncStorage<Document[]>('documents', []);
+
+export const documentsAtom = atom(
+  async (get) => {
+    const syncToPolaris = await get(syncToPolarisAtom);
+    if (syncToPolaris) {
+      return await get(polarisDocumentsAtom);
+    } else {
+      return await get(userDocumentsAtom);
+    }
+  },
+  async (get, set, documents: Document[]) => {
+    const syncToPolaris = await get(syncToPolarisAtom);
+    if (syncToPolaris) {
+      // Get current documents to compare for deletions
+      const existingDocuments = await get(polarisDocumentsAtom);
+
+      // Find documents that exist in existingDocuments but not in the new documents array
+      const documentsToDelete = existingDocuments.filter(
+        existing => !documents.some(newDoc => newDoc.id === existing.id)
+      );
+
+      // Delete removed documents
+      for (const document of documentsToDelete) {
+        try {
+          await DocumentService.deleteDocument(document.id);
+        } catch (error: any) {
+          LogService.log(error, { component: 'documentsAtom', function: 'setter' }, 'error');
+          toastService.danger({
+            title: 'Error',
+            description: `Failed to delete document: ${document.name}`
+          });
+        }
+      }
+
+      const updatedDocuments = await DocumentService.getDocuments();
+      set(polarisDocumentsAtom, updatedDocuments);
+    } else {
+      // Use the existing atomWithAsyncStorage implementation for local-only mode
+      await set(userDocumentsAtom, documents);
+    }
+  }
+);
 
 // Update the saveCustomPrompts atom to use the new charactersAtom
 export const saveCustomPrompts = atom(

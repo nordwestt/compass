@@ -10,8 +10,9 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import CharacterService from '@/src/services/character/CharacterService';
-import { polarisCharactersAtom, polarisProvidersAtom } from '@/src/hooks/atoms';
+import { polarisCharactersAtom, polarisProvidersAtom, polarisDocumentsAtom } from '@/src/hooks/atoms';
 import ProviderService from '@/src/services/provider/ProviderService';
+import { DocumentService } from '@/src/services/document/DocumentService';
 interface Route {
   key: string;
   title: string;
@@ -28,21 +29,19 @@ export function WebSidebar({ className }: { className?: string }) {
   const [polarisCharacters, setPolarisCharacters] = useAtom(polarisCharactersAtom);
   const [polarisProviders, setPolarisProviders] = useAtom(polarisProvidersAtom);
   const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
+  const [polarisDocuments, setPolarisDocuments] = useAtom(polarisDocumentsAtom);
 
   useEffect(() => {
     const fetchCharacters = async () => {
       if(syncToPolaris){
 
 
-        console.log('syncToPolaris', syncToPolaris);
         const characters = await CharacterService.getCharacters();
-        console.log('characters', characters);
         setPolarisCharacters(characters);
-
         const providers = await ProviderService.getProviders();
-        console.log('providers', providers);
-        
         setPolarisProviders(providers);
+        const docs = await DocumentService.getDocuments();
+        setPolarisDocuments(docs);
       }
     };
     fetchCharacters();

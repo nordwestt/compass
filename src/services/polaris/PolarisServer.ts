@@ -1,8 +1,9 @@
-import { Character, Provider, Model } from '@/src/types/core';
+import { Character, Provider, Model, DocumentPreview } from '@/src/types/core';
 import { toastService } from '@/src/services/toastService';
 import LogService from '@/utils/LogService';
 import { getProxyUrl } from '@/src/utils/proxy';
-
+import { Document } from '@/src/types/core';
+import { Platform } from 'react-native';
 /**
  * PolarisServer handles communication with the Compass server
  * for syncing characters, providers, and models.
@@ -373,6 +374,138 @@ export class PolarisServer {
         });
       }
       return [];
+    }
+  }
+
+  // ===== DOCUMENT OPERATIONS =====
+
+  /**
+   * Get all documents from the server
+   */
+  async getDocuments(): Promise<DocumentPreview[]> {
+    try {
+      const response = await this.makeRequest('/api/admin/documents', 'GET');
+      return response.documents;
+    } catch (error) {
+      if (error instanceof Error) {
+        LogService.log(error, { component: 'PolarisServer', function: 'getDocuments' }, 'error');
+      }
+      return [];
+    }
+  }
+
+  /**
+   * Upload a document to the server
+   */
+  async uploadDocument(document: Document, fileData?: Blob): Promise<Document | null> {
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      
+      // Add document metadata
+      formData.append('name', document.name);
+      formData.append('type', document.type);
+      
+      // Add file if provided
+      if (fileData) {
+        formData.append('file', fileData);
+      } else if (document.path && Platform.OS === 'web') {
+        // For web, try to get the file from the path
+        const response = await fetch(document.path);
+        const blob = await response.blob();
+        formData.append('file', blob, document.name);
+      } else {
+        throw new Error('File data is required for document upload');
+      }
+      
+      // Custom request for file upload
+      const url = await getProxyUrl(`${this.serverUrl}/api/admin/documents`);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Server returned ${response.status}`);
+      }
+      
+      const responseData = await response.json();
+      
+      return {
+        ...document,
+        id: responseData.id,
+        path: responseData.path,
+        pages: responseData.pages,
+        chunks: responseData.chunks
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Get a specific document from the server
+   */
+  async getDocument(id: string): Promise<Document | null> {
+    try {
+      const response = await this.makeRequest(`/api/admin/documents/${id}`, 'GET');
+      return {
+        ...response.document,
+        isServerResource: true,
+        isSynced: true,
+        serverResourceId: response.document.id
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Delete a document from the server
+   */
+  async deleteDocument(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/documents/${id}`, 'DELETE');
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: 'Error',
+          description: error.message
+        });
+      } else {
+        toastService.danger({
+          title: 'Error',
+          description: 'Unknown error'
+        });
+      }
+      return false;
     }
   }
 

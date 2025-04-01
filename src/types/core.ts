@@ -82,6 +82,14 @@ export interface Document {
   embeddings?: number[][];
 }
 
+export interface DocumentPreview {
+  id: string;
+  name: string;
+  path: string;
+  pages: number;
+  type: 'pdf';
+}
+
 export interface ResourceMetadata {
   id?: string;
   ownerId?: string; // null for local-only resources

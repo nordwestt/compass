@@ -21,6 +21,7 @@ export function Switch({ value, onValueChange, className }: ThemedSwitchProps) {
       onValueChange={onValueChange}
       trackColor={{ true: theme.primary }}
       thumbColor={theme.surface}
+      // @ts-ignore - activeThumbColor exists but TypeScript doesn't recognize it
       activeThumbColor={theme.surface}
     />
   );
