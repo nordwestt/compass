@@ -1,12 +1,9 @@
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useAtom, useSetAtom } from 'jotai';
-import { useLocalSearchParams, useRouter } from 'expo-router';
 import { charactersAtom, saveCustomPrompts, availableModelsAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AllowedModel, Character } from '@/src/types/core';
+import { AllowedModel, Character, Model } from '@/src/types/core';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState, useEffect } from 'react';
-import { PREDEFINED_PROMPTS } from '@/constants/characters';
 import { ImagePickerButton } from '@/src/components/image/ImagePickerButton';
 import { toastService } from '@/src/services/toastService';
 import { IconSelector } from '@/src/components/character/IconSelector';
@@ -14,28 +11,28 @@ import { DocumentSelector } from './DocumentSelector';
 import { ModelPreferenceSelector } from './ModelPreferenceSelector';
 import { Switch } from '@/src/components/ui/Switch';
 
+
 interface EditCharacterProps {  
-  id: string | undefined;
-  onSave: () => void;
+  availableModels: Model[];
+  existingCharacter: Character;
+  onSave: (character: Character) => void;
+  onDelete: (character: Character) => void;
   className?: string;
+  showCharacterExposeAsModel?: boolean;
 }
 
-export default function EditCharacter({ id, onSave, className }: EditCharacterProps) {
-  const [customPrompts, setCustomPrompts] = useAtom(charactersAtom);
+export default function EditCharacter({ existingCharacter, onSave, onDelete, className, availableModels, showCharacterExposeAsModel = false }: EditCharacterProps) {
   const [character, setCharacter] = useState<Character | null>(null);
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);
-  const [availableModels] = useAtom(availableModelsAtom);
   const dispatchCharacters = useSetAtom(saveCustomPrompts);
-  const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
+
   useEffect(() => {
-    let chara = id 
-      ? customPrompts.find(p => p.id === id) 
-      : { name: '', content: '', icon: 'person', allowedModelIds: [] };
+    let chara = existingCharacter;
 
     setCharacter(chara as Character);
     setUseIcon(!!chara?.icon);
-  }, [id]);
+  }, [existingCharacter]);
 
   
   const handleDocumentToggle = (docId: string) => {
@@ -91,38 +88,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
     if (!character?.name.trim()) return;
 
     try {
-      let updatedPrompts: Character[];
-      if (id) {
-        // Edit existing character
-        updatedPrompts = customPrompts.map(p =>
-          p.id === id ? { 
-            ...p, 
-            name: character?.name || '', 
-            content: character?.content || '',
-            image: useIcon ? undefined : (character?.image || p.image),
-            icon: useIcon ? character?.icon : undefined,
-            documentIds: character?.documentIds || [],
-            allowedModels: character?.allowedModels || [],
-            exposeAsModel: character?.exposeAsModel ?? false
-          } : p
-        );
-      } else {
-        // Create new character
-        const newCharacter: Character = {
-          id: Date.now().toString(),
-          name: character?.name || '',
-          content: character?.content || '',
-          image: useIcon ? undefined : (character?.image || require('@/assets/characters/default.png')),
-          icon: useIcon ? character?.icon : undefined,
-          documentIds: character?.documentIds || [],
-          allowedModels: character?.allowedModels || [],
-          exposeAsModel: character?.exposeAsModel ?? false
-        };
-        updatedPrompts = [...customPrompts, newCharacter];
-      }
-      console.log('updatedPrompts', updatedPrompts, character?.documentIds);
-      await dispatchCharacters(updatedPrompts);
-      onSave();
+      onSave(character);
       toastService.success({ title: 'Character saved', description: 'Character saved successfully' });
     } catch (error) {
       console.error('Error saving character:', error);
@@ -131,10 +97,8 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
   };
 
   const deleteCharacter = async () => {
-    const updatedPrompts = customPrompts.filter(p => p.id !== id);
-    await setCustomPrompts(updatedPrompts);
     toastService.success({ title: 'Character deleted', description: 'Character deleted successfully' });
-    onSave();
+    onDelete(character as Character);
   };
 
   return (
@@ -211,7 +175,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
               onAddPreference={handleAllowedModelAdd}
               onRemovePreference={handleAllowedModelRemove}
             />
-            { syncToPolaris && <View className="flex-row items-center justify-between">
+            { showCharacterExposeAsModel && <View className="flex-row items-center justify-between">
               <Text className="text-base font-medium mb-2 text-text">
                 Expose as Model
               </Text>
@@ -246,7 +210,7 @@ export default function EditCharacter({ id, onSave, className }: EditCharacterPr
         >
           <Ionicons name="save-outline" size={20} color="white" className="mr-2" />
           <Text className="text-white font-medium text-base">
-            {id ? 'Save Changes' : 'Create Character'}
+            Save Changes
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,31 +1,29 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, Platform } from 'react-native';
+import { View, Platform } from 'react-native';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { PREDEFINED_PROMPTS } from '@/constants/characters';
-import { createDefaultThread, currentIndexAtom, charactersAtom, threadActionsAtom, threadsAtom, syncToPolarisAtom, saveCustomPrompts } from '@/src/hooks/atoms';
+import { createDefaultThread, currentIndexAtom, charactersAtom, threadActionsAtom, threadsAtom, syncToPolarisAtom, saveCustomPrompts, userCharactersAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
-import { modalService } from '@/src/services/modalService';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import EditCharacter from '@/src/components/character/EditCharacter';
-import { CharacterAvatar } from '@/src/components/character/CharacterAvatar';
-import CharacterService from '@/src/services/character/CharacterService';
-import PolarisServer from '@/src/services/polaris/PolarisServer';
-
+import CharactersList from '@/src/components/character/CharactersList';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { TouchableOpacity } from 'react-native';
+import { availableModelsAtom } from '@/src/hooks/atoms';
 export default function CharactersScreen() {
   const router = useRouter();
-  const [characters, setCharacters] = useAtom(charactersAtom);
+  const [characters, setCharacters] = useAtom(userCharactersAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const threads = useAtomValue(threadsAtom);
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
-  const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
-
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
+  const [availableModels] = useAtom(availableModelsAtom);
+  const dispatchCharacters = useSetAtom(saveCustomPrompts);
 
   useEffect(() => {
     const loadCharacters = async () => {
-      if (characters.length === 0 && !syncToPolaris) {
+      if (characters.length === 0) {
         setCharacters(PREDEFINED_PROMPTS);
       }
     };
@@ -33,15 +31,15 @@ export default function CharactersScreen() {
     loadCharacters();
   }, [characters]);
 
-  const handleEdit = (prompt: Character) => {
+  const handleEdit = (character: Character) => {
     if (Platform.OS == 'web') {
-      if (editingCharacter?.id === prompt.id) {
+      if (editingCharacter?.id === character.id) {
         setEditingCharacter(null);
       } else {
-        setEditingCharacter(prompt);
+        setEditingCharacter(character);
       }
     } else {
-      router.push(`/edit-character?id=${prompt.id}`);
+      router.push(`/edit-character?id=${character.id}`);
     }
   };
 
@@ -58,7 +56,28 @@ export default function CharactersScreen() {
     }
   };
 
-  const startChat = async (prompt: Character) => {
+  const handleSave = async (character: Character) => {
+    // if character is new, add it to the characters array
+    let updatedCharacters: Character[] = [];
+    if(character.id === ""){
+      updatedCharacters = [...characters, character];
+    }
+    // if character exists, update the characters array
+    else{
+      updatedCharacters = characters.map(p => p.id === character.id ? character : p);
+    }
+    await dispatchCharacters(updatedCharacters);
+
+    setEditingCharacter(null);
+  };
+
+  const handleDelete = async (character: Character) => {
+    const updatedCharacters = characters.filter(p => p.id !== character.id);
+    await dispatchCharacters(updatedCharacters);
+    setEditingCharacter(null);
+  };
+
+  const startChat = async (character: Character) => {
     const latestThread = threads[threads.length - 1];
     
     if (latestThread && latestThread.messages.length === 0) {
@@ -67,7 +86,7 @@ export default function CharactersScreen() {
         id: '',
         provider: { source: 'ollama', endpoint: '', apiKey: '' }
       };
-      latestThread.character = prompt;
+      latestThread.character = character;
       
       await dispatchThread({ type: 'update', payload: latestThread });
       await dispatchThread({ type: 'setCurrent', payload: latestThread });
@@ -87,7 +106,7 @@ export default function CharactersScreen() {
       id: '',
       provider: { source: 'ollama', endpoint: '', apiKey: '' }
     };
-    newThread.character = prompt;
+    newThread.character = character;
     
     await dispatchThread({ type: 'add', payload: newThread });
 
@@ -104,60 +123,21 @@ export default function CharactersScreen() {
 
   return (
     <View className="flex-1 bg-background flex-row">
-      <View className="flex-1 p-4">
-        <View className="flex-row justify-between items-center mb-4">
-        <View className="flex-row items-center p-4">
-          <Ionicons name="people" size={32} className="!text-primary mr-2 pb-2" />
-          <Text className="text-2xl font-bold text-primary">
-              Characters
-          </Text>
-        </View>
-          <TouchableOpacity
-              onPress={handleAdd}
-              className="bg-primary px-4 py-2 rounded-lg flex-row items-center hover:opacity-80">
-              <Ionicons name="add" size={20} color="white" />
-              <Text className="text-white ml-2 font-medium">New Character</Text>
-            </TouchableOpacity>
-        </View>
-        <ScrollView className="flex-1 p-4">
-        <View className="md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {characters.map((prompt) => (
-            <TouchableOpacity 
-              onPress={() => handleEdit(prompt)} 
-              onLongPress={() => startChat(prompt)} 
-              key={prompt.id} 
-              className="w-full mb-4"
-            >
-              <View 
-                className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg" 
-                pointerEvents={Platform.OS === 'web' ? 'auto' : 'none'}
-              >
-                <View className="flex-col items-center my-2">
-                <CharacterAvatar character={prompt} size={64} className="my-auto shadow-2xl" />
-                  <Text className="font-extrabold text-primary">
-                      {prompt.name}
-                  </Text>
-                </View>
-                <View className="flex-1 ml-4">
-                  <Text 
-                    numberOfLines={20} 
-                    className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2 overflow-y-auto"
-                  >
-                    {prompt.content}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-        </ScrollView>
-
-      </View>
+      <CharactersList 
+        characters={characters}
+        onCharacterPress={handleEdit}
+        onCharacterLongPress={startChat}
+        onAddCharacter={handleAdd}
+        className="flex-1 p-4"
+      />
+      
       {editingCharacter && (
         <View className="flex-1 m-4 relative">
           <EditCharacter 
-            id={editingCharacter.id} 
-            onSave={() => setEditingCharacter(null)} 
+            availableModels={availableModels}
+            existingCharacter={editingCharacter}
+            onSave={handleSave} 
+            onDelete={handleDelete}
             className="flex-1 bg-surface rounded-xl shadow-lg" 
           />
           <TouchableOpacity 
