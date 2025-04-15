@@ -61,34 +61,42 @@ export default function PolarisSettingScreen() {
   }
 
   return (
-    <View className="flex-1 bg-background p-4 flex-col border-4 border-primary m-2 rounded-lg">
-      <View className="flex-row">
-        {routes.map((route: any, index: number) => (
-          <Pressable
-            key={route.key}
-            onPress={() => {
-              setCurrentIndex(index);
-            }}
-            className={`group-hover:w-32 z-20 w-14 transition-all duration-200 flex-row items-center justify-between p-4 m-2 rounded-lg hover:bg-surface ${
-              currentIndex === index
-                ? "border-r border-primary border shadow-sm bg-surface"
-                : ""
-            }`}
-          >
-            <TabBarIcon
-              name={route.icon as any}
-              size={22}
-              className={`w-12 ${currentIndex === index ? "!text-primary" : "!text-secondary"}`}
-            />
-            <Text
-              className={`text-end opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
-                currentIndex === index ? "text-primary" : "text-secondary"
+    <View className="flex-1 bg-background flex-col border-4 border-primary m-2 rounded-lg">
+      <View className="flex-row w-full">
+        <View className="flex-row w-1/3">
+          {routes.map((route: any, index: number) => (
+            <Pressable
+              key={route.key}
+              onPress={() => {
+                setCurrentIndex(index);
+              }}
+              className={`group-hover:w-32 z-20 w-14 transition-all duration-200 flex-row items-center justify-between p-4 m-2 rounded-lg hover:bg-surface ${
+                currentIndex === index
+                  ? "border-r border-primary border shadow-sm bg-surface"
+                  : ""
               }`}
             >
-              {route.title}
-            </Text>
-          </Pressable>
-        ))}
+              <TabBarIcon
+                name={route.icon as any}
+                size={22}
+                className={`w-12 ${currentIndex === index ? "!text-primary" : "!text-secondary"}`}
+              />
+              <Text
+                className={`text-end opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+                  currentIndex === index ? "text-primary" : "text-secondary"
+                }`}
+              >
+                {route.title}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+        <View className="w-1/3">
+          <Text className="mx-auto text-center w-24 bg-primary text-white p-2 rounded-b-lg font-bold">
+            ✨ Polaris
+          </Text>
+        </View>
+        <View className="w-1/3"></View>
       </View>
       <View className="flex-1">
         {currentIndex === 0 && <AdminCharactersPanel />}
