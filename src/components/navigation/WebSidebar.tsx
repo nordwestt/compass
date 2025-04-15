@@ -32,22 +32,22 @@ export function WebSidebar({ className }: { className?: string }) {
   const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
   const [polarisDocuments, setPolarisDocuments] = useAtom(polarisDocumentsAtom);
 
-  useEffect(() => {
-    const fetchCharacters = async () => {
-      if(syncToPolaris){
+  // useEffect(() => {
+  //   const fetchCharacters = async () => {
+  //     if(syncToPolaris){
 
 
-        const characters = await CharacterService.getCharacters();
-        setPolarisCharacters(characters);
-        const providers = await ProviderService.getProviders();
-        setPolarisProviders(providers);
-        const docs = await DocumentService.getDocuments();
-        setPolarisDocuments(docs);
-      }
-    };
-    fetchCharacters();
+  //       const characters = await CharacterService.getCharacters();
+  //       setPolarisCharacters(characters);
+  //       const providers = await ProviderService.getProviders();
+  //       setPolarisProviders(providers);
+  //       const docs = await DocumentService.getDocuments();
+  //       setPolarisDocuments(docs);
+  //     }
+  //   };
+  //   fetchCharacters();
     
-  }, [syncToPolaris]);
+  // }, [syncToPolaris]);
 
   const handleSetPolarisMode = (value: boolean) => {
     setSyncToPolaris(value);
@@ -88,17 +88,6 @@ export function WebSidebar({ className }: { className?: string }) {
           </Text>
         </Pressable>
       ))}
-      <Pressable className="mt-auto mb-4" onPress={() => handleSetPolarisMode(!syncToPolaris)}>
-        <View className="flex-col">
-          <View className="flex-row items-center justify-start">
-            <Ionicons name={syncToPolaris ? "cloud" : "cloud-outline"} size={24} className={`mx-auto ${syncToPolaris ? 'text-primary' : 'text-text'}`} />
-          </View>
-          <Switch className="mx-auto"
-              value={syncToPolaris}
-              onValueChange={(value) => handleSetPolarisMode(value)}
-            />
-          </View>
-      </Pressable>
     </View>
   );
 } 
