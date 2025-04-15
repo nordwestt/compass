@@ -91,12 +91,7 @@ export default function PolarisSettingScreen() {
         ))}
       </View>
       <View className="flex-1">
-        {currentIndex === 0 && (
-          <AdminCharactersPanel
-            characters={characters}
-            onSaveCharacter={() => {}}
-          />
-        )}
+        {currentIndex === 0 && <AdminCharactersPanel />}
         {currentIndex === 1 && <Documents />}
         {currentIndex === 2 && <Providers />}
       </View>
