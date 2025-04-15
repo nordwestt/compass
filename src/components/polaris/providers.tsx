@@ -27,6 +27,7 @@ import { EditOllama } from "../providers/EditOllama";
 import { router } from "expo-router";
 import { getProxyUrl } from "@/src/utils/proxy";
 import ProviderService from "@/src/services/provider/ProviderService";
+import PolarisServer from "@/src/services/polaris/PolarisServer";
 
 interface ProvidersProps {
   className?: string;
@@ -43,9 +44,15 @@ export default function Providers({ className }: ProvidersProps) {
   const [models, setModels] = useAtom(availableModelsAtom);
 
   const handleSave = async (provider: Provider) => {
-    await ProviderService.saveProvider(provider);
+    if (provider.isServerResource) {
+      // Update existing server provider
+      await PolarisServer.updateProvider(provider);
+    } else {
+      // Create new server provider
+      await PolarisServer.createProvider(provider);
+    }
 
-    await setProviders(await ProviderService.getProviders());
+    await setProviders(await PolarisServer.getProviders());
 
     setEditingProvider(undefined);
     setShowModal(false);
@@ -58,7 +65,7 @@ export default function Providers({ className }: ProvidersProps) {
 
   const handleDelete = async (provider: Provider) => {
     try {
-      await ProviderService.deleteProvider(provider.id);
+      await PolarisServer.deleteProvider(provider.id);
     } catch (error: any) {
       LogService.log(
         error,
@@ -70,7 +77,7 @@ export default function Providers({ className }: ProvidersProps) {
         description: `Failed to delete provider: ${provider.name}`,
       });
     }
-    await setProviders(await ProviderService.getProviders());
+    await setProviders(await PolarisServer.getProviders());
   };
 
   const handleEdit = (provider: Provider) => {
