@@ -4,9 +4,7 @@ import { DocumentManager } from '@/src/components/documents/DocumentManager';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAtom } from 'jotai';
 import { documentsAtom, charactersAtom, currentIndexAtom, createDefaultThread, threadActionsAtom, userDocumentsAtom } from '@/src/hooks/atoms';
-import { DocumentService } from '@/src/services/document/DocumentService';
 import { Document } from '@/src/types/core';
-import { modalService } from '@/src/services/modalService';
 import { toastService } from '@/src/services/toastService';
 import { router } from 'expo-router';
 import { DocumentPickerAsset } from 'expo-document-picker';
@@ -15,7 +13,7 @@ import { PDFService } from '@/src/services/PDFService';
 
 
 export default function DocumentsRoute() {
-  const [documents] = useAtom(documentsAtom);
+  const [documents] = useAtom(userDocumentsAtom);
   const [characters, setCharacters] = useAtom(charactersAtom);
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
   const [, dispatchThread] = useAtom(threadActionsAtom);

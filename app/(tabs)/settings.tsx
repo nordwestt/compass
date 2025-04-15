@@ -95,6 +95,12 @@ export default function SettingsScreen() {
           onPress={() => router.push('/settings/help')}
         />
 
+        <SettingItem
+          title="Polaris"
+          description="Sync to Polaris"
+          icon="cloud"
+          onPress={() => router.push('/settings/polaris')}
+        />
         {/* <SettingItem
           title="About"
           description="Version information and credits"
