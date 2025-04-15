@@ -2,28 +2,24 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DocumentUploader } from './DocumentUploader';
-import { useAtom, useAtomValue } from 'jotai';
-import { documentsAtom, currentThreadAtom, threadActionsAtom, charactersAtom, currentIndexAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
+import { useAtom } from 'jotai';
+import { documentsAtom, threadActionsAtom, charactersAtom, currentIndexAtom } from '@/src/hooks/atoms';
 import { Document } from '@/src/types/core';
-import { PDFService } from '@/src/services/PDFService';
 import { toastService } from '@/src/services/toastService';
 import { createDefaultThread } from '@/src/hooks/atoms';
 import { router } from 'expo-router';
 import { Platform } from 'react-native';
 import { DocumentViewer } from './DocumentViewer';
 import { modalService } from '@/src/services/modalService';
-import { DocumentService } from '@/src/services/document/DocumentService';
 
 
 export const DocumentManager: React.FC = () => {
   const [documents, setDocuments] = useAtom(documentsAtom);
   const [isUploading, setIsUploading] = useState(false);
-  const [, setCurrentThread] = useAtom(currentThreadAtom);
   const [, dispatchThread] = useAtom(threadActionsAtom);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [customPrompts, setCustomPrompts] = useAtom(charactersAtom);
   const [, setCurrentIndex] = useAtom(currentIndexAtom);
-  const syncToPolaris = useAtomValue(syncToPolarisAtom);
 
   const handleDocumentUpload = async (doc: Document) => {
     try {
