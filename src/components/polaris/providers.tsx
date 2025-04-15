@@ -14,6 +14,7 @@ import {
   logsAtom,
   availableModelsAtom,
   polarisProvidersAtom,
+  polarisModelsAtom,
 } from "@/src/hooks/atoms";
 import { ProviderCard } from "@/src/components/providers/ProviderCard";
 import { EndpointModal } from "@/src/components/providers/EndpointModal";
@@ -35,13 +36,13 @@ interface ProvidersProps {
 
 export default function Providers({ className }: ProvidersProps) {
   const [providers, setProviders] = useAtom(polarisProvidersAtom);
+  const [models, setModels] = useAtom(polarisModelsAtom);
   const [logs, setLogs] = useAtom(logsAtom);
   const [showModal, setShowModal] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | undefined>(
     undefined,
   );
   const [scanning, setScanning] = useState(false);
-  const [models, setModels] = useAtom(availableModelsAtom);
 
   const handleSave = async (provider: Provider) => {
     if (provider.isServerResource) {
@@ -53,6 +54,8 @@ export default function Providers({ className }: ProvidersProps) {
     }
 
     await setProviders(await PolarisServer.getProviders());
+
+    setModels(await PolarisServer.getModels());
 
     setEditingProvider(undefined);
     setShowModal(false);
@@ -78,6 +81,7 @@ export default function Providers({ className }: ProvidersProps) {
       });
     }
     await setProviders(await PolarisServer.getProviders());
+    setModels(await PolarisServer.getModels());
   };
 
   const handleEdit = (provider: Provider) => {

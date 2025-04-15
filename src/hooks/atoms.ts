@@ -1,18 +1,26 @@
-import { atom } from 'jotai'
-import { atomWithAsyncStorage } from './storage'
-import { Model, Thread, ChatMessage, Character, Provider, Voice, Document } from '@/src/types/core'
-import { PREDEFINED_PROMPTS } from '@/constants/characters'
-import { CharacterService } from '@/src/services/character/CharacterService'
-import { ProviderService } from '@/src/services/provider/ProviderService'
-import LogService from '@/utils/LogService'
-import { toastService } from '@/src/services/toastService'
-import { DocumentService } from '../services/document/DocumentService'
+import { atom } from "jotai";
+import { atomWithAsyncStorage } from "./storage";
+import {
+  Model,
+  Thread,
+  ChatMessage,
+  Character,
+  Provider,
+  Voice,
+  Document,
+} from "@/src/types/core";
+import { PREDEFINED_PROMPTS } from "@/constants/characters";
+import { CharacterService } from "@/src/services/character/CharacterService";
+import { ProviderService } from "@/src/services/provider/ProviderService";
+import LogService from "@/utils/LogService";
+import { toastService } from "@/src/services/toastService";
+import { DocumentService } from "../services/document/DocumentService";
 
-export const createDefaultThread = (name: string="New thread"): Thread => {
+export const createDefaultThread = (name: string = "New thread"): Thread => {
   // Get the first custom prompt if available, otherwise use the first predefined prompt
-  const defaultCharacter = 
-    (typeof window !== 'undefined' && localStorage.getItem('customPrompts')) 
-      ? JSON.parse(localStorage.getItem('customPrompts') || '[]')[0] 
+  const defaultCharacter =
+    typeof window !== "undefined" && localStorage.getItem("customPrompts")
+      ? JSON.parse(localStorage.getItem("customPrompts") || "[]")[0]
       : PREDEFINED_PROMPTS[0];
 
   return {
@@ -20,154 +28,163 @@ export const createDefaultThread = (name: string="New thread"): Thread => {
     title: name,
     messages: [],
     selectedModel: {
-    id: '',
-    name: '',
-    provider: {
-        id: '',
-        endpoint: '',
-        apiKey: '',
-        logo: ''
-      }
+      id: "",
+      name: "",
+      provider: {
+        id: "",
+        endpoint: "",
+        apiKey: "",
+        logo: "",
+      },
     },
-    character: defaultCharacter
-  }
-}
-
+    character: defaultCharacter,
+  };
+};
 
 // Core atoms
-export const threadsAtom = atomWithAsyncStorage<Thread[]>('threads', [createDefaultThread()])
-export const currentThreadAtom = atomWithAsyncStorage<Thread>('currentThread', createDefaultThread('Your first thread'))
-export const sidebarVisibleAtom = atom(true)
+export const threadsAtom = atomWithAsyncStorage<Thread[]>("threads", [
+  createDefaultThread(),
+]);
+export const currentThreadAtom = atomWithAsyncStorage<Thread>(
+  "currentThread",
+  createDefaultThread("Your first thread"),
+);
+export const sidebarVisibleAtom = atom(true);
 
 // Derived atoms
 export const currentThreadMessagesAtom = atom(
-  async (get) => (await get(currentThreadAtom)).messages
-)
+  async (get) => (await get(currentThreadAtom)).messages,
+);
 
 // First, let's define our action types
-export type ThreadAction = 
-  | { type: 'add'; payload: Thread }
-  | { type: 'update'; payload: Thread }
-  | { type: 'delete'; payload: string }
-  | { type: 'setCurrent'; payload: Thread }
-  | { type: 'updateMessages'; payload: { threadId: string; messages: ChatMessage[] } };
+export type ThreadAction =
+  | { type: "add"; payload: Thread }
+  | { type: "update"; payload: Thread }
+  | { type: "delete"; payload: string }
+  | { type: "setCurrent"; payload: Thread }
+  | {
+      type: "updateMessages";
+      payload: { threadId: string; messages: ChatMessage[] };
+    };
 
 // Update the threadActionsAtom with the proper type
 export const threadActionsAtom = atom(
   null,
   async (get, set, action: ThreadAction) => {
-    const threads = await get(threadsAtom)
-    
+    const threads = await get(threadsAtom);
+
     switch (action.type) {
-      case 'add':
-        set(threadsAtom, [...threads, action.payload])
-        set(currentThreadAtom, action.payload)
-        break
-      
-      case 'update':
-        const updatedThreads = threads.map(t => 
-          t.id === action.payload.id ? action.payload : t
-        )
-        await set(threadsAtom, updatedThreads)
-        if((await get(currentThreadAtom)).id === action.payload.id) {
-          await set(currentThreadAtom, action.payload)
+      case "add":
+        set(threadsAtom, [...threads, action.payload]);
+        set(currentThreadAtom, action.payload);
+        break;
+
+      case "update":
+        const updatedThreads = threads.map((t) =>
+          t.id === action.payload.id ? action.payload : t,
+        );
+        await set(threadsAtom, updatedThreads);
+        if ((await get(currentThreadAtom)).id === action.payload.id) {
+          await set(currentThreadAtom, action.payload);
         }
-        break
-      
-      case 'delete':
-        const newThreads = threads.filter(t => t.id !== action.payload)
-        set(threadsAtom, newThreads)
-        
-        if((await get(currentThreadAtom)).id === action.payload) {
-          if(newThreads.length > 0) {
-            await set(currentThreadAtom, newThreads[newThreads.length - 1])
+        break;
+
+      case "delete":
+        const newThreads = threads.filter((t) => t.id !== action.payload);
+        set(threadsAtom, newThreads);
+
+        if ((await get(currentThreadAtom)).id === action.payload) {
+          if (newThreads.length > 0) {
+            await set(currentThreadAtom, newThreads[newThreads.length - 1]);
           } else {
-            await set(currentThreadAtom, createDefaultThread())
+            await set(currentThreadAtom, createDefaultThread());
           }
         }
-        
-        break
-        
-      case 'setCurrent':
-        await set(currentThreadAtom, action.payload)
-        break
 
-      case 'updateMessages':
-        const threadsWithUpdatedMessages = threads.map(t => 
-          t.id === action.payload.threadId 
+        break;
+
+      case "setCurrent":
+        await set(currentThreadAtom, action.payload);
+        break;
+
+      case "updateMessages":
+        const threadsWithUpdatedMessages = threads.map((t) =>
+          t.id === action.payload.threadId
             ? { ...t, messages: action.payload.messages }
-            : t
-        )
-        await set(threadsAtom, threadsWithUpdatedMessages)
+            : t,
+        );
+        await set(threadsAtom, threadsWithUpdatedMessages);
         if ((await get(currentThreadAtom)).id === action.payload.threadId) {
           await set(currentThreadAtom, {
             ...(await get(currentThreadAtom)),
-            messages: action.payload.messages
-          })
+            messages: action.payload.messages,
+          });
         }
-        break
+        break;
     }
-  }
-)
+  },
+);
 
 // For managing generation state
-export const isGeneratingAtom = atom(false)
+export const isGeneratingAtom = atom(false);
 
-export const currentIndexAtom = atom(0)
+export const currentIndexAtom = atom(0);
 
 // For managing models
 //export const availableModelsAtom = atomWithAsyncStorage<Model[]>('availableModels', [])
-export const availableModelsAtom = atom<Model[]>([])
-
+export const availableModelsAtom = atom<Model[]>([]);
 
 // Derived atom for the current model
 export const currentModelAtom = atom(
-  async (get) => (await get(currentThreadAtom)).selectedModel
-)
+  async (get) => (await get(currentThreadAtom)).selectedModel,
+);
 
 // Derived atom for the current character
 export const currentCharacterAtom = atom(
-  async (get) => (await get(currentThreadAtom)).character
-)
+  async (get) => (await get(currentThreadAtom)).character,
+);
 
 // Helper atom for chat actions
 export const chatActionsAtom = atom(
   null,
-  async (get, set, action: { type: 'send' | 'interrupt', payload?: any }) => {
-    const currentThread = await get(currentThreadAtom)
-    
+  async (get, set, action: { type: "send" | "interrupt"; payload?: any }) => {
+    const currentThread = await get(currentThreadAtom);
+
     switch (action.type) {
-      case 'send':
-        const newMessage = action.payload
+      case "send":
+        const newMessage = action.payload;
         const updatedThread = {
           ...currentThread,
-          messages: [...currentThread.messages, newMessage]
-        }
-        set(threadActionsAtom, { 
-          type: 'update', 
-          payload: updatedThread 
-        })
-        break
-        
-      case 'interrupt':
+          messages: [...currentThread.messages, newMessage],
+        };
+        set(threadActionsAtom, {
+          type: "update",
+          payload: updatedThread,
+        });
+        break;
+
+      case "interrupt":
         // Handle interrupt logic
-        break
+        break;
     }
-  }
-)
+  },
+);
 
 // ########################################
 // ############### Characters ###############
 // ########################################
 
-export const userCharactersAtom = atomWithAsyncStorage<Character[]>('userCharacters', []);
+export const userCharactersAtom = atomWithAsyncStorage<Character[]>(
+  "userCharacters",
+  [],
+);
 export const polarisCharactersAtom = atom<Character[]>([]);
 
 // Update the charactersAtom to be dynamic based on syncToPolaris
 export const charactersAtom = atom(
   async (get) => {
     const syncToPolaris = await get(syncToPolarisAtom);
-    
+
     if (syncToPolaris) {
       // Return characters from the service which will handle server fetching
       return await get(polarisCharactersAtom);
@@ -178,28 +195,31 @@ export const charactersAtom = atom(
   },
   async (get, set, characters: Character[]) => {
     const syncToPolaris = await get(syncToPolarisAtom);
-    
-    if (syncToPolaris) {
 
+    if (syncToPolaris) {
     } else {
       // Use the existing atomWithAsyncStorage implementation for local-only mode
       await set(userCharactersAtom, characters);
     }
-  }
+  },
 );
 
 // ########################################
 // ############### Providers ###############
 // ########################################
 
-export const userProvidersAtom = atomWithAsyncStorage<Provider[]>('userProviders', [])
+export const userProvidersAtom = atomWithAsyncStorage<Provider[]>(
+  "userProviders",
+  [],
+);
 export const polarisProvidersAtom = atom<Provider[]>([]);
+export const polarisModelsAtom = atom<Model[]>([]);
 
 // Similarly update the availableProvidersAtom
 export const availableProvidersAtom = atom(
   async (get) => {
     const syncToPolaris = await get(syncToPolarisAtom);
-    
+
     if (syncToPolaris) {
       // Return providers from the service which will handle server fetching
       return await get(polarisProvidersAtom);
@@ -210,14 +230,15 @@ export const availableProvidersAtom = atom(
   },
   async (get, set, providers: Provider[]) => {
     const syncToPolaris = await get(syncToPolarisAtom);
-    
+
     if (syncToPolaris) {
       // Get current providers to compare for deletions
       const existingProviders = await get(polarisProvidersAtom);
 
       // Find providers that exist in existingProviders but not in the new providers array
       const providersToDelete = existingProviders.filter(
-        existing => !providers.some(newProvider => newProvider.id === existing.id)
+        (existing) =>
+          !providers.some((newProvider) => newProvider.id === existing.id),
       );
 
       // Delete removed providers
@@ -225,10 +246,14 @@ export const availableProvidersAtom = atom(
         try {
           await ProviderService.deleteProvider(provider.id);
         } catch (error: any) {
-          LogService.log(error, { component: 'providersAtom', function: 'setter' }, 'error');
+          LogService.log(
+            error,
+            { component: "providersAtom", function: "setter" },
+            "error",
+          );
           toastService.danger({
-            title: 'Error',
-            description: `Failed to delete provider: ${provider.name}`
+            title: "Error",
+            description: `Failed to delete provider: ${provider.name}`,
           });
         }
       }
@@ -244,43 +269,61 @@ export const availableProvidersAtom = atom(
       // Use the existing atomWithAsyncStorage implementation for local-only mode
       await set(userProvidersAtom, providers);
     }
-  }
+  },
 );
 
 export const modalStateAtom = atom<{
   isVisible: boolean;
-  type: 'confirm' | 'prompt';
+  type: "confirm" | "prompt";
   title: string;
   message: string;
   defaultValue?: string;
 }>({
   isVisible: false,
-  type: 'confirm',
-  title: '',
-  message: ''
-})
-export const defaultModelAtom = atomWithAsyncStorage<Model>('defaultModel', createDefaultThread().selectedModel);
+  type: "confirm",
+  title: "",
+  message: "",
+});
+export const defaultModelAtom = atomWithAsyncStorage<Model>(
+  "defaultModel",
+  createDefaultThread().selectedModel,
+);
 
 export const fontPreferencesAtom = atom({
-  fontFamily: 'System',
+  fontFamily: "System",
   fontSize: 18,
   lineHeight: 24,
   letterSpacing: 0.8,
   messageGap: 2,
 });
 
-export const ttsEnabledAtom = atomWithAsyncStorage<boolean>('ttsEnabled', false);
-export const searchEnabledAtom = atomWithAsyncStorage<boolean>('searchEnabled', false);
+export const ttsEnabledAtom = atomWithAsyncStorage<boolean>(
+  "ttsEnabled",
+  false,
+);
+export const searchEnabledAtom = atomWithAsyncStorage<boolean>(
+  "searchEnabled",
+  false,
+);
 
 // Add with other atoms
 export const availableVoicesAtom = atom<Voice[]>([]);
 export const editingMessageIndexAtom = atom<number>(-1);
 
-export const defaultVoiceAtom = atomWithAsyncStorage<Voice | null>('defaultVoice', null);
+export const defaultVoiceAtom = atomWithAsyncStorage<Voice | null>(
+  "defaultVoice",
+  null,
+);
 
-export const logsAtom = atomWithAsyncStorage<LogEntry[]>('logs', []);
+export const logsAtom = atomWithAsyncStorage<LogEntry[]>("logs", []);
 
-export interface LogEntry {component: string, function: string, date: string, message: string, level: 'error' | 'info' | 'warn' | 'debug'};
+export interface LogEntry {
+  component: string;
+  function: string;
+  date: string;
+  message: string;
+  level: "error" | "info" | "warn" | "debug";
+}
 
 // Add this interface near other interfaces
 export interface GeneratedImage {
@@ -290,22 +333,31 @@ export interface GeneratedImage {
   createdAt: string;
 }
 
-export const generatedImagesAtom = atomWithAsyncStorage<GeneratedImage[]>('generatedImages', []);
+export const generatedImagesAtom = atomWithAsyncStorage<GeneratedImage[]>(
+  "generatedImages",
+  [],
+);
 
-export const selectedImageModelAtom = atomWithAsyncStorage<Model | undefined>('selectedImageModel', undefined);
+export const selectedImageModelAtom = atomWithAsyncStorage<Model | undefined>(
+  "selectedImageModel",
+  undefined,
+);
 
 const getDefaultProxyUrl = () => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     // Check if we're running on the GitHub Pages deployment
-    if (window.location.hostname === 'nordwestt.com') {
-      return 'https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/';
+    if (window.location.hostname === "nordwestt.com") {
+      return "https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/";
     }
   }
   // Default for Docker and local development
-  return 'http://localhost/proxy/';
+  return "http://localhost/proxy/";
 };
 
-export const proxyUrlAtom = atomWithAsyncStorage<string>('proxyUrl', getDefaultProxyUrl());
+export const proxyUrlAtom = atomWithAsyncStorage<string>(
+  "proxyUrl",
+  getDefaultProxyUrl(),
+);
 
 export const previewCodeAtom = atom<{
   html?: string;
@@ -314,14 +366,20 @@ export const previewCodeAtom = atom<{
 } | null>(null);
 
 // Add this with the other atoms
-export const hasSeenOnboardingAtom = atomWithAsyncStorage<boolean>('hasSeenOnboarding', false);
+export const hasSeenOnboardingAtom = atomWithAsyncStorage<boolean>(
+  "hasSeenOnboarding",
+  false,
+);
 
 // ########################################
 // ############### Documents ###############
 // ########################################
 
 export const polarisDocumentsAtom = atom<Document[]>([]);
-export const userDocumentsAtom = atomWithAsyncStorage<Document[]>('documents', []);
+export const userDocumentsAtom = atomWithAsyncStorage<Document[]>(
+  "documents",
+  [],
+);
 
 export const documentsAtom = atom(
   async (get) => {
@@ -340,7 +398,7 @@ export const documentsAtom = atom(
 
       // Find documents that exist in existingDocuments but not in the new documents array
       const documentsToDelete = existingDocuments.filter(
-        existing => !documents.some(newDoc => newDoc.id === existing.id)
+        (existing) => !documents.some((newDoc) => newDoc.id === existing.id),
       );
 
       // Delete removed documents
@@ -348,10 +406,14 @@ export const documentsAtom = atom(
         try {
           await DocumentService.deleteDocument(document.id);
         } catch (error: any) {
-          LogService.log(error, { component: 'documentsAtom', function: 'setter' }, 'error');
+          LogService.log(
+            error,
+            { component: "documentsAtom", function: "setter" },
+            "error",
+          );
           toastService.danger({
-            title: 'Error',
-            description: `Failed to delete document: ${document.name}`
+            title: "Error",
+            description: `Failed to delete document: ${document.name}`,
           });
         }
       }
@@ -362,7 +424,7 @@ export const documentsAtom = atom(
       // Use the existing atomWithAsyncStorage implementation for local-only mode
       await set(userDocumentsAtom, documents);
     }
-  }
+  },
 );
 
 // Update the saveCustomPrompts atom to use the new charactersAtom
@@ -372,35 +434,46 @@ export const saveCustomPrompts = atom(
     try {
       // Set the characters using the updated atom
       await set(charactersAtom, characters);
-      
+
       // Get all threads and update any that use the modified characters
       const threads = await get(threadsAtom);
-      const updatedThreads = threads.map(thread => {
-        const updatedCharacter = characters.find(p => p.id === thread.character.id);
-        
+      const updatedThreads = threads.map((thread) => {
+        const updatedCharacter = characters.find(
+          (p) => p.id === thread.character.id,
+        );
+
         // If the character was updated, update the thread
         if (updatedCharacter) {
           return { ...thread, character: updatedCharacter };
         }
-        
+
         return thread;
       });
 
       // Update threads and current thread if needed
       await set(threadsAtom, updatedThreads);
       const currentThread = await get(currentThreadAtom);
-      const updatedCurrentCharacter = characters.find(p => p.id === currentThread.character.id);
+      const updatedCurrentCharacter = characters.find(
+        (p) => p.id === currentThread.character.id,
+      );
       if (updatedCurrentCharacter) {
-        await set(currentThreadAtom, { ...currentThread, character: updatedCurrentCharacter });
+        await set(currentThreadAtom, {
+          ...currentThread,
+          character: updatedCurrentCharacter,
+        });
       }
     } catch (error: any) {
-      LogService.log(error, { component: 'saveCustomPrompts', function: 'execute' }, 'error');
+      LogService.log(
+        error,
+        { component: "saveCustomPrompts", function: "execute" },
+        "error",
+      );
       toastService.danger({
-        title: 'Error',
-        description: 'Failed to save characters'
+        title: "Error",
+        description: "Failed to save characters",
       });
     }
-  }
+  },
 );
 
 // Add to your atoms
@@ -412,4 +485,7 @@ export const serverConnectionAtom = atom<{
   userId: string;
 } | null>(null);
 
-export const syncToPolarisAtom = atomWithAsyncStorage<boolean>('syncToPolaris', false);
+export const syncToPolarisAtom = atomWithAsyncStorage<boolean>(
+  "syncToPolaris",
+  false,
+);

@@ -5,7 +5,11 @@ import CharactersList from "@/src/components/character/CharactersList";
 import EditCharacter from "@/src/components/character/EditCharacter";
 import { TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { availableModelsAtom, polarisCharactersAtom } from "@/src/hooks/atoms";
+import {
+  availableModelsAtom,
+  polarisCharactersAtom,
+  polarisModelsAtom,
+} from "@/src/hooks/atoms";
 import { useAtom } from "jotai";
 import CharacterService from "@/src/services/character/CharacterService";
 import { toastService } from "@/src/services/toastService";
@@ -18,7 +22,7 @@ export default function AdminCharactersPanel({}: AdminCharactersPanelProps) {
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(
     null,
   );
-  const [availableModels] = useAtom(availableModelsAtom);
+  const [availableModels] = useAtom(polarisModelsAtom);
   const [characters, setCharacters] = useAtom(polarisCharactersAtom);
 
   const handleEdit = (character: Character) => {
