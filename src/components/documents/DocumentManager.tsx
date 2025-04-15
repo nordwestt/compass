@@ -2,33 +2,41 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DocumentUploader } from './DocumentUploader';
-import { useAtom } from 'jotai';
-import { documentsAtom, threadActionsAtom, charactersAtom, currentIndexAtom } from '@/src/hooks/atoms';
 import { Document } from '@/src/types/core';
-import { toastService } from '@/src/services/toastService';
-import { createDefaultThread } from '@/src/hooks/atoms';
-import { router } from 'expo-router';
 import { Platform } from 'react-native';
 import { DocumentViewer } from './DocumentViewer';
 import { modalService } from '@/src/services/modalService';
+import { toastService } from '@/src/services/toastService';
+import { DocumentPickerAsset } from 'expo-document-picker';
 
+interface DocumentManagerProps {
+  documents: Document[];
+  characters: Array<{
+    id: string;
+    name: string;
+    documentIds?: string[];
+    [key: string]: any;
+  }>;
+  onDocumentDelete: (document: Document) => void;
+  onDocumentUpload: (document: DocumentPickerAsset) => void;
+  onStartDocumentChat: (document: Document) => void;
+}
 
-export const DocumentManager: React.FC = () => {
-  const [documents, setDocuments] = useAtom(documentsAtom);
+export const DocumentManager: React.FC<DocumentManagerProps> = ({
+  documents,
+  characters,
+  onDocumentDelete,
+  onDocumentUpload,
+  onStartDocumentChat,
+}) => {
   const [isUploading, setIsUploading] = useState(false);
-  const [, dispatchThread] = useAtom(threadActionsAtom);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
-  const [customPrompts, setCustomPrompts] = useAtom(charactersAtom);
-  const [, setCurrentIndex] = useAtom(currentIndexAtom);
 
-  const handleDocumentUpload = async (doc: Document) => {
+  const handleDocumentUpload = async (doc: DocumentPickerAsset) => {
     try {
-      // Parse PDF and extract text
+      // Call the parent handler
+      await onDocumentUpload(doc);
       
-      toastService.success({
-        title: 'Document processed',
-        description: `Successfully processed the document`
-      });
     } catch (error) {
       toastService.danger({
         title: 'Processing failed',
@@ -37,20 +45,19 @@ export const DocumentManager: React.FC = () => {
     }
   };
 
-  const handleDeleteDocument = async (doc: Document) => {
-    // Find characters that depend on this document
-    const dependentCharacters = customPrompts.filter(
-      character => character.documentIds?.includes(doc.id)
+  const handleDeleteDocument = async (document: Document) => {
+
+    const dependentCharacters = characters.filter(
+      character => character.documentIds?.includes(document.id)
     );
 
-    let confirmMessage = `Are you sure you want to delete "${doc.name}"?`;
-    
+    let confirmMessage = `Are you sure you want to delete "${document.name}"?`;
+
     if (dependentCharacters.length > 0) {
       confirmMessage += `\n\nThis document is used by ${dependentCharacters.length} character(s):\n${
         dependentCharacters.map(c => `- ${c.name}`).join('\n')
       }\n\nThe document reference will be removed from these characters.`;
     }
-
     const confirmed = await modalService.confirm({
       title: 'Delete Document',
       message: confirmMessage
@@ -58,34 +65,18 @@ export const DocumentManager: React.FC = () => {
 
     if (!confirmed) return;
 
-    try {
-      // Update characters that reference this document
-      if (dependentCharacters.length > 0) {
-        const updatedPrompts = customPrompts.map(character => {
-          if (character.documentIds?.includes(doc.id)) {
-            return {
-              ...character,
-              documentIds: character.documentIds.filter(id => id !== doc.id)
-            };
-          }
-          return character;
-        });
-        
-        setCustomPrompts(updatedPrompts);
-      }
-
+    try{
       // Remove the document
-      const updatedDocuments = documents.filter(d => d.id !== doc.id);
-      setDocuments(updatedDocuments);
+      await onDocumentDelete(document);
 
       // If the deleted document is currently selected, clear the selection
-      if (selectedDoc?.id === doc.id) {
+      if (selectedDoc?.id === document.id) {
         setSelectedDoc(null);
       }
 
       toastService.success({
         title: 'Document deleted',
-        description: `Successfully deleted "${doc.name}"`
+        description: `Successfully deleted "${document.name}"`
       });
     } catch (error) {
       toastService.danger({
@@ -95,27 +86,9 @@ export const DocumentManager: React.FC = () => {
     }
   };
 
-  const startDocumentChat = async (doc: Document) => {
+  const startDocumentChat = (doc: Document) => {
     try {
-      // Create new thread with document context
-      const newThread = createDefaultThread(`Chat: ${doc.name}`);
-      
-      // Store document reference in thread metadata
-      newThread.metadata = {
-        documentIds: [doc.id]
-      };
-
-      await dispatchThread({ type: 'add', payload: newThread });
-      await dispatchThread({ type: 'setCurrent', payload: newThread });
-
-      // Navigate to chat
-      if (Platform.OS === 'web' && window.innerWidth >= 768) {
-        // Set the current index to 0 (Chat tab) before navigation
-        setCurrentIndex(0);
-        router.replace('/');
-      } else {
-        router.push(`/thread/${newThread.id}`);
-      }
+      onStartDocumentChat(doc);
     } catch (error) {
       toastService.danger({
         title: 'Error',
@@ -126,7 +99,7 @@ export const DocumentManager: React.FC = () => {
 
   const renderDocument = ({ item: doc }: { item: Document }) => {
     // Calculate the number of characters that depend on this document
-    const dependentCharactersCount = customPrompts.filter(
+    const dependentCharactersCount = characters.filter(
       character => character.documentIds?.includes(doc.id)
     ).length;
 
@@ -178,7 +151,7 @@ export const DocumentManager: React.FC = () => {
           <View className="flex-row items-center p-4">
             <Ionicons name="document-text" size={32} className="!text-primary mr-2 pb-2" />
             <Text className="text-2xl font-bold text-primary">
-            Documents
+              Documents
             </Text>
           </View>
           {documents.length > 0 && <DocumentUploader 
