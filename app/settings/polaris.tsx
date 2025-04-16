@@ -1,4 +1,11 @@
-import { View, ScrollView, Text, Pressable } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  Pressable,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { TabBarIcon } from "@/src/components/navigation/TabBarIcon";
 import AdminCharactersPanel from "@/src/components/polaris/characters";
@@ -16,6 +23,8 @@ import { useAtom, useAtomValue } from "jotai";
 import CharacterService from "@/src/services/character/CharacterService";
 import ProviderService from "@/src/services/provider/ProviderService";
 import { DocumentService } from "@/src/services/document/DocumentService";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 export default function PolarisSettingScreen() {
   const routes = [
@@ -54,8 +63,17 @@ export default function PolarisSettingScreen() {
 
   if (!polarisExists) {
     return (
-      <View>
-        <Text>Sorry, it's not connected :(</Text>
+      <View className="flex-1 items-center justify-center">
+        <TouchableOpacity
+          className="flex-row items-center gap-2 bg-primary hover:opacity-80 rounded-lg p-4 border border-border"
+          onPress={() => router.push("/settings/providers")}
+        >
+          <Ionicons name="add" size={16} color="white" className="mr-2" />
+          <Text className="text-white flex-1">Add Provider</Text>
+        </TouchableOpacity>
+        <Text className="text-gray-600 font-medium mt-2">
+          You can add a Polaris provider to start using Polaris.
+        </Text>
       </View>
     );
   }

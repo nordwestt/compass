@@ -1,7 +1,13 @@
-import { View, Text, TouchableOpacity, ScrollView, Platform } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Character } from '@/src/types/core';
-import { CharacterAvatar } from '@/src/components/character/CharacterAvatar';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Platform,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Character } from "@/src/types/core";
+import { CharacterAvatar } from "@/src/components/character/CharacterAvatar";
 
 interface CharactersListProps {
   characters: Character[];
@@ -26,15 +32,18 @@ export default function CharactersList({
     <View className={`flex-1 bg-background ${className}`}>
       <View className="flex-row justify-between items-center mb-4">
         <View className="flex-row items-center p-4">
-          <Ionicons name="people" size={32} className="!text-primary mr-2 pb-2" />
-          <Text className="text-2xl font-bold text-primary">
-            {title}
-          </Text>
+          <Ionicons
+            name="people"
+            size={32}
+            className="!text-primary mr-2 pb-2"
+          />
+          <Text className="text-2xl font-bold text-primary">{title}</Text>
         </View>
         {showAddButton && onAddCharacter && (
           <TouchableOpacity
             onPress={onAddCharacter}
-            className="bg-primary px-4 py-2 rounded-lg flex-row items-center hover:opacity-80">
+            className="bg-primary px-4 py-2 rounded-lg flex-row items-center hover:opacity-80"
+          >
             <Ionicons name="add" size={20} color="white" />
             <Text className="text-white ml-2 font-medium">New Character</Text>
           </TouchableOpacity>
@@ -43,29 +52,35 @@ export default function CharactersList({
       <ScrollView className="flex-1 p-4">
         <View className="md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {characters.map((character) => (
-            <TouchableOpacity 
-              onPress={() => onCharacterPress?.(character)} 
-              onLongPress={() => onCharacterLongPress?.(character)} 
-              key={character.id} 
+            <TouchableOpacity
+              onPress={() => onCharacterPress?.(character)}
+              onLongPress={() => onCharacterLongPress?.(character)}
+              key={character.id}
               className="w-full mb-4"
             >
-              <View 
-                className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg" 
-                pointerEvents={Platform.OS === 'web' ? 'auto' : 'none'}
+              <View
+                className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg"
+                pointerEvents={Platform.OS === "web" ? "auto" : "none"}
               >
                 <View className="flex-col items-center my-2">
-                  <CharacterAvatar character={character} size={64} className="my-auto shadow-2xl" />
+                  <CharacterAvatar
+                    character={character}
+                    size={64}
+                    className="my-auto shadow-2xl"
+                  />
                   <Text className="font-extrabold text-primary">
                     {character.name}
                   </Text>
                 </View>
                 <View className="flex-1 ml-4">
-                  <Text 
-                    numberOfLines={20} 
-                    className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2 overflow-y-auto"
-                  >
-                    {character.content}
-                  </Text>
+                  {character.content?.length > 0 && (
+                    <Text
+                      numberOfLines={20}
+                      className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2 overflow-y-auto"
+                    >
+                      {character.content}
+                    </Text>
+                  )}
                 </View>
               </View>
             </TouchableOpacity>
@@ -74,4 +89,4 @@ export default function CharactersList({
       </ScrollView>
     </View>
   );
-} 
+}
