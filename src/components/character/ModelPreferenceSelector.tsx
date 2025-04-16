@@ -46,13 +46,13 @@ export function ModelPreferenceSelector({
   return (
     <View className="mb-4">
       <Text className="text-base font-medium mb-2 text-text">
-        Allowed Models
+        Available Models
       </Text>
 
       <View className="bg-surface p-4 rounded-lg border-2 border-border">
         {selectedPreferences.length === 0 ? (
           <Text className="text-secondary italic">
-            No requirements set, all models are allowed
+            No requirements set - all models will be available to this character
           </Text>
         ) : (
           <View className="space-y-2">
@@ -103,7 +103,7 @@ export function ModelPreferenceSelector({
           className="mt-4 p-3 bg-primary rounded-lg flex-row items-center justify-center"
         >
           <Ionicons name="add" size={20} color="white" className="mr-2" />
-          <Text className="text-white font-medium">Add Model Requirement</Text>
+          <Text className="text-white font-medium">Add Model</Text>
         </TouchableOpacity>
       </View>
 

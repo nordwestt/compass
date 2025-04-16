@@ -151,7 +151,14 @@ export default function Providers({ className }: ProvidersProps) {
     <View className={`flex-1 ${className}`}>
       <ScrollView className="p-4" contentContainerStyle={{ flexGrow: 0 }}>
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-2xl font-bold mb-4 text-text">Providers</Text>
+          <View className="flex-row items-center p-4">
+            <Ionicons
+              name="server"
+              size={32}
+              className="!text-primary mr-2 pb-2"
+            />
+            <Text className="text-2xl font-bold text-primary">Providers</Text>
+          </View>
           <TouchableOpacity
             onPress={() => {
               setEditingProvider(undefined);

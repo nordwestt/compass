@@ -35,6 +35,7 @@ export default function AdminCharactersPanel({}: AdminCharactersPanelProps) {
       name: "",
       content: "",
       icon: "person",
+      exposeAsModel: true,
     });
   };
 
@@ -80,7 +81,7 @@ export default function AdminCharactersPanel({}: AdminCharactersPanelProps) {
         characters={characters}
         onCharacterPress={handleEdit}
         onAddCharacter={handleAdd}
-        title="Admin Characters"
+        title="Characters"
         className="flex-1 p-4"
       />
 
