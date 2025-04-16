@@ -53,9 +53,24 @@ export default function Providers({ className }: ProvidersProps) {
       await PolarisServer.createProvider(provider);
     }
 
-    await setProviders(await PolarisServer.getProviders());
+    const providers = await PolarisServer.getProviders();
+    await setProviders(providers);
 
-    setModels(await PolarisServer.getModels());
+    let models = await PolarisServer.getModels();
+    console.log(providers);
+    models.forEach((x) => {
+      const provider = providers.find((y) => y.id == x.providerId);
+      if (provider) {
+        x.provider = {
+          id: provider.id,
+          name: provider.name,
+          isServerResource: provider.isServerResource,
+          endpoint: provider.endpoint,
+          logo: provider.logo,
+        };
+      }
+    });
+    setModels(models);
 
     setEditingProvider(undefined);
     setShowModal(false);

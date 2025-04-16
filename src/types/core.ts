@@ -24,6 +24,7 @@ export interface ChatMessage {
 export interface Model {
   id: string;
   name: string;
+  providerId: string;
   provider: Provider;
 }
 
@@ -77,7 +78,7 @@ export interface Document {
   name: string;
   path: string;
   pages: number;
-  type: 'pdf';
+  type: "pdf";
   chunks?: string[];
   embeddings?: number[][];
 }
@@ -87,7 +88,7 @@ export interface DocumentPreview {
   name: string;
   path: string;
   pages: number;
-  type: 'pdf';
+  type: "pdf";
 }
 
 export interface ResourceMetadata {
