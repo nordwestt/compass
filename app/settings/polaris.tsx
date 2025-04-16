@@ -5,6 +5,7 @@ import {
   Pressable,
   TouchableOpacity,
   Platform,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { TabBarIcon } from "@/src/components/navigation/TabBarIcon";
@@ -18,6 +19,7 @@ import {
   polarisCharactersAtom,
   polarisDocumentsAtom,
   polarisProvidersAtom,
+  polarisServerAtom,
 } from "@/src/hooks/atoms";
 import { useAtom, useAtomValue } from "jotai";
 import CharacterService from "@/src/services/character/CharacterService";
@@ -25,6 +27,7 @@ import ProviderService from "@/src/services/provider/ProviderService";
 import { DocumentService } from "@/src/services/document/DocumentService";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { toastService } from "@/src/services/toastService";
 
 export default function PolarisSettingScreen() {
   const routes = [
@@ -37,43 +40,90 @@ export default function PolarisSettingScreen() {
   const [characters, setCharacters] = useAtom(polarisCharactersAtom);
   const [providers, setProviders] = useAtom(polarisProvidersAtom);
   const [documents, setDocuments] = useAtom(polarisDocumentsAtom);
+  const [polarisServer, setPolarisServer] = useAtom(polarisServerAtom);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [polarisExists, setPolarisExists] = useState(false);
 
+  const [polarisEndpoint, setPolarisEndpoint] = useState(
+    "http://localhost:3000",
+  );
+  const [polarisApiKey, setPolarisApiKey] = useState("");
+
   useEffect(() => {
-    const tryConnect = async () => {
-      const polarisProvider = userProviders.find((x) =>
-        x.name?.toLowerCase()?.includes("polaris"),
-      );
+    if (polarisServer) {
+      setPolarisApiKey(polarisServer.apiKey);
+      setPolarisEndpoint(polarisServer.endpoint);
+      onPolarisLogin();
+    }
+  }, []);
 
-      if (polarisProvider) {
-        setPolarisExists(true);
-        await PolarisServer.connect(
-          polarisProvider.endpoint,
-          polarisProvider.apiKey ?? "",
-        );
+  const onPolarisLogin = async () => {
+    if (polarisEndpoint?.length == 0) {
+      toastService.warning({ title: "Endpoint is required" });
+      return;
+    }
 
-        setCharacters(await PolarisServer.getCharacters());
-        setProviders(await PolarisServer.getProviders());
-        setDocuments(await PolarisServer.getDocuments());
-      }
-    };
-    tryConnect();
-  }, [userProviders]);
+    if (polarisApiKey?.length == 0) {
+      toastService.warning({ title: "API Key is required" });
+      return;
+    }
+
+    if (!(await PolarisServer.connect(polarisEndpoint, polarisApiKey))) {
+      toastService.danger({ title: "Failed to connect to Polaris" });
+      return;
+    }
+
+    setPolarisServer({
+      endpoint: polarisEndpoint,
+      apiKey: polarisApiKey,
+    });
+
+    setPolarisExists(true);
+
+    setCharacters(await PolarisServer.getCharacters());
+    setProviders(await PolarisServer.getProviders());
+    setDocuments(await PolarisServer.getDocuments());
+  };
+
+  const onPolarisLogout = async () => {
+    setPolarisServer(null);
+    setPolarisExists(false);
+    setCharacters([]);
+    setProviders([]);
+    setDocuments([]);
+  };
 
   if (!polarisExists) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <TouchableOpacity
-          className="flex-row items-center gap-2 bg-primary hover:opacity-80 rounded-lg p-4 border border-border"
-          onPress={() => router.push("/settings/providers")}
-        >
-          <Ionicons name="add" size={16} color="white" className="mr-2" />
-          <Text className="text-white flex-1">Add Provider</Text>
-        </TouchableOpacity>
-        <Text className="text-gray-600 font-medium mt-2">
-          You can add a Polaris provider to start using Polaris.
-        </Text>
+      <View className="flex-1 items-center justify-center p-2">
+        <View className="mt-4 border-2 border-border p-4 rounded-lg bg-surface">
+          <TextInput
+            className="border border-border flex-1 h-[40px] py-2 rounded-lg px-4 bg-surface text-text"
+            placeholder="Endpoint URL"
+            onChangeText={(url: string) => setPolarisEndpoint(url)}
+            value={polarisEndpoint}
+            placeholderTextColor="#9CA3AF"
+            textAlignVertical="top"
+          />
+          <TextInput
+            className="mt-2 border border-border flex-1 h-[40px] py-2 rounded-lg px-4 bg-surface text-text"
+            placeholder="API Key"
+            onChangeText={(apiKey) => setPolarisApiKey(apiKey)}
+            value={polarisApiKey}
+            placeholderTextColor="#9CA3AF"
+            textAlignVertical="top"
+            secureTextEntry
+          />
+          <TouchableOpacity
+            className="flex-row items-center gap-2 bg-primary hover:opacity-80 rounded-lg p-4 border border-border mt-2"
+            onPress={() => {
+              onPolarisLogin();
+            }}
+          >
+            <Ionicons name="log-in" size={16} color="white" className="mr-2" />
+            <Text className="text-white flex-1">Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -110,9 +160,12 @@ export default function PolarisSettingScreen() {
           ))}
         </View>
         <View className="w-1/3">
-          <Text className="mx-auto text-center w-24 bg-primary text-white p-2 rounded-b-lg font-bold">
-            ✨ Polaris
-          </Text>
+          <View className="mx-auto text-center w-32 bg-primary text-white p-2 rounded-b-lg font-bold flex-row justify-center">
+            <Text className="text-surface my-auto font-bold">✨ Polaris</Text>
+            <Pressable className="ml-auto" onPress={onPolarisLogout}>
+              <Ionicons name="log-out" size={22} className="!text-surface" />
+            </Pressable>
+          </View>
         </View>
         <View className="w-1/3"></View>
       </View>

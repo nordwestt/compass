@@ -214,6 +214,10 @@ export const userProvidersAtom = atomWithAsyncStorage<Provider[]>(
 );
 export const polarisProvidersAtom = atom<Provider[]>([]);
 export const polarisModelsAtom = atom<Model[]>([]);
+export const polarisServerAtom = atom<{
+  endpoint: string;
+  apiKey: string;
+} | null>(null);
 
 // Similarly update the availableProvidersAtom
 export const availableProvidersAtom = atom(
