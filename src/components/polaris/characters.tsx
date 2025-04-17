@@ -9,6 +9,7 @@ import {
   availableModelsAtom,
   polarisCharactersAtom,
   polarisModelsAtom,
+  polarisDocumentsAtom,
 } from "@/src/hooks/atoms";
 import { useAtom } from "jotai";
 import CharacterService from "@/src/services/character/CharacterService";
@@ -24,6 +25,7 @@ export default function AdminCharactersPanel({}: AdminCharactersPanelProps) {
   );
   const [availableModels] = useAtom(polarisModelsAtom);
   const [characters, setCharacters] = useAtom(polarisCharactersAtom);
+  const [documents, setDocuments] = useAtom(polarisDocumentsAtom);
 
   const handleEdit = (character: Character) => {
     setEditingCharacter(character);
@@ -88,6 +90,7 @@ export default function AdminCharactersPanel({}: AdminCharactersPanelProps) {
       {editingCharacter && (
         <View className="flex-1 m-4 relative">
           <EditCharacter
+            availableDocuments={documents}
             existingCharacter={editingCharacter}
             onSave={handleSave}
             onDelete={handleDelete}

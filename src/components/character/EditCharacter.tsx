@@ -22,9 +22,11 @@ import { IconSelector } from "@/src/components/character/IconSelector";
 import { DocumentSelector } from "./DocumentSelector";
 import { ModelPreferenceSelector } from "./ModelPreferenceSelector";
 import { Switch } from "@/src/components/ui/Switch";
+import { Document } from "@/src/types/core";
 
 interface EditCharacterProps {
   availableModels: Model[];
+  availableDocuments: Document[];
   existingCharacter: Character;
   onSave: (character: Character) => void;
   onDelete: (character: Character) => void;
@@ -38,6 +40,7 @@ export default function EditCharacter({
   onDelete,
   className,
   availableModels,
+  availableDocuments,
   showCharacterExposeAsModel = false,
 }: EditCharacterProps) {
   const [character, setCharacter] = useState<Character | null>(null);
@@ -227,6 +230,7 @@ export default function EditCharacter({
           </View>
 
           <DocumentSelector
+            documents={availableDocuments}
             selectedDocIds={character?.documentIds || []}
             onSelectDoc={handleDocumentToggle}
             onRemoveDoc={handleDocumentToggle}
