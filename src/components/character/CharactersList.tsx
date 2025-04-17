@@ -62,7 +62,7 @@ export default function CharactersList({
                 className="h-40 flex-row bg-surface hover:bg-background rounded-xl p-4 border border-gray-200 shadow-lg"
                 pointerEvents={Platform.OS === "web" ? "auto" : "none"}
               >
-                <View className="flex-col items-center my-2">
+                <View className="flex-col items-center my-2 mx-auto">
                   <CharacterAvatar
                     character={character}
                     size={64}
@@ -72,16 +72,16 @@ export default function CharactersList({
                     {character.name}
                   </Text>
                 </View>
-                <View className="flex-1 ml-4">
-                  {character.content?.length > 0 && (
+                {character.content?.length > 0 && (
+                  <View className="flex-1 ml-4">
                     <Text
                       numberOfLines={20}
                       className="text-sm text-gray-500 dark:text-gray-400 mt-1 border border-gray-300 rounded-lg p-2 overflow-y-auto"
                     >
                       {character.content}
                     </Text>
-                  )}
-                </View>
+                  </View>
+                )}
               </View>
             </TouchableOpacity>
           ))}

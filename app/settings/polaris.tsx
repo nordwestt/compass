@@ -97,6 +97,7 @@ export default function PolarisSettingScreen() {
     return (
       <View className="flex-1 items-center justify-center p-2">
         <View className="mt-4 border-2 border-border p-4 rounded-lg bg-surface">
+          <Text className="font-bold mb-2 ml-2">✨ Polaris</Text>
           <TextInput
             className="border border-border flex-1 h-[40px] py-2 rounded-lg px-4 bg-surface text-text"
             placeholder="Endpoint URL"

@@ -32,21 +32,17 @@ export default function Documents() {
       character.documentIds?.includes(document.id),
     );
 
-    if (dependentCharacters.length > 0) {
-      const updatedCharacters = characters.map((character) => {
-        if (character.documentIds?.includes(document.id)) {
-          return {
-            ...character,
-            documentIds: character.documentIds.filter(
-              (id) => id !== document.id,
-            ),
-          };
-        }
-        return character;
+    for (let character of dependentCharacters) {
+      await PolarisServer.updateCharacter({
+        ...character,
+        documentIds: character.documentIds?.filter((id) => id !== document.id),
       });
-
-      setCharacters(updatedCharacters);
     }
+
+    setCharacters(await PolarisServer.getCharacters());
+    await PolarisServer.deleteDocument(document.id);
+    setDocuments(await PolarisServer.getDocuments());
+    toastService.success({ title: "Document deleted successfully" });
   };
 
   const onDocumentUpload = async (file: DocumentPickerAsset) => {
