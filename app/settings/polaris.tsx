@@ -40,9 +40,8 @@ export default function PolarisSettingScreen() {
   const [characters, setCharacters] = useAtom(polarisCharactersAtom);
   const [providers, setProviders] = useAtom(polarisProvidersAtom);
   const [documents, setDocuments] = useAtom(polarisDocumentsAtom);
-  const [polarisServer, setPolarisServer] = useAtom(polarisServerAtom);
+  const [polarisServerInfo, setPolarisServerInfo] = useAtom(polarisServerAtom);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [polarisExists, setPolarisExists] = useState(false);
 
   const [polarisEndpoint, setPolarisEndpoint] = useState(
     "http://localhost:3000",
@@ -50,12 +49,16 @@ export default function PolarisSettingScreen() {
   const [polarisApiKey, setPolarisApiKey] = useState("");
 
   useEffect(() => {
-    if (polarisServer) {
-      setPolarisApiKey(polarisServer.apiKey);
-      setPolarisEndpoint(polarisServer.endpoint);
-      onPolarisLogin();
+    if (polarisServerInfo) {
+      loadResources();
     }
   }, []);
+
+  const loadResources = async () => {
+    setCharacters(await PolarisServer.getCharacters());
+    setProviders(await PolarisServer.getProviders());
+    setDocuments(await PolarisServer.getDocuments());
+  };
 
   const onPolarisLogin = async () => {
     if (polarisEndpoint?.length == 0) {
@@ -73,27 +76,22 @@ export default function PolarisSettingScreen() {
       return;
     }
 
-    setPolarisServer({
+    setPolarisServerInfo({
       endpoint: polarisEndpoint,
       apiKey: polarisApiKey,
     });
 
-    setPolarisExists(true);
-
-    setCharacters(await PolarisServer.getCharacters());
-    setProviders(await PolarisServer.getProviders());
-    setDocuments(await PolarisServer.getDocuments());
+    await loadResources();
   };
 
   const onPolarisLogout = async () => {
-    setPolarisServer(null);
-    setPolarisExists(false);
+    setPolarisServerInfo(null);
     setCharacters([]);
     setProviders([]);
     setDocuments([]);
   };
 
-  if (!polarisExists) {
+  if (!polarisServerInfo) {
     return (
       <View className="flex-1 items-center justify-center p-2">
         <View className="mt-4 border-2 border-border p-4 rounded-lg bg-surface">
