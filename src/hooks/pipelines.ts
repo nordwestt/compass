@@ -82,8 +82,8 @@ export const relevantPassagesTransform: MessageTransform = {
     }
   };
 
-export const searchTransform: MessageTransform = {
-  name: 'search',
+export const webSearchTransform: MessageTransform = {
+  name: 'webSearch',
   transform: async (ctx: MessageContext): Promise<MessageContext> => {
     if (!ctx.metadata.searchEnabled) return ctx;
 

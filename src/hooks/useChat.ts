@@ -10,7 +10,7 @@ import { useSearch } from './useSearch';
 import { Character, ChatMessage, Thread, Document, Model } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
-import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform, searchTransform, threadUpdateTransform, firstMessageTransform, documentContextTransform  } from './pipelines';
+import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform, webSearchTransform, threadUpdateTransform, firstMessageTransform, documentContextTransform  } from './pipelines';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -37,7 +37,7 @@ export function useChat() {
     .addTransform(documentContextTransform)  
     .addTransform(urlContentTransform)
     .addTransform(relevantPassagesTransform)
-    .addTransform(searchTransform)
+    .addTransform(webSearchTransform)
     .addTransform(threadUpdateTransform)
     .addTransform(firstMessageTransform)
     
