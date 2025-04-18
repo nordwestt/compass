@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import { DocumentManager } from "@/src/components/documents/DocumentManager";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -26,6 +26,18 @@ export default function Documents() {
   const [characters, setCharacters] = useAtom(charactersAtom);
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
   const [, dispatchThread] = useAtom(threadActionsAtom);
+
+  useEffect(() => {
+    const ensureEmbeddingModel = async () => {
+      const embeddingModel = await PolarisServer.getEmbeddingModel();
+      if (!embeddingModel) {
+        await PolarisServer.setEmbeddingModel(
+          "jeffh/intfloat-multilingual-e5-large-instruct:q8_0",
+        );
+      }
+    };
+    ensureEmbeddingModel();
+  }, []);
 
   const onDocumentDelete = async (document: Document) => {
     const dependentCharacters = characters.filter((character) =>

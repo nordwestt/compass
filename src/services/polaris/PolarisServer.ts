@@ -541,6 +541,62 @@ export class PolarisServer {
     }
   }
 
+  // ===== EMBEDDING MODEL OPERATIONS =====
+
+  /**
+   * Set the embedding model
+   */
+  async setEmbeddingModel(modelId: string): Promise<boolean> {
+    try {
+      if (!modelId) {
+        throw new Error("Model ID is required");
+      }
+
+      await this.makeRequest(`/api/admin/settings/embedding`, "PATCH", {
+        modelId: modelId,
+      });
+
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
+  }
+
+  async getEmbeddingModel(): Promise<string | null> {
+    try {
+      const response = await this.makeRequest(
+        `/api/admin/settings/embedding`,
+        "GET",
+      );
+
+      return response.modelId || null;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+    }
+    return null;
+  }
+
   // ===== HELPER METHODS =====
 
   /**
@@ -548,7 +604,7 @@ export class PolarisServer {
    */
   private async makeRequest(
     endpoint: string,
-    method: "GET" | "POST" | "PUT" | "DELETE",
+    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
     data?: any,
   ): Promise<any> {
     if (!this.serverUrl && method !== "GET") {
