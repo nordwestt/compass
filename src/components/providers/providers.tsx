@@ -78,6 +78,21 @@ export default function Providers({ className }: ProvidersProps) {
     setShowModal(true);
   };
 
+  const handleRefresh = (provider: Provider) => {
+    fetchAvailableModelsV2([provider])
+      .then((fetchedModels) => {
+        setModels(fetchedModels);
+      })
+      .catch((error) => {
+        console.error("Error fetching models:", error);
+        toastService.danger({
+          title: "Failed to load models",
+          description: "Could not fetch models from providers",
+        });
+      })
+      .finally(() => {});
+  };
+
   const autoScanForOllama = async () => {
     if (Platform.OS === "android") {
       const granted = await PermissionsAndroid.request(
@@ -188,6 +203,7 @@ export default function Providers({ className }: ProvidersProps) {
               <ProviderCard
                 className="bg-surface rounded-xl shadow-lg"
                 provider={provider}
+                onRefresh={handleRefresh}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
               />

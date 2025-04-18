@@ -7,6 +7,7 @@ interface ProviderCardProps {
   provider: Provider;
   onEdit: (provider: Provider) => void;
   onDelete: (provider: Provider) => void;
+  onRefresh: (provider: Provider) => void;
   className?: string;
 }
 
@@ -14,6 +15,7 @@ export function ProviderCard({
   provider,
   onEdit,
   onDelete,
+  onRefresh,
   className,
 }: ProviderCardProps) {
   return (
@@ -31,6 +33,12 @@ export function ProviderCard({
           </Text>
         </View>
         <View className="flex-row h-full items-center">
+          <TouchableOpacity
+            onPress={() => onRefresh(provider)}
+            className="p-2 hover:opacity-60 bg-background h-full justify-center items-center w-12 rounded-full mr-2"
+          >
+            <Ionicons name="refresh" size={20} className="!text-primary" />
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => onEdit(provider)}
             className="p-2 hover:opacity-60 bg-background h-full justify-center items-center w-12"

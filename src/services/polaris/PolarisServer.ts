@@ -597,6 +597,27 @@ export class PolarisServer {
     return null;
   }
 
+  async syncAllModels(): Promise<boolean | null> {
+    try {
+      const response = await this.makeRequest(`/api/admin/models/sync`, "POST");
+
+      return response.success;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+    }
+    return null;
+  }
+
   // ===== HELPER METHODS =====
 
   /**

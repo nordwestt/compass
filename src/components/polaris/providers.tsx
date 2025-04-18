@@ -105,6 +105,22 @@ export default function Providers({ className }: ProvidersProps) {
     setShowModal(true);
   };
 
+  const handleRefresh = async (provider: Provider) => {
+    const res = await PolarisServer.syncAllModels();
+    if (res) {
+      setModels(await PolarisServer.getModels());
+      toastService.success({
+        title: "Success",
+        description: "Providers and models refreshed successfully",
+      });
+    } else {
+      toastService.danger({
+        title: "Error",
+        description: "Failed to refresh providers and models",
+      });
+    }
+  };
+
   return (
     <View className={`flex-1 ${className}`}>
       <ScrollView className="p-4" contentContainerStyle={{ flexGrow: 0 }}>
@@ -146,6 +162,7 @@ export default function Providers({ className }: ProvidersProps) {
               <ProviderCard
                 className="bg-surface rounded-xl shadow-lg"
                 provider={provider}
+                onRefresh={handleRefresh}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
               />
