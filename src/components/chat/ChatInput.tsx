@@ -10,6 +10,7 @@ interface ChatInputProps {
   onSend: (message: string, mentionedCharacters: MentionedCharacter[]) => void;
   isGenerating?: boolean;
   onInterrupt?: () => void;
+  className?: string;
 }
 
 export interface ChatInputRef {
@@ -23,7 +24,7 @@ export interface MentionedCharacter {
   endIndex: number;
 }
 
-export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isGenerating, onInterrupt }, ref) => {
+export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isGenerating, onInterrupt, className = '' }, ref) => {
   const [message, setMessage] = useState('');
   const [mentionSearch, setMentionSearch] = useState('');
   const [showMentionPopup, setShowMentionPopup] = useState(false);
@@ -130,7 +131,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   };
 
   return (
-    <View className="relative flex-row items-center p-2 bg-surface border-t border-border rounded-t-xl mx-2">
+    <View className={`relative flex-row items-center p-2 bg-surface border-t border-border rounded-t-xl mx-2 ${className}`}>
       {showMentionPopup && (
         <CharacterMentionPopup
           characters={allCharacters}
@@ -142,7 +143,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       <TextInput
         onBlur={handleBlur}
         ref={inputRef}
-        className={`flex-1 pt-1 min-h-[40px] px-4 bg-background rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
+        className={`flex-1 pt-1 min-h-[40px] outline-none px-4 bg-surface rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
         placeholder="Type a message... "
         placeholderTextColor="#9CA3AF"
         value={message}

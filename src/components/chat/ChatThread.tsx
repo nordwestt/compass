@@ -186,6 +186,7 @@ export const ChatThread: React.FC = () => {
   }, [isGenerating]);
 
   const messages = currentThread?.messages || [];
+  const isEmpty = messages.length === 0;
 
   return (
     <View className="flex-row flex-1">
@@ -218,39 +219,61 @@ export const ChatThread: React.FC = () => {
         
       </View>
       
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderItem}
-        onContentSizeChange={() => {
-          if (messages.length > 0) {
-            debouncedScrollToEnd();
-          }
-        }}
-        keyExtractor={(_, index) => index.toString()}
-        maintainVisibleContentPosition={{ // Add this prop
-          minIndexForVisible: 0,
-          autoscrollToTopThreshold: 10
-        }}
-        className="flex-1 -mt-4"
-        contentContainerStyle={{ padding: 16, paddingBottom: 50, paddingTop: 50 }}
-        ListEmptyComponent={
-          <View className="flex-1 items-center justify-center p-4">
-            {/* Optional: Add an empty state message */}
+      {isEmpty ? (
+        <View className="flex-1 items-center justify-center">
+          <View className="w-full max-w-xl px-4">
+            <View className="mb-8">
+              <Text className="text-2xl font-bold text-center text-text mb-2">
+                Start a conversation with {currentThread.character?.name || 'AI'}
+              </Text>
+              <Text className="text-center text-text opacity-70">
+                Ask a question or start a conversation to get help with anything.
+              </Text>
+            </View>
+            <ChatInput 
+              ref={chatInputRef}
+              onSend={wrappedHandleSend} 
+              isGenerating={isGenerating}
+              onInterrupt={handleInterrupt}
+              className="shadow-lg rounded-xl"
+            />
           </View>
-        }
-        onScroll={handleScroll}
-        onScrollBeginDrag={() => setUserHasScrolled(true)}
-      />
+        </View>
+      ) : (
+        <>
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            renderItem={renderItem}
+            onContentSizeChange={() => {
+              if (messages.length > 0) {
+                debouncedScrollToEnd();
+              }
+            }}
+            keyExtractor={(_, index) => index.toString()}
+            maintainVisibleContentPosition={{
+              minIndexForVisible: 0,
+              autoscrollToTopThreshold: 10
+            }}
+            className="flex-1 -mt-4"
+            contentContainerStyle={{ padding: 16, paddingBottom: 50, paddingTop: 50 }}
+            ListEmptyComponent={
+              <View className="flex-1 items-center justify-center p-4">
+                {/* Optional: Add an empty state message */}
+              </View>
+            }
+            onScroll={handleScroll}
+            onScrollBeginDrag={() => setUserHasScrolled(true)}
+          />
 
-      
-
-      <ChatInput 
-        ref={chatInputRef}
-        onSend={wrappedHandleSend} 
-        isGenerating={isGenerating}
-        onInterrupt={handleInterrupt}
-      />
+          <ChatInput 
+            ref={chatInputRef}
+            onSend={wrappedHandleSend} 
+            isGenerating={isGenerating}
+            onInterrupt={handleInterrupt}
+          />
+        </>
+      )}
       
     </View>
     {/* Show side panel on desktop, modal on mobile */}
