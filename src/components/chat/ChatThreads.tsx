@@ -128,8 +128,9 @@ const ChatThreads: React.FC = () => {
         sections={groupThreadsByDate(threads)}
         keyExtractor={(thread) => thread.id}
         renderSectionHeader={({ section: { title } }) => (
-          <View className="z-10">
-            <Text className="text-sm font-semibold text-text px-4 py-2">
+          <View className="z-10 flex-row items-center px-4">
+            <Ionicons name="time-outline" size={16} color="gray" className="mr-2" />
+            <Text className="text-sm font-semibold text-text py-2 flex-1">
               {title}
             </Text>
           </View>
@@ -152,7 +153,7 @@ const ChatThreads: React.FC = () => {
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => deleteThread(thread.id)}
-              className="h-12 p-4 items-center justify-center bg-red-100 dark:bg-red-900 rounded-r-lg hover:opacity-60"
+              className="h-12 p-4 items-center justify-center border-red-100 dark:border-red-900 border rounded-r-lg hover:opacity-60"
             >
               <Ionicons 
                 name="trash-outline" 
