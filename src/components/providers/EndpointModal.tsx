@@ -13,6 +13,7 @@ interface EndpointModalProps {
   onClose: () => void;
   onSave: (provider: Provider) => void;
   initialProvider?: Provider;
+  initialCapabilityFilter?: keyof Provider['capabilities'];
 }
 
 export function EndpointModal({
@@ -20,6 +21,7 @@ export function EndpointModal({
   onClose,
   onSave,
   initialProvider,
+  initialCapabilityFilter,
 }: EndpointModalProps) {
   const [formData, setFormData] = useState<Omit<Provider, 'id'>>({
     name: PREDEFINED_PROVIDERS.ollama.name,
@@ -31,15 +33,29 @@ export function EndpointModal({
 
   useEffect(() => {
     if (visible) {
-      setFormData(initialProvider ?? {
-        name: PREDEFINED_PROVIDERS.ollama.name,
-        endpoint: PREDEFINED_PROVIDERS.ollama.endpoint,
-        apiKey: '',
-        capabilities: PREDEFINED_PROVIDERS.ollama.capabilities,
-        logo: PREDEFINED_PROVIDERS.ollama.logo,
-      });
+      if (!initialProvider && initialCapabilityFilter) {
+        const defaultProvider = Object.values(PREDEFINED_PROVIDERS).find(
+          p => p.capabilities?.[initialCapabilityFilter]
+        ) || PREDEFINED_PROVIDERS.ollama;
+        
+        setFormData({
+          name: defaultProvider.name,
+          endpoint: defaultProvider.endpoint,
+          apiKey: '',
+          capabilities: defaultProvider.capabilities,
+          logo: defaultProvider.logo,
+        });
+      } else {
+        setFormData(initialProvider ?? {
+          name: PREDEFINED_PROVIDERS.ollama.name,
+          endpoint: PREDEFINED_PROVIDERS.ollama.endpoint,
+          apiKey: '',
+          capabilities: PREDEFINED_PROVIDERS.ollama.capabilities,
+          logo: PREDEFINED_PROVIDERS.ollama.logo,
+        });
+      }
     }
-  }, [visible, initialProvider]);
+  }, [visible, initialProvider, initialCapabilityFilter]);
 
   const handleSave = () => {
     console.log("formData", formData);
@@ -51,7 +67,6 @@ export function EndpointModal({
       return;
     }
 
-    // For providers that require API keys
     if (formData.keyRequired && !formData.apiKey) {
       toastService.danger({
         title: 'API Key Required',
@@ -89,6 +104,7 @@ export function EndpointModal({
             console.log("updates", updates);
             setFormData(prev => ({ ...prev, ...updates }));
           }}
+          initialCapabilityFilter={initialCapabilityFilter}
         />
 
         {isOllama && initialProvider && (

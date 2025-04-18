@@ -4,17 +4,19 @@ import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
 import { ScrollView } from "react-native-gesture-handler";
 import { Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProviderTypeSelector } from "./ProviderTypeSelector";
 
 interface ProviderFormFieldsProps {
   formData: Omit<Provider, 'id'>;
   onChange: (updates: Partial<Omit<Provider, 'id'>>) => void;
+  initialCapabilityFilter?: keyof Provider['capabilities'];
 }
 
 export function ProviderFormFields({
   formData,
   onChange,
+  initialCapabilityFilter,
 }: ProviderFormFieldsProps) {
   const [selectedProvider, setSelectedProvider] = useState(() => {
     // Find the matching predefined provider based on endpoint
@@ -22,6 +24,16 @@ export function ProviderFormFields({
       p => p.endpoint === formData.endpoint
     ) || PREDEFINED_PROVIDERS.ollama;
   });
+
+  // Update selected provider when formData changes
+  useEffect(() => {
+    const matchingProvider = Object.values(PREDEFINED_PROVIDERS).find(
+      p => p.endpoint === formData.endpoint
+    );
+    if (matchingProvider) {
+      setSelectedProvider(matchingProvider);
+    }
+  }, [formData.endpoint]);
 
   const handleProviderSelect = (provider: Provider) => {
     setSelectedProvider(provider);
@@ -31,6 +43,8 @@ export function ProviderFormFields({
       endpoint: provider.endpoint,
       capabilities: provider.capabilities,
       logo: provider.logo,
+      keyRequired: provider.keyRequired,
+      signupUrl: provider.signupUrl,
     });
   };
 
@@ -44,6 +58,7 @@ export function ProviderFormFields({
         <ProviderTypeSelector
           selectedProvider={selectedProvider}
           onProviderSelect={handleProviderSelect}
+          initialCapabilityFilter={initialCapabilityFilter}
         />
       )}
 

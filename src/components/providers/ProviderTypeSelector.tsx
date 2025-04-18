@@ -3,11 +3,12 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { Provider } from "@/src/types/core";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ProviderTypeSelectorProps {
   selectedProvider: Provider;
   onProviderSelect: (provider: Provider) => void;
+  initialCapabilityFilter?: keyof Provider['capabilities'] | 'all';
 }
 
 type CapabilityFilter = string | keyof Provider['capabilities'];
@@ -25,8 +26,16 @@ const CAPABILITY_FILTERS: { key: CapabilityFilter; label: string; icon: string }
 export function ProviderTypeSelector({
   selectedProvider,
   onProviderSelect,
+  initialCapabilityFilter = 'all',
 }: ProviderTypeSelectorProps) {
-  const [activeFilter, setActiveFilter] = useState<CapabilityFilter>('all');
+  const [activeFilter, setActiveFilter] = useState<CapabilityFilter>(initialCapabilityFilter);
+
+  // Set the initial filter when the component mounts
+  useEffect(() => {
+    if (initialCapabilityFilter) {
+      setActiveFilter(initialCapabilityFilter);
+    }
+  }, [initialCapabilityFilter]);
 
   const filteredProviders = Object.entries(PREDEFINED_PROVIDERS).filter(([_, provider]) => {
     if (activeFilter === 'all') return true;
