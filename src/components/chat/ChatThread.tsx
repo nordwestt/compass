@@ -32,6 +32,7 @@ import { useWindowDimensions } from 'react-native';
 import { toastService } from '@/src/services/toastService';
 import { Dropdown, DropdownElement } from '../ui/Dropdown';
 import { Settings } from './Settings';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -59,6 +60,7 @@ export const ChatThread: React.FC = () => {
   const isDesktop = Platform.OS === 'web' && width >= 768;
 
   const [userHasScrolled, setUserHasScrolled] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
@@ -161,10 +163,12 @@ export const ChatThread: React.FC = () => {
   };
 
   const scrollToEnd = useCallback(() => {
-    if (flatListRef.current && !userHasScrolled) {
+    if (flatListRef.current) {
       flatListRef.current.scrollToOffset({ offset: 99999999, animated: true });
+      setUserHasScrolled(false);
+      setShowScrollButton(false);
     }
-  }, [userHasScrolled]);
+  }, []);
 
   // Debounced version of scrollToEnd
   const debouncedScrollToEnd = useCallback(
@@ -179,14 +183,14 @@ export const ChatThread: React.FC = () => {
   );
 
   const handleScroll = useCallback((event: any) => {
-    if (isGenerating) {
-      const currentOffset = event.nativeEvent.contentOffset.y;
-      const maxOffset = event.nativeEvent.contentSize.height - event.nativeEvent.layoutMeasurement.height;
-      
-      // If user has scrolled up more than 50 pixels from bottom, consider it as manual scroll
-      setUserHasScrolled(maxOffset - currentOffset > 50);
-    }
-  }, [isGenerating]);
+    const currentOffset = event.nativeEvent.contentOffset.y;
+    const maxOffset = event.nativeEvent.contentSize.height - event.nativeEvent.layoutMeasurement.height;
+    
+    // If user has scrolled up more than 50 pixels from bottom, consider it as manual scroll
+    const hasScrolledUp = maxOffset - currentOffset > 50;
+    setUserHasScrolled(hasScrolledUp);
+    setShowScrollButton(hasScrolledUp);
+  }, []);
 
   // Reset userHasScrolled when generation stops
   useEffect(() => {
@@ -276,7 +280,18 @@ export const ChatThread: React.FC = () => {
             onScroll={handleScroll}
             onScrollBeginDrag={() => setUserHasScrolled(true)}
           />
-
+          
+          {showScrollButton && (
+            <View className="absolute bottom-24 left-0 right-0 items-center mb-2">
+              <TouchableOpacity 
+                onPress={scrollToEnd}
+                className="bg-primary w-10 h-10 rounded-full items-center justify-center shadow-md"
+              >
+                <Ionicons name="chevron-down" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+          )}
+          
           <ChatInput 
             ref={chatInputRef}
             onSend={wrappedHandleSend} 
