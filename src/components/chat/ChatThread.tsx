@@ -241,7 +241,7 @@ export const ChatThread: React.FC = () => {
           </View>
         </View>
       ) : (
-        <>
+        <View className={`mx-auto flex-1 ${Platform.OS == 'web' ? 'max-w-[80%]' : ''}`}>
           <FlatList
             ref={flatListRef}
             data={messages}
@@ -256,7 +256,7 @@ export const ChatThread: React.FC = () => {
               minIndexForVisible: 0,
               autoscrollToTopThreshold: 10
             }}
-            className={`flex-1 -mt-4 mx-auto ${Platform.OS == 'web' ? 'max-w-[80%]' : ''}`}
+            className={`flex-1 -mt-4`}
             contentContainerStyle={{ padding: 16, paddingBottom: 50, paddingTop: 50 }}
             ListEmptyComponent={
               <View className="flex-1 items-center justify-center p-4">
@@ -272,8 +272,9 @@ export const ChatThread: React.FC = () => {
             onSend={wrappedHandleSend} 
             isGenerating={isGenerating}
             onInterrupt={handleInterrupt}
+            className={`${Platform.OS == 'web' ? 'mb-8 rounded-xl' : ''}`}
           />
-        </>
+        </View>
       )}
       
     </View>
