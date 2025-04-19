@@ -256,7 +256,7 @@ export const ChatThread: React.FC = () => {
               minIndexForVisible: 0,
               autoscrollToTopThreshold: 10
             }}
-            className={`flex-1 -mt-4 ${Platform.OS == 'web' ? 'mx-16' : ''}`}
+            className={`flex-1 -mt-4 mx-auto ${Platform.OS == 'web' ? 'max-w-[80%]' : ''}`}
             contentContainerStyle={{ padding: 16, paddingBottom: 50, paddingTop: 50 }}
             ListEmptyComponent={
               <View className="flex-1 items-center justify-center p-4">
