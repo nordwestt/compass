@@ -13,7 +13,7 @@ import { useLayoutEffect } from 'react';
 const MIN_DESKTOP_WIDTH = 768;
 
 export default function HomeScreen() {
-  const [isSidebarVisible, setIsSidebarVisible] = useAtom(sidebarVisibleAtom);
+  
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width >= MIN_DESKTOP_WIDTH;
   const navigation = useNavigation();

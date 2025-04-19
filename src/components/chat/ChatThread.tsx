@@ -19,7 +19,8 @@ import {
   availableProvidersAtom,
   ttsEnabledAtom,
   defaultVoiceAtom,
-  previewCodeAtom
+  previewCodeAtom,
+  sidebarVisibleAtom
 } from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
@@ -42,6 +43,7 @@ export const ChatThread: React.FC = () => {
   const [providers] = useAtom(availableProvidersAtom);
   const [ttsEnabled, setTtsEnabled] = useAtom(ttsEnabledAtom);
   const [selectedVoice, setSelectedVoice] = useAtom(defaultVoiceAtom);
+  const [sidebarVisible, setSidebarVisible] = useAtom(sidebarVisibleAtom);
   
   const previousThreadId = useRef(currentThread.id);
 
@@ -80,6 +82,11 @@ export const ChatThread: React.FC = () => {
     if(!providers.length) {
       return;
     }
+
+    if(Platform.OS == 'web'){
+      setSidebarVisible(false);
+    }
+    
     let messages = [...currentThread.messages];
 
     const isEditing = editingMessageIndex !== -1;
@@ -241,7 +248,7 @@ export const ChatThread: React.FC = () => {
           </View>
         </View>
       ) : (
-        <View className={`mx-auto flex-1 ${Platform.OS == 'web' ? 'max-w-[80%]' : ''}`}>
+        <View className={`mx-auto flex-1 ${Platform.OS == 'web' ? 'w-[80%]' : ''}`}>
           <FlatList
             ref={flatListRef}
             data={messages}
