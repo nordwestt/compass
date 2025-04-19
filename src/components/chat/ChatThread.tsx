@@ -8,6 +8,7 @@ import { useChat } from '@/src/hooks/useChat';
 import { CharacterSelector } from '@/src/components/character/CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Model, Character, ChatMessage } from '@/src/types/core';
+import { Platform as PlatformCustom } from '@/src/utils/platform';
 
 import { 
   currentThreadAtom, 
@@ -255,7 +256,7 @@ export const ChatThread: React.FC = () => {
               minIndexForVisible: 0,
               autoscrollToTopThreshold: 10
             }}
-            className="flex-1 -mt-4"
+            className={`flex-1 -mt-4 ${Platform.OS == 'web' ? 'mx-16' : ''}`}
             contentContainerStyle={{ padding: 16, paddingBottom: 50, paddingTop: 50 }}
             ListEmptyComponent={
               <View className="flex-1 items-center justify-center p-4">
