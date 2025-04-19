@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { View, Image, TouchableOpacity, Platform } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
 import { Character } from '@/src/types/core';
@@ -198,7 +198,18 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
           </Text>
         </View>
       )} */}
-      <View 
+      { !isUser && displayContent.length == 0 && (
+            <View className="relative">
+              <View className="bg-surface border border-border w-10 h-10 rounded-full items-center justify-center shadow-md">
+                <Ionicons 
+                  name="compass" 
+                  size={24} 
+                  className={`!text-primary ${Platform.OS === 'web' ? 'animate-spin duration-[2000ms]' : ''}`}
+                />
+              </View>
+            </View>
+          )}
+      { displayContent.length > 0 && (<View 
         className={`relative px-4 py-2 mb-4 rounded-2xl max-w-[100%] ${
           isUser ? "bg-primary rounded-tr-none" : "bg-surface rounded-tl-none"
         } ${editingMessageIndex === index ? "bg-yellow-500" : ""}`}
@@ -231,7 +242,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
             onEdit={() => onEdit?.(index)}
           />
         )}
-      </View>
+      </View>)}
     </View>
   );
 }; 
