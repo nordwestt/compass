@@ -10,7 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 export interface DropdownElement {
     title: string;
     id: string;
-    image: string;
+    image?: string;
 }
 
 interface DropdownProps {
@@ -20,9 +20,22 @@ interface DropdownProps {
     showSearch?: boolean;
     className?: string;
     position?: "left" | "right";
+    iconOpen?: string;
+    iconClosed?: string;
+    iconSize?: number;
 }
 
-export const Dropdown = ({ children, selected, onSelect, showSearch = false, className, position = "left" }: DropdownProps) => {
+export const Dropdown = ({ 
+    children, 
+    selected, 
+    onSelect, 
+    showSearch = false, 
+    className, 
+    position = "left",
+    iconOpen = "chevron-back",
+    iconClosed = "chevron-down",
+    iconSize = 24
+}: DropdownProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -151,7 +164,7 @@ export const Dropdown = ({ children, selected, onSelect, showSearch = false, cla
           {selected?.title}
         </Text>
         <View className="ml-auto">
-          <Ionicons name={isOpen ? "chevron-back" : "chevron-down"} size={24} className="text-text" />
+          <Ionicons name={isOpen ? iconOpen : iconClosed as any} size={iconSize} className="text-text" />
         </View>
       </TouchableOpacity>
       {isOpen && <View className={`z-200 ${position === "left" ? "" : "right-0"} absolute mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg`}>

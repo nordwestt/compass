@@ -30,6 +30,8 @@ import { parseCodeBlocks } from '@/src/utils/codeParser';
 import { Modal } from '@/src/components/ui/Modal';
 import { useWindowDimensions } from 'react-native';
 import { toastService } from '@/src/services/toastService';
+import { Dropdown, DropdownElement } from '../ui/Dropdown';
+import { Settings } from './Settings';
 
 
 
@@ -215,6 +217,7 @@ export const ChatThread: React.FC = () => {
               onModelSelect={handleSelectModel}
               character={currentThread.character}
             />
+            <Settings thread={currentThread}></Settings>
           
           
           {ttsEnabled && (

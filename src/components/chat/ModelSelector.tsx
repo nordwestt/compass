@@ -249,17 +249,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         position="right"
       />
 
-      {!isDisabled && selectedModel?.id !== defaultModel?.id && (
-        <TouchableOpacity
-          onPress={setCurrentModelAsDefault}
-          className="p-2 flex-row items-center gap-2 bg-background hover:bg-primary/20 rounded-lg border border-border h-12 shadow-sm"
-        >
-          <Ionicons name="star" size={20} className="!text-primary" />
-          {Platform.OS == "web" && (
-            <Text className="text-primary font-medium pt-1">Set default</Text>
-          )}
-        </TouchableOpacity>
-      )}
     </View>
   );
 };
