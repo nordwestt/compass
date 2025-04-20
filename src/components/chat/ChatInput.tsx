@@ -36,7 +36,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
-
+  const [inputHeight, setInputHeight] = useState<number>(40); // Initial height
+  const lineHeight = fontPreferences.lineHeight || 20; // Default line height if not specified
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -51,6 +52,12 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
 
   const handleChangeText = (text: string) => {
     setMessage(text);
+
+    // get number of lines in text
+    const lines = text.split('\n').length;
+    if(lines == 1) setInputHeight(lineHeight);
+    else setInputHeight(lineHeight * Math.min(lines, 5));
+
     const lastAtSymbol = text.lastIndexOf('@');
     
     if (lastAtSymbol !== -1) {
@@ -85,6 +92,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       setMessage('');
       setMentionedCharacters([]);
       setIsEditing(false);
+      setInputHeight(lineHeight);
     }
   };
 
@@ -144,7 +152,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       <TextInput
         onBlur={handleBlur}
         ref={inputRef}
-        className={`flex-1 pt-1 min-h-[40px] outline-none px-4 bg-surface rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
+        className={`flex-1 pt-1 outline-none px-4 bg-surface rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
         placeholder="Type a message... "
         placeholderTextColor="#9CA3AF"
         value={message}
@@ -160,7 +168,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
           fontFamily: fontPreferences.fontFamily,
           fontSize: fontPreferences.fontSize,
           lineHeight: fontPreferences.lineHeight,
-          letterSpacing: fontPreferences.letterSpacing
+          letterSpacing: fontPreferences.letterSpacing,
+          height: inputHeight,
         }}
       />
       {isGenerating ? (
