@@ -87,7 +87,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   };
 
   const handleSend = () => {
-    if (message.trim()) {
+    if (message.trim() && !isGenerating) {
       onSend(message.trim(), mentionedCharacters);
       setMessage('');
       setMentionedCharacters([]);
@@ -163,7 +163,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
         }}
         multiline
         textAlignVertical="top"
-        editable={!isGenerating}
         style={{
           fontFamily: fontPreferences.fontFamily,
           fontSize: fontPreferences.fontSize,
