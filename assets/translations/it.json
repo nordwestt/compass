@@ -2,7 +2,8 @@
     "welcome": "Benvenuto su Compass",
     "settings": "Impostazioni",
     "language": "Lingua",
-    "chat": {
-        "startConversation": "Chiedi una domanda o inizia una conversazione per ottenere aiuto con qualsiasi cosa."
+    "chats": {
+        "start_a_conversation_with_character": "Inizia una conversazione con {{character}}",
+        "ask_a_question_or_start_a_conversation": "Chiedi una domanda o inizia una conversazione."
     }
   }

@@ -20,7 +20,8 @@ import {
   ttsEnabledAtom,
   defaultVoiceAtom,
   previewCodeAtom,
-  sidebarVisibleAtom
+  sidebarVisibleAtom,
+  localeAtom
 } from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
@@ -31,7 +32,7 @@ import { Modal } from '@/src/components/ui/Modal';
 import { useWindowDimensions } from 'react-native';
 import { Settings } from './Settings';
 import { Ionicons } from '@expo/vector-icons';
-import { t } from '../../../i18n';
+import { useLocalization } from '@/src/hooks/useLocalization';
 
 
 export const ChatThread: React.FC = () => {
@@ -60,11 +61,15 @@ export const ChatThread: React.FC = () => {
   const [userHasScrolled, setUserHasScrolled] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
 
+  const { t } = useLocalization();
+
   useEffect(() => {
     if(threads.find(t => t.id === currentThread.id) === undefined) {
       dispatchThread({ type: 'add', payload: currentThread });
     }
   }, []);
+
+  
   
   useEffect(() => {
     chatInputRef.current?.focus();
@@ -237,10 +242,10 @@ export const ChatThread: React.FC = () => {
           <View className="w-2/3 px-4">
             <View className="mb-8">
               <Text className="text-2xl font-bold text-center text-text mb-2">
-                Start a conversation with {currentThread.character?.name || 'AI'}
+                {t('chats.start_a_conversation_with_character', { character: currentThread.character?.name || 'AI' })}
               </Text>
               <Text className="text-center text-text opacity-70">
-                {t('chat.startConversation')}
+                {t('chats.ask_a_question_or_start_a_conversation')}
               </Text>
             </View>
             <ChatInput 

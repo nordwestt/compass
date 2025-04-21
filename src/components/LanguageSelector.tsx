@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useAtom } from 'jotai';
-import { localeAtom, changeLocale, t } from '../../i18n';
+import { useAtomValue } from 'jotai';
 import { Dropdown } from './ui/Dropdown';
+import { localeAtom } from '../hooks/atoms';
+import { useLocalization } from '../hooks/useLocalization';
+
 
 export function LanguageSelector({ className }: { className?: string }) {
-  const [currentLocale] = useAtom(localeAtom);
-
+  const { changeLocale } = useLocalization();
+  const currentLocale = useAtomValue(localeAtom);
+  
   const languages = [
     { code: 'en', name: 'English', title: '🇬🇧', id: 'en' },
     { code: 'it', name: 'Italiano', title: '🇮🇹', id: 'it' },

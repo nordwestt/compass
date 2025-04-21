@@ -493,3 +493,8 @@ export const syncToPolarisAtom = atomWithAsyncStorage<boolean>(
   "syncToPolaris",
   false,
 );
+
+export const localeAtom = atomWithAsyncStorage<string>(
+  "locale",
+  "en",
+);

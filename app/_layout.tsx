@@ -14,7 +14,6 @@ import { WebSidebar } from "@/src/components/navigation/WebSidebar";
 import { routes } from "./(tabs)/_layout";
 import { Command } from "@tauri-apps/plugin-shell";
 import { CustomHeader } from "@/src/components/navigation/CustomHeader";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useKeyboardShortcuts } from "@/src/hooks/useKeyboardShortcuts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useAtom, useAtomValue } from 'jotai';
@@ -24,12 +23,15 @@ import { WelcomeIntroduction } from "@/src/components/onboarding/WelcomeIntroduc
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ProxyUrlSync } from "@/src/components/ProxyUrlSync";
+import { localeAtom } from '@/src/hooks/atoms';
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { themePreset } = useThemePreset();
   const { colorScheme } = useColorScheme();
   const [syncToPolaris] = useAtom(syncToPolarisAtom);
+  const locale = useAtomValue(localeAtom);
   useKeyboardShortcuts();
 
   const theme = React.useMemo(() => {
@@ -62,6 +64,9 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+  }, [locale])
 
   const hasSeenOnboarding = useAtomValue(hasSeenOnboardingAtom);
 

@@ -2,7 +2,8 @@
     "welcome": "Welcome to Compass",
     "settings": "Settings",
     "language": "Language",
-    "chat": {
-        "startConversation": "Ask a question or start a conversation to get help with anything."
+    "chats": {
+        "start_a_conversation_with_character": "Start a conversation with {{character}}",
+        "ask_a_question_or_start_a_conversation": "Ask a question or start a conversation to get help with anything."
     }
   }
