@@ -4,7 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { ComponentProps } from "react";
 import { syncToPolarisAtom } from "@/src/hooks/atoms";
 import { useAtom } from "jotai";
-
+import { useLocalization } from "@/src/hooks/useLocalization";
 interface SettingItemProps {
   title: string;
   description: string;
@@ -37,13 +37,14 @@ const SettingItem = ({
 
 export default function SettingsScreen() {
   const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
+  const { t } = useLocalization();
 
   return (
     <ScrollView className="flex-1 bg-background p-4">
       <View className="mb-6">
         <View className="flex-row items-center p-4">
           <Ionicons name="cog" size={32} className="!text-primary mr-2 pb-2" />
-          <Text className="text-2xl font-bold text-primary">Settings</Text>
+          <Text className="text-2xl font-bold text-primary">{t('settings.settings')}</Text>
         </View>
         <Text className="text-secondary">Customize your chat experience</Text>
       </View>

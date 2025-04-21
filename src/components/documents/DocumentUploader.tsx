@@ -9,6 +9,7 @@ import { syncToPolarisAtom, documentsAtom, polarisDocumentsAtom, userDocumentsAt
 import { useAtom, useAtomValue } from 'jotai';
 import { DocumentService } from '@/src/services/document/DocumentService';
 import { PDFService } from '@/src/services/PDFService';
+import { useLocalization } from '@/src/hooks/useLocalization';
 interface DocumentUploaderProps {
   onUpload: (doc: DocumentPicker.DocumentPickerAsset) => void;
   isUploading: boolean;
@@ -20,9 +21,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
   isUploading,
   setIsUploading
 }) => {
-  const syncToPolaris = useAtomValue(syncToPolarisAtom);
-  const [userDocuments, setUserDocuments] = useAtom(userDocumentsAtom);
-  const [polarisDocuments, setPolarisDocuments] = useAtom(polarisDocumentsAtom);
+  const { t } = useLocalization();
   const handleUpload = async () => {
     try {
       setIsUploading(true);
@@ -74,7 +73,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
         size={24} 
         className="!text-white" 
       />
-      <Text className="text-white">Upload</Text>
+      <Text className="text-white">{t('documents.upload')}</Text>
     </TouchableOpacity>
   );
 }; 

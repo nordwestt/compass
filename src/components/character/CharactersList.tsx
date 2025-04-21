@@ -8,7 +8,7 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Character } from "@/src/types/core";
 import { CharacterAvatar } from "@/src/components/character/CharacterAvatar";
-
+import { useLocalization } from "@/src/hooks/useLocalization";
 interface CharactersListProps {
   characters: Character[];
   onCharacterPress?: (character: Character) => void;
@@ -28,6 +28,8 @@ export default function CharactersList({
   showAddButton = true,
   className = "",
 }: CharactersListProps) {
+  const { t } = useLocalization();
+
   return (
     <View className={`flex-1 bg-background ${className}`}>
       <View className="flex-row justify-between items-center mb-4">
@@ -37,7 +39,7 @@ export default function CharactersList({
             size={32}
             className="!text-primary mr-2 pb-2"
           />
-          <Text className="text-2xl font-bold text-primary">{title}</Text>
+          <Text className="text-2xl font-bold text-primary">{t('characters.characters')}</Text>
         </View>
         {showAddButton && onAddCharacter && (
           <TouchableOpacity
@@ -45,7 +47,7 @@ export default function CharactersList({
             className="bg-primary px-4 py-2 rounded-lg flex-row items-center hover:opacity-80"
           >
             <Ionicons name="add" size={20} color="white" />
-            <Text className="text-white ml-2 font-medium">New Character</Text>
+            <Text className="text-white ml-2 font-medium">{t('characters.new_character')}</Text>
           </TouchableOpacity>
         )}
       </View>

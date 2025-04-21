@@ -24,11 +24,11 @@ const renderScene = SceneMap({
 });
 
 export const routes = [
-  { key: 'index', title: 'Chat', icon: 'chatbubble' },
-  { key: 'characters', title: 'Characters', icon: 'people' },
-  { key: 'images', title: 'Images', icon: 'image' },
-  { key: 'documents', title: 'Documents', icon: 'document-text' },
-  { key: 'settings', title: 'Settings', icon: 'cog' },
+  { key: 'index', title: 'chats.chats', icon: 'chatbubble' },
+  { key: 'characters', title: 'characters.characters', icon: 'people' },
+  { key: 'images', title: 'images.images', icon: 'image' },
+  { key: 'documents', title: 'documents.documents', icon: 'document-text' },
+  { key: 'settings', title: 'settings.settings', icon: 'cog' },
 ];
 
 export default function TabLayout() {

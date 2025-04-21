@@ -8,7 +8,7 @@ import { DocumentViewer } from "./DocumentViewer";
 import { modalService } from "@/src/services/modalService";
 import { toastService } from "@/src/services/toastService";
 import { DocumentPickerAsset } from "expo-document-picker";
-
+import { useLocalization } from "@/src/hooks/useLocalization";
 interface DocumentManagerProps {
   documents: Document[];
   characters: Array<{
@@ -31,7 +31,7 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
-
+  const { t } = useLocalization();
   const handleDocumentUpload = async (doc: DocumentPickerAsset) => {
     try {
       // Call the parent handler
@@ -155,7 +155,7 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
               size={32}
               className="!text-primary mr-2 pb-2"
             />
-            <Text className="text-2xl font-bold text-primary">Documents</Text>
+            <Text className="text-2xl font-bold text-primary">{t('documents.documents')}</Text>
           </View>
           {documents.length > 0 && (
             <DocumentUploader

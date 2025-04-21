@@ -17,7 +17,6 @@ const i18n = new I18n(translations);
 
 // Set the locale from device settings by default
 i18n.locale = Localization.getLocales()[0]?.languageCode || 'en';
-i18n.locale = 'it';
 
 // Fallback to English if translation is missing
 i18n.enableFallback = true;

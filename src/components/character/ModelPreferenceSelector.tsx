@@ -4,6 +4,7 @@ import { Model, AllowedModel } from "@/src/types/core";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Modal } from "@/src/components/ui/Modal";
 import { Image } from "react-native";
+import { useLocalization } from "@/src/hooks/useLocalization";
 interface ModelPreferenceSelectorProps {
   availableModels: Model[];
   selectedPreferences: AllowedModel[];
@@ -17,6 +18,7 @@ export function ModelPreferenceSelector({
   onAddPreference,
   onRemovePreference,
 }: ModelPreferenceSelectorProps) {
+  const { t } = useLocalization();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedModelId, setSelectedModelId] = useState<string | null>(null);
 
@@ -46,7 +48,7 @@ export function ModelPreferenceSelector({
   return (
     <View className="mb-4">
       <Text className="text-base font-medium mb-2 text-text">
-        Available Models
+        {t('characters.edit_character.available_models')}
       </Text>
 
       <View className="bg-surface p-4 rounded-lg border-2 border-border">

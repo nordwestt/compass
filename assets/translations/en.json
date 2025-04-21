@@ -1,7 +1,10 @@
 {
     "welcome": "Welcome to Compass",
-    "settings": "Settings",
     "language": "Language",
+    "common":{
+        "save": "Save",
+        "delete": "Delete"
+    },
     "chats": {
         "start_a_conversation_with_character": "Start a conversation with {{character}}",
         "ask_a_question_or_start_a_conversation": "Ask a question or start a conversation to get help with anything.",
@@ -14,5 +17,28 @@
         "default_model_set": "Default model set",
         "new_chat": "New chat",
         "chats": "Chats"
+    },
+    "characters":{
+        "characters": "Characters",
+        "new_character": "New character",
+        "edit_character":{
+            "edit_character": "Edit character",
+            "name": "Name",
+            "instructions": "Instructions",
+            "available_models": "Available models",
+            "available_documents": "Available documents",
+            "available_tools": "Available tools"
+        }
+    },
+    "images":{
+        "images": "Images",
+        "generate": "Generate",
+        "gallery": "Gallery"
+    },
+    "documents":{
+        "documents": "Documents"
+    },
+    "settings":{
+        "settings": "Settings"
     }
   }

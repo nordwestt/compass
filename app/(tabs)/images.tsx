@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { ImageGenerator } from '@/src/components/image/ImageGenerator';
 import { Gallery } from '@/src/components/image/Gallery';
 import { Ionicons } from '@expo/vector-icons';
+import { useLocalization } from '@/src/hooks/useLocalization';
 type Tab = 'generator' | 'gallery';
 
 export default function ImageGenerationScreen() {
@@ -13,6 +14,7 @@ export default function ImageGenerationScreen() {
   const images = useAtomValue(generatedImagesAtom);
   const screenWidth = Dimensions.get('window').width;
   const imageSize = screenWidth < 768 ? screenWidth / 2 - 24 : screenWidth / 4 - 32;
+  const { t } = useLocalization();
 
   const TabButton: React.FC<{
     tab: Tab;
@@ -41,11 +43,11 @@ export default function ImageGenerationScreen() {
       <View className="flex-row items-center p-4">
         <Ionicons name="image" size={32} className="!text-primary mr-2 pb-2" />
         <Text className="text-2xl font-bold text-primary">
-            Images
+            {t('images.images')}
         </Text>
         { Platform.OS == 'web' && <View className="ms-4 flex-row border-border">
-          <TabButton tab="generator" label="Generate" />
-          <TabButton tab="gallery" label="Gallery" />
+          <TabButton tab="generator" label={t('images.generate')} />
+          <TabButton tab="gallery" label={t('images.gallery')} />
         </View>}
       </View>
       

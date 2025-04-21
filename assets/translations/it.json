@@ -1,7 +1,10 @@
 {
     "welcome": "Benvenuto su Compass",
-    "settings": "Impostazioni",
     "language": "Lingua",
+    "common":{
+        "save": "Salva",
+        "delete": "Elimina"
+    },
     "chats": {
         "start_a_conversation_with_character": "Inizia una conversazione con {{character}}",
         "ask_a_question_or_start_a_conversation": "Chiedi una domanda o inizia una conversazione.",
@@ -14,5 +17,29 @@
         "default_model_set": "Modello predefinito impostato",
         "new_chat": "Nuova conversazione",
         "chats": "Conversazioni"
+    },
+    "characters":{
+        "characters": "Personaggi",
+        "new_character": "Nuovo personaggio",
+        "edit_character":{
+            "edit_character": "Modifica personaggio",
+            "name": "Nome",
+            "instructions": "Istruzioni",
+            "available_models": "Modelli disponibili",
+            "available_documents": "Documenti disponibili",
+            "available_tools": "Strumenti disponibili"
+        }
+    },
+    "images":{
+        "images": "Immagini",
+        "generate": "Genera",
+        "gallery": "Galleria"
+    },
+    "documents":{
+        "documents": "Documenti",
+        "upload": "Carica"
+    },
+    "settings":{
+        "settings": "Impostazioni"
     }
   }

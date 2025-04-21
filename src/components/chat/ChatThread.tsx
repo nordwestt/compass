@@ -242,7 +242,7 @@ export const ChatThread: React.FC = () => {
           <View className="w-2/3 px-4">
             <View className="mb-8">
               <Text className="text-2xl font-bold text-center text-text mb-2">
-                {t('chats.start_a_conversation_with_character', { character: currentThread.character?.name || 'AI' })}
+              ✨ {t('chats.start_a_conversation_with_character', { character: currentThread.character?.name || 'AI' })}
               </Text>
               <Text className="text-center text-text opacity-70">
                 {t('chats.ask_a_question_or_start_a_conversation')}

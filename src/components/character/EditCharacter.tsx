@@ -23,6 +23,7 @@ import { DocumentSelector } from "./DocumentSelector";
 import { ModelPreferenceSelector } from "./ModelPreferenceSelector";
 import { Switch } from "@/src/components/ui/Switch";
 import { Document } from "@/src/types/core";
+import { useLocalization } from "@/src/hooks/useLocalization";
 
 interface EditCharacterProps {
   availableModels: Model[];
@@ -47,7 +48,7 @@ export default function EditCharacter({
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);
   const dispatchCharacters = useSetAtom(saveCustomPrompts);
-
+  const { t } = useLocalization();
   useEffect(() => {
     let chara = existingCharacter;
 
@@ -175,7 +176,7 @@ export default function EditCharacter({
         <View className="space-y-6 flex-1">
           <View>
             <Text className="text-base font-medium mb-2 text-text">
-              Character Name
+              {t('characters.edit_character.name')}
             </Text>
             <TextInput
               value={character?.name || ""}
@@ -190,7 +191,7 @@ export default function EditCharacter({
 
           <View className="flex-1">
             <Text className="text-base font-medium mb-2 text-text">
-              Character Prompt
+              {t('characters.edit_character.instructions')}
             </Text>
             <TextInput
               value={character?.content || ""}
@@ -249,7 +250,7 @@ export default function EditCharacter({
             className="mr-2 !text-red-500 dark:!text-red-300"
           />
           <Text className="!text-red-500 dark:!text-red-300 font-medium">
-            Delete
+            {t('common.delete')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -262,7 +263,9 @@ export default function EditCharacter({
             color="white"
             className="mr-2"
           />
-          <Text className="text-white font-medium text-base">Save Changes</Text>
+          <Text className="text-white font-medium text-base">
+            {t('common.save')}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

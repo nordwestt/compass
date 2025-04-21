@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAtomValue } from "jotai";
 import { documentsAtom } from "@/src/hooks/atoms";
 import { Document } from "@/src/types/core";
-
+import { useLocalization } from "@/src/hooks/useLocalization";
 interface DocumentSelectorProps {
   documents: Document[];
   selectedDocIds: string[];
@@ -18,6 +18,7 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
   onSelectDoc,
   onRemoveDoc,
 }) => {
+  const { t } = useLocalization();
   // Find any selected document IDs that no longer exist in the documents list
   const missingDocIds = selectedDocIds.filter(
     (id) => !documents.some((doc) => doc.id === id),
@@ -26,7 +27,7 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
   return (
     <View className="mt-6">
       <Text className="text-base font-medium mb-2 text-text">
-        Associated Documents
+        {t('characters.edit_character.available_documents')}
       </Text>
       <ScrollView className="max-h-40 bg-surface rounded-lg border-2 border-border">
         {documents.map((doc) => (

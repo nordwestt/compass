@@ -10,7 +10,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { polarisCharactersAtom, polarisProvidersAtom, polarisDocumentsAtom } from '@/src/hooks/atoms';
-
+import { useLocalization } from '@/src/hooks/useLocalization';
 import { LanguageSelector } from '../LanguageSelector';
 
 interface Route {
@@ -25,7 +25,7 @@ export function WebSidebar({ className }: { className?: string }) {
   const { colorScheme } = useColorScheme();
   const { themePreset, setThemePreset, availableThemes } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
-
+  const { t } = useLocalization();
 
   const handleNavigation = (route: any, index: number) => {
     setCurrentIndex(index);
@@ -57,7 +57,7 @@ export function WebSidebar({ className }: { className?: string }) {
               currentIndex === index ? 'text-primary' : 'text-secondary'
             }`}
           >
-            {route.title}
+            {t(route.title)}
           </Text>
         </Pressable>
       ))}

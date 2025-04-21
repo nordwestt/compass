@@ -1,7 +1,10 @@
 {
     "welcome": "Velkommen til Compass",
-    "settings": "Indstillinger",
     "language": "Sprog",
+    "common":{
+        "save": "Gem",
+        "delete": "Slet"
+    },
     "chats":{
         "start_a_conversation_with_character": "Start en samtale med {{character}}",
         "ask_a_question_or_start_a_conversation": "Stil et spørgsmål eller start en samtale",
@@ -14,5 +17,29 @@
         "default_model_set": "Standard model sat",
         "new_chat": "Ny samtale",
         "chats": "Samtaler"
+    },
+    "characters":{
+        "characters": "Karakterer",
+        "new_character": "Ny karakter",
+        "edit_character":{
+            "edit_character": "Rediger karakter",
+            "name": "Navn",
+            "instructions": "Instruktioner",
+            "available_models": "Tilgængelige modeller",
+            "available_documents": "Tilgængelige dokumenter",
+            "available_tools": "Tilgængelige værktøjer"
+        }
+    },
+    "images":{
+        "images": "Billeder",
+        "generate": "Generer",
+        "gallery": "Galleri"
+    },
+    "documents":{
+        "documents": "Dokumenter",
+        "upload": "Upload"
+    },
+    "settings":{
+        "settings": "Indstillinger"
     }
   }
