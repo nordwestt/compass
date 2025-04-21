@@ -14,12 +14,12 @@ import { polarisCharactersAtom, polarisProvidersAtom, polarisDocumentsAtom } fro
 import ProviderService from '@/src/services/provider/ProviderService';
 import { DocumentService } from '@/src/services/document/DocumentService';
 import { Switch } from '@/src/components/ui/Switch';
+
 interface Route {
   key: string;
   title: string;
   icon: string;
 }
-
 
 export function WebSidebar({ className }: { className?: string }) {
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
@@ -59,15 +59,20 @@ export function WebSidebar({ className }: { className?: string }) {
     }
   }
 
+  const handleNavigation = (route: any, index: number) => {
+    setCurrentIndex(index);
+    
+    // Use push instead of replace for more reliable navigation
+    const path = route.key === 'index' ? '/' : `/${route.key}`;
+    router.push(path as any);
+  };
+
   return (
     <View className={`group h-full bg-background ${className}`}>
       {routes.map((route, index) => (
         <Pressable
           key={route.key}
-          onPress={() => {
-            setCurrentIndex(index);
-            router.replace(`/${route.key === 'index' ? '' : route.key}` as any);
-          }}
+          onPress={() => handleNavigation(route, index)}
           className={`group-hover:w-32 z-20 w-14 transition-all duration-200 flex-row items-center justify-between p-4 m-2 rounded-lg hover:bg-surface ${
             currentIndex === index
               ? 'border-r border-primary border shadow-sm bg-surface'

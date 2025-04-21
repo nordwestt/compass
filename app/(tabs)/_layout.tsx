@@ -1,6 +1,6 @@
 import React from 'react';
 import { TabBarIcon } from '@/src/components/navigation/TabBarIcon';
-import { Platform,useWindowDimensions, View } from 'react-native';
+import { Platform, useWindowDimensions, View } from 'react-native';
 import { useColorScheme, vars } from 'nativewind';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import IndexRoute from './index';
@@ -13,7 +13,8 @@ import { currentIndexAtom } from '@/src/hooks/atoms';
 import { useAtom } from 'jotai';
 import ImagesRoute from './images';
 import DocumentsRoute from './documents';
-//import { useThemeValue } from '@/constants/themes';
+import { Slot } from 'expo-router';
+
 const renderScene = SceneMap({
   index: IndexRoute,
   characters: CharactersRoute,
@@ -44,6 +45,7 @@ export default function TabLayout() {
   else{
     theme = rawThemes[themePreset][colorScheme ?? 'light'];
   }
+  
   const renderTabBar = (props: any) => (
     <TabBar
       {...props}
@@ -64,16 +66,13 @@ export default function TabLayout() {
   );
 
   if (isDesktop) {
-    const CurrentScene = [IndexRoute, CharactersRoute, ImagesRoute, DocumentsRoute, SettingsRoute][index];
-    return (
-      <CurrentScene />
-    );
+    // Use Slot for proper routing on desktop
+    return <Slot />;
   }
   
   return (
     <SafeAreaView className="flex-1 bg-background">
       <TabView
-        
         tabBarPosition='bottom'
         navigationState={{ index, routes }}
         renderScene={renderScene}
