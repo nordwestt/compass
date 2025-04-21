@@ -9,11 +9,9 @@ import { currentIndexAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
 import { useAtom, useAtomValue } from 'jotai';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import CharacterService from '@/src/services/character/CharacterService';
 import { polarisCharactersAtom, polarisProvidersAtom, polarisDocumentsAtom } from '@/src/hooks/atoms';
-import ProviderService from '@/src/services/provider/ProviderService';
-import { DocumentService } from '@/src/services/document/DocumentService';
-import { Switch } from '@/src/components/ui/Switch';
+
+import { LanguageSelector } from '../LanguageSelector';
 
 interface Route {
   key: string;
@@ -93,6 +91,7 @@ export function WebSidebar({ className }: { className?: string }) {
           </Text>
         </Pressable>
       ))}
+      <LanguageSelector className='mt-auto m-2 mx-auto' />
     </View>
   );
 } 

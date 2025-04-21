@@ -1,0 +1,8 @@
+{
+    "welcome": "Welcome to Compass",
+    "settings": "Settings",
+    "language": "Language",
+    "chat": {
+        "startConversation": "Ask a question or start a conversation to get help with anything."
+    }
+  }

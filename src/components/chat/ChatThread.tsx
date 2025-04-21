@@ -29,11 +29,9 @@ import { CodePreview } from './CodePreview';
 import { parseCodeBlocks } from '@/src/utils/codeParser';
 import { Modal } from '@/src/components/ui/Modal';
 import { useWindowDimensions } from 'react-native';
-import { toastService } from '@/src/services/toastService';
-import { Dropdown, DropdownElement } from '../ui/Dropdown';
 import { Settings } from './Settings';
 import { Ionicons } from '@expo/vector-icons';
-
+import { t } from '../../../i18n';
 
 
 export const ChatThread: React.FC = () => {
@@ -242,7 +240,7 @@ export const ChatThread: React.FC = () => {
                 Start a conversation with {currentThread.character?.name || 'AI'}
               </Text>
               <Text className="text-center text-text opacity-70">
-                Ask a question or start a conversation to get help with anything.
+                {t('chat.startConversation')}
               </Text>
             </View>
             <ChatInput 

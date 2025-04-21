@@ -23,6 +23,8 @@ interface DropdownProps {
     iconOpen?: string;
     iconClosed?: string;
     iconSize?: number;
+    dropdownOptionClassName?: string;
+    openUpwards?: boolean;
 }
 
 export const Dropdown = ({ 
@@ -34,7 +36,9 @@ export const Dropdown = ({
     position = "left",
     iconOpen = "chevron-back",
     iconClosed = "chevron-down",
-    iconSize = 24
+    iconSize = 24,
+    dropdownOptionClassName,
+    openUpwards = false,
 }: DropdownProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
@@ -130,9 +134,9 @@ export const Dropdown = ({
                 onSelect(child);
                 setIsOpen(false);
               }}
-              className={`w-64 flex-row items-center p-3 ${
+              className={`flex-row items-center p-3 ${
                 index === highlightedIndex ? 'bg-surface' : ''
-              } hover:bg-surface`}
+              } hover:bg-surface ${dropdownOptionClassName}`}
             >
               {child.image && (
                 <Image source={{uri: child.image as any}} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
@@ -150,7 +154,7 @@ export const Dropdown = ({
     
   return ( 
   
-  <View>
+  <View className="">
     <TouchableOpacity 
         onPress={() => {
           setIsOpen(!isOpen)
@@ -167,7 +171,7 @@ export const Dropdown = ({
           <Ionicons name={isOpen ? iconOpen : iconClosed as any} size={iconSize} className="text-text" />
         </View>
       </TouchableOpacity>
-      {isOpen && <View className={`z-200 ${position === "left" ? "" : "right-0"} absolute mt-12 rounded-lg overflow-hidden w-64 max-h-64 bg-background border border-border shadow-lg`}>
+      {isOpen && <View className={`z-200 ${position === "left" ? "" : "right-0"} absolute ${openUpwards ? "bottom-12" : "mt-12"} rounded-lg overflow-hidden max-h-64 bg-background border border-border shadow-lg`}>
         {scrollView()}
       </View>}
       
