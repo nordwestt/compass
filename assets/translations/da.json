@@ -21,6 +21,7 @@
     "characters":{
         "characters": "Karakterer",
         "new_character": "Ny karakter",
+        "reset_to_default": "Nulstil til standard",
         "edit_character":{
             "edit_character": "Rediger karakter",
             "name": "Navn",

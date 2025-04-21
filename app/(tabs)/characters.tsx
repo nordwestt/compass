@@ -1,14 +1,11 @@
 import { View, Platform } from "react-native";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { PREDEFINED_PROMPTS } from "@/constants/characters";
 import {
   createDefaultThread,
   currentIndexAtom,
-  charactersAtom,
   threadActionsAtom,
   threadsAtom,
-  syncToPolarisAtom,
   saveCustomPrompts,
   userCharactersAtom,
 } from "@/src/hooks/atoms";
@@ -32,16 +29,6 @@ export default function CharactersScreen() {
   const [availableModels] = useAtom(availableModelsAtom);
   const dispatchCharacters = useSetAtom(saveCustomPrompts);
   const [availableDocuments] = useAtom(userDocumentsAtom);
-
-  useEffect(() => {
-    const loadCharacters = async () => {
-      if (characters.length === 0) {
-        setCharacters(PREDEFINED_PROMPTS);
-      }
-    };
-
-    loadCharacters();
-  }, [characters]);
 
   const handleEdit = (character: Character) => {
     if (Platform.OS == "web") {
@@ -145,6 +132,7 @@ export default function CharactersScreen() {
         onCharacterLongPress={startChat}
         onAddCharacter={handleAdd}
         className="flex-1 p-4"
+        setCharacters={setCharacters}
       />
 
       {editingCharacter && (

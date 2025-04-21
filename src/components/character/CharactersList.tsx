@@ -9,6 +9,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Character } from "@/src/types/core";
 import { CharacterAvatar } from "@/src/components/character/CharacterAvatar";
 import { useLocalization } from "@/src/hooks/useLocalization";
+import { PREDEFINED_PROMPTS_BY_LOCALE } from "@/constants/characters";
 interface CharactersListProps {
   characters: Character[];
   onCharacterPress?: (character: Character) => void;
@@ -17,6 +18,7 @@ interface CharactersListProps {
   title?: string;
   showAddButton?: boolean;
   className?: string;
+  setCharacters: (characters: Character[]) => void;
 }
 
 export default function CharactersList({
@@ -27,8 +29,9 @@ export default function CharactersList({
   title = "Characters",
   showAddButton = true,
   className = "",
+  setCharacters,
 }: CharactersListProps) {
-  const { t } = useLocalization();
+  const { t, locale } = useLocalization();
 
   return (
     <View className={`flex-1 bg-background ${className}`}>
@@ -41,6 +44,16 @@ export default function CharactersList({
           />
           <Text className="text-2xl font-bold text-primary">{t('characters.characters')}</Text>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            const defaultCharacters = PREDEFINED_PROMPTS_BY_LOCALE[locale];
+            setCharacters(defaultCharacters);
+          }}
+          className="bg-surface px-4 py-2 rounded-lg flex-row items-center hover:opacity-80 mr-2"
+        >
+          <Ionicons name="refresh" size={20} className="text-primary" />
+          <Text className="text-primary ml-2 font-medium">{t('characters.reset_to_default')}</Text>
+        </TouchableOpacity>
         {showAddButton && onAddCharacter && (
           <TouchableOpacity
             onPress={onAddCharacter}

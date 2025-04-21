@@ -21,6 +21,7 @@
     "characters":{
         "characters": "Characters",
         "new_character": "New character",
+        "reset_to_default": "Reset to default",
         "edit_character":{
             "edit_character": "Edit character",
             "name": "Name",

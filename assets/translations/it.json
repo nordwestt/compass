@@ -21,6 +21,8 @@
     "characters":{
         "characters": "Personaggi",
         "new_character": "Nuovo personaggio",
+        "reset_to_default": "Ripristina ai valori predefiniti",
+
         "edit_character":{
             "edit_character": "Modifica personaggio",
             "name": "Nome",
