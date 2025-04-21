@@ -236,7 +236,7 @@ export const ChatThread: React.FC = () => {
       
       {isEmpty ? (
         <View className="flex-1 items-center justify-center">
-          <View className="w-full max-w-xl px-4">
+          <View className="w-2/3 px-4">
             <View className="mb-8">
               <Text className="text-2xl font-bold text-center text-text mb-2">
                 Start a conversation with {currentThread.character?.name || 'AI'}
