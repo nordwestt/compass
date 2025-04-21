@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
-import { availableModelsAtom, charactersAtom, syncToPolarisAtom } from '@/src/hooks/atoms';
+import { availableModelsAtom, charactersAtom, syncToPolarisAtom, localeAtom } from '@/src/hooks/atoms';
 import { Character } from '@/src/types/core';
-import { PREDEFINED_PROMPTS } from '@/constants/characters';
+import { PREDEFINED_PROMPTS, PREDEFINED_PROMPTS_BY_LOCALE } from '@/constants/characters';
 import { rawThemes } from '@/constants/themes';
 import { ThemeProvider, useThemePreset } from '../ui/ThemeProvider';
 import { useColorScheme } from 'nativewind';
@@ -37,12 +37,13 @@ export const CharacterSelector: React.FC<CharacterSelectorProps> = ({
   const { colorScheme } = useColorScheme();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
   const availableModels = useAtomValue(availableModelsAtom);
+  const currentLocale = useAtomValue(localeAtom);
 
   useEffect(() => {
     if(characters.length === 0 && !syncToPolaris) {
-      setCharacters(PREDEFINED_PROMPTS);
+      setCharacters(PREDEFINED_PROMPTS_BY_LOCALE[currentLocale] || PREDEFINED_PROMPTS);
     }
-  }, []);
+  }, [currentLocale, characters.length, syncToPolaris, setCharacters]);
 
   const isCharacterCompatible = (character: Character): boolean => {
     if (!character.allowedModelIds || character.allowedModelIds.length === 0) {
