@@ -18,6 +18,7 @@ import {
 import { DropdownElement } from "@/src/components/ui/Dropdown";
 import { Dropdown } from "@/src/components/ui/Dropdown";
 import { toastService } from "@/src/services/toastService";
+import { useLocalization } from "@/src/hooks/useLocalization";
 // Extend DropdownElement to include a model property
 interface ModelDropdownElement extends DropdownElement {
   model: Model;
@@ -34,11 +35,13 @@ export const Settings: React.FC<SettingsProps> = ({
 }) => {
 
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
+  const { t } = useLocalization();
+
 
 
   const availableSettings = [
     {
-      title: "Set model as default",
+      title: t('chats.set_model_as_default'),
       id: "set_model_as_default",
     },
   ];
@@ -53,8 +56,8 @@ export const Settings: React.FC<SettingsProps> = ({
     if (thread.selectedModel) {
       setDefaultModel(thread.selectedModel);
       toastService.success({
-        title: "Default model set",
-        description: "The selected model will now be used for new threads",
+        title: t('chats.default_model_set'),
+        description: t('chats.selected_model_will_now_be_used_for_new_threads'),
       });
     }
   }

@@ -4,6 +4,15 @@
     "language": "Lingua",
     "chats": {
         "start_a_conversation_with_character": "Inizia una conversazione con {{character}}",
-        "ask_a_question_or_start_a_conversation": "Chiedi una domanda o inizia una conversazione."
+        "ask_a_question_or_start_a_conversation": "Chiedi una domanda o inizia una conversazione.",
+        "before": "Prima",
+        "yesterday": "Ieri",
+        "today": "Oggi",
+        "type_a_message": "Scrivi un messaggio...",
+        "set_model_as_default": "Imposta il modello come predefinito",
+        "selected_model_will_now_be_used_for_new_threads": "Il modello selezionato sarà ora utilizzato per nuove conversazioni",
+        "default_model_set": "Modello predefinito impostato",
+        "new_chat": "Nuova conversazione",
+        "chats": "Conversazioni"
     }
   }

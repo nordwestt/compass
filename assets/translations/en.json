@@ -4,6 +4,15 @@
     "language": "Language",
     "chats": {
         "start_a_conversation_with_character": "Start a conversation with {{character}}",
-        "ask_a_question_or_start_a_conversation": "Ask a question or start a conversation to get help with anything."
+        "ask_a_question_or_start_a_conversation": "Ask a question or start a conversation to get help with anything.",
+        "before": "Before",
+        "yesterday": "Yesterday",
+        "today": "Today",
+        "type_a_message": "Type a message...",
+        "set_model_as_default": "Set model as default",
+        "selected_model_will_now_be_used_for_new_threads": "The selected model will now be used for new threads",
+        "default_model_set": "Default model set",
+        "new_chat": "New chat",
+        "chats": "Chats"
     }
   }

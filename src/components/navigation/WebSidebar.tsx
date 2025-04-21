@@ -25,37 +25,7 @@ export function WebSidebar({ className }: { className?: string }) {
   const { colorScheme } = useColorScheme();
   const { themePreset, setThemePreset, availableThemes } = useThemePreset();
   const theme = rawThemes[themePreset][colorScheme ?? 'light'];
-  const [polarisCharacters, setPolarisCharacters] = useAtom(polarisCharactersAtom);
-  const [polarisProviders, setPolarisProviders] = useAtom(polarisProvidersAtom);
-  const [syncToPolaris, setSyncToPolaris] = useAtom(syncToPolarisAtom);
-  const [polarisDocuments, setPolarisDocuments] = useAtom(polarisDocumentsAtom);
 
-  // useEffect(() => {
-  //   const fetchCharacters = async () => {
-  //     if(syncToPolaris){
-
-
-  //       const characters = await CharacterService.getCharacters();
-  //       setPolarisCharacters(characters);
-  //       const providers = await ProviderService.getProviders();
-  //       setPolarisProviders(providers);
-  //       const docs = await DocumentService.getDocuments();
-  //       setPolarisDocuments(docs);
-  //     }
-  //   };
-  //   fetchCharacters();
-    
-  // }, [syncToPolaris]);
-
-  const handleSetPolarisMode = (value: boolean) => {
-    setSyncToPolaris(value);
-    if (value) {
-      setThemePreset('polaris');
-    }
-    else{
-      setThemePreset(availableThemes[0]);
-    }
-  }
 
   const handleNavigation = (route: any, index: number) => {
     setCurrentIndex(index);

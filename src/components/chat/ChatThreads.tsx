@@ -9,7 +9,7 @@ import { Thread } from '@/src/types/core';
 import { createDefaultThread } from '@/src/hooks/atoms';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import { toastService } from '@/src/services/toastService';
+import { useLocalization } from '@/src/hooks/useLocalization';
 
 
 interface Section {
@@ -25,6 +25,8 @@ const ChatThreads: React.FC = () => {
   const scrollViewRef = useRef<SectionList>(null);
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+  const { t } = useLocalization();
+
 
   const groupThreadsByDate = useCallback((threads: Thread[]): Section[] => {
     const today = new Date();
@@ -33,9 +35,9 @@ const ChatThreads: React.FC = () => {
     yesterday.setDate(yesterday.getDate() - 1);
 
     const sections: Section[] = [
-      { title: 'Before', data: [] },
-      { title: 'Yesterday', data: [] },
-      { title: 'Today', data: [] },
+      { title: t('chats.before'), data: [] },
+      { title: t('chats.yesterday'), data: [] },
+      { title: t('chats.today'), data: [] },
     ];
 
     threads.forEach(thread => {
@@ -195,7 +197,7 @@ const ChatThreads: React.FC = () => {
           name="add" 
           size={24}
         />
-        <Text className="text-text mt-1 ml-2 font-bold">New Chat</Text>
+        <Text className="text-text mt-1 ml-2 font-bold">{t('chats.new_chat')}</Text>
       </TouchableOpacity>
       <View className="flex-row justify-center space-x-4 mb-2">
         <TouchableOpacity 

@@ -5,6 +5,7 @@ import { charactersAtom, editingMessageIndexAtom, fontPreferencesAtom } from '@/
 import { useAtom, useAtomValue } from 'jotai';
 import { CharacterMentionPopup } from '@/src/components/character/CharacterMentionPopup';
 import { Character } from '@/src/types/core';
+import { useLocalization } from '@/src/hooks/useLocalization';
 
 interface ChatInputProps {
   onSend: (message: string, mentionedCharacters: MentionedCharacter[]) => void;
@@ -38,6 +39,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
   const [inputHeight, setInputHeight] = useState<number>(40); // Initial height
   const lineHeight = fontPreferences.lineHeight || 20; // Default line height if not specified
+  const { t } = useLocalization();
+
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -153,7 +156,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
         onBlur={handleBlur}
         ref={inputRef}
         className={`flex-1 pt-1 outline-none px-4 bg-surface rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
-        placeholder="Type a message... "
+        placeholder={t('chats.type_a_message')}
         placeholderTextColor="#9CA3AF"
         value={message}
         onChangeText={handleChangeText}

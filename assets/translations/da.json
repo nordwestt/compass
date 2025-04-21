@@ -4,6 +4,15 @@
     "language": "Sprog",
     "chats":{
         "start_a_conversation_with_character": "Start en samtale med {{character}}",
-        "ask_a_question_or_start_a_conversation": "Stil et spørgsmål eller start en samtale"
+        "ask_a_question_or_start_a_conversation": "Stil et spørgsmål eller start en samtale",
+        "before": "Før",
+        "yesterday": "I går",
+        "today": "I dag",
+        "type_a_message": "Skriv en besked...",
+        "set_model_as_default": "Sæt model som standard",
+        "selected_model_will_now_be_used_for_new_threads": "Valgte model vil nu blive brugt til nye tråde",
+        "default_model_set": "Standard model sat",
+        "new_chat": "Ny samtale",
+        "chats": "Samtaler"
     }
   }
