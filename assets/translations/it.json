@@ -96,7 +96,32 @@
             "provider_saved": "Provider salvato",
             "provider_saved_description": "Provider salvato con successo",
             "failed_to_load_models": "Impossibile caricare i modelli",
-            "models_fetch_error": "Impossibile recuperare i modelli dai provider"
+            "models_fetch_error": "Impossibile recuperare i modelli dai provider",
+            "form": {
+                "with_provider_you_can": "Con {{provider}}, puoi:",
+                "chat_with_ai": "Chattare con modelli AI",
+                "convert_text_to_speech": "Convertire testo in voce",
+                "convert_speech_to_text": "Convertire voce in testo",
+                "generate_images": "Generare immagini",
+                "search_web": "Cercare sul web",
+                "embed_text": "Incorporare testo (necessario per la ricerca web)",
+                "sign_up_for_api_key": "Clicca qui per registrarti per una chiave API {{provider}}",
+                "api_key": "Chiave API",
+                "enter_api_key": "Inserisci chiave API",
+                "enter_api_key_if_required": "Inserisci chiave API, se necessaria",
+                "endpoint_url": "URL Endpoint",
+                "enter_endpoint_url": "Inserisci URL endpoint"
+            },
+            "provider_type": "Tipo di Provider",
+            "capability_filters": {
+                "all": "Tutti",
+                "llm": "Chat",
+                "image": "Immagine",
+                "tts": "Voce",
+                "stt": "Audio",
+                "embedding": "Embedding",
+                "search": "Ricerca"
+            }
         },
         "theme": {
             "title": "Tema",

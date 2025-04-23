@@ -7,6 +7,7 @@ import { PROVIDER_LOGOS } from "@/src/constants/logos";
 import { Modal } from "@/src/components/ui/Modal";
 import { EditOllama } from "./EditOllama";
 import { toastService } from "@/src/services/toastService";
+import { useLocalization } from "@/src/hooks/useLocalization";
 
 interface EndpointModalProps {
   visible: boolean;
@@ -23,6 +24,7 @@ export function EndpointModal({
   initialProvider,
   initialCapabilityFilter,
 }: EndpointModalProps) {
+  const { t } = useLocalization();
   const [formData, setFormData] = useState<Omit<Provider, 'id'>>({
     name: PREDEFINED_PROVIDERS.ollama.name,
     endpoint: PREDEFINED_PROVIDERS.ollama.endpoint,
@@ -118,14 +120,14 @@ export function EndpointModal({
           className="flex-1 p-4 rounded-lg bg-background mr-2"
         >
           <Text className="text-center text-text">
-            Cancel
+            {t('common.cancel')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSave}
           className="flex-1 p-4 rounded-lg bg-primary"
         >
-          <Text className="text-center text-white">Save</Text>
+          <Text className="text-center text-white">{t('common.save')}</Text>
         </TouchableOpacity>
       </View>
     </Modal>

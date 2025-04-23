@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Provider } from "@/src/types/core";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
 import { useState, useEffect } from "react";
+import { useLocalization } from "@/src/hooks/useLocalization";
 
 interface ProviderTypeSelectorProps {
   selectedProvider: Provider;
@@ -13,14 +14,14 @@ interface ProviderTypeSelectorProps {
 
 type CapabilityFilter = string | keyof Provider['capabilities'];
 
-const CAPABILITY_FILTERS: { key: CapabilityFilter; label: string; icon: string }[] = [
-  { key: 'all', label: 'All', icon: 'apps' },
-  { key: 'llm', label: 'Chat', icon: 'chatbubble' },
-  { key: 'image', label: 'Image', icon: 'image' },
-  { key: 'tts', label: 'Speech', icon: 'volume-high' },
-  { key: 'stt', label: 'Voice', icon: 'mic' },
-  { key: 'embedding', label: 'Embedding', icon: 'barcode' },
-  { key: 'search', label: 'Search', icon: 'search' },
+const CAPABILITY_FILTERS: { key: CapabilityFilter; icon: string }[] = [
+  { key: 'all', icon: 'apps' },
+  { key: 'llm', icon: 'chatbubble' },
+  { key: 'image', icon: 'image' },
+  { key: 'tts', icon: 'volume-high' },
+  { key: 'stt', icon: 'mic' },
+  { key: 'embedding', icon: 'barcode' },
+  { key: 'search', icon: 'search' },
 ];
 
 export function ProviderTypeSelector({
@@ -28,6 +29,7 @@ export function ProviderTypeSelector({
   onProviderSelect,
   initialCapabilityFilter = 'all',
 }: ProviderTypeSelectorProps) {
+  const { t } = useLocalization();
   const [activeFilter, setActiveFilter] = useState<CapabilityFilter>(initialCapabilityFilter);
 
   // Set the initial filter when the component mounts
@@ -45,7 +47,7 @@ export function ProviderTypeSelector({
   return (
     <View>
       <Text className="text-sm font-medium text-text mb-2">
-        Provider Type
+        {t('settings.providers.provider_type')}
       </Text>
 
       <ScrollView 
@@ -54,7 +56,7 @@ export function ProviderTypeSelector({
         className="mb-4"
       >
         <View className="flex-row gap-2">
-          {CAPABILITY_FILTERS.map(({ key, label, icon }) => (
+          {CAPABILITY_FILTERS.map(({ key, icon }) => (
             <TouchableOpacity
               key={key}
               onPress={() => setActiveFilter(key)}
@@ -72,7 +74,7 @@ export function ProviderTypeSelector({
               <Text className={`text-sm ml-1 flex-1 ${
                 activeFilter === key ? "text-primary" : "text-secondary"
               }`}>
-                {label}
+                {t(`settings.providers.capability_filters.${key}`)}
               </Text>
             </TouchableOpacity>
           ))}

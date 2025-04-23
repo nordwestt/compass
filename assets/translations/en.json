@@ -94,7 +94,32 @@
             "provider_saved": "Provider saved",
             "provider_saved_description": "Provider saved successfully",
             "failed_to_load_models": "Failed to load models",
-            "models_fetch_error": "Could not fetch models from providers"
+            "models_fetch_error": "Could not fetch models from providers",
+            "form": {
+                "with_provider_you_can": "With {{provider}}, you can:",
+                "chat_with_ai": "Chat with AI models",
+                "convert_text_to_speech": "Convert text to speech",
+                "convert_speech_to_text": "Convert speech to text",
+                "generate_images": "Generate images",
+                "search_web": "Search the web",
+                "embed_text": "Embed text (required for web search)",
+                "sign_up_for_api_key": "Click here to sign up for an {{provider}} API key",
+                "api_key": "API Key",
+                "enter_api_key": "Enter API key",
+                "enter_api_key_if_required": "Enter API key, if required",
+                "endpoint_url": "Endpoint URL",
+                "enter_endpoint_url": "Enter endpoint URL"
+            },
+            "provider_type": "Provider Type",
+            "capability_filters": {
+                "all": "All",
+                "llm": "Chat",
+                "image": "Image",
+                "tts": "Speech",
+                "stt": "Voice",
+                "embedding": "Embedding",
+                "search": "Search"
+            }
         },
         "theme": {
             "title": "Theme",

@@ -94,7 +94,32 @@
             "provider_saved": "Udbyder gemt",
             "provider_saved_description": "Udbyder gemt med succes",
             "failed_to_load_models": "Kunne ikke indlæse modeller",
-            "models_fetch_error": "Kunne ikke hente modeller fra udbydere"
+            "models_fetch_error": "Kunne ikke hente modeller fra udbydere",
+            "form": {
+                "with_provider_you_can": "Med {{provider}} kan du:",
+                "chat_with_ai": "Chatte med AI-modeller",
+                "convert_text_to_speech": "Konvertere tekst til tale",
+                "convert_speech_to_text": "Konvertere tale til tekst",
+                "generate_images": "Generere billeder",
+                "search_web": "Søge på nettet",
+                "embed_text": "Indlejre tekst (kræves til websøgning)",
+                "sign_up_for_api_key": "Klik her for at tilmelde dig en {{provider}} API-nøgle",
+                "api_key": "API-nøgle",
+                "enter_api_key": "Indtast API-nøgle",
+                "enter_api_key_if_required": "Indtast API-nøgle, hvis påkrævet",
+                "endpoint_url": "Endpoint URL",
+                "enter_endpoint_url": "Indtast endpoint URL"
+            },
+            "provider_type": "Udbyder Type",
+            "capability_filters": {
+                "all": "Alle",
+                "llm": "Chat",
+                "image": "Billede",
+                "tts": "Tale",
+                "stt": "Stemme",
+                "embedding": "Indlejring",
+                "search": "Søgning"
+            }
         },
         "theme": {
             "title": "Tema",
