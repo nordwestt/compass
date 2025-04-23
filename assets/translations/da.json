@@ -84,7 +84,17 @@
         },
         "providers": {
             "title": "Udbydere",
-            "description": "Administrer dine AI-modeludbydere"
+            "description": "Administrer dine AI-modeludbydere",
+            "providers": "Udbydere",
+            "add_provider": "Tilføj Udbyder",
+            "detailed_description": "Udbydere leverer forskellige tjenester til appen, såsom tekstgenerering, billedgenerering, søgning og mere.",
+            "auto_detect_ollama": "Auto-detekter Ollama",
+            "scanning_for_ollama": "Scanner efter Ollama...",
+            "auto_detect_description": "Automatisk detektering af Ollama-instanser, der kører på dit netværk",
+            "provider_saved": "Udbyder gemt",
+            "provider_saved_description": "Udbyder gemt med succes",
+            "failed_to_load_models": "Kunne ikke indlæse modeller",
+            "models_fetch_error": "Kunne ikke hente modeller fra udbydere"
         },
         "theme": {
             "title": "Tema",

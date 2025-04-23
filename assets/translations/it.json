@@ -86,7 +86,17 @@
         },
         "providers": {
             "title": "Provider",
-            "description": "Gestisci i tuoi provider di modelli AI"
+            "description": "Gestisci i tuoi provider di modelli AI",
+            "providers": "Provider",
+            "add_provider": "Aggiungi Provider",
+            "detailed_description": "I provider forniscono diversi servizi all'app, come generazione di testo, generazione di immagini, ricerca e altro.",
+            "auto_detect_ollama": "Rileva automaticamente Ollama",
+            "scanning_for_ollama": "Scansione per Ollama...",
+            "auto_detect_description": "Rileva automaticamente le istanze Ollama in esecuzione sulla tua rete",
+            "provider_saved": "Provider salvato",
+            "provider_saved_description": "Provider salvato con successo",
+            "failed_to_load_models": "Impossibile caricare i modelli",
+            "models_fetch_error": "Impossibile recuperare i modelli dai provider"
         },
         "theme": {
             "title": "Tema",

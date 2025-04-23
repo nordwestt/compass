@@ -84,7 +84,17 @@
         },
         "providers": {
             "title": "Providers",
-            "description": "Manage your AI model providers"
+            "description": "Manage your AI model providers",
+            "providers": "Providers",
+            "add_provider": "Add Provider",
+            "detailed_description": "Providers provide different services to the app, such as text generation, image generation, search, and more.",
+            "auto_detect_ollama": "Auto-detect Ollama",
+            "scanning_for_ollama": "Scanning for Ollama...",
+            "auto_detect_description": "Automatically detect Ollama instances running on your network",
+            "provider_saved": "Provider saved",
+            "provider_saved_description": "Provider saved successfully",
+            "failed_to_load_models": "Failed to load models",
+            "models_fetch_error": "Could not fetch models from providers"
         },
         "theme": {
             "title": "Theme",

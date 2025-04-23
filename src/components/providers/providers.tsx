@@ -9,9 +9,10 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { getDefaultStore, useAtom } from "jotai";
+import { useLocalization } from "@/src/hooks/useLocalization";
 import {
   availableProvidersAtom,
-  logsAtom,
+  logsAtom,   
   availableModelsAtom,
 } from "@/src/hooks/atoms";
 import { ProviderCard } from "@/src/components/providers/ProviderCard";
@@ -31,6 +32,7 @@ interface ProvidersProps {
 }
 
 export default function Providers({ className }: ProvidersProps) {
+  const { t } = useLocalization();
   const [providers, setProviders] = useAtom(availableProvidersAtom);
   const [logs, setLogs] = useAtom(logsAtom);
   const [showModal, setShowModal] = useState(false);
@@ -62,8 +64,8 @@ export default function Providers({ className }: ProvidersProps) {
     });
 
     toastService.success({
-      title: "Provider saved",
-      description: "Provider saved successfully",
+      title: t("settings.providers.provider_saved"),
+      description: t("settings.providers.provider_saved_description"),
     });
   };
 
@@ -86,8 +88,8 @@ export default function Providers({ className }: ProvidersProps) {
       .catch((error) => {
         console.error("Error fetching models:", error);
         toastService.danger({
-          title: "Failed to load models",
-          description: "Could not fetch models from providers",
+          title: t("settings.providers.failed_to_load_models"),
+          description: t("settings.providers.models_fetch_error"),
         });
       })
       .finally(() => {});
@@ -172,7 +174,7 @@ export default function Providers({ className }: ProvidersProps) {
               size={32}
               className="!text-primary mr-2 pb-2"
             />
-            <Text className="text-2xl font-bold text-primary">Providers</Text>
+            <Text className="text-2xl font-bold text-primary">{t("settings.providers.providers")}</Text>
           </View>
           <TouchableOpacity
             onPress={() => {
@@ -182,7 +184,7 @@ export default function Providers({ className }: ProvidersProps) {
             className="bg-primary px-4 py-2 rounded-lg flex-row items-center"
           >
             <Ionicons name="add" size={20} color="white" />
-            <Text className="text-white ml-2 font-medium">Add Provider</Text>
+            <Text className="text-white ml-2 font-medium">{t("settings.providers.add_provider")}</Text>
           </TouchableOpacity>
         </View>
         <View className="flex-row items-center py-2">
@@ -192,8 +194,7 @@ export default function Providers({ className }: ProvidersProps) {
             className="!text-primary mr-2"
           />
           <Text className="text-text flex-1 font-medium pt-1">
-            Providers provide different services to the app, such as text
-            generation, image generation, search, and more.
+            {t("settings.providers.detailed_description")}
           </Text>
         </View>
 
@@ -223,7 +224,7 @@ export default function Providers({ className }: ProvidersProps) {
             style={{ marginRight: 8 }}
           />
           <Text className="text-white text-lg font-semibold">
-            {scanning ? "Scanning for Ollama..." : "Auto-detect Ollama"}
+            {scanning ? t("settings.providers.scanning_for_ollama") : t("settings.providers.auto_detect_ollama")}
           </Text>
           {scanning && (
             <ActivityIndicator
@@ -234,7 +235,7 @@ export default function Providers({ className }: ProvidersProps) {
           )}
         </TouchableOpacity>
         <Text className="text-xs text-gray-600 dark:text-gray-400 mt-2 text-center">
-          Automatically detect Ollama instances running on your network
+          {t("settings.providers.auto_detect_description")}
         </Text>
       </View>
 
