@@ -197,6 +197,7 @@ const ChatThreads: React.FC = () => {
       </Tooltip>
       
       <View className="flex-row justify-center space-x-4 mb-2">
+        <Tooltip text={t('common.shortcut') + ': ' + 'Alt + O'}>
           <TouchableOpacity 
             onPress={toggleDark}
             className="p-2 rounded-full bg-surface hover:bg-background"
@@ -207,6 +208,7 @@ const ChatThreads: React.FC = () => {
               className="!text-text"
             />
           </TouchableOpacity>
+        </Tooltip>
       </View>
     </View>
   );

@@ -6,13 +6,15 @@ interface TooltipProps {
   children: ReactNode;
   position?: 'top' | 'bottom' | 'left' | 'right';
   webOnly?: boolean;
+  className?: string;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({ 
   text, 
   children, 
   position = 'top',
-  webOnly = true
+  webOnly = true,
+  className
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -36,7 +38,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   const shouldShowTooltip = showTooltip && (!webOnly || Platform.OS === 'web');
 
   return (
-    <View className="relative">
+    <View className={`relative ${className}`}>
       <View
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}

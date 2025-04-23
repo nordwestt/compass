@@ -6,6 +6,7 @@ import { createDefaultThread } from './atoms';
 import { useRouter } from 'expo-router';
 import { useAtom } from 'jotai';
 import { currentIndexAtom } from './atoms';
+import { useColorScheme } from 'nativewind';
 
 // Create a new atom for keyboard events
 export const keyboardEventAtom = atom<KeyboardEvent | null>(null);
@@ -15,6 +16,7 @@ export function useKeyboardShortcuts() {
   const setKeyboardEvent = useSetAtom(keyboardEventAtom);
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
+  const { toggleColorScheme } = useColorScheme();
 
   useEffect(() => {
     if (Platform.OS !== 'web') return;
@@ -36,9 +38,15 @@ export function useKeyboardShortcuts() {
         setCurrentIndex(0);
         router.replace("/");
       }
+
+      // Alt + O to toggle dark/light mode
+      if (event.altKey && event.key === 'o') {
+        event.preventDefault();
+        toggleColorScheme();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [dispatchThread, router]);
+  }, [dispatchThread, router, toggleColorScheme]);
 } 
