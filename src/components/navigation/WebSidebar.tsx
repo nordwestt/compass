@@ -61,7 +61,7 @@ export function WebSidebar({ className }: { className?: string }) {
           </Text>
         </Pressable>
       ))}
-      <LanguageSelector className='mt-auto m-2 mx-auto' />
+      <LanguageSelector className='mt-auto m-2 w-full px-2' />
     </View>
   );
 } 

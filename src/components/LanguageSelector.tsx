@@ -17,14 +17,14 @@ export function LanguageSelector({ className }: { className?: string }) {
   ];
 
   return (
-    <View className={className}>
+    <View className={`w-full ${className}`}>
       <Dropdown
       iconOpen=''
       iconClosed=''
         children={languages}
         selected={languages.find((lang) => lang.code === currentLocale) || null}
         onSelect={(value) => changeLocale(value.id)}
-        className='bg-surface w-full'
+        className='w-full text-center border-none'
         dropdownOptionClassName=''
         openUpwards={true}
       />
