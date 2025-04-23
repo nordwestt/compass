@@ -161,5 +161,12 @@
             "title": "Informazioni",
             "description": "Informazioni sulla versione e crediti"
         }
+    },
+    "models": {
+        "loading_models": "Caricamento modelli...",
+        "no_compatible_model": "Nessun modello compatibile trovato",
+        "no_compatible_model_description": "Questo personaggio richiede un modello specifico che non è disponibile.",
+        "scan_for_ollama": "Cerca Ollama",
+        "manage_providers": "Gestisci provider"
     }
-  }
+}

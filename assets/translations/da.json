@@ -159,5 +159,12 @@
             "title": "Om",
             "description": "Versionsinformation og krediteringer"
         }
+    },
+    "models": {
+        "loading_models": "Indlæser modeller...",
+        "no_compatible_model": "Ingen kompatibel model fundet",
+        "no_compatible_model_description": "Denne karakter kræver en specifik model, der ikke er tilgængelig.",
+        "scan_for_ollama": "Scan efter Ollama",
+        "manage_providers": "Administrer udbydere"
     }
-  }
+}

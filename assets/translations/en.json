@@ -159,5 +159,12 @@
             "title": "About",
             "description": "Version information and credits"
         }
+    },
+    "models": {
+        "loading_models": "Loading models...",
+        "no_compatible_model": "No compatible model found",
+        "no_compatible_model_description": "This character requires a specific model that is not available.",
+        "scan_for_ollama": "Scan for Ollama",
+        "manage_providers": "Manage providers"
     }
-  }
+}

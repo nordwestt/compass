@@ -30,6 +30,7 @@ import { Platform as PlatformUtils } from "@/src/utils/platform";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
+import { useLocalization } from "@/src/hooks/useLocalization";
 
 // Extend DropdownElement to include a model property
 interface ModelDropdownElement extends DropdownElement {
@@ -49,6 +50,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   character,
   className,
 }) => {
+  const { t } = useLocalization();
   const [providers, setProviders] = useAtom(availableProvidersAtom);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
   const [dropdownModel, setDropdownModel] = useState<DropdownElement | null>(
@@ -67,9 +69,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     if (compatibleModels.length == 0 && models.length > 0) {
       setIsDisabled(true);
       toastService.danger({
-        title: "No compatible model found",
-        description:
-          "This character requires a specific model that is not available.",
+        title: t('models.no_compatible_model'),
+        description: t('models.no_compatible_model_description'),
       });
     } else {
       setIsDisabled(false);
@@ -106,8 +107,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         .catch((error) => {
           console.error("Error fetching models:", error);
           toastService.danger({
-            title: "Failed to load models",
-            description: "Could not fetch models from providers",
+            title: t('settings.providers.failed_to_load_models'),
+            description: t('settings.providers.models_fetch_error'),
           });
         })
         .finally(() => {
@@ -133,8 +134,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     if (selectedModel) {
       setDefaultModel(selectedModel);
       toastService.success({
-        title: "Default model set",
-        description: "The selected model will now be used for new threads",
+        title: t('chats.default_model_set'),
+        description: t('chats.selected_model_will_now_be_used_for_new_threads'),
       });
     }
   }
@@ -161,9 +162,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       // setModels(models);
     } else {
       toastService.info({
-        title: "Couldn't find any ollama instances",
-        description:
-          "Please check the help section in Settings for information on how to install and enable ollama",
+        title: t('settings.providers.auto_detect_ollama'),
+        description: t('settings.help.ollama.connect_description'),
       });
     }
   }
@@ -199,7 +199,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         >
           <Ionicons name="radio-outline" size={24} color="white" />
           {Platform.OS == "web" && (
-            <Text className="text-white pt-1">Scan for Ollama</Text>
+            <Text className="text-white pt-1">{t('models.scan_for_ollama')}</Text>
           )}
         </TouchableOpacity>
         <TouchableOpacity
@@ -208,7 +208,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         >
           <Ionicons name="server-outline" size={24} className="!text-text" />
           {Platform.OS == "web" && (
-            <Text className="text-text pt-1">Manage providers</Text>
+            <Text className="text-text pt-1">{t('models.manage_providers')}</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -218,7 +218,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   if (!models.length) {
     return (
       <View className="flex-row gap-2 items-center">
-        <Text className="text-gray-500">Loading models...</Text>
+        <Text className="text-gray-500">{t('models.loading_models')}</Text>
         <TouchableOpacity
           className="ml-2 p-2 rounded-lg bg-background border border-border"
           onPress={() => {
@@ -248,7 +248,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         className={`max-w-48 overflow-hidden`}
         position="right"
       />
-
     </View>
   );
 };
