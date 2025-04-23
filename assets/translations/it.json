@@ -35,7 +35,13 @@
     "images":{
         "images": "Immagini",
         "generate": "Genera",
-        "gallery": "Galleria"
+        "gallery": "Galleria",
+        "add_image_provider": "Aggiungi provider di immagini",
+        "no_image_providers": "Non hai configurato provider di immagini",
+        "provider_added": "Provider aggiunto",
+        "provider_added_success": "Provider di immagini aggiunto con successo",
+        "failed_to_load_models": "Impossibile caricare i modelli",
+        "models_fetch_error": "Impossibile recuperare i modelli dal nuovo provider"
     },
     "documents":{
         "documents": "Documenti",

@@ -26,7 +26,7 @@ import { Dropdown } from "@/src/components/ui/Dropdown";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { EndpointModal } from "@/src/components/providers/EndpointModal";
-
+import { useLocalization } from "@/src/hooks/useLocalization";
 const replicateModels = [
   "black-forest-labs/flux-schnell",
   "black-forest-labs/flux-dev",
@@ -45,6 +45,7 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
   onSetModel,
   className,
 }) => {
+  const { t } = useLocalization();
   const [providers, setProviders] = useAtom(availableProvidersAtom);
   const [models, setModels] = useAtom(availableModelsAtom);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
@@ -106,15 +107,15 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
       .then((fetchedModels) => {
         setModels([...models, ...fetchedModels]);
         toastService.success({
-          title: "Provider added",
-          description: "Image provider added successfully",
+          title: t("images.provider_added"),
+          description: t("images.provider_added_success"),
         });
       })
       .catch((error) => {
         console.error("Error fetching models:", error);
         toastService.danger({
-          title: "Failed to load models",
-          description: "Could not fetch models from the new provider",
+          title: t("images.failed_to_load_models"),
+          description: t("images.models_fetch_error"),
         });
       });
     
@@ -129,9 +130,9 @@ export const ImageModelSelector: React.FC<ImageModelSelectorProps> = ({
           className="bg-primary h-12 hover:opacity-80 rounded-lg p-2 border border-border text-white flex-row items-center"
         >
           <Ionicons name="add" size={16} color="white" className="mr-2" />
-          <Text className="text-white flex-1">Add image provider</Text>
+          <Text className="text-white flex-1">{t("images.add_image_provider")}</Text>
         </TouchableOpacity>
-        <Text className="text-gray-500 mt-2">You have no image providers configured</Text>
+        <Text className="text-gray-500 mt-2">{t("images.no_image_providers")}</Text>
         
         {/* Add Provider Modal */}
         <EndpointModal

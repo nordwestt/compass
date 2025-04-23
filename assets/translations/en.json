@@ -34,7 +34,13 @@
     "images":{
         "images": "Images",
         "generate": "Generate",
-        "gallery": "Gallery"
+        "gallery": "Gallery",
+        "add_image_provider": "Add image provider",
+        "no_image_providers": "You have no image providers configured",
+        "provider_added": "Provider added",
+        "provider_added_success": "Image provider added successfully",
+        "failed_to_load_models": "Failed to load models",
+        "models_fetch_error": "Could not fetch models from the new provider"
     },
     "documents":{
         "documents": "Documents"

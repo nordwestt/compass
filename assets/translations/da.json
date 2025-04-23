@@ -34,7 +34,13 @@
     "images":{
         "images": "Billeder",
         "generate": "Generer",
-        "gallery": "Galleri"
+        "gallery": "Galleri",
+        "add_image_provider": "Tilføj billedudbyder",
+        "no_image_providers": "Du har ingen billedudbydere konfigureret",
+        "provider_added": "Udbyder tilføjet",
+        "provider_added_success": "Billedudbyder blev tilføjet med succes",
+        "failed_to_load_models": "Kunne ikke indlæse modeller",
+        "models_fetch_error": "Kunne ikke hente modeller fra den nye udbyder"
     },
     "documents":{
         "documents": "Dokumenter",
