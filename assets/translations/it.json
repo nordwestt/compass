@@ -29,7 +29,12 @@
             "instructions": "Istruzioni",
             "available_models": "Modelli disponibili",
             "available_documents": "Documenti disponibili",
-            "available_tools": "Strumenti disponibili"
+            "available_tools": "Strumenti disponibili",
+            "no_requirements": "Nessun requisito impostato - tutti i modelli saranno disponibili per questo personaggio",
+            "allowed": "Consentito",
+            "add_model": "Aggiungi modello",
+            "add_model_requirement": "Aggiungi requisito modello",
+            "select_model": "Seleziona modello"
         }
     },
     "images":{
@@ -45,7 +50,11 @@
     },
     "documents":{
         "documents": "Documenti",
-        "upload": "Carica"
+        "upload": "Carica",
+        "missing_documents": "Documenti mancanti",
+        "missing_documents_warning": "Alcuni documenti referenziati non sono più disponibili.",
+        "no_documents_available": "Nessun documento disponibile. Carica documenti nella sezione Documenti.",
+        "pages": "pagine"
     },
     "settings":{
         "settings": "Impostazioni"

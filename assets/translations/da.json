@@ -28,7 +28,12 @@
             "instructions": "Instruktioner",
             "available_models": "Tilgængelige modeller",
             "available_documents": "Tilgængelige dokumenter",
-            "available_tools": "Tilgængelige værktøjer"
+            "available_tools": "Tilgængelige værktøjer",
+            "no_requirements": "Ingen krav indstillet - alle modeller vil være tilgængelige for denne karakter",
+            "allowed": "Tilladt",
+            "add_model": "Tilføj model",
+            "add_model_requirement": "Tilføj modelkrav",
+            "select_model": "Vælg model"
         }
     },
     "images":{
@@ -44,7 +49,11 @@
     },
     "documents":{
         "documents": "Dokumenter",
-        "upload": "Upload"
+        "upload": "Upload",
+        "missing_documents": "Manglende dokumenter",
+        "missing_documents_warning": "Nogle refererede dokumenter er ikke længere tilgængelige.",
+        "no_documents_available": "Ingen dokumenter tilgængelige. Upload dokumenter i Dokumenter-sektionen.",
+        "pages": "sider"
     },
     "settings":{
         "settings": "Indstillinger"

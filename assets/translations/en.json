@@ -28,7 +28,12 @@
             "instructions": "Instructions",
             "available_models": "Available models",
             "available_documents": "Available documents",
-            "available_tools": "Available tools"
+            "available_tools": "Available tools",
+            "no_requirements": "No requirements set - all models will be available to this character",
+            "allowed": "Allowed",
+            "add_model": "Add Model",
+            "add_model_requirement": "Add Model Requirement",
+            "select_model": "Select Model"
         }
     },
     "images":{
@@ -43,7 +48,12 @@
         "models_fetch_error": "Could not fetch models from the new provider"
     },
     "documents":{
-        "documents": "Documents"
+        "documents": "Documents",
+        "upload": "Upload",
+        "missing_documents": "Missing Documents",
+        "missing_documents_warning": "Some referenced documents are no longer available.",
+        "no_documents_available": "No documents available. Upload documents in the Documents section.",
+        "pages": "pages"
     },
     "settings":{
         "settings": "Settings"

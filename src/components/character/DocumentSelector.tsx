@@ -51,7 +51,7 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
             />
             <View className="flex-1">
               <Text className="text-text">{doc.name}</Text>
-              <Text className="text-secondary text-sm">{doc.pages} pages</Text>
+              <Text className="text-secondary text-sm">{doc.pages} {t('documents.pages')}</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -60,17 +60,17 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
         {missingDocIds.length > 0 && (
           <View className="p-3 bg-yellow-100 dark:bg-yellow-900 border-b border-border">
             <Text className="text-yellow-800 dark:text-yellow-200 font-medium mb-1">
-              Missing Documents
+              {t('documents.missing_documents')}
             </Text>
             <Text className="text-yellow-700 dark:text-yellow-300 text-sm">
-              Some referenced documents are no longer available.
+              {t('documents.missing_documents_warning')}
             </Text>
           </View>
         )}
 
         {documents.length === 0 && missingDocIds.length === 0 && (
           <Text className="text-secondary p-3">
-            No documents available. Upload documents in the Documents section.
+            {t('documents.no_documents_available')}
           </Text>
         )}
       </ScrollView>

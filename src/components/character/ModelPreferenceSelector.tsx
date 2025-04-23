@@ -5,6 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Modal } from "@/src/components/ui/Modal";
 import { Image } from "react-native";
 import { useLocalization } from "@/src/hooks/useLocalization";
+
 interface ModelPreferenceSelectorProps {
   availableModels: Model[];
   selectedPreferences: AllowedModel[];
@@ -54,7 +55,7 @@ export function ModelPreferenceSelector({
       <View className="bg-surface p-4 rounded-lg border-2 border-border">
         {selectedPreferences.length === 0 ? (
           <Text className="text-secondary italic">
-            No requirements set - all models will be available to this character
+            {t('characters.edit_character.no_requirements')}
           </Text>
         ) : (
           <View className="space-y-2">
@@ -80,7 +81,7 @@ export function ModelPreferenceSelector({
                         <View
                           className={`w-2 h-2 rounded-full bg-green-500 mr-1`}
                         />
-                        <Text className="text-secondary text-xs">Allowed</Text>
+                        <Text className="text-secondary text-xs">{t('characters.edit_character.allowed')}</Text>
                       </View>
                     </View>
                   </View>
@@ -105,7 +106,7 @@ export function ModelPreferenceSelector({
           className="mt-4 p-3 bg-primary rounded-lg flex-row items-center justify-center"
         >
           <Ionicons name="add" size={20} color="white" className="mr-2" />
-          <Text className="text-white font-medium">Add Model</Text>
+          <Text className="text-white font-medium">{t('characters.edit_character.add_model')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -115,11 +116,11 @@ export function ModelPreferenceSelector({
       >
         <View className="p-4 bg-surface rounded-lg">
           <Text className="text-lg font-bold text-text mb-4 text-center">
-            Add Model Requirement
+            {t('characters.edit_character.add_model_requirement')}
           </Text>
 
           <Text className="text-base font-medium mb-2 text-text">
-            Select Model
+            {t('characters.edit_character.select_model')}
           </Text>
           <ScrollView className="max-h-60 mb-4">
             <View className="space-y-2">
@@ -150,7 +151,7 @@ export function ModelPreferenceSelector({
               onPress={() => setIsModalVisible(false)}
               className="flex-1 p-3 bg-background border border-border rounded-lg"
             >
-              <Text className="text-text text-center">Cancel</Text>
+              <Text className="text-text text-center">{t('common.cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleAddPreference}
@@ -159,7 +160,7 @@ export function ModelPreferenceSelector({
               }`}
               disabled={!selectedModelId}
             >
-              <Text className="text-white text-center">Add</Text>
+              <Text className="text-white text-center">{t('common.add')}</Text>
             </TouchableOpacity>
           </View>
         </View>
