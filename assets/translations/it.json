@@ -3,7 +3,9 @@
     "language": "Lingua",
     "common":{
         "save": "Salva",
-        "delete": "Elimina"
+        "delete": "Elimina",
+        "cancel": "Annulla",
+        "add": "Aggiungi"
     },
     "chats": {
         "start_a_conversation_with_character": "Inizia una conversazione con {{character}}",
@@ -22,7 +24,6 @@
         "characters": "Personaggi",
         "new_character": "Nuovo personaggio",
         "reset_to_default": "Ripristina ai valori predefiniti",
-
         "edit_character":{
             "edit_character": "Modifica personaggio",
             "name": "Nome",
@@ -34,7 +35,17 @@
             "allowed": "Consentito",
             "add_model": "Aggiungi modello",
             "add_model_requirement": "Aggiungi requisito modello",
-            "select_model": "Seleziona modello"
+            "select_model": "Seleziona modello",
+            "tap_to_change_icon": "Tocca per cambiare icona",
+            "tap_to_change_avatar": "Tocca per cambiare avatar",
+            "enter_character_name": "Inserisci il nome del personaggio",
+            "enter_character_prompt": "Inserisci il prompt del personaggio",
+            "expose_as_model": "Esponi come modello",
+            "character_saved": "Personaggio salvato",
+            "character_saved_success": "Personaggio salvato con successo",
+            "error_saving_character": "Errore nel salvare il personaggio",
+            "character_deleted": "Personaggio eliminato",
+            "character_deleted_success": "Personaggio eliminato con successo"
         }
     },
     "images":{
@@ -54,7 +65,9 @@
         "missing_documents": "Documenti mancanti",
         "missing_documents_warning": "Alcuni documenti referenziati non sono più disponibili.",
         "no_documents_available": "Nessun documento disponibile. Carica documenti nella sezione Documenti.",
-        "pages": "pagine"
+        "pages": "pagine",
+        "dependants": "Dipendenti",
+        "no_documents_upload": "Non hai documenti. Carica un documento per iniziare."
     },
     "settings":{
         "settings": "Impostazioni"

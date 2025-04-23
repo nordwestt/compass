@@ -110,12 +110,12 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
         <View className="flex-1">
           <Text className="text-text font-medium">{doc.name}</Text>
           <View className="flex-row items-center">
-            <Text className="text-secondary text-sm">{doc.pages} pages</Text>
+            <Text className="text-secondary text-sm">{doc.pages} {t('documents.pages')}</Text>
             {dependentCharactersCount > 0 && (
               <View className="flex-row items-center ml-2">
                 <Text className="text-secondary text-sm">•</Text>
                 <Text className="text-secondary text-sm ml-2">
-                  Dependants: {dependentCharactersCount}
+                  {t('documents.dependants')}: {dependentCharactersCount}
                 </Text>
               </View>
             )}
@@ -184,7 +184,7 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
                 setIsUploading={setIsUploading}
               />
               <Text className="text-gray-500 mt-2">
-                You have no documents. Upload a document to get started.
+                {t('documents.no_documents_upload')}
               </Text>
             </View>
           }

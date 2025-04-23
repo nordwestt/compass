@@ -113,22 +113,22 @@ export default function EditCharacter({
     try {
       onSave(character);
       toastService.success({
-        title: "Character saved",
-        description: "Character saved successfully",
+        title: t('characters.edit_character.character_saved'),
+        description: t('characters.edit_character.character_saved_success'),
       });
     } catch (error) {
       console.error("Error saving character:", error);
       toastService.danger({
-        title: "Error saving character",
-        description: "Error saving character",
+        title: t('characters.edit_character.error_saving_character'),
+        description: t('characters.edit_character.error_saving_character'),
       });
     }
   };
 
   const deleteCharacter = async () => {
     toastService.success({
-      title: "Character deleted",
-      description: "Character deleted successfully",
+      title: t('characters.edit_character.character_deleted'),
+      description: t('characters.edit_character.character_deleted_success'),
     });
     onDelete(character as Character);
   };
@@ -160,7 +160,7 @@ export default function EditCharacter({
             )}
           </View>
           <Text className="text-sm text-text mt-2">
-            {useIcon ? "Tap to change icon" : "Tap to change avatar"}
+            {useIcon ? t('characters.edit_character.tap_to_change_icon') : t('characters.edit_character.tap_to_change_avatar')}
           </Text>
         </View>
 
@@ -183,7 +183,7 @@ export default function EditCharacter({
               onChangeText={(text) =>
                 setCharacter({ ...character!, name: text })
               }
-              placeholder="Enter character name"
+              placeholder={t('characters.edit_character.enter_character_name')}
               className="p-4 rounded-lg text-text border-2 border-border bg-surface"
               placeholderTextColor="#9CA3AF"
             />
@@ -198,7 +198,7 @@ export default function EditCharacter({
               onChangeText={(text) =>
                 setCharacter({ ...character!, content: text })
               }
-              placeholder="Enter character prompt"
+              placeholder={t('characters.edit_character.enter_character_prompt')}
               multiline
               numberOfLines={6}
               textAlignVertical="top"
@@ -217,7 +217,7 @@ export default function EditCharacter({
             {showCharacterExposeAsModel && (
               <View className="flex-row items-center justify-between">
                 <Text className="text-base font-medium mb-2 text-text">
-                  Expose as Model
+                  {t('characters.edit_character.expose_as_model')}
                 </Text>
                 <Switch
                   className="mx-auto"

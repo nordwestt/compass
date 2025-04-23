@@ -33,7 +33,17 @@
             "allowed": "Tilladt",
             "add_model": "Tilføj model",
             "add_model_requirement": "Tilføj modelkrav",
-            "select_model": "Vælg model"
+            "select_model": "Vælg model",
+            "tap_to_change_icon": "Tryk for at ændre ikon",
+            "tap_to_change_avatar": "Tryk for at ændre avatar",
+            "enter_character_name": "Indtast karakternavn",
+            "enter_character_prompt": "Indtast karakter prompt",
+            "expose_as_model": "Eksponér som model",
+            "character_saved": "Karakter gemt",
+            "character_saved_success": "Karakter gemt med succes",
+            "error_saving_character": "Fejl ved gemning af karakter",
+            "character_deleted": "Karakter slettet",
+            "character_deleted_success": "Karakter slettet med succes"
         }
     },
     "images":{
@@ -53,7 +63,9 @@
         "missing_documents": "Manglende dokumenter",
         "missing_documents_warning": "Nogle refererede dokumenter er ikke længere tilgængelige.",
         "no_documents_available": "Ingen dokumenter tilgængelige. Upload dokumenter i Dokumenter-sektionen.",
-        "pages": "sider"
+        "pages": "sider",
+        "dependants": "Afhængige",
+        "no_documents_upload": "Du har ingen dokumenter. Upload et dokument for at komme i gang."
     },
     "settings":{
         "settings": "Indstillinger"

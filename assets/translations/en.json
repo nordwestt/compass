@@ -33,7 +33,17 @@
             "allowed": "Allowed",
             "add_model": "Add Model",
             "add_model_requirement": "Add Model Requirement",
-            "select_model": "Select Model"
+            "select_model": "Select Model",
+            "tap_to_change_icon": "Tap to change icon",
+            "tap_to_change_avatar": "Tap to change avatar",
+            "enter_character_name": "Enter character name",
+            "enter_character_prompt": "Enter character prompt",
+            "expose_as_model": "Expose as Model",
+            "character_saved": "Character saved",
+            "character_saved_success": "Character saved successfully",
+            "error_saving_character": "Error saving character",
+            "character_deleted": "Character deleted",
+            "character_deleted_success": "Character deleted successfully"
         }
     },
     "images":{
@@ -53,7 +63,9 @@
         "missing_documents": "Missing Documents",
         "missing_documents_warning": "Some referenced documents are no longer available.",
         "no_documents_available": "No documents available. Upload documents in the Documents section.",
-        "pages": "pages"
+        "pages": "pages",
+        "dependants": "Dependants",
+        "no_documents_upload": "You have no documents. Upload a document to get started."
     },
     "settings":{
         "settings": "Settings"
