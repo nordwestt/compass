@@ -3,7 +3,9 @@
     "language": "Language",
     "common":{
         "save": "Save",
-        "delete": "Delete"
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "add": "Add"
     },
     "chats": {
         "start_a_conversation_with_character": "Start a conversation with {{character}}",

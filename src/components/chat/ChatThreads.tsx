@@ -26,6 +26,7 @@ const ChatThreads: React.FC = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const { t } = useLocalization();
+  const [showTooltip, setShowTooltip] = React.useState(false);
 
 
   const groupThreadsByDate = useCallback((threads: Thread[]): Section[] => {
@@ -188,17 +189,28 @@ const ChatThreads: React.FC = () => {
         }}
       />
       
-      <TouchableOpacity 
-        onPress={addNewThread} 
-        className="mb-2 p-2 rounded-full flex flex-row justify-center bg-background hover:bg-surface hover:border-primary hover:border-2 items-center"
-      >
-        <Ionicons 
-          className="!text-text" 
-          name="add" 
-          size={24}
-        />
-        <Text className="text-text mt-1 ml-2 font-bold">{t('chats.new_chat')}</Text>
-      </TouchableOpacity>
+      <View className="relative">
+        <TouchableOpacity 
+          onPress={addNewThread} 
+          className="mb-2 p-2 rounded-full flex flex-row justify-center bg-background hover:bg-surface hover:border-primary hover:border-2 items-center"
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+        >
+          <Ionicons 
+            className="!text-text" 
+            name="add" 
+            size={24}
+          />
+          <Text className="text-text mt-1 ml-2 font-bold">{t('chats.new_chat')}</Text>
+        </TouchableOpacity>
+        
+        {showTooltip && Platform.OS === 'web' && (
+          <View className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-surface dark:bg-gray-800 px-2 py-1 rounded shadow-md">
+            <Text className="text-text text-xs">Shortcut: Alt + N</Text>
+          </View>
+        )}
+      </View>
+      
       <View className="flex-row justify-center space-x-4 mb-2">
         <TouchableOpacity 
           onPress={toggleDark}
