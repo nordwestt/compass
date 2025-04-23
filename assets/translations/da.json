@@ -80,7 +80,15 @@
         "customize_experience": "Tilpas din chatoplevelse",
         "font_settings": {
             "title": "Skriftindstillinger",
-            "description": "Tilpas tekstens udseende og størrelse"
+            "description": "Tilpas tekstens udseende og størrelse",
+            "message_appearance": "Beskedudseende",
+            "font_family": "Skrifttype",
+            "font_size": "Skriftstørrelse",
+            "line_height": "Linjehøjde",
+            "letter_spacing": "Tegnafstand",
+            "preview": "Forhåndsvisning",
+            "preview_message": "Dette er en **forhåndsvisning** besked, der viser hvordan din tekst vil se ud.\n\nDen inkluderer noget `kode` og flere afsnit for at demonstrere afstande.",
+            "preview_user_message": "Sådan vil dine beskeder se ud!"
         },
         "providers": {
             "title": "Udbydere",
@@ -166,6 +174,14 @@
         "about": {
             "title": "Om",
             "description": "Versionsinformation og krediteringer"
+        },
+        "proxy": {
+            "title": "Proxy-indstillinger",
+            "proxy_url": "Proxy URL",
+            "enter_proxy_url": "Indtast proxy URL",
+            "description": "Bruges til web- og desktop-platforme til at omgå CORS-begrænsninger",
+            "saved": "Proxy URL gemt",
+            "saved_description": "Proxy URL gemt med succes"
         }
     },
     "models": {

@@ -82,7 +82,15 @@
         "customize_experience": "Personalizza la tua esperienza di chat",
         "font_settings": {
             "title": "Impostazioni carattere",
-            "description": "Personalizza aspetto e dimensione del testo"
+            "description": "Personalizza aspetto e dimensione del testo",
+            "message_appearance": "Aspetto dei messaggi",
+            "font_family": "Famiglia di caratteri",
+            "font_size": "Dimensione carattere",
+            "line_height": "Altezza linea",
+            "letter_spacing": "Spaziatura lettere",
+            "preview": "Anteprima",
+            "preview_message": "Questo è un messaggio di **anteprima** che mostra come apparirà il tuo testo.\n\nInclude del `codice` e più paragrafi per dimostrare la spaziatura.",
+            "preview_user_message": "Ecco come appariranno i tuoi messaggi!"
         },
         "providers": {
             "title": "Provider",
@@ -168,6 +176,14 @@
         "about": {
             "title": "Informazioni",
             "description": "Informazioni sulla versione e crediti"
+        },
+        "proxy": {
+            "title": "Impostazioni Proxy",
+            "proxy_url": "URL Proxy",
+            "enter_proxy_url": "Inserisci URL proxy",
+            "description": "Utilizzato per piattaforme web e desktop per aggirare le restrizioni CORS",
+            "saved": "URL Proxy salvato",
+            "saved_description": "URL Proxy salvato con successo"
         }
     },
     "models": {

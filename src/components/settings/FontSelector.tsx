@@ -4,6 +4,7 @@ import { useAtom } from 'jotai';
 import { fontPreferencesAtom } from '@/src/hooks/atoms';
 import { Selector } from '@/src/components/Selector';
 import { Message } from '@/src/components/chat/Message';
+import { useLocalization } from '@/src/hooks/useLocalization';
 
 const AVAILABLE_FONTS = [
   { id: 'Caveat-Medium', name: 'Caveat Medium' },
@@ -17,18 +18,18 @@ const FONT_SIZES = [10, 12, 14, 16, 18];
 const LINE_HEIGHTS = [14, 18, 22];
 const LETTER_SPACING_VALUES = [0, 0.4, 0.8, 1.2, 1.6];
 
-const EXAMPLE_MESSAGE = "This is a **preview** message showing how your text will look.\n\nIt includes some `code` and multiple paragraphs to demonstrate spacing.";
-
 interface FontSelectorProps {
   className?: string;
 }
+
 export function FontSelector({ className }: FontSelectorProps) {
+  const { t } = useLocalization();
   const [preferences, setPreferences] = useAtom(fontPreferencesAtom);
 
   const renderSelectors = () => {
     return <View>
     <Selector
-        title="Font Family"
+        title={t('settings.font_settings.font_family')}
         options={AVAILABLE_FONTS.map(font => ({
           label: font.name,
           value: font.id
@@ -39,7 +40,7 @@ export function FontSelector({ className }: FontSelectorProps) {
       />
 
       <Selector
-        title="Font Size"
+        title={t('settings.font_settings.font_size')}
         options={FONT_SIZES.map(size => ({
           label: `${size}px`,
           value: size
@@ -50,7 +51,7 @@ export function FontSelector({ className }: FontSelectorProps) {
       />
 
       <Selector
-        title="Line Height"
+        title={t('settings.font_settings.line_height')}
         options={LINE_HEIGHTS.map(height => ({
           label: `${height}px`,
           value: height
@@ -61,7 +62,7 @@ export function FontSelector({ className }: FontSelectorProps) {
       />
 
       <Selector
-        title="Letter Spacing"
+        title={t('settings.font_settings.letter_spacing')}
         options={LETTER_SPACING_VALUES.map(spacing => ({
           label: `${spacing}`,
           value: spacing
@@ -77,22 +78,22 @@ export function FontSelector({ className }: FontSelectorProps) {
   return (
     <View className={`p-4 ${className}`}>
       <Text className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
-        Message Appearance
+        {t('settings.font_settings.message_appearance')}
       </Text>
 
       {renderSelectors()}
 
       <View className="mt-8 border rounded-lg p-4 border-gray-200 dark:border-gray-700">
         <Text className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
-          Preview
+          {t('settings.font_settings.preview')}
         </Text>
         <Message
-          content={EXAMPLE_MESSAGE}
+          content={t('settings.font_settings.preview_message')}
           isUser={false}
           index={0}
         />
         <Message
-          content="This is how your messages will look!"
+          content={t('settings.font_settings.preview_user_message')}
           isUser={true}
           index={0}
         />

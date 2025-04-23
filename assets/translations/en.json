@@ -80,7 +80,15 @@
         "customize_experience": "Customize your chat experience",
         "font_settings": {
             "title": "Font Settings",
-            "description": "Customize text appearance and size"
+            "description": "Customize text appearance and size",
+            "message_appearance": "Message Appearance",
+            "font_family": "Font Family",
+            "font_size": "Font Size",
+            "line_height": "Line Height",
+            "letter_spacing": "Letter Spacing",
+            "preview": "Preview",
+            "preview_message": "This is a **preview** message showing how your text will look.\n\nIt includes some `code` and multiple paragraphs to demonstrate spacing.",
+            "preview_user_message": "This is how your messages will look!"
         },
         "providers": {
             "title": "Providers",
@@ -166,6 +174,14 @@
         "about": {
             "title": "About",
             "description": "Version information and credits"
+        },
+        "proxy": {
+            "title": "Proxy Settings",
+            "proxy_url": "Proxy URL",
+            "enter_proxy_url": "Enter proxy URL",
+            "description": "Used for web and desktop platforms to bypass CORS restrictions",
+            "saved": "Proxy URL saved",
+            "saved_description": "Proxy URL saved successfully"
         }
     },
     "models": {
