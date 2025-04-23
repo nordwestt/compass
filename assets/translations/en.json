@@ -96,7 +96,17 @@
         },
         "help": {
             "title": "Help",
-            "description": "Install and configure ollama"
+            "description": "Install and configure ollama",
+            "ollama": {
+                "installing_ollama": "Installing Ollama",
+                "introduction": "Ollama is an open-source local server for hosting LLMs (large language models). To use Ollama with this app, follow these steps:",
+                "install_ollama": "1. Install Ollama",
+                "visit_ollama": "Visit ollama.com",
+                "follow_instructions": "Follow the installation instructions for your platform.",
+                "configure_network": "2. Configure Network Access",
+                "connect": "3. Connect",
+                "connect_description": "Once Ollama is running and configured, use the \"Scan for Ollama\" button in the model selector to connect to your Ollama instance."
+            }
         },
         "polaris": {
             "title": "Polaris",

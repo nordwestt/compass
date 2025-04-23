@@ -1,37 +1,43 @@
 import React from 'react';
-import { View, Text, ScrollView, Platform, Linking } from 'react-native';
+import { View, Text, ScrollView, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useLocalization } from '@/src/hooks/useLocalization';
 
 export const OllamaHelp: React.FC = () => {
+  const { t } = useLocalization();
+  
   return (
     <ScrollView className="flex-1 mt-2">
       <View className="p-4 space-y-6">
         {/* Header */}
         <View className="flex-row items-center space-x-3">
           <Ionicons name="help-circle" size={32} className="!text-primary" />
-          <Text className="text-2xl font-bold text-text">Installing Ollama</Text>
+          <Text className="text-2xl font-bold text-text">
+            {t('settings.help.ollama.installing_ollama')}
+          </Text>
         </View>
 
         {/* Introduction */}
         <Text className="text-text text-lg">
-          Ollama is an open-source local server for hosting LLMs (large language models). 
-          To use Ollama with this app, follow these steps:
+          {t('settings.help.ollama.introduction')}
         </Text>
 
         {/* Installation Section */}
         <View className="bg-surface p-4 rounded-xl border border-border space-y-3">
           <View className="flex-row items-center space-x-2">
             <Ionicons name="download" size={24} className="!text-primary" />
-            <Text className="text-xl font-bold text-text">1. Install Ollama</Text>
+            <Text className="text-xl font-bold text-text">
+              {t('settings.help.ollama.install_ollama')}
+            </Text>
           </View>
           <Text 
             className="text-text text-lg underline"
             onPress={() => Linking.openURL('https://ollama.com/')}
           >
-            Visit ollama.com
+            {t('settings.help.ollama.visit_ollama')}
           </Text>
           <Text className="text-secondary">
-            Follow the installation instructions for your platform.
+            {t('settings.help.ollama.follow_instructions')}
           </Text>
         </View>
 
@@ -39,7 +45,9 @@ export const OllamaHelp: React.FC = () => {
         <View className="bg-surface p-4 rounded-xl border border-border space-y-3">
           <View className="flex-row items-center space-x-2">
             <Ionicons name="globe" size={24} className="!text-primary" />
-            <Text className="text-xl font-bold text-text">2. Configure Network Access</Text>
+            <Text className="text-xl font-bold text-text">
+              {t('settings.help.ollama.configure_network')}
+            </Text>
           </View>
 
           {/* macOS Instructions */}
@@ -85,11 +93,12 @@ export const OllamaHelp: React.FC = () => {
         <View className="bg-surface p-4 rounded-xl border border-border space-y-3">
           <View className="flex-row items-center space-x-2">
             <Ionicons name="link" size={24} className="!text-primary" />
-            <Text className="text-xl font-bold text-text">3. Connect</Text>
+            <Text className="text-xl font-bold text-text">
+              {t('settings.help.ollama.connect')}
+            </Text>
           </View>
           <Text className="text-text text-lg">
-            Once Ollama is running and configured, use the "Scan for Ollama" button in the model selector 
-            to connect to your Ollama instance.
+            {t('settings.help.ollama.connect_description')}
           </Text>
         </View>
       </View>

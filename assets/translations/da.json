@@ -96,7 +96,17 @@
         },
         "help": {
             "title": "Hjælp",
-            "description": "Installer og konfigurer ollama"
+            "description": "Installer og konfigurer ollama",
+            "ollama": {
+                "installing_ollama": "Installation af Ollama",
+                "introduction": "Ollama er en open-source lokal server til hosting af LLM'er (store sprogmodeller). For at bruge Ollama med denne app, følg disse trin:",
+                "install_ollama": "1. Installer Ollama",
+                "visit_ollama": "Besøg ollama.com",
+                "follow_instructions": "Følg installationsvejledningen til din platform.",
+                "configure_network": "2. Konfigurer netværksadgang",
+                "connect": "3. Forbind",
+                "connect_description": "Når Ollama kører og er konfigureret, brug knappen \"Scan efter Ollama\" i modelværktøjet for at forbinde til din Ollama-instans."
+            }
         },
         "polaris": {
             "title": "Polaris",
