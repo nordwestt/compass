@@ -135,7 +135,15 @@
         },
         "export": {
             "title": "Dataeksport",
-            "description": "Download eller sikkerhedskopier din samtalehistorik"
+            "description": "Download eller sikkerhedskopier din samtalehistorik",
+            "data_export": "Dataeksport",
+            "data_ownership": "Vi tror på dataejerskab og gennemsigtighed. Dine samtaler er dine at beholde, analysere eller flytte til en anden platform. Vi tilbyder flere eksportformater for at sikre maksimal kompatibilitet med andre værktøjer.",
+            "available_formats": "📊 Tilgængelige Formater:",
+            "json_format": "• JSON: Komplet datastruktur med alle metadata",
+            "yaml_format": "• YAML: Læsbart format til nem inspektion",
+            "select_export_format": "Vælg Eksportformat:",
+            "export_my_data": "Eksportér Mine Data",
+            "export_note": "Bemærk: Eksporter inkluderer din samtalehistorik, trådtitler og tidsstempler. Ingen personlige indstillinger eller API-nøgler er inkluderet i eksporten."
         },
         "help": {
             "title": "Hjælp",

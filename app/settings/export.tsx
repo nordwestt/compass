@@ -5,10 +5,12 @@ import { useAtomValue } from 'jotai';
 import { threadsAtom } from '@/src/hooks/atoms';
 import { Platform } from 'react-native';
 import YAML from 'yaml';
+import { useLocalization } from '@/src/hooks/useLocalization';
 
 type ExportFormat = 'json' | 'csv' | 'yaml';
 
 export default function ExportScreen() {
+  const { t } = useLocalization();
   const threads = useAtomValue(threadsAtom);
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>('json');
 
@@ -72,23 +74,21 @@ export default function ExportScreen() {
         <View className="flex-row items-center p-4">
           <Ionicons name="download" size={32} className="!text-primary mr-2 pb-2" />
           <Text className="text-2xl font-bold text-primary">
-            Data Export
+            {t('settings.export.data_export')}
           </Text>
         </View>
         
         <Text className="text-secondary mb-4">
-          We believe in data ownership and transparency. Your conversations 
-          are yours to keep, analyze, or move to another platform. We provide multiple 
-          export formats to ensure maximum compatibility with other tools.
+          {t('settings.export.data_ownership')}
         </Text>
 
         <View className="bg-surface p-4 rounded-lg border border-border mb-6">
-          <Text className="text-text font-semibold mb-2">📊 Available Formats:</Text>
-          <Text className="text-secondary mb-1">• JSON: Complete data structure with all metadata</Text>
-          <Text className="text-secondary">• YAML: Human-readable format for easy inspection</Text>
+          <Text className="text-text font-semibold mb-2">{t('settings.export.available_formats')}</Text>
+          <Text className="text-secondary mb-1">{t('settings.export.json_format')}</Text>
+          <Text className="text-secondary">{t('settings.export.yaml_format')}</Text>
         </View>
 
-        <Text className="text-lg font-semibold text-text mb-4">Select Export Format:</Text>
+        <Text className="text-lg font-semibold text-text mb-4">{t('settings.export.select_export_format')}</Text>
         <View className="flex-row mb-6">
           <FormatButton format="json" />
           <FormatButton format="yaml" />
@@ -99,13 +99,12 @@ export default function ExportScreen() {
           className="bg-primary p-4 rounded-lg"
         >
           <Text className="text-white text-center font-semibold text-lg">
-            Export My Data
+            {t('settings.export.export_my_data')}
           </Text>
         </TouchableOpacity>
 
         <Text className="text-secondary mt-6 text-sm">
-          Note: Exports include your conversation history, thread titles, and timestamps. 
-          No personal settings or API keys are included in the export.
+          {t('settings.export.export_note')}
         </Text>
       </View>
     </ScrollView>

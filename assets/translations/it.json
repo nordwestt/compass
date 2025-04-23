@@ -137,7 +137,15 @@
         },
         "export": {
             "title": "Esportazione dati",
-            "description": "Scarica o fai il backup della cronologia delle conversazioni"
+            "description": "Scarica o fai il backup della cronologia delle conversazioni",
+            "data_export": "Esportazione Dati",
+            "data_ownership": "Crediamo nella proprietà dei dati e nella trasparenza. Le tue conversazioni sono tue da conservare, analizzare o trasferire su un'altra piattaforma. Forniamo diversi formati di esportazione per garantire la massima compatibilità con altri strumenti.",
+            "available_formats": "📊 Formati Disponibili:",
+            "json_format": "• JSON: Struttura dati completa con tutti i metadati",
+            "yaml_format": "• YAML: Formato leggibile per una facile ispezione",
+            "select_export_format": "Seleziona Formato di Esportazione:",
+            "export_my_data": "Esporta i Miei Dati",
+            "export_note": "Nota: Le esportazioni includono la cronologia delle conversazioni, i titoli delle discussioni e i timestamp. Nessuna impostazione personale o chiave API è inclusa nell'esportazione."
         },
         "help": {
             "title": "Aiuto",

@@ -135,7 +135,15 @@
         },
         "export": {
             "title": "Data Export",
-            "description": "Download or backup your conversation history"
+            "description": "Download or backup your conversation history",
+            "data_export": "Data Export",
+            "data_ownership": "We believe in data ownership and transparency. Your conversations are yours to keep, analyze, or move to another platform. We provide multiple export formats to ensure maximum compatibility with other tools.",
+            "available_formats": "📊 Available Formats:",
+            "json_format": "• JSON: Complete data structure with all metadata",
+            "yaml_format": "• YAML: Human-readable format for easy inspection",
+            "select_export_format": "Select Export Format:",
+            "export_my_data": "Export My Data",
+            "export_note": "Note: Exports include your conversation history, thread titles, and timestamps. No personal settings or API keys are included in the export."
         },
         "help": {
             "title": "Help",
