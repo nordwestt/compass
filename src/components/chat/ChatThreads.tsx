@@ -10,6 +10,7 @@ import { createDefaultThread } from '@/src/hooks/atoms';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { useLocalization } from '@/src/hooks/useLocalization';
+import Tooltip from '@/src/components/ui/Tooltip';
 
 
 interface Section {
@@ -26,7 +27,6 @@ const ChatThreads: React.FC = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const { t } = useLocalization();
-  const [showTooltip, setShowTooltip] = React.useState(false);
 
 
   const groupThreadsByDate = useCallback((threads: Thread[]): Section[] => {
@@ -77,13 +77,6 @@ const ChatThreads: React.FC = () => {
     }
   };
 
-  // const toggleTheme = useCallback(() => {
-  //   if (themePreset === 'default') {
-  //     setThemePreset('default');
-  //   } else {
-  //     setThemePreset('default');
-  //   }
-  // }, [themePreset, setThemePreset]);
   const toggleDark = useCallback(() => {
     toggleColorScheme();
   }, [toggleColorScheme]);
@@ -189,12 +182,10 @@ const ChatThreads: React.FC = () => {
         }}
       />
       
-      <View className="relative">
+      <Tooltip text={t('common.shortcut') + ': ' + 'Alt + N'}>
         <TouchableOpacity 
           onPress={addNewThread} 
           className="mb-2 p-2 rounded-full flex flex-row justify-center bg-background hover:bg-surface hover:border-primary hover:border-2 items-center"
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
         >
           <Ionicons 
             className="!text-text" 
@@ -203,25 +194,19 @@ const ChatThreads: React.FC = () => {
           />
           <Text className="text-text mt-1 ml-2 font-bold">{t('chats.new_chat')}</Text>
         </TouchableOpacity>
-        
-        {showTooltip && Platform.OS === 'web' && (
-          <View className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-surface dark:bg-gray-800 px-2 py-1 rounded shadow-md">
-            <Text className="text-text text-xs">Shortcut: Alt + N</Text>
-          </View>
-        )}
-      </View>
+      </Tooltip>
       
       <View className="flex-row justify-center space-x-4 mb-2">
-        <TouchableOpacity 
-          onPress={toggleDark}
-          className="p-2 rounded-full bg-surface hover:bg-background"
-        >
-          <Ionicons 
-            name={isDarkMode ? 'sunny' : 'moon'} 
-            size={24}
-            className="!text-text"
-          />
-        </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={toggleDark}
+            className="p-2 rounded-full bg-surface hover:bg-background"
+          >
+            <Ionicons 
+              name={isDarkMode ? 'sunny' : 'moon'} 
+              size={24}
+              className="!text-text"
+            />
+          </TouchableOpacity>
       </View>
     </View>
   );

@@ -3,7 +3,10 @@
     "language": "Sprog",
     "common":{
         "save": "Gem",
-        "delete": "Slet"
+        "delete": "Slet",
+        "cancel": "Annuller",
+        "add": "Tilføj",
+        "shortcut": "Genvej"
     },
     "chats":{
         "start_a_conversation_with_character": "Start en samtale med {{character}}",

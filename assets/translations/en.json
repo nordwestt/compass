@@ -5,7 +5,8 @@
         "save": "Save",
         "delete": "Delete",
         "cancel": "Cancel",
-        "add": "Add"
+        "add": "Add",
+        "shortcut": "Shortcut"
     },
     "chats": {
         "start_a_conversation_with_character": "Start a conversation with {{character}}",
