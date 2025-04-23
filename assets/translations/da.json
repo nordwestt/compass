@@ -16,7 +16,15 @@
         "selected_model_will_now_be_used_for_new_threads": "Valgte model vil nu blive brugt til nye tråde",
         "default_model_set": "Standard model sat",
         "new_chat": "Ny samtale",
-        "chats": "Samtaler"
+        "chats": "Samtaler",
+        "export_chat": "Eksportér samtale",
+        "export": "Eksportér",
+        "export_chat_description": "Download din samtale i dit foretrukne format. Dette inkluderer alle beskeder og metadata.",
+        "select_export_format": "Vælg eksportformat",
+        "export_successful": "Eksport vellykket",
+        "chat_exported_successfully": "Din samtale er blevet eksporteret med succes",
+        "export_mobile_not_supported": "Mobil eksport",
+        "export_mobile_not_supported_description": "Eksport understøttes i øjeblikket kun på web. Brug venligst webversionen til at eksportere dine samtaler."
     },
     "characters":{
         "characters": "Karakterer",
