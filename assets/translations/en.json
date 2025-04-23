@@ -68,6 +68,43 @@
         "no_documents_upload": "You have no documents. Upload a document to get started."
     },
     "settings":{
-        "settings": "Settings"
+        "settings": "Settings",
+        "customize_experience": "Customize your chat experience",
+        "font_settings": {
+            "title": "Font Settings",
+            "description": "Customize text appearance and size"
+        },
+        "providers": {
+            "title": "Providers",
+            "description": "Manage your AI model providers"
+        },
+        "theme": {
+            "title": "Theme",
+            "description": "Choose your preferred color scheme"
+        },
+        "logs": {
+            "title": "Logs",
+            "description": "View application logs"
+        },
+        "general": {
+            "title": "General",
+            "description": "General settings"
+        },
+        "export": {
+            "title": "Data Export",
+            "description": "Download or backup your conversation history"
+        },
+        "help": {
+            "title": "Help",
+            "description": "Install and configure ollama"
+        },
+        "polaris": {
+            "title": "Polaris",
+            "description": "Manage your Polaris server"
+        },
+        "about": {
+            "title": "About",
+            "description": "Version information and credits"
+        }
     }
   }

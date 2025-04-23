@@ -46,70 +46,70 @@ export default function SettingsScreen() {
           <Ionicons name="cog" size={32} className="!text-primary mr-2 pb-2" />
           <Text className="text-2xl font-bold text-primary">{t('settings.settings')}</Text>
         </View>
-        <Text className="text-secondary">Customize your chat experience</Text>
+        <Text className="text-secondary">{t('settings.customize_experience')}</Text>
       </View>
 
       <View className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-8">
         <SettingItem
-          title="Font Settings"
-          description="Customize text appearance and size"
+          title={t('settings.font_settings.title')}
+          description={t('settings.font_settings.description')}
           icon="text"
           onPress={() => router.push("/settings/font")}
         />
 
         <SettingItem
-          title="Providers"
-          description="Manage your AI model providers"
+          title={t('settings.providers.title')}
+          description={t('settings.providers.description')}
           icon="server"
           onPress={() => router.push("/settings/providers")}
         />
 
         {!syncToPolaris && (
           <SettingItem
-            title="Theme"
-            description="Choose your preferred color scheme"
+            title={t('settings.theme.title')}
+            description={t('settings.theme.description')}
             icon="color-palette"
             onPress={() => router.push("/settings/theme")}
           />
         )}
 
         <SettingItem
-          title="Logs"
-          description="View application logs"
+          title={t('settings.logs.title')}
+          description={t('settings.logs.description')}
           icon="list"
           onPress={() => router.push("/settings/logs")}
         />
 
         <SettingItem
-          title="General"
-          description="General settings"
+          title={t('settings.general.title')}
+          description={t('settings.general.description')}
           icon="settings"
           onPress={() => router.push("/settings/general")}
         />
 
         <SettingItem
-          title="Data Export"
-          description="Download or backup your conversation history"
+          title={t('settings.export.title')}
+          description={t('settings.export.description')}
           icon="download"
           onPress={() => router.push("/settings/export")}
         />
 
         <SettingItem
-          title="Help"
-          description="Install and configure ollama"
+          title={t('settings.help.title')}
+          description={t('settings.help.description')}
           icon="help-circle"
           onPress={() => router.push("/settings/help")}
         />
 
         <SettingItem
-          title="Polaris"
-          description="Manage your Polaris server"
+          title={t('settings.polaris.title')}
+          description={t('settings.polaris.description')}
           icon="sparkles"
           onPress={() => router.push("/settings/polaris")}
         />
         {/* <SettingItem
-          title="About"
-          description="Version information and credits"
+          title={t('settings.about.title')}
+          description={t('settings.about.description')}
           icon="information-circle"
           onPress={() => router.push('/settings/about')}
         /> */}

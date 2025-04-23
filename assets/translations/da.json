@@ -68,6 +68,43 @@
         "no_documents_upload": "Du har ingen dokumenter. Upload et dokument for at komme i gang."
     },
     "settings":{
-        "settings": "Indstillinger"
+        "settings": "Indstillinger",
+        "customize_experience": "Tilpas din chatoplevelse",
+        "font_settings": {
+            "title": "Skriftindstillinger",
+            "description": "Tilpas tekstens udseende og størrelse"
+        },
+        "providers": {
+            "title": "Udbydere",
+            "description": "Administrer dine AI-modeludbydere"
+        },
+        "theme": {
+            "title": "Tema",
+            "description": "Vælg dit foretrukne farveskema"
+        },
+        "logs": {
+            "title": "Logfiler",
+            "description": "Se applikationslogfiler"
+        },
+        "general": {
+            "title": "Generelt",
+            "description": "Generelle indstillinger"
+        },
+        "export": {
+            "title": "Dataeksport",
+            "description": "Download eller sikkerhedskopier din samtalehistorik"
+        },
+        "help": {
+            "title": "Hjælp",
+            "description": "Installer og konfigurer ollama"
+        },
+        "polaris": {
+            "title": "Polaris",
+            "description": "Administrer din Polaris-server"
+        },
+        "about": {
+            "title": "Om",
+            "description": "Versionsinformation og krediteringer"
+        }
     }
   }
