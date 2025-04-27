@@ -208,6 +208,78 @@ export const documentContextTransform: MessageTransform = {
   }
 };
 
+export const templateVariableTransform: MessageTransform = {
+  name: 'templateVariable',
+  transform: async (ctx: MessageContext): Promise<MessageContext> => {
+    const character = ctx.context.characterToUse;
+    
+    // Skip if no character content or no messages to process
+    if (!character?.content || ctx.context.messagesToSend.length === 0) {
+      return ctx;
+    }
+    
+    // Process template variables in character content
+    let processedContent = character.content;
+    
+    // Replace date/time variables
+    const now = new Date();
+    
+    // Format: YYYY-MM-DD
+    processedContent = processedContent.replace(/\${current-date}/g, 
+      now.toLocaleDateString());
+    
+    // Format: HH:MM:SS
+    processedContent = processedContent.replace(/\${current-time}/g, 
+      now.toLocaleTimeString());
+    
+    // Format: YYYY-MM-DD HH:MM:SS
+    processedContent = processedContent.replace(/\${current-datetime}/g, 
+      now.toLocaleString());
+    
+    // Day of week: Monday, Tuesday, etc.
+    processedContent = processedContent.replace(/\${day-of-week}/g, 
+      now.toLocaleDateString(undefined, { weekday: 'long' }));
+    
+    // Month name: January, February, etc.
+    processedContent = processedContent.replace(/\${month-name}/g, 
+      now.toLocaleDateString(undefined, { month: 'long' }));
+    
+    // Current year: 2023, 2024, etc.
+    processedContent = processedContent.replace(/\${year}/g, 
+      now.getFullYear().toString());
+    
+    // User name - this would need to be provided in the context
+    // For now, use a placeholder or get from user settings
+    const userName = ctx.metadata.userName || "User";
+    processedContent = processedContent.replace(/\${user-name}/g, userName);
+    
+    // Update the character content for this conversation
+    const updatedCharacter = {
+      ...character,
+      processedContent
+    };
+    
+    // Update the character in the context
+    ctx.context.characterToUse = updatedCharacter;
+    
+    // If there's a system message that includes the character instructions,
+    // update it with the processed content
+    const systemMessageIndex = ctx.context.messagesToSend.findIndex(
+      msg => msg.isSystem && msg.content.includes(character.content)
+    );
+    
+    if (systemMessageIndex >= 0) {
+      const originalMessage = ctx.context.messagesToSend[systemMessageIndex];
+      ctx.context.messagesToSend[systemMessageIndex] = {
+        ...originalMessage,
+        content: originalMessage.content.replace(character.content, processedContent)
+      };
+    }
+    
+    return ctx;
+  }
+};
+
 export class MessageTransformPipeline {
   private transforms: MessageTransform[] = [];
 

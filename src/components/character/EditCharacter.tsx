@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Modal,
 } from "react-native";
 import { useAtom, useSetAtom } from "jotai";
 import {
@@ -15,7 +16,7 @@ import {
 } from "@/src/hooks/atoms";
 import { AllowedModel, Character, Model } from "@/src/types/core";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ImagePickerButton } from "@/src/components/image/ImagePickerButton";
 import { toastService } from "@/src/services/toastService";
 import { IconSelector } from "@/src/components/character/IconSelector";
@@ -24,6 +25,17 @@ import { ModelPreferenceSelector } from "./ModelPreferenceSelector";
 import { Switch } from "@/src/components/ui/Switch";
 import { Document } from "@/src/types/core";
 import { useLocalization } from "@/src/hooks/useLocalization";
+
+// Define template variables
+export const TEMPLATE_VARIABLES = [
+  { id: "current-date", label: "Current Date", template: "${current-date}" },
+  { id: "current-time", label: "Current Time", template: "${current-time}" },
+  { id: "current-datetime", label: "Date & Time", template: "${current-datetime}" },
+  { id: "user-name", label: "User Name", template: "${user-name}" },
+  { id: "day-of-week", label: "Day of Week", template: "${day-of-week}" },
+  { id: "month-name", label: "Month Name", template: "${month-name}" },
+  { id: "year", label: "Current Year", template: "${year}" },
+];
 
 interface EditCharacterProps {
   availableModels: Model[];
@@ -47,8 +59,12 @@ export default function EditCharacter({
   const [character, setCharacter] = useState<Character | null>(null);
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [useIcon, setUseIcon] = useState(false);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const contentInputRef = useRef<TextInput>(null);
   const dispatchCharacters = useSetAtom(saveCustomPrompts);
   const { t } = useLocalization();
+  
   useEffect(() => {
     let chara = existingCharacter;
 
@@ -133,6 +149,28 @@ export default function EditCharacter({
     onDelete(character as Character);
   };
 
+  const insertTemplateVariable = (template: string) => {
+    if (!character) return;
+    
+    const content = character.content || "";
+    const beforeCursor = content.substring(0, cursorPosition);
+    const afterCursor = content.substring(cursorPosition);
+    
+    const newContent = beforeCursor + template + afterCursor;
+    setCharacter({ ...character, content: newContent });
+    
+    // Close the template selector
+    setShowTemplateSelector(false);
+    
+    // Focus back on the input and set cursor position after the inserted template
+    setTimeout(() => {
+      if (contentInputRef.current) {
+        contentInputRef.current.focus();
+        // This is a workaround as direct cursor positioning doesn't work well in React Native
+      }
+    }, 100);
+  };
+
   return (
     <View className={`flex-1 bg-background ${className}`}>
       <ScrollView
@@ -190,14 +228,29 @@ export default function EditCharacter({
           </View>
 
           <View className="flex-1">
-            <Text className="text-base font-medium mb-2 text-text">
-              {t('characters.edit_character.instructions')}
-            </Text>
+            <View className="flex-row items-center justify-between mb-2">
+              <Text className="text-base font-medium text-text">
+                {t('characters.edit_character.instructions')}
+              </Text>
+              <TouchableOpacity 
+                onPress={() => setShowTemplateSelector(true)}
+                className="bg-primary/10 px-3 py-1 rounded-lg flex-row items-center"
+              >
+                <Ionicons name="code-outline" size={16} color="#6366F1" className="mr-1" />
+                <Text className="text-primary text-sm font-medium">
+                  Insert Variable
+                </Text>
+              </TouchableOpacity>
+            </View>
             <TextInput
+              ref={contentInputRef}
               value={character?.content || ""}
               onChangeText={(text) =>
                 setCharacter({ ...character!, content: text })
               }
+              onSelectionChange={(e) => {
+                setCursorPosition(e.nativeEvent.selection.start);
+              }}
               placeholder={t('characters.edit_character.enter_character_prompt')}
               multiline
               numberOfLines={6}
@@ -238,6 +291,47 @@ export default function EditCharacter({
           />
         </View>
       </ScrollView>
+
+      {/* Template Variables Selector Modal */}
+      <Modal
+        visible={showTemplateSelector}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowTemplateSelector(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-surface rounded-xl w-[90%] max-w-md p-4">
+            <View className="flex-row justify-between items-center mb-4">
+              <Text className="text-lg font-bold text-text">
+                Insert Template Variable
+              </Text>
+              <TouchableOpacity onPress={() => setShowTemplateSelector(false)}>
+                <Ionicons name="close" size={24} className="text-text" />
+              </TouchableOpacity>
+            </View>
+            
+            <Text className="text-secondary mb-4">
+              These variables will be replaced with actual values when the character responds.
+            </Text>
+            
+            <ScrollView className="max-h-[300px]">
+              {TEMPLATE_VARIABLES.map((variable) => (
+                <TouchableOpacity
+                  key={variable.id}
+                  onPress={() => insertTemplateVariable(variable.template)}
+                  className="flex-row items-center justify-between p-3 border-b border-border hover:bg-primary/5"
+                >
+                  <View>
+                    <Text className="font-medium text-text">{variable.label}</Text>
+                    <Text className="text-secondary text-sm">{variable.template}</Text>
+                  </View>
+                  <Ionicons name="add-circle-outline" size={20} className="text-primary" />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
 
       <View className="p-4 border-t border-border flex-row justify-between">
         <TouchableOpacity
