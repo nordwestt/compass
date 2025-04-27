@@ -26,6 +26,7 @@ import { Switch } from "@/src/components/ui/Switch";
 import { Document } from "@/src/types/core";
 import { useLocalization } from "@/src/hooks/useLocalization";
 import { TemplateVariableSelector } from './TemplateVariableSelector';
+import { modalService } from "@/src/services/modalService";
 
 interface EditCharacterProps {
   availableModels: Model[];
@@ -132,11 +133,26 @@ export default function EditCharacter({
   };
 
   const deleteCharacter = async () => {
-    toastService.success({
-      title: t('characters.edit_character.character_deleted'),
-      description: t('characters.edit_character.character_deleted_success'),
+    const confirmed = await modalService.confirm({
+      title: t('common.confirm_delete'),
+      message: t('common.confirm_delete_message', { name: character?.name || '' }),
     });
-    onDelete(character as Character);
+
+    if (!confirmed) return;
+
+    try {
+      onDelete(character as Character);
+      toastService.success({
+        title: t('characters.edit_character.character_deleted'),
+        description: t('characters.edit_character.character_deleted_success'),
+      });
+    } catch (error) {
+      console.error("Error deleting character:", error);
+      toastService.danger({
+        title: t('characters.edit_character.error_deleting_character'),
+        description: t('characters.edit_character.error_deleting_character_description'),
+      });
+    }
   };
 
   const insertTemplateVariable = (template: string) => {

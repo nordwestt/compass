@@ -6,7 +6,9 @@
         "delete": "Slet",
         "cancel": "Annuller",
         "add": "Tilføj",
-        "shortcut": "Genvej"
+        "shortcut": "Genvej",
+        "confirm_delete": "Bekræft sletning",
+        "confirm_delete_message": "Er du sikker på, at du vil slette {{name}}?"
     },
     "chats":{
         "start_a_conversation_with_character": "Start en samtale med {{character}}",
@@ -54,7 +56,9 @@
             "character_saved_success": "Karakter gemt med succes",
             "error_saving_character": "Fejl ved gemning af karakter",
             "character_deleted": "Karakter slettet",
-            "character_deleted_success": "Karakter slettet med succes"
+            "character_deleted_success": "Karakter slettet med succes",
+            "error_deleting_character": "Fejl ved sletning af karakter",
+            "error_deleting_character_description": "Fejl ved sletning af karakter: {{error}}"
         }
     },
     "images":{

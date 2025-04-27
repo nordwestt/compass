@@ -6,7 +6,9 @@
         "delete": "Delete",
         "cancel": "Cancel",
         "add": "Add",
-        "shortcut": "Shortcut"
+        "shortcut": "Shortcut",
+        "confirm_delete": "Confirm Delete",
+        "confirm_delete_message": "Are you sure you want to delete {{name}}?"
     },
     "chats": {
         "start_a_conversation_with_character": "Start a conversation with {{character}}",
@@ -54,7 +56,9 @@
             "character_saved_success": "Character saved successfully",
             "error_saving_character": "Error saving character",
             "character_deleted": "Character deleted",
-            "character_deleted_success": "Character deleted successfully"
+            "character_deleted_success": "Character deleted successfully",
+            "error_deleting_character": "Error deleting character",
+            "error_deleting_character_description": "Error deleting character: {{error}}"
         }
     },
     "images":{

@@ -6,7 +6,9 @@
         "delete": "Elimina",
         "cancel": "Annulla",
         "add": "Aggiungi",
-        "shortcut": "Scorciatoia"
+        "shortcut": "Scorciatoia",
+        "confirm_delete": "Conferma eliminazione",
+        "confirm_delete_message": "Sei sicuro di voler eliminare {{name}}?"
     },
     "chats": {
         "start_a_conversation_with_character": "Inizia una conversazione con {{character}}",
@@ -54,7 +56,9 @@
             "character_saved_success": "Personaggio salvato con successo",
             "error_saving_character": "Errore nel salvare il personaggio",
             "character_deleted": "Personaggio eliminato",
-            "character_deleted_success": "Personaggio eliminato con successo"
+            "character_deleted_success": "Personaggio eliminato con successo",
+            "error_deleting_character": "Errore nell'eliminare il personaggio",
+            "error_deleting_character_description": "Errore nell'eliminare il personaggio: {{error}}"
         }
     },
     "images":{
