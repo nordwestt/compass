@@ -25,17 +25,7 @@ import { ModelPreferenceSelector } from "./ModelPreferenceSelector";
 import { Switch } from "@/src/components/ui/Switch";
 import { Document } from "@/src/types/core";
 import { useLocalization } from "@/src/hooks/useLocalization";
-
-// Define template variables
-export const TEMPLATE_VARIABLES = [
-  { id: "current-date", label: "Current Date", template: "${current-date}" },
-  { id: "current-time", label: "Current Time", template: "${current-time}" },
-  { id: "current-datetime", label: "Date & Time", template: "${current-datetime}" },
-  { id: "user-name", label: "User Name", template: "${user-name}" },
-  { id: "day-of-week", label: "Day of Week", template: "${day-of-week}" },
-  { id: "month-name", label: "Month Name", template: "${month-name}" },
-  { id: "year", label: "Current Year", template: "${year}" },
-];
+import { TemplateVariableSelector } from './TemplateVariableSelector';
 
 interface EditCharacterProps {
   availableModels: Model[];
@@ -159,14 +149,10 @@ export default function EditCharacter({
     const newContent = beforeCursor + template + afterCursor;
     setCharacter({ ...character, content: newContent });
     
-    // Close the template selector
-    setShowTemplateSelector(false);
-    
     // Focus back on the input and set cursor position after the inserted template
     setTimeout(() => {
       if (contentInputRef.current) {
         contentInputRef.current.focus();
-        // This is a workaround as direct cursor positioning doesn't work well in React Native
       }
     }, 100);
   };
@@ -222,7 +208,7 @@ export default function EditCharacter({
                 setCharacter({ ...character!, name: text })
               }
               placeholder={t('characters.edit_character.enter_character_name')}
-              className="p-4 rounded-lg text-text border-2 border-border bg-surface"
+              className="p-4 rounded-lg text-text border-2 border-border bg-surface outline-none"
               placeholderTextColor="#9CA3AF"
             />
           </View>
@@ -242,6 +228,7 @@ export default function EditCharacter({
                 </Text>
               </TouchableOpacity>
             </View>
+            <View className="flex-row flex-1">
             <TextInput
               ref={contentInputRef}
               value={character?.content || ""}
@@ -255,9 +242,17 @@ export default function EditCharacter({
               multiline
               numberOfLines={6}
               textAlignVertical="top"
-              className="bg-surface p-4 rounded-lg text-text border-2 border-border flex-1"
+              className="bg-surface p-4 rounded-lg text-text border-2 border-border flex-1 outline-none"
               placeholderTextColor="#9CA3AF"
             />
+            {showTemplateSelector && (
+              <TemplateVariableSelector
+                isVisible={showTemplateSelector}
+                onClose={() => setShowTemplateSelector(false)}
+                onSelectVariable={insertTemplateVariable}
+              />
+            )}
+            </View>
           </View>
 
           <View>
@@ -292,46 +287,7 @@ export default function EditCharacter({
         </View>
       </ScrollView>
 
-      {/* Template Variables Selector Modal */}
-      <Modal
-        visible={showTemplateSelector}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowTemplateSelector(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-surface rounded-xl w-[90%] max-w-md p-4">
-            <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-lg font-bold text-text">
-                Insert Template Variable
-              </Text>
-              <TouchableOpacity onPress={() => setShowTemplateSelector(false)}>
-                <Ionicons name="close" size={24} className="text-text" />
-              </TouchableOpacity>
-            </View>
-            
-            <Text className="text-secondary mb-4">
-              These variables will be replaced with actual values when the character responds.
-            </Text>
-            
-            <ScrollView className="max-h-[300px]">
-              {TEMPLATE_VARIABLES.map((variable) => (
-                <TouchableOpacity
-                  key={variable.id}
-                  onPress={() => insertTemplateVariable(variable.template)}
-                  className="flex-row items-center justify-between p-3 border-b border-border hover:bg-primary/5"
-                >
-                  <View>
-                    <Text className="font-medium text-text">{variable.label}</Text>
-                    <Text className="text-secondary text-sm">{variable.template}</Text>
-                  </View>
-                  <Ionicons name="add-circle-outline" size={20} className="text-primary" />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
+      
 
       <View className="p-4 border-t border-border flex-row justify-between">
         <TouchableOpacity
