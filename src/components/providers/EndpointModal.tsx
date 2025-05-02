@@ -103,7 +103,6 @@ export function EndpointModal({
         <ProviderFormFields
           formData={formData}
           onChange={(updates) => {
-            console.log("updates", updates);
             setFormData(prev => ({ ...prev, ...updates }));
           }}
           initialCapabilityFilter={initialCapabilityFilter}

@@ -12,6 +12,7 @@ interface ChatInputProps {
   isGenerating?: boolean;
   onInterrupt?: () => void;
   className?: string;
+  initialInputRows?: number;
 }
 
 export interface ChatInputRef {
@@ -25,7 +26,7 @@ export interface MentionedCharacter {
   endIndex: number;
 }
 
-export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isGenerating, onInterrupt, className = '' }, ref) => {
+export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isGenerating, onInterrupt, className = '', initialInputRows = 1 }, ref) => {
   const [message, setMessage] = useState('');
   const [mentionSearch, setMentionSearch] = useState('');
   const [showMentionPopup, setShowMentionPopup] = useState(false);
@@ -37,8 +38,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
-  const [inputHeight, setInputHeight] = useState<number>(40); // Initial height
   const lineHeight = fontPreferences.lineHeight || 20; // Default line height if not specified
+  const [inputHeight, setInputHeight] = useState<number>(initialInputRows * lineHeight); // Initial height
   const { t } = useLocalization();
 
 
@@ -58,8 +59,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
 
     // get number of lines in text
     const lines = text.split('\n').length;
-    if(lines == 1) setInputHeight(lineHeight);
-    else setInputHeight(lineHeight * Math.min(lines, 5));
+    if(lines == 1) setInputHeight(lineHeight*initialInputRows);
+    else setInputHeight(lineHeight * Math.min(Math.max(lines, initialInputRows), 5));
 
     const lastAtSymbol = text.lastIndexOf('@');
     
@@ -155,7 +156,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       <TextInput
         onBlur={handleBlur}
         ref={inputRef}
-        className={`flex-1 pt-1 outline-none px-4 bg-surface rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
+        className={`flex-1 pt-1 outline-none w-full px-4 bg-surface rounded-lg mr-2 text-text ${isEditing ? "border-2 border-yellow-500" : ""}`}
         placeholder={t('chats.type_a_message')}
         placeholderTextColor="#9CA3AF"
         value={message}

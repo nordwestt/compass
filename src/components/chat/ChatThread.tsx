@@ -252,6 +252,7 @@ export const ChatThread: React.FC = () => {
               isGenerating={isGenerating}
               onInterrupt={handleInterrupt}
               className="shadow-lg rounded-xl"
+              initialInputRows={3}
             />
           </View>
         </View>
