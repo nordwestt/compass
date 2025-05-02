@@ -246,6 +246,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         onSelect={handleDropdownSelect}
         children={dropdownOptions}
         className={`w-48 overflow-hidden`}
+        dropdownOptionClassName="w-64"
         position="left"
       />
     </View>
