@@ -15,7 +15,7 @@ import { ProviderService } from "@/src/services/provider/ProviderService";
 import LogService from "@/utils/LogService";
 import { toastService } from "@/src/services/toastService";
 import { DocumentService } from "../services/document/DocumentService";
-
+import { DropdownElement } from "@/src/components/ui/Dropdown";
 export const createDefaultThread = (name: string = "New thread"): Thread => {
   // Get the first custom prompt if available, otherwise use the first predefined prompt
   const defaultCharacter =
@@ -38,7 +38,7 @@ export const createDefaultThread = (name: string = "New thread"): Thread => {
         logo: "",
       },
     },
-    character: defaultCharacter,
+    character: undefined,
   };
 };
 
@@ -292,6 +292,26 @@ export const modalStateAtom = atom<{
 export const defaultModelAtom = atomWithAsyncStorage<Model>(
   "defaultModel",
   createDefaultThread().selectedModel,
+);
+
+export const selectedChatDropdownOptionAtom = atomWithAsyncStorage<DropdownElement>(
+  "selectedChatDropdownOption",
+  {
+    id: "",
+    title: "",
+    image: "",
+    icon: undefined
+  },
+);
+
+export const defaultChatDropdownOptionAtom = atomWithAsyncStorage<DropdownElement>(
+  "defaultChatDropdownOption",
+  {
+    id: "",
+    title: "",
+    image: "",
+    icon: undefined
+  },
 );
 
 export const fontPreferencesAtom = atom({

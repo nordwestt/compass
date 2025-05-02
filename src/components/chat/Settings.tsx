@@ -13,7 +13,8 @@ import { getDefaultStore, useAtom, useAtomValue } from "jotai";
 import {
   availableProvidersAtom,
   availableModelsAtom,
-  defaultModelAtom,
+  defaultChatDropdownOptionAtom,
+  selectedChatDropdownOptionAtom,
 } from "@/src/hooks/atoms";
 import { DropdownElement } from "@/src/components/ui/Dropdown";
 import { Dropdown } from "@/src/components/ui/Dropdown";
@@ -36,14 +37,14 @@ type ExportFormat = 'json' | 'yaml';
 
 export const Settings: React.FC<SettingsProps> = ({
     thread,
-  className,
+    className,
 }) => {
 
-  const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
+  const [defaultDropdownOption, setDefaultDropdownOption] = useAtom(defaultChatDropdownOptionAtom);
   const { t } = useLocalization();
   const [exportModalVisible, setExportModalVisible] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>('json');
-
+  const [selectedDropdownOption, setSelectedDropdownOption] = useAtom(selectedChatDropdownOptionAtom);
   const availableSettings = [
     {
       title: t('chats.set_model_as_default'),
@@ -64,8 +65,8 @@ export const Settings: React.FC<SettingsProps> = ({
   };
 
   function setCurrentModelAsDefault() {
-    if (thread.selectedModel) {
-      setDefaultModel(thread.selectedModel);
+    if (selectedDropdownOption) {
+      setDefaultDropdownOption(selectedDropdownOption);
       toastService.success({
         title: t('chats.default_model_set'),
         description: t('chats.selected_model_will_now_be_used_for_new_threads'),

@@ -93,10 +93,9 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
   const handleSend = () => {
     if (message.trim() && !isGenerating) {
       onSend(message.trim(), mentionedCharacters);
-      setMessage('');
       setMentionedCharacters([]);
       setIsEditing(false);
-      setInputHeight(lineHeight);
+      handleChangeText('');
     }
   };
 

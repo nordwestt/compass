@@ -8,13 +8,14 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import { Model, Character } from "@/src/types/core";
+import { Model, Character, Thread } from "@/src/types/core";
 import { getDefaultStore, useAtom, useAtomValue } from "jotai";
 import {
   availableProvidersAtom,
   availableModelsAtom,
   defaultModelAtom,
   charactersAtom,
+  selectedChatDropdownOptionAtom,
 } from "@/src/hooks/atoms";
 import { PROVIDER_LOGOS } from "@/src/constants/logos";
 import { Provider } from "@/src/types/core";
@@ -39,7 +40,7 @@ interface ModelDropdownElement extends DropdownElement {
 }
 
 interface ModelSelectorProps {
-  selectedModel: Model | null;
+  thread: Thread;
   onModelSelect: (model: Model) => void;
   onCharacterSelect: (character: Character) => void;
   character?: Character;
@@ -47,7 +48,7 @@ interface ModelSelectorProps {
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({
-  selectedModel,
+  thread,
   onModelSelect,
   onCharacterSelect,
   character,
@@ -65,7 +66,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const [modelOptions, setModelOptions] = useState<Model[]>(models);
   const [dropdownOptions, setDropdownOptions] = useState<DropdownElement[]>([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
-
+  const [selectedDropdownOption, setSelectedDropdownOption] = useAtom(selectedChatDropdownOptionAtom);
   useEffect(() => {
     // Check if character has a required model
 
@@ -86,20 +87,29 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     })));
 
     setDropdownOptions(options);
-    
+
   }, [characters, models]);
 
   useEffect(() => {
     // Update dropdown model when selected model changes
-    const model = models.find((m) => m.id === selectedModel?.id);
-    if (model) {
-      setDropdownModel({
-        id: model.id,
-        title: model.name,
-        image: model.provider.logo,
+    const model = models.find((m) => m.id === thread.selectedModel?.id);
+    const character = characters.find((c) => c.id === thread.character?.id);
+    if(character){
+      setSelectedDropdownOption({
+        id: character.id,
+        title: character.name,
+        image: character.image,
+        icon: character.icon
       });
     }
-  }, [selectedModel, models]);
+    else if (thread.messages.length > 0 && thread.selectedModel) {
+      setSelectedDropdownOption({
+        id: thread.selectedModel.id,
+        title: thread.selectedModel.name,
+        image: thread.selectedModel.provider.logo
+      });
+    }
+  }, [thread.selectedModel, thread.character]);
 
   // Add effect to automatically load models when we have providers but no models
   useEffect(() => {
@@ -131,18 +141,18 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     } else if(characters.find((c) => c.id === item.id)) {
       onCharacterSelect(characters.find((c) => c.id === item.id)!);
     }
-    setDropdownModel(item);
+    setSelectedDropdownOption(item);
   };
 
-  function setCurrentModelAsDefault() {
-    if (selectedModel) {
-      setDefaultModel(selectedModel);
-      toastService.success({
-        title: t('chats.default_model_set'),
-        description: t('chats.selected_model_will_now_be_used_for_new_threads'),
-      });
-    }
-  }
+  // function setCurrentModelAsDefault() {
+  //   if (selectedModel) {
+  //     setDefaultModel(selectedModel);
+  //     toastService.success({
+  //       title: t('chats.default_model_set'),
+  //       description: t('chats.selected_model_will_now_be_used_for_new_threads'),
+  //     });
+  //   }
+  // }
 
   async function scanOllamaProviders() {
     let ollamaEndpoints = await scanLocalOllama();
@@ -242,7 +252,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     <View className={`flex-row gap-2 items-center ${className}`}>
       <Dropdown
         showSearch={true}
-        selected={dropdownModel}
+        selected={selectedDropdownOption}
         onSelect={handleDropdownSelect}
         children={dropdownOptions}
         className={`w-48 overflow-hidden bg-surface`}
