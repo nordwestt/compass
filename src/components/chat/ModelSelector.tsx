@@ -123,18 +123,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     }
   }, [providers, models.length]);
 
-  const optionList: ModelDropdownElement[] = modelOptions.map((model) => ({
-    id: model.id,
-    title: model.name,
-    image: model.provider.logo,
-    model: model,
-  }));
-
-  const handleModelSelect = (item: DropdownElement) => {
-    if (isDisabled) return;
-    onModelSelect(modelOptions.find((m) => m.id === item.id)!);
-    setDropdownModel(item);
-  };
 
   const handleDropdownSelect = (item: DropdownElement) => {
     if (isDisabled) return;
@@ -172,10 +160,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     if (newProviders.length > 0) {
       setProviders([...providers, ...newProviders]);
 
-      // const models = await fetchAvailableModelsV2(
-      //   await getDefaultStore().get(availableProvidersAtom),
-      // );
-      // setModels(models);
     } else {
       toastService.info({
         title: t('settings.providers.auto_detect_ollama'),

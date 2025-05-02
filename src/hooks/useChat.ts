@@ -52,7 +52,7 @@ export function useChat() {
 
     const provider = ChatProviderFactory.getProvider(currentThread.selectedModel.provider);
 
-    let relevantDocuments = documents.filter((doc: Document) => currentThread.character.documentIds?.includes(doc.id));
+    let relevantDocuments = documents.filter((doc: Document) => currentThread.character?.documentIds?.includes(doc.id) ?? false);
     relevantDocuments.push(...documents.filter((doc: Document) => currentThread.metadata?.documentIds?.includes(doc.id) ?? []));
 
     const initialContext: MessageContext = {

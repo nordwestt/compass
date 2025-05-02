@@ -10,7 +10,7 @@ export interface Thread {
   title: string;
   messages: ChatMessage[];
   selectedModel: Model;
-  character: Character;
+  character?: Character;
   metadata?: ThreadMetadata;
 }
 

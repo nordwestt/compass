@@ -128,7 +128,7 @@ export const ChatThread: React.FC = () => {
   const handleSelectModel = (model: Model) => {
     dispatchThread({
       type: 'update',
-      payload: { ...currentThread, selectedModel: model }
+      payload: { ...currentThread, selectedModel: model, character: undefined }
     });
   };
 

@@ -106,29 +106,7 @@ export const Dropdown = ({
     const scrollView = () =>{
       return (
         <ScrollView ref={scrollViewRef}>
-          {showSearch && (
-            <View className="p-2 border-b border-border flex-row items-center">
-              <Ionicons name="search-outline" size={24} className="text-text mr-2" />
-              <TextInput
-                ref={searchInputRef}
-                className="px-3 py-2 bg-surface rounded-md text-black dark:text-white flex-1 outline-none"
-                placeholder="Search..."
-                placeholderTextColor="#666"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                onKeyPress={(e) => {
-                  switch (e.nativeEvent.key) {
-                    case 'ArrowDown':
-                    case 'ArrowUp':
-                        // Blur the input when using arrow keys
-                        searchInputRef.current?.blur();
-                        console.log("ArrowDown or ArrowUp")
-                        break;
-                  }
-                }}
-              />
-            </View>
-          )}
+          
           {filteredChildren.map((child, index) => (
             <TouchableOpacity
               key={child.id}
@@ -181,6 +159,29 @@ export const Dropdown = ({
         </View>
       </TouchableOpacity>
       {isOpen && <View className={`z-200 ${position === "left" ? "" : "right-0"} absolute ${openUpwards ? "bottom-12" : "mt-12"} rounded-lg overflow-hidden max-h-64 bg-background border border-border shadow-lg`}>
+      {showSearch && (
+            <View className="p-2 border-b border-border flex-row items-center">
+              <Ionicons name="search-outline" size={24} className="text-text mr-2" />
+              <TextInput
+                ref={searchInputRef}
+                className="px-3 py-2 bg-surface rounded-md text-black dark:text-white flex-1 outline-none"
+                placeholder="Search..."
+                placeholderTextColor="#666"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                onKeyPress={(e) => {
+                  switch (e.nativeEvent.key) {
+                    case 'ArrowDown':
+                    case 'ArrowUp':
+                        // Blur the input when using arrow keys
+                        searchInputRef.current?.blur();
+                        console.log("ArrowDown or ArrowUp")
+                        break;
+                  }
+                }}
+              />
+            </View>
+          )}
         {scrollView()}
       </View>}
       
