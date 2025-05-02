@@ -210,20 +210,19 @@ export const ChatThread: React.FC = () => {
 
     <View className="flex-1 bg-background">
       <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
-      <CharacterSelector
-          selectedPrompt={currentThread.character}
-          onSelectPrompt={handleSelectCharacter}
-          className="w-40 overflow-hidden"
-        />
+      
+        <ModelSelector 
+              selectedModel={currentThread.selectedModel}
+              onModelSelect={handleSelectModel}
+              onCharacterSelect={handleSelectCharacter}
+              character={currentThread.character}
+              className=''
+            />
         <View className="flex-row items-center gap-2">
         
           
           
-            <ModelSelector 
-              selectedModel={currentThread.selectedModel}
-              onModelSelect={handleSelectModel}
-              character={currentThread.character}
-            />
+            
             <Settings thread={currentThread}></Settings>
           
           

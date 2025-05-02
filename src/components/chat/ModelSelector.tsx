@@ -14,6 +14,7 @@ import {
   availableProvidersAtom,
   availableModelsAtom,
   defaultModelAtom,
+  charactersAtom,
 } from "@/src/hooks/atoms";
 import { PROVIDER_LOGOS } from "@/src/constants/logos";
 import { Provider } from "@/src/types/core";
@@ -40,6 +41,7 @@ interface ModelDropdownElement extends DropdownElement {
 interface ModelSelectorProps {
   selectedModel: Model | null;
   onModelSelect: (model: Model) => void;
+  onCharacterSelect: (character: Character) => void;
   character?: Character;
   className?: string;
 }
@@ -47,11 +49,13 @@ interface ModelSelectorProps {
 export const ModelSelector: React.FC<ModelSelectorProps> = ({
   selectedModel,
   onModelSelect,
+  onCharacterSelect,
   character,
   className,
 }) => {
   const { t } = useLocalization();
   const [providers, setProviders] = useAtom(availableProvidersAtom);
+  const characters = useAtomValue(charactersAtom);
   const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
   const [dropdownModel, setDropdownModel] = useState<DropdownElement | null>(
     null,
@@ -59,29 +63,31 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [models, setModels] = useAtom(availableModelsAtom);
   const [modelOptions, setModelOptions] = useState<Model[]>(models);
+  const [dropdownOptions, setDropdownOptions] = useState<DropdownElement[]>([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
 
   useEffect(() => {
     // Check if character has a required model
-    const compatibleModels = getCompatibleModels(character, models);
-    setModelOptions(compatibleModels);
 
-    if (compatibleModels.length == 0 && models.length > 0) {
-      setIsDisabled(true);
-      toastService.danger({
-        title: t('models.no_compatible_model'),
-        description: t('models.no_compatible_model_description'),
-      });
-    } else {
-      setIsDisabled(false);
-      if (
-        !selectedModel ||
-        !compatibleModels.find((m) => m.id === selectedModel?.id)
-      ) {
-        onModelSelect(compatibleModels[0]);
-      }
-    }
-  }, [character, models, selectedModel?.id]);
+    let options: DropdownElement[] = [];
+    options.push(...models.map((model) => ({
+      id: model.id,
+      title: model.name,
+      image: model.provider.logo,
+      model: model,
+    })));
+
+    options.push(...characters.map((character) => ({
+      id: character.id,
+      title: character.name,
+      image: character.image,
+      icon: character.icon,
+      character: character,
+    })));
+
+    setDropdownOptions(options);
+    
+  }, [characters, models]);
 
   useEffect(() => {
     // Update dropdown model when selected model changes
@@ -117,7 +123,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     }
   }, [providers, models.length]);
 
-  const modelList: ModelDropdownElement[] = modelOptions.map((model) => ({
+  const optionList: ModelDropdownElement[] = modelOptions.map((model) => ({
     id: model.id,
     title: model.name,
     image: model.provider.logo,
@@ -127,6 +133,16 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const handleModelSelect = (item: DropdownElement) => {
     if (isDisabled) return;
     onModelSelect(modelOptions.find((m) => m.id === item.id)!);
+    setDropdownModel(item);
+  };
+
+  const handleDropdownSelect = (item: DropdownElement) => {
+    if (isDisabled) return;
+    if(modelOptions.find((m) => m.id === item.id)) {
+      onModelSelect(modelOptions.find((m) => m.id === item.id)!);
+    } else if(characters.find((c) => c.id === item.id)) {
+      onCharacterSelect(characters.find((c) => c.id === item.id)!);
+    }
     setDropdownModel(item);
   };
 
@@ -243,10 +259,10 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       <Dropdown
         showSearch={true}
         selected={dropdownModel}
-        onSelect={handleModelSelect}
-        children={modelList}
-        className={`max-w-48 overflow-hidden`}
-        position="right"
+        onSelect={handleDropdownSelect}
+        children={dropdownOptions}
+        className={`w-48 overflow-hidden`}
+        position="left"
       />
     </View>
   );

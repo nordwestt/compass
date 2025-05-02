@@ -11,6 +11,7 @@ export interface DropdownElement {
     title: string;
     id: string;
     image?: string;
+    icon?: string;
 }
 
 interface DropdownProps {
@@ -142,6 +143,10 @@ export const Dropdown = ({
               {child.image && (
                 <Image source={{uri: child.image as any}} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
               )}
+              {!child.image && child.icon && (
+                <Ionicons name={child.icon as any} size={24} className="!text-primary mr-3 !h-[24px] !w-[24px]" />
+              )}
+
               <View className="flex-1">
                 <Text className="font-medium text-text truncate" numberOfLines={1}>
                   {child.title}
@@ -164,6 +169,9 @@ export const Dropdown = ({
       >
         {selected?.image && (
           <Image source={selected.image as any} className="!h-[32px] !w-[32px] rounded-full mr-3"/>
+        )}
+        {!selected?.image && selected?.icon && (
+          <Ionicons name={selected.icon as any} size={24} className="!text-primary mr-3 !h-[24px] !w-[24px]" />
         )}
         <Text className="font-medium text-black dark:text-white truncate" numberOfLines={1}>
           {selected?.title}
