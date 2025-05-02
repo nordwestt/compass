@@ -130,6 +130,7 @@ export const ChatThread: React.FC = () => {
       type: 'update',
       payload: { ...currentThread, selectedModel: model, character: undefined }
     });
+
   };
 
   const handleSelectCharacter = (character: Character) => {
@@ -137,6 +138,7 @@ export const ChatThread: React.FC = () => {
       type: 'update',
       payload: { ...currentThread, character: character }
     });
+
   };
 
   const handleMessagePress = (index: number, message: ChatMessage) =>{

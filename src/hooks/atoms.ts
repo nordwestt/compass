@@ -28,6 +28,7 @@ export const createDefaultThread = (name: string = "New thread"): Thread => {
     title: name,
     messages: [],
     selectedModel: {
+      providerId: "",
       id: "",
       name: "",
       provider: {
@@ -443,7 +444,7 @@ export const saveCustomPrompts = atom(
       const threads = await get(threadsAtom);
       const updatedThreads = threads.map((thread) => {
         const updatedCharacter = characters.find(
-          (p) => p.id === thread.character.id,
+          (p) => p.id === thread.character?.id,
         );
 
         // If the character was updated, update the thread
@@ -458,7 +459,7 @@ export const saveCustomPrompts = atom(
       await set(threadsAtom, updatedThreads);
       const currentThread = await get(currentThreadAtom);
       const updatedCurrentCharacter = characters.find(
-        (p) => p.id === currentThread.character.id,
+        (p) => p.id === currentThread.character?.id,
       );
       if (updatedCurrentCharacter) {
         await set(currentThreadAtom, {

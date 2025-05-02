@@ -126,8 +126,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   const handleDropdownSelect = (item: DropdownElement) => {
     if (isDisabled) return;
-    if(modelOptions.find((m) => m.id === item.id)) {
-      onModelSelect(modelOptions.find((m) => m.id === item.id)!);
+    if(models.find((m) => m.id === item.id)) {
+      onModelSelect(models.find((m) => m.id === item.id)!);
     } else if(characters.find((c) => c.id === item.id)) {
       onCharacterSelect(characters.find((c) => c.id === item.id)!);
     }

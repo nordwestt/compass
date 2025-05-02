@@ -25,6 +25,6 @@ export interface ChatContextManager {
   prepareContext(message: string, currentThread: Thread, mentionedCharacters: MentionedCharacter[]): {
     messagesToSend: ChatMessage[];
     assistantPlaceholder: ChatMessage;
-    characterToUse: Character;
+    characterToUse: Character | undefined;
   };
 } 

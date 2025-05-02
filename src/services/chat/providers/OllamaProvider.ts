@@ -24,7 +24,6 @@ export class OllamaProvider implements ChatProvider {
   }
   async *sendMessage(messages: ChatMessage[], model: Model, character?: Character, signal?: AbortSignal): AsyncGenerator<string> {
     const newMessages = [
-      { role: 'system', content: character?.content ?? '' },
       ...messages.map(message => ({ 
         role: message.isUser ? 'user' : message.isSystem ? 'system' : 'assistant', 
         content: message.content 

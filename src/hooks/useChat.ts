@@ -60,6 +60,7 @@ export function useChat() {
       provider,
       thread: currentThread,
       mentionedCharacters,
+      systemPrompt: currentThread.character?.content ?? '',
       context,
       metadata: {
         messages,
@@ -69,16 +70,20 @@ export function useChat() {
         documents: relevantDocuments
       }
     };
+    console.log("initialContext", initialContext);
 
     try {
       const transformedContext = await pipeline.process(initialContext);
 
       transformedContext.context.messagesToSend.push(transformedContext.context.assistantPlaceholder);
+
+      let messages = [...transformedContext.context.historyToSend, ...transformedContext.context.messagesToSend];
+      if(transformedContext.systemPrompt.trim().length > 0){
+        messages.unshift({content: transformedContext.systemPrompt, isUser: false, isSystem: true});
+      }
       
       const response = await provider.sendMessage(
-        transformedContext.context.useMention ? 
-          transformedContext.context.messagesToSend : 
-          [...transformedContext.context.historyToSend, ...transformedContext.context.messagesToSend],
+        messages,
         currentThread.selectedModel,
         context.characterToUse,
         abortController.current.signal

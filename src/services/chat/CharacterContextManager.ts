@@ -1,10 +1,10 @@
 import { MentionedCharacter } from '@/src/components/chat/ChatInput';
 import { ChatContextManager } from '@/src/types/chat';
-import { ChatMessage } from '@/src/types/core';
+import { ChatMessage, Character } from '@/src/types/core';
 import { Thread } from '@/src/types/core';
 
 export class CharacterContextManager implements ChatContextManager {
-  prepareContext(message: string, currentThread: Thread, mentionedCharacters: MentionedCharacter[]) {
+  prepareContext(message: string, currentThread: Thread, mentionedCharacters: MentionedCharacter[]): { messagesToSend: ChatMessage[]; historyToSend: ChatMessage[]; assistantPlaceholder: ChatMessage; useMention: boolean; characterToUse: Character | undefined } {
     const newMessage = { content: message, isUser: true };
     let assistantPlaceholder: ChatMessage = { content: "", isUser: false };
     let messagesToSend: ChatMessage[] = [];
@@ -48,7 +48,7 @@ export class CharacterContextManager implements ChatContextManager {
   }
 
   private buildContextMessage(thread: Thread): string {
-    if (thread.messages.length < 2) {
+    if (thread.messages.length < 2 || !thread.character) {
       return ``;
     }
 

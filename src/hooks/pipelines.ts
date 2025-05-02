@@ -162,7 +162,7 @@ export const documentContextTransform: MessageTransform = {
   name: 'documentContext',
   transform: async (ctx: MessageContext): Promise<MessageContext> => {
     const character = ctx.context.characterToUse;
-    console.log("character",character);
+    if(!character) return ctx;
 
     let documentIds = ctx.thread.metadata?.documentIds ?? [];
     documentIds.push(...character.documentIds ?? []);
@@ -219,7 +219,7 @@ export const templateVariableTransform: MessageTransform = {
     }
     
     // Process template variables in character content
-    let processedContent = character.content;
+    let processedContent = ctx.systemPrompt;
     
     // Replace date/time variables
     const now = new Date();
@@ -262,19 +262,7 @@ export const templateVariableTransform: MessageTransform = {
     // Update the character in the context
     ctx.context.characterToUse = updatedCharacter;
     
-    // If there's a system message that includes the character instructions,
-    // update it with the processed content
-    const systemMessageIndex = ctx.context.messagesToSend.findIndex(
-      msg => msg.isSystem && msg.content.includes(character.content)
-    );
-    
-    if (systemMessageIndex >= 0) {
-      const originalMessage = ctx.context.messagesToSend[systemMessageIndex];
-      ctx.context.messagesToSend[systemMessageIndex] = {
-        ...originalMessage,
-        content: originalMessage.content.replace(character.content, processedContent)
-      };
-    }
+    ctx.systemPrompt = processedContent;
     
     return ctx;
   }
@@ -312,12 +300,13 @@ export interface MessageContext {
   provider: ChatProvider;
   thread: Thread;
   mentionedCharacters: MentionedCharacter[];
+  systemPrompt: string;
   context: {
     messagesToSend: ChatMessage[];
     historyToSend: ChatMessage[];
     assistantPlaceholder: ChatMessage;
     useMention: boolean;
-    characterToUse: Character;
+    characterToUse: Character | undefined;
   };
   metadata: Record<string, any>; // For storing intermediate data between transforms
 }
