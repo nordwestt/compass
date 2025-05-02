@@ -245,7 +245,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         selected={dropdownModel}
         onSelect={handleDropdownSelect}
         children={dropdownOptions}
-        className={`w-48 overflow-hidden`}
+        className={`w-48 overflow-hidden bg-surface`}
         dropdownOptionClassName="w-64"
         position="left"
       />

@@ -143,13 +143,13 @@ export const Settings: React.FC<SettingsProps> = ({
   return (
     <View className={`flex-row gap-2 items-center ${className}`}>
       <Dropdown
-      iconOpen="ellipsis-horizontal"
-      iconClosed="ellipsis-horizontal"
+        iconOpen="ellipsis-horizontal"
+        iconClosed="ellipsis-horizontal"
         showSearch={false}
         selected={null}
         onSelect={handleSettingSelect}
         children={availableSettings}
-        className={`max-w-48 overflow-hidden`}
+        className={`max-w-48 overflow-hidden bg-surface border-none`}
         position="right"
       />
 

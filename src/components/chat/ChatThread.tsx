@@ -222,9 +222,6 @@ export const ChatThread: React.FC = () => {
             />
         <View className="flex-row items-center gap-2">
         
-          
-          
-            
             <Settings thread={currentThread}></Settings>
           
           

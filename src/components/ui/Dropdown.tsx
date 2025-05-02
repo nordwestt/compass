@@ -119,7 +119,7 @@ export const Dropdown = ({
               } hover:bg-surface ${dropdownOptionClassName}`}
             >
               {child.image && (
-                <Image source={{uri: child.image as any}} className={`!h-[48px] !w-[48px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
+                <Image source={{uri: child.image as any}} className={`!h-[24px] !w-[24px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
               )}
               {!child.image && child.icon && (
                 <Ionicons name={child.icon as any} size={24} className="!text-primary mr-3 !h-[24px] !w-[24px]" />
@@ -160,8 +160,8 @@ export const Dropdown = ({
       </TouchableOpacity>
       {isOpen && <View className={`z-200 ${position === "left" ? "" : "right-0"} absolute ${openUpwards ? "bottom-12" : "mt-12"} rounded-lg overflow-hidden max-h-64 bg-background border border-border shadow-lg`}>
       {showSearch && (
-            <View className="p-2 border-b border-border flex-row items-center">
-              <Ionicons name="search-outline" size={24} className="text-text mr-2" />
+            <View className="p-2 border-b border-border flex-row items-center bg-surface m-2 rounded-md">
+              <Ionicons name="search-outline" size={20} className="text-text mr-1" />
               <TextInput
                 ref={searchInputRef}
                 className="px-3 py-2 bg-surface rounded-md text-black dark:text-white flex-1 outline-none"
