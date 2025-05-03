@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
-import { useSetAtom, atom } from 'jotai';
+import { useSetAtom, atom, useAtomValue } from 'jotai';
 import { threadActionsAtom } from './atoms';
-import { createDefaultThread } from './atoms';
+import { defaultThreadAtom } from './atoms';
 import { useRouter } from 'expo-router';
 import { useAtom } from 'jotai';
 import { currentIndexAtom } from './atoms';
@@ -17,7 +17,8 @@ export function useKeyboardShortcuts() {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
   const { toggleColorScheme } = useColorScheme();
-
+  const defaultThread = useAtomValue(defaultThreadAtom);
+  
   useEffect(() => {
     if (Platform.OS !== 'web') return;
 
@@ -33,7 +34,7 @@ export function useKeyboardShortcuts() {
       // Command/Ctrl + N for new chat
       if ((event.metaKey || event.altKey) && event.key === 'n') {
         event.preventDefault();
-        const newThread = createDefaultThread();
+        const newThread = defaultThread;
         await dispatchThread({ type: 'add', payload: newThread });
         setCurrentIndex(0);
         router.replace("/");

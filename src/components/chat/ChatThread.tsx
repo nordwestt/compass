@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { View, ScrollView, Platform, TouchableOpacity, Text, FlatList } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
-import { ModelSelector } from './ModelSelector';
+import { ChatSelection, ModelSelector } from './ModelSelector';
 import { useModels } from '@/src/hooks/useModels';
 import { useChat } from '@/src/hooks/useChat';
 import { CharacterSelector } from '@/src/components/character/CharacterSelector';
@@ -33,7 +33,6 @@ import { useWindowDimensions } from 'react-native';
 import { Settings } from './Settings';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalization } from '@/src/hooks/useLocalization';
-
 
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
@@ -138,7 +137,13 @@ export const ChatThread: React.FC = () => {
       type: 'update',
       payload: { ...currentThread, character: character }
     });
+  };
 
+  const handleChatOptionSelect = (option: ChatSelection) => {
+    dispatchThread({
+      type: 'update',
+      payload: { ...currentThread, selectedModel: option?.type === 'model' ? option.value : undefined, character: option?.type === 'character' ? option.value : undefined }
+    });
   };
 
   const handleMessagePress = (index: number, message: ChatMessage) =>{
@@ -215,8 +220,7 @@ export const ChatThread: React.FC = () => {
       
         <ModelSelector 
               thread={currentThread}
-              onModelSelect={handleSelectModel}
-              onCharacterSelect={handleSelectCharacter}
+              onChatOptionSelect={handleChatOptionSelect}
               character={currentThread.character}
               className=''
             />

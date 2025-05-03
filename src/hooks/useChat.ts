@@ -7,7 +7,7 @@ import { CharacterContextManager } from '@/src/services/chat/CharacterContextMan
 import { StreamHandlerService } from '@/src/services/chat/StreamHandlerService';
 import { ChatProviderFactory } from '@/src/services/chat/ChatProviderFactory';
 import { useSearch } from './useSearch';
-import { Character, ChatMessage, Thread, Document, Model } from '@/src/types/core';
+import { Character, ChatMessage, Thread, Document, Model, Provider } from '@/src/types/core';
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
 import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform, webSearchTransform, threadUpdateTransform, firstMessageTransform, documentContextTransform, templateVariableTransform } from './pipelines';
@@ -48,16 +48,19 @@ export function useChat() {
     currentThread.messages = messages;
     let context = contextManager.prepareContext(message, currentThread, mentionedCharacters);
     
+    if(!currentThread.selectedModel?.provider){
+      throw new Error('No provider found');
+    }
     
 
-    const provider = ChatProviderFactory.getProvider(currentThread.selectedModel.provider);
+    const chatProvider = ChatProviderFactory.getProvider(currentThread.selectedModel?.provider);
 
     let relevantDocuments = documents.filter((doc: Document) => currentThread.character?.documentIds?.includes(doc.id) ?? false);
     relevantDocuments.push(...documents.filter((doc: Document) => currentThread.metadata?.documentIds?.includes(doc.id) ?? []));
 
     const initialContext: MessageContext = {
       message,
-      provider,
+      provider: chatProvider,
       thread: currentThread,
       mentionedCharacters,
       systemPrompt: currentThread.character?.content ?? '',
@@ -82,7 +85,7 @@ export function useChat() {
         messages.unshift({content: transformedContext.systemPrompt, isUser: false, isSystem: true});
       }
       
-      const response = await provider.sendMessage(
+      const response = await chatProvider.sendMessage(
         messages,
         currentThread.selectedModel,
         context.characterToUse,

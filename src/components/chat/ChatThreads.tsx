@@ -1,12 +1,11 @@
 import React, { useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Platform, SectionList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useAtom, useSetAtom } from 'jotai';
-import { threadsAtom, currentThreadAtom, threadActionsAtom, previewCodeAtom } from '@/src/hooks/atoms';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { threadsAtom, currentThreadAtom, threadActionsAtom, previewCodeAtom, defaultThreadAtom } from '@/src/hooks/atoms';
 import { modalService } from '@/src/services/modalService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Thread } from '@/src/types/core';
-import { createDefaultThread } from '@/src/hooks/atoms';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { useLocalization } from '@/src/hooks/useLocalization';
@@ -27,7 +26,7 @@ const ChatThreads: React.FC = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const { t } = useLocalization();
-
+  const defaultThread = useAtomValue(defaultThreadAtom);
 
   const groupThreadsByDate = useCallback((threads: Thread[]): Section[] => {
     const today = new Date();
@@ -60,12 +59,7 @@ const ChatThreads: React.FC = () => {
 
   const addNewThread = async () => {
     const defaultModel = await AsyncStorage.getItem('defaultModel');
-    const newThread = createDefaultThread();
-    newThread.selectedModel = defaultModel ? JSON.parse(defaultModel) : {
-      id: '',
-      provider: { source: 'ollama', endpoint: '', apiKey: '' }
-    };
-
+    const newThread = defaultThread;
     
     dispatchThread({ type: 'add', payload: newThread });
     

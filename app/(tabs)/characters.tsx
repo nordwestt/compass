@@ -2,7 +2,7 @@ import { View, Platform } from "react-native";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  createDefaultThread,
+  defaultThreadAtom,
   currentIndexAtom,
   threadActionsAtom,
   threadsAtom,
@@ -29,7 +29,7 @@ export default function CharactersScreen() {
   const [availableModels] = useAtom(availableModelsAtom);
   const dispatchCharacters = useSetAtom(saveCustomPrompts);
   const [availableDocuments] = useAtom(userDocumentsAtom);
-
+  const defaultThread = useAtomValue(defaultThreadAtom);
   const handleEdit = (character: Character) => {
     if (Platform.OS == "web") {
       if (editingCharacter?.id === character.id) {
@@ -103,7 +103,7 @@ export default function CharactersScreen() {
     }
 
     const defaultModel = await AsyncStorage.getItem("defaultModel");
-    const newThread = createDefaultThread();
+    const newThread = defaultThread;
     newThread.selectedModel = defaultModel
       ? JSON.parse(defaultModel)
       : {

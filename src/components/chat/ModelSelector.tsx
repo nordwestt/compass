@@ -13,7 +13,6 @@ import { getDefaultStore, useAtom, useAtomValue } from "jotai";
 import {
   availableProvidersAtom,
   availableModelsAtom,
-  defaultModelAtom,
   charactersAtom,
   selectedChatDropdownOptionAtom,
 } from "@/src/hooks/atoms";
@@ -34,6 +33,10 @@ import { router } from "expo-router";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
 import { useLocalization } from "@/src/hooks/useLocalization";
 
+export type ChatSelection = 
+  | { type: 'model'; value: Model }
+  | { type: 'character'; value: Character };
+
 // Extend DropdownElement to include a model property
 interface ModelDropdownElement extends DropdownElement {
   model: Model;
@@ -41,23 +44,20 @@ interface ModelDropdownElement extends DropdownElement {
 
 interface ModelSelectorProps {
   thread: Thread;
-  onModelSelect: (model: Model) => void;
-  onCharacterSelect: (character: Character) => void;
   character?: Character;
   className?: string;
+  onChatOptionSelect: (option: ChatSelection) => void;
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({
   thread,
-  onModelSelect,
-  onCharacterSelect,
   character,
+  onChatOptionSelect,
   className,
 }) => {
   const { t } = useLocalization();
   const [providers, setProviders] = useAtom(availableProvidersAtom);
   const characters = useAtomValue(charactersAtom);
-  const [defaultModel, setDefaultModel] = useAtom(defaultModelAtom);
   const [dropdownModel, setDropdownModel] = useState<DropdownElement | null>(
     null,
   );
@@ -137,9 +137,15 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const handleDropdownSelect = (item: DropdownElement) => {
     if (isDisabled) return;
     if(models.find((m) => m.id === item.id)) {
-      onModelSelect(models.find((m) => m.id === item.id)!);
+      onChatOptionSelect({
+        type: 'model',
+        value: models.find((m) => m.id === item.id)!
+      });
     } else if(characters.find((c) => c.id === item.id)) {
-      onCharacterSelect(characters.find((c) => c.id === item.id)!);
+      onChatOptionSelect({
+        type: 'character',
+        value: characters.find((c) => c.id === item.id)!
+      });
     }
     setSelectedDropdownOption(item);
   };

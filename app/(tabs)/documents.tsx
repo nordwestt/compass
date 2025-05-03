@@ -2,8 +2,8 @@ import React from 'react';
 import { Platform, View } from 'react-native';
 import { DocumentManager } from '@/src/components/documents/DocumentManager';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAtom } from 'jotai';
-import { documentsAtom, charactersAtom, currentIndexAtom, createDefaultThread, threadActionsAtom, userDocumentsAtom } from '@/src/hooks/atoms';
+import { useAtom, useAtomValue } from 'jotai';
+import { documentsAtom, charactersAtom, currentIndexAtom, defaultThreadAtom, threadActionsAtom, userDocumentsAtom } from '@/src/hooks/atoms';
 import { Document } from '@/src/types/core';
 import { toastService } from '@/src/services/toastService';
 import { router } from 'expo-router';
@@ -18,7 +18,7 @@ export default function DocumentsRoute() {
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom);
   const [, dispatchThread] = useAtom(threadActionsAtom);
   const [userDocuments, setUserDocuments] = useAtom(userDocumentsAtom);
-
+  const defaultThread = useAtomValue(defaultThreadAtom);
 
   const onDocumentDelete = async (document: Document) => {
 
@@ -104,7 +104,7 @@ export default function DocumentsRoute() {
   const onStartDocumentChat = async (doc: Document) => {
     try {
       // Create new thread with document context
-      const newThread = createDefaultThread(`Chat: ${doc.name}`);
+      const newThread = defaultThread;
       
       // Store document reference in thread metadata
       newThread.metadata = {

@@ -4,12 +4,9 @@ import { DocumentManager } from "@/src/components/documents/DocumentManager";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAtom } from "jotai";
 import {
-  documentsAtom,
   charactersAtom,
   currentIndexAtom,
-  createDefaultThread,
   threadActionsAtom,
-  userDocumentsAtom,
   polarisDocumentsAtom,
 } from "@/src/hooks/atoms";
 import { Document } from "@/src/types/core";

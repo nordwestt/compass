@@ -23,6 +23,8 @@ export const createDefaultThread = (name: string = "New thread"): Thread => {
       ? JSON.parse(localStorage.getItem("customPrompts") || "[]")[0]
       : PREDEFINED_PROMPTS[0];
 
+  
+
   return {
     id: Date.now().toString(),
     title: name,
@@ -42,9 +44,28 @@ export const createDefaultThread = (name: string = "New thread"): Thread => {
   };
 };
 
+export const defaultThreadAtom = atom(async (get)=>{
+  const defaultOption = await get(defaultChatDropdownOptionAtom);
+  const models = await get(availableModelsAtom);
+  const characters = await get(charactersAtom);
+  const defaultModel = models.find((m) => m.id === defaultOption.id);
+  const defaultCharacter = characters.find((c) => c.id === defaultOption.id);
+
+  const characterAllowdModel = defaultCharacter?.allowedModels?.length??0 > 0 ? defaultCharacter?.allowedModels?.[0] : undefined;
+  const characterModel = characterAllowdModel ? models.find((m) => m.id === characterAllowdModel.id) : undefined;
+  const model = characterModel ?? defaultModel;
+
+  return {
+    id: Date.now().toString(),
+    title: "New chat",
+    messages: [],
+    selectedModel: model,
+    character: defaultCharacter
+  } as Thread;
+});
+
 // Core atoms
-export const threadsAtom = atomWithAsyncStorage<Thread[]>("threads", [
-  createDefaultThread(),
+export const threadsAtom = atomWithAsyncStorage<Thread[]>("threads", [  
 ]);
 export const currentThreadAtom = atomWithAsyncStorage<Thread>(
   "currentThread",
@@ -98,7 +119,7 @@ export const threadActionsAtom = atom(
           if (newThreads.length > 0) {
             await set(currentThreadAtom, newThreads[newThreads.length - 1]);
           } else {
-            await set(currentThreadAtom, createDefaultThread());
+            await set(currentThreadAtom, await get(defaultThreadAtom));
           }
         }
 
@@ -289,9 +310,10 @@ export const modalStateAtom = atom<{
   title: "",
   message: "",
 });
-export const defaultModelAtom = atomWithAsyncStorage<Model>(
+
+export const defaultModelAtom = atomWithAsyncStorage<Model | undefined>(
   "defaultModel",
-  createDefaultThread().selectedModel,
+  undefined,
 );
 
 export const selectedChatDropdownOptionAtom = atomWithAsyncStorage<DropdownElement>(
