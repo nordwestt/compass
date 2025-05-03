@@ -26,7 +26,6 @@ export class PolarisProvider implements ChatProvider {
     signal?: AbortSignal,
   ): AsyncGenerator<string> {
     const newMessages = [
-      { role: "system", content: character.content },
       ...messages.map((message) => ({
         role: message.isUser
           ? "user"
