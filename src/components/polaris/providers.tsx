@@ -15,6 +15,7 @@ import {
   availableModelsAtom,
   polarisProvidersAtom,
   polarisModelsAtom,
+  polarisServerAtom,
 } from "@/src/hooks/atoms";
 import { ProviderCard } from "@/src/components/providers/ProviderCard";
 import { EndpointModal } from "@/src/components/providers/EndpointModal";
@@ -29,6 +30,7 @@ import { router } from "expo-router";
 import { getProxyUrl } from "@/src/utils/proxy";
 import ProviderService from "@/src/services/provider/ProviderService";
 import PolarisServer from "@/src/services/polaris/PolarisServer";
+import { MicrosoftAuthModal } from "../providers/MicrosoftAuthModal";
 
 interface ProvidersProps {
   className?: string;
@@ -39,10 +41,12 @@ export default function Providers({ className }: ProvidersProps) {
   const [models, setModels] = useAtom(polarisModelsAtom);
   const [logs, setLogs] = useAtom(logsAtom);
   const [showModal, setShowModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | undefined>(
     undefined,
   );
   const [scanning, setScanning] = useState(false);
+  const [polarisServer, setPolarisServer] = useAtom(polarisServerAtom);
 
   const handleSave = async (provider: Provider) => {
     if (provider.isServerResource) {
@@ -121,6 +125,13 @@ export default function Providers({ className }: ProvidersProps) {
     }
   };
 
+  const handleAuthSuccess = async () => {
+    // Refresh providers and models after successful authentication
+    const providers = await PolarisServer.getProviders();
+    await setProviders(providers);
+    setModels(await PolarisServer.getModels());
+  };
+
   return (
     <View className={`flex-1 ${className}`}>
       <ScrollView className="p-4" contentContainerStyle={{ flexGrow: 0 }}>
@@ -133,16 +144,27 @@ export default function Providers({ className }: ProvidersProps) {
             />
             <Text className="text-2xl font-bold text-primary">Providers</Text>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              setEditingProvider(undefined);
-              setShowModal(true);
-            }}
-            className="bg-primary px-4 py-2 rounded-lg flex-row items-center"
-          >
-            <Ionicons name="add" size={20} color="white" />
-            <Text className="text-white ml-2 font-medium">Add Provider</Text>
-          </TouchableOpacity>
+          <View className="flex-row">
+            {!polarisServer && (
+              <TouchableOpacity
+                onPress={() => setShowAuthModal(true)}
+                className="bg-[#2F2F2F] px-4 py-2 rounded-lg flex-row items-center mr-2"
+              >
+                <Ionicons name="log-in" size={20} color="white" />
+                <Text className="text-white ml-2 font-medium">Connect to Polaris</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                setEditingProvider(undefined);
+                setShowModal(true);
+              }}
+              className="bg-primary px-4 py-2 rounded-lg flex-row items-center"
+            >
+              <Ionicons name="add" size={20} color="white" />
+              <Text className="text-white ml-2 font-medium">Add Provider</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View className="flex-row items-center py-2">
           <Ionicons
@@ -155,6 +177,33 @@ export default function Providers({ className }: ProvidersProps) {
             generation, image generation, search, and more.
           </Text>
         </View>
+
+        {polarisServer && (
+          <View className="flex-row items-center py-2 mb-4 bg-primary/10 rounded-lg p-2">
+            <Ionicons
+              name="checkmark-circle"
+              size={20}
+              className="!text-primary mr-2"
+            />
+            <Text className="text-text flex-1 font-medium">
+              Connected to Polaris at {polarisServer.endpoint}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setPolarisServer(null);
+                setProviders([]);
+                setModels([]);
+                toastService.success({
+                  title: "Disconnected",
+                  description: "Disconnected from Polaris server",
+                });
+              }}
+              className="bg-surface px-3 py-1 rounded-lg"
+            >
+              <Text className="text-danger">Disconnect</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         <View className="md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {providers.map((provider, index) => (
@@ -178,6 +227,12 @@ export default function Providers({ className }: ProvidersProps) {
         }}
         onSave={handleSave}
         initialProvider={editingProvider}
+      />
+      <MicrosoftAuthModal
+        visible={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+        initialEndpoint={polarisServer?.endpoint || "http://localhost:3000"}
       />
     </View>
   );

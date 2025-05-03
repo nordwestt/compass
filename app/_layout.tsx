@@ -24,6 +24,7 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ProxyUrlSync } from "@/src/components/ProxyUrlSync";
 import { localeAtom } from '@/src/hooks/atoms';
+import { setupAuthCallbackListener } from '@/src/utils/authCallback';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -69,6 +70,13 @@ export default function RootLayout() {
   }, [locale])
 
   const hasSeenOnboarding = useAtomValue(hasSeenOnboardingAtom);
+
+  useEffect(() => {
+    // Setup auth callback listener for web platforms
+    if (Platform.isWeb) {
+      setupAuthCallbackListener();
+    }
+  }, []);
 
   if (!loaded) {
     return null;

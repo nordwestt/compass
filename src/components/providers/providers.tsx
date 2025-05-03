@@ -26,6 +26,7 @@ import { toastService } from "@/src/services/toastService";
 import { EditOllama } from "./EditOllama";
 import { router } from "expo-router";
 import { getProxyUrl } from "@/src/utils/proxy";
+import { MicrosoftAuthModal } from "./MicrosoftAuthModal";
 
 interface ProvidersProps {
   className?: string;
@@ -41,6 +42,12 @@ export default function Providers({ className }: ProvidersProps) {
   );
   const [scanning, setScanning] = useState(false);
   const [models, setModels] = useAtom(availableModelsAtom);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const handleAuthSuccess = async () => {
+    // Refresh providers and models after successful authentication
+    alert("Auth success");
+  };
 
   const handleSave = async (provider: Provider) => {
     if (editingProvider) {
@@ -168,6 +175,13 @@ export default function Providers({ className }: ProvidersProps) {
     <View className={`flex-1 ${className}`}>
       <ScrollView className="p-4" contentContainerStyle={{ flexGrow: 0 }}>
         <View className="flex-row justify-between items-center mb-4">
+        <TouchableOpacity
+                onPress={() => setShowAuthModal(true)}
+                className="bg-[#2F2F2F] px-4 py-2 rounded-lg flex-row items-center mr-2"
+              >
+                <Ionicons name="log-in" size={20} color="white" />
+                <Text className="text-white ml-2 font-medium">Connect to Polaris</Text>
+              </TouchableOpacity>
           <View className="flex-row items-center p-4">
             <Ionicons
               name="server"
@@ -247,6 +261,12 @@ export default function Providers({ className }: ProvidersProps) {
         }}
         onSave={handleSave}
         initialProvider={editingProvider}
+      />
+      <MicrosoftAuthModal
+        visible={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+        initialEndpoint={"http://localhost:3000"}
       />
     </View>
   );
