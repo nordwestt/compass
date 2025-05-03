@@ -46,13 +46,15 @@ interface ModelSelectorProps {
   thread: Thread;
   character?: Character;
   className?: string;
-  onChatOptionSelect: (option: ChatSelection) => void;
+  onModelSelect: (model: Model | undefined) => void;
+  onCharacterSelect: (character: Character) => void;
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({
   thread,
   character,
-  onChatOptionSelect,
+  onModelSelect,
+  onCharacterSelect,
   className,
 }) => {
   const { t } = useLocalization();
@@ -66,7 +68,17 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const [modelOptions, setModelOptions] = useState<Model[]>(models);
   const [dropdownOptions, setDropdownOptions] = useState<DropdownElement[]>([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
-  const [selectedDropdownOption, setSelectedDropdownOption] = useAtom(selectedChatDropdownOptionAtom);
+  const [selectedDropdownOption, setSelectedDropdownOption] = useState<DropdownElement>();
+
+
+  const getCharacterModel = (character: Character) => {
+    if(character.allowedModels?.length){ // fetch allowed model from character
+      return models.find((m) => character?.allowedModels?.map(x=>x.id).includes(m.id))
+    }
+    // use first model if no models are available
+    return models.find(x=>true);
+  }
+
   useEffect(() => {
     // Check if character has a required model
 
@@ -92,17 +104,23 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   useEffect(() => {
     // Update dropdown model when selected model changes
-    const model = models.find((m) => m.id === thread.selectedModel?.id);
     const character = characters.find((c) => c.id === thread.character?.id);
     if(character){
+      onCharacterSelect(character);
       setSelectedDropdownOption({
         id: character.id,
         title: character.name,
         image: character.image,
         icon: character.icon
       });
+
+      const model = getCharacterModel(character);
+      if(model){
+        onModelSelect(model);
+      }
     }
     else if (thread.messages.length > 0 && thread.selectedModel) {
+      onModelSelect(thread.selectedModel);
       setSelectedDropdownOption({
         id: thread.selectedModel.id,
         title: thread.selectedModel.name,
@@ -136,18 +154,15 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   const handleDropdownSelect = (item: DropdownElement) => {
     if (isDisabled) return;
+    const character = characters.find((c) => c.id === item.id)
     if(models.find((m) => m.id === item.id)) {
-      onChatOptionSelect({
-        type: 'model',
-        value: models.find((m) => m.id === item.id)!
-      });
-    } else if(characters.find((c) => c.id === item.id)) {
-      onChatOptionSelect({
-        type: 'character',
-        value: characters.find((c) => c.id === item.id)!
-      });
+      onModelSelect(models.find((m) => m.id === item.id)!);
+    } else if(character) {
+      onCharacterSelect(character);
+      onModelSelect(getCharacterModel(character)!);
     }
     setSelectedDropdownOption(item);
+
   };
 
   // function setCurrentModelAsDefault() {

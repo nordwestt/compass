@@ -39,7 +39,7 @@ export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const chatInputRef = useRef<ChatInputRef>(null);
   const [currentThread, setCurrentThread] = useAtom(currentThreadAtom);
-  const threads = useAtomValue(threadsAtom);
+  const [threads] = useAtom(threadsAtom);
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const [providers] = useAtom(availableProvidersAtom);
@@ -64,13 +64,6 @@ export const ChatThread: React.FC = () => {
 
   const { t } = useLocalization();
 
-  useEffect(() => {
-    if(threads.find(t => t.id === currentThread.id) === undefined) {
-      dispatchThread({ type: 'add', payload: currentThread });
-    }
-  }, []);
-
-  
   
   useEffect(() => {
     chatInputRef.current?.focus();
@@ -126,10 +119,10 @@ export const ChatThread: React.FC = () => {
   };
 
 
-  const handleSelectModel = (model: Model) => {
+  const handleSelectModel = (model: Model | undefined) => {
     dispatchThread({
       type: 'update',
-      payload: { ...currentThread, selectedModel: model, character: undefined }
+      payload: { ...currentThread, selectedModel: model }
     });
 
   };
@@ -138,26 +131,6 @@ export const ChatThread: React.FC = () => {
     dispatchThread({
       type: 'update',
       payload: { ...currentThread, character: character }
-    });
-  };
-
-  const handleChatOptionSelect = (option: ChatSelection) => {
-    const character = option?.type === 'character' ? option.value : undefined;
-    let model = undefined;
-    if(character){
-      if(character.allowedModels?.length){ // fetch allowed model from character
-        model = models.find((m) => character?.allowedModels?.map(x=>x.id).includes(m.id))
-      }else{ // use first model if no models are available
-        model = models.find(x=>true);
-      }
-    }
-    else{
-      model = models.find(x=>x.id == option.value.id);
-    }
-    
-    dispatchThread({
-      type: 'update',
-      payload: { ...currentThread, selectedModel: model, character: option?.type === 'character' ? option.value : undefined }
     });
   };
 
@@ -234,8 +207,9 @@ export const ChatThread: React.FC = () => {
       <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
       
         <ModelSelector 
+              onModelSelect={handleSelectModel}
+              onCharacterSelect={handleSelectCharacter}
               thread={currentThread}
-              onChatOptionSelect={handleChatOptionSelect}
               character={currentThread.character}
               className=''
             />

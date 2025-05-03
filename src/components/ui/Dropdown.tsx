@@ -16,7 +16,7 @@ export interface DropdownElement {
 
 interface DropdownProps {
     children: DropdownElement[];
-    selected: DropdownElement | null;
+    selected: DropdownElement | undefined;
     onSelect: (child: DropdownElement) => void;
     showSearch?: boolean;
     className?: string;

@@ -58,7 +58,6 @@ const ChatThreads: React.FC = () => {
   }, []);
 
   const addNewThread = async () => {
-    const defaultModel = await AsyncStorage.getItem('defaultModel');
     const newThread = defaultThread;
     
     dispatchThread({ type: 'add', payload: newThread });
