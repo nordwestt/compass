@@ -105,12 +105,15 @@ export function EndpointModal({
           onChange={(updates) => {
             setFormData(prev => ({ ...prev, ...updates }));
           }}
+          onAuthSuccess={(token) => {
+            handleSave();
+          }}
           initialCapabilityFilter={initialCapabilityFilter}
         />
 
-        {isOllama && initialProvider && false && (
+        {/* {isOllama && initialProvider && false && (
           <EditOllama provider={initialProvider} />
-        )}
+        )} */}
       </ScrollView>
       
       <View className="flex-row space-x-4 mt-6 m-2">

@@ -67,6 +67,17 @@ export const defaultThreadAtom = atom(async (get)=>{
 // Core atoms
 export const threadsAtom = atomWithAsyncStorage<Thread[]>("threads", [  
 ]);
+
+export const polarisAuthTokenAtom = atom<string | undefined>();
+
+export const polarisUserAtom = atomWithAsyncStorage<{
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string;
+} | undefined>("polarisUser", undefined);
+
 export const currentThreadAtom = atomWithAsyncStorage<Thread>(
   "currentThread",
   createDefaultThread("Your first thread"),

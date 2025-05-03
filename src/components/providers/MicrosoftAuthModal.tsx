@@ -15,12 +15,12 @@ import PolarisServer from "@/src/services/polaris/PolarisServer";
 import { toastService } from "@/src/services/toastService";
 import { getProxyUrl } from "@/src/utils/proxy";
 import { Modal } from "../ui/Modal";
-
+import { polarisAuthTokenAtom } from "@/src/hooks/atoms";
 
 interface MicrosoftAuthModalProps {
   visible: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (token: string) => void;
   initialEndpoint?: string;
 }
 
@@ -35,7 +35,7 @@ export function MicrosoftAuthModal({
   const [authUrl, setAuthUrl] = useState("");
   const [showWebView, setShowWebView] = useState(false);
   const [_, setPolarisServerInfo] = useAtom(polarisServerAtom);
-
+  const [polarisAuthToken, setPolarisAuthToken] = useAtom(polarisAuthTokenAtom);
   useEffect(() => {
     if (visible) {
       setPolarisEndpoint(initialEndpoint);
@@ -70,7 +70,7 @@ export function MicrosoftAuthModal({
       description: "Successfully connected using API key",
     });
     
-    onSuccess();
+    onSuccess(polarisApiKey);
     onClose();
   };
 
@@ -128,7 +128,7 @@ export function MicrosoftAuthModal({
           });
           
           setShowWebView(false);
-          onSuccess();
+          onSuccess(token);
           onClose();
         } else {
           toastService.danger({
@@ -155,29 +155,10 @@ export function MicrosoftAuthModal({
             
           if (data.type === "auth-callback" && data.token) {
             console.log("Received token from popup:", data.token);
-            
-            // Connect using the token
-            PolarisServer.connect(polarisEndpoint, data.token).then((success) => {
-              if (success) {
-                setPolarisServerInfo({
-                  endpoint: polarisEndpoint,
-                  apiKey: data.token,
-                });
-                
-                toastService.success({
-                  title: "Connected to Polaris",
-                  description: "Successfully authenticated with Microsoft",
-                });
-                
-                onSuccess();
-                onClose();
-              } else {
-                toastService.danger({
-                  title: "Authentication Failed",
-                  description: "Could not connect with the provided token",
-                });
-              }
-            });
+            setPolarisAuthToken(data.token);
+
+            onSuccess(data.token);
+            onClose();
           }
         } catch (error) {
           console.error("Error processing message:", error);
@@ -194,78 +175,28 @@ export function MicrosoftAuthModal({
   }, [polarisEndpoint, visible]);
 
   return (
-    <Modal
-      isVisible={visible}
-      onClose={onClose}
-    >
-      <View className="flex-1 justify-center items-center">
-        <View className="w-full max-w-md bg-surface p-6 rounded-xl shadow-xl">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-xl font-bold text-text">Connect to Polaris</Text>
-            <TouchableOpacity onPress={onClose}>
-              <Ionicons name="close" size={24} className="text-text" />
+    <View>
+        {!showWebView ? (
+        <>
+            <TouchableOpacity
+                onPress={handleMicrosoftAuth}
+                className="bg-[#2F2F2F] px-4 py-3 rounded-lg flex-row items-center justify-center flex-1 ml-2"
+                disabled={!polarisEndpoint}
+            >
+                <Ionicons name="logo-microsoft" size={18} color="white" />
+                <Text className="text-white ml-2 font-medium">Microsoft Login</Text>
             </TouchableOpacity>
-          </View>
-
-          {!showWebView ? (
-            <>
-              <Text className="text-text mb-4">
-                Connect to your Polaris server using an API key or Microsoft authentication.
-              </Text>
-
-              <Text className="text-text font-medium mb-2">Polaris Endpoint</Text>
-              <TextInput
-                className="border border-border h-[40px] py-2 rounded-lg px-4 bg-surface text-text mb-4"
-                placeholder="http://localhost:3000"
-                value={polarisEndpoint}
-                onChangeText={setPolarisEndpoint}
-                placeholderTextColor="#9CA3AF"
-              />
-
-              <View className="mb-6">
-                <Text className="text-text font-medium mb-2">API Key (Optional)</Text>
-                <TextInput
-                  className="border border-border h-[40px] py-2 rounded-lg px-4 bg-surface text-text"
-                  placeholder="Enter your API key"
-                  value={polarisApiKey}
-                  onChangeText={setPolarisApiKey}
-                  placeholderTextColor="#9CA3AF"
-                  secureTextEntry
-                />
-              </View>
-
-              <View className="flex-row justify-between mb-2">
-                <TouchableOpacity
-                  onPress={handleApiKeyLogin}
-                  className="bg-primary px-4 py-3 rounded-lg flex-row items-center justify-center flex-1 mr-2"
-                  disabled={!polarisEndpoint || !polarisApiKey}
-                >
-                  <Ionicons name="key" size={18} color="white" />
-                  <Text className="text-white ml-2 font-medium">Login with API Key</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={handleMicrosoftAuth}
-                  className="bg-[#2F2F2F] px-4 py-3 rounded-lg flex-row items-center justify-center flex-1 ml-2"
-                  disabled={!polarisEndpoint}
-                >
-                  <Ionicons name="logo-microsoft" size={18} color="white" />
-                  <Text className="text-white ml-2 font-medium">Microsoft Login</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          ) : (
-            <View className="h-[400px] w-full">
-              <WebView
-                source={{ uri: authUrl }}
-                onNavigationStateChange={handleWebViewNavigationStateChange}
-                javaScriptEnabled={true}
-                domStorageEnabled={true}
-              />
-            </View>
-          )}
+        </>
+        ) : (
+        <View className="h-[400px] w-full">
+            <WebView
+            source={{ uri: authUrl }}
+            onNavigationStateChange={handleWebViewNavigationStateChange}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            />
         </View>
-      </View>
-    </Modal>
+        )}
+    </View>
   );
 } 

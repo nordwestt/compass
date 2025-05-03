@@ -21,7 +21,7 @@ import {
   defaultVoiceAtom,
   previewCodeAtom,
   sidebarVisibleAtom,
-  localeAtom,
+  polarisUserAtom,
   availableModelsAtom
 } from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
@@ -47,7 +47,7 @@ export const ChatThread: React.FC = () => {
   const [selectedVoice, setSelectedVoice] = useAtom(defaultVoiceAtom);
   const [models] = useAtom(availableModelsAtom);
   const [sidebarVisible, setSidebarVisible] = useAtom(sidebarVisibleAtom);
-  
+  const [polarisUser] = useAtom(polarisUserAtom);
   const previousThreadId = useRef(currentThread.id);
 
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
@@ -214,6 +214,11 @@ export const ChatThread: React.FC = () => {
               className=''
             />
         <View className="flex-row items-center gap-2">
+          {polarisUser && (
+            <View className="flex-row items-center gap-2">
+              <Text className="text-sm text-text">{polarisUser.firstName}</Text>
+            </View>
+          )}
         
             <Settings thread={currentThread}></Settings>
           
