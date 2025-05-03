@@ -55,10 +55,9 @@ export const relevantPassagesTransform: MessageTransform = {
     transform: async (ctx: MessageContext): Promise<MessageContext> => {
       const { webContent, urls } = ctx.metadata;
       if (!webContent?.length) return ctx;
+      if(!ctx.thread.selectedModel) return ctx;
   
-      console.log("webContent",webContent);
       const messageWithoutUrls = ctx.message.replace(urls.join('|') || '', '');
-      console.log("messageWithoutUrls",messageWithoutUrls);
       const relevantPassages = await searchRelevantPassages(
         messageWithoutUrls,
         webContent.join('\n'),
@@ -130,7 +129,7 @@ export const firstMessageTransform: MessageTransform = {
   name: 'firstMessage',
   transform: async (ctx: MessageContext): Promise<MessageContext> => {
     const isFirstMessage = ctx.thread.messages.length === 0;
-    if (!isFirstMessage) return ctx;
+    if (!isFirstMessage || !ctx.thread.selectedModel) return ctx;
 
     const systemPrompt = `Based on the user message, generate a concise 3-word title that captures the essence of the conversation. Format: "Word1 Word2 Word3" (no quotes, no periods but do include spaces).`;
 
