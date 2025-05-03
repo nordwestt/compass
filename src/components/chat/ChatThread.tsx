@@ -21,7 +21,8 @@ import {
   defaultVoiceAtom,
   previewCodeAtom,
   sidebarVisibleAtom,
-  localeAtom
+  localeAtom,
+  availableModelsAtom
 } from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { FlashList } from '@shopify/flash-list';
@@ -44,6 +45,7 @@ export const ChatThread: React.FC = () => {
   const [providers] = useAtom(availableProvidersAtom);
   const [ttsEnabled, setTtsEnabled] = useAtom(ttsEnabledAtom);
   const [selectedVoice, setSelectedVoice] = useAtom(defaultVoiceAtom);
+  const [models] = useAtom(availableModelsAtom);
   const [sidebarVisible, setSidebarVisible] = useAtom(sidebarVisibleAtom);
   
   const previousThreadId = useRef(currentThread.id);
@@ -140,9 +142,19 @@ export const ChatThread: React.FC = () => {
   };
 
   const handleChatOptionSelect = (option: ChatSelection) => {
+    const character = option?.type === 'character' ? option.value : undefined;
+    let model = undefined;
+    if(character){
+      if(character.allowedModels?.length){ // fetch allowed model from character
+        model = models.find((m) => character?.allowedModels?.map(x=>x.id).includes(m.id))
+      }else{ // use first model if no models are available
+        model = models.find(x=>true);
+      }
+    }
+    
     dispatchThread({
       type: 'update',
-      payload: { ...currentThread, selectedModel: option?.type === 'model' ? option.value : undefined, character: option?.type === 'character' ? option.value : undefined }
+      payload: { ...currentThread, selectedModel: model, character: option?.type === 'character' ? option.value : undefined }
     });
   };
 

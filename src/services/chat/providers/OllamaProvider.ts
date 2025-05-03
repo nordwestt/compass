@@ -180,7 +180,7 @@ export class OllamaProvider implements ChatProvider {
     
     if (!(ollamaData && Array.isArray(ollamaData.models))) return [];
     return ollamaData.models
-      .filter((model: any) => model && typeof model.name === 'string')
+      .filter((model: any) => model && typeof model.name === 'string' && model.details.family != 'bert')
       .map((model: any) => model.name);
   }
 } 
