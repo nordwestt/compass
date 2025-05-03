@@ -24,7 +24,7 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ProxyUrlSync } from "@/src/components/ProxyUrlSync";
 import { localeAtom } from '@/src/hooks/atoms';
-import { setupAuthCallbackListener } from '@/src/utils/authCallback';
+import { setupAuthCallbackListener, checkStoredAuthToken } from '@/src/utils/authCallback';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -75,6 +75,21 @@ export default function RootLayout() {
     // Setup auth callback listener for web platforms
     if (Platform.isWeb) {
       setupAuthCallbackListener();
+      checkStoredAuthToken();
+      
+      // Listen for the custom event
+      const handleAuthEvent = (event: CustomEvent) => {
+        const { token } = event.detail;
+        console.log("Received auth token from event:", token);
+        
+        // Handle the token (you might need to connect to your Polaris server here)
+        // This depends on your app structure
+      };
+      
+      window.addEventListener('polaris-auth', handleAuthEvent as EventListener);
+      return () => {
+        window.removeEventListener('polaris-auth', handleAuthEvent as EventListener);
+      };
     }
   }, []);
 

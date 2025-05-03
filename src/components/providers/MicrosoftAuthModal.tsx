@@ -81,7 +81,12 @@ export function MicrosoftAuthModal({
     }
 
     try {
-      const url = `${polarisEndpoint}/api/auth/microsoft`;
+      // We need to include a redirect_uri parameter to tell the server where to redirect after auth
+      const redirectUri = Platform.OS === "web" 
+        ? `${window.location.origin}/auth-callback` 
+        : "auth-callback"; // For mobile WebView
+        
+      const url = `${polarisEndpoint}/api/auth/microsoft?redirect_uri=${encodeURIComponent(redirectUri)}`;
       setAuthUrl(url);
       
       if (Platform.OS === "web") {
@@ -140,42 +145,51 @@ export function MicrosoftAuthModal({
   useEffect(() => {
     if (Platform.OS === "web" && visible) {
       const handleMessage = (event: MessageEvent) => {
-        // Verify origin for security
-        if (event.origin === new URL(polarisEndpoint).origin) {
-          try {
-            const data = JSON.parse(event.data);
-            if (data.type === "auth-callback" && data.token) {
-              // Connect using the token
-              PolarisServer.connect(polarisEndpoint, data.token).then((success) => {
-                if (success) {
-                  setPolarisServerInfo({
-                    endpoint: polarisEndpoint,
-                    apiKey: data.token,
-                  });
-                  
-                  toastService.success({
-                    title: "Connected to Polaris",
-                    description: "Successfully authenticated with Microsoft",
-                  });
-                  
-                  onSuccess();
-                  onClose();
-                } else {
-                  toastService.danger({
-                    title: "Authentication Failed",
-                    description: "Could not connect with the provided token",
-                  });
-                }
-              });
-            }
-          } catch (error) {
-            console.error("Error processing message:", error);
+        console.log("Received message:", event.data);
+        
+        try {
+          // Try to parse the data if it's a string
+          const data = typeof event.data === 'string' 
+            ? JSON.parse(event.data) 
+            : event.data;
+            
+          if (data.type === "auth-callback" && data.token) {
+            console.log("Received token from popup:", data.token);
+            
+            // Connect using the token
+            PolarisServer.connect(polarisEndpoint, data.token).then((success) => {
+              if (success) {
+                setPolarisServerInfo({
+                  endpoint: polarisEndpoint,
+                  apiKey: data.token,
+                });
+                
+                toastService.success({
+                  title: "Connected to Polaris",
+                  description: "Successfully authenticated with Microsoft",
+                });
+                
+                onSuccess();
+                onClose();
+              } else {
+                toastService.danger({
+                  title: "Authentication Failed",
+                  description: "Could not connect with the provided token",
+                });
+              }
+            });
           }
+        } catch (error) {
+          console.error("Error processing message:", error);
         }
       };
 
+      console.log("Adding message event listener");
       window.addEventListener("message", handleMessage);
-      return () => window.removeEventListener("message", handleMessage);
+      return () => {
+        console.log("Removing message event listener");
+        window.removeEventListener("message", handleMessage);
+      };
     }
   }, [polarisEndpoint, visible]);
 
