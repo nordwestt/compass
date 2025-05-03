@@ -104,7 +104,7 @@ export default function DocumentsRoute() {
   const onStartDocumentChat = async (doc: Document) => {
     try {
       // Create new thread with document context
-      const newThread = defaultThread;
+      const newThread = {...defaultThread, id: Date.now().toString()};
       
       // Store document reference in thread metadata
       newThread.metadata = {

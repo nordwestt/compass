@@ -103,7 +103,7 @@ export default function CharactersScreen() {
     }
 
     const defaultModel = await AsyncStorage.getItem("defaultModel");
-    const newThread = defaultThread;
+    const newThread = {...defaultThread, id: Date.now().toString()};
     newThread.selectedModel = defaultModel
       ? JSON.parse(defaultModel)
       : {

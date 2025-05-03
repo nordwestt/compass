@@ -34,7 +34,7 @@ export function useKeyboardShortcuts() {
       // Command/Ctrl + N for new chat
       if ((event.metaKey || event.altKey) && event.key === 'n') {
         event.preventDefault();
-        const newThread = defaultThread;
+        const newThread = {...defaultThread, id: Date.now().toString()};
         await dispatchThread({ type: 'add', payload: newThread });
         setCurrentIndex(0);
         router.replace("/");

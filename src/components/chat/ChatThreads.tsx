@@ -58,7 +58,7 @@ const ChatThreads: React.FC = () => {
   }, []);
 
   const addNewThread = async () => {
-    const newThread = defaultThread;
+    const newThread = {...defaultThread, id: Date.now().toString()};
     
     dispatchThread({ type: 'add', payload: newThread });
     
