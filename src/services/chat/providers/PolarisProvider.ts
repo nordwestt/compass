@@ -136,7 +136,7 @@ export class PolarisProvider implements ChatProvider {
 
   async getAvailableModels(): Promise<string[]> {
     const response = await fetch(
-      await getProxyUrl(`${this.provider.endpoint}/api/chat/characters`),
+      await getProxyUrl(`${this.provider.endpoint}/api/chat/models`),
       {
         headers: {
           Accept: "application/json",
@@ -149,8 +149,8 @@ export class PolarisProvider implements ChatProvider {
     if (!(data && Array.isArray(data))) return [];
     return data
       .filter(
-        (character: any) => character && typeof character.name === "string",
+        (model: any) => model && typeof model.name === "string",
       )
-      .map((character: any) => character.name);
+      .map((model: any) => model.name);
   }
 }
