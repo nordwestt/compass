@@ -108,7 +108,7 @@ export function EndpointModal({
           initialCapabilityFilter={initialCapabilityFilter}
         />
 
-        {isOllama && initialProvider && (
+        {isOllama && initialProvider && false && (
           <EditOllama provider={initialProvider} />
         )}
       </ScrollView>

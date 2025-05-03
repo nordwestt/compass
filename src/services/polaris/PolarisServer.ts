@@ -26,9 +26,12 @@ export class PolarisServer {
       this.serverUrl = serverUrl;
       this.apiKey = apiKey;
 
-      // Validate connection
-      const response = await this.makeRequest("/api/admin/validate", "GET");
-      this.isConnected = response.success;
+      try {
+        const response = await this.makeRequest("/api/admin/documents", "GET");
+        this.isConnected = true;
+      } catch (error) {
+        this.isConnected = false;
+      }
 
       return this.isConnected;
     } catch (error) {
