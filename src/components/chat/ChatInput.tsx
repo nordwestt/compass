@@ -95,7 +95,28 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
       onSend(message.trim(), mentionedCharacters);
       setMentionedCharacters([]);
       setIsEditing(false);
+      
+      // Clear the message and reset input height
       handleChangeText('');
+      
+      // Force blur and then focus to reset cursor position
+      if (inputRef.current) {
+        inputRef.current?.blur();
+        
+        // Small delay to ensure state updates have processed
+        setTimeout(() => {
+          inputRef.current?.focus();
+          
+          // For web, we can try to directly manipulate the DOM element
+          if (Platform.OS === 'web' && inputRef.current) {
+            const inputElement = inputRef.current as any;
+            if (inputElement._inputElement) {
+              inputElement._inputElement.selectionStart = 0;
+              inputElement._inputElement.selectionEnd = 0;
+            }
+          }
+        }, 50);
+      }
     }
   };
 

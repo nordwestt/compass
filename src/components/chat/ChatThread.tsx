@@ -151,6 +151,9 @@ export const ChatThread: React.FC = () => {
         model = models.find(x=>true);
       }
     }
+    else{
+      model = models.find(x=>x.id == option.value.id);
+    }
     
     dispatchThread({
       type: 'update',
