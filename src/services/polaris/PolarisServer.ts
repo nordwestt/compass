@@ -663,6 +663,27 @@ export class PolarisServer {
     return [];
   }
 
+  async getCharacterDailyStatistics(startDate?:Date, endDate?:Date) : Promise<CharacterDailyUsageDto[]> {
+    try {
+      const params = this.formatDateParams(startDate, endDate);
+      const response = await this.makeRequest(`/api/admin/statistics/character-daily-usage${params?`?${params}`:""}`, "GET");
+      return response.characterDailyUsage;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+    }
+    return [];
+  }
+
   // ===== HELPER METHODS =====
 
   private formatDateParams(startDate?: Date, endDate?: Date): string {
@@ -736,6 +757,14 @@ export class PolarisServer {
 // Export a singleton instance
 export default new PolarisServer();
 
+export interface CharacterDailyUsageDto {
+  date: string;           // Format: 'YYYY-MM-DD'
+  characterName: string;
+  requestCount: number;
+  totalTokens: number;
+  promptTokens: number;
+  completionTokens: number;
+}
 
 interface StatisticsReponse {
   statistics: StatisticEntity[]

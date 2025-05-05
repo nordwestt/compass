@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
 import { polarisServerAtom } from "@/src/hooks/atoms";
-import PolarisServer, { StatisticEntity } from "@/src/services/polaris/PolarisServer";
+import PolarisServer, { CharacterDailyUsageDto, StatisticEntity } from "@/src/services/polaris/PolarisServer";
 import { toastService } from "@/src/services/toastService";
 import { LineChart, BarChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
@@ -59,7 +59,7 @@ const groupByModel = (statistics: StatisticEntity[]) => {
 };
 
 // Helper function to group statistics by character
-const groupByCharacter = (statistics: StatisticEntity[]) => {
+const groupByCharacter = (statistics: CharacterDailyUsageDto[]) => {
   const grouped = statistics.reduce((acc, stat) => {
     if (!acc[stat.characterName]) {
       acc[stat.characterName] = {
@@ -79,7 +79,7 @@ export default function Statistics() {
   const { t } = useLocalization();
   const [polarisServerInfo] = useAtom(polarisServerAtom);
   const [statistics, setStatistics] = useState<StatisticEntity[]>([]);
-  const [characterStatistics, setCharacterStatistics] = useState<StatisticEntity[]>([]);
+  const [characterStatistics, setCharacterStatistics] = useState<CharacterDailyUsageDto[]>([]);
   const [startDate, setStartDate] = useState<Date>(() => {
     const date = new Date();
     date.setDate(date.getDate() - 30); // Default to last 30 days
@@ -103,7 +103,7 @@ export default function Statistics() {
     try {
       setIsLoading(true);
       const stats = await PolarisServer.getStatistics(startDate, endDate);
-      const charStats = await PolarisServer.getCharacterStatistics(startDate, endDate);
+      const charStats = await PolarisServer.getCharacterDailyStatistics(startDate, endDate);
       
       setStatistics(stats || []);
       setCharacterStatistics(charStats || []);
@@ -375,13 +375,13 @@ export default function Statistics() {
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
         <Text className="text-text font-bold mb-4">Top Characters by Token Usage</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView className="rounded-lg" horizontal showsHorizontalScrollIndicator={false}>
           <BarChart
             data={data}
             width={Math.max(screenWidth, data.labels.length * 60)}
             height={220}
             chartConfig={chartConfig}
-            style={{ borderRadius: 16 }}
+            style={{ borderRadius: 16, }}
             fromZero
             showValuesOnTopOfBars
           />
