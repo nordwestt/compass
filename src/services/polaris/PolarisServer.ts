@@ -621,7 +621,63 @@ export class PolarisServer {
     return null;
   }
 
+  async getStatistics(startDate?: Date, endDate?: Date) : Promise<StatisticEntity[]> {
+    try {
+      const params = this.formatDateParams(startDate, endDate);
+      const response = await this.makeRequest(`/api/admin/statistics${params?`?${params}`:""}`, "GET");
+      return response.statistics;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+    }
+    return [];
+  }
+
+  async getCharacterStatistics(startDate?: Date, endDate?: Date) : Promise<StatisticEntity[]> {
+    try {
+      const params = this.formatDateParams(startDate, endDate);
+      const response = await this.makeRequest(`/api/admin/statistics/character-usage${params?`?${params}`:""}`, "GET");
+      return response.statistics;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+    }
+    return [];
+  }
+
   // ===== HELPER METHODS =====
+
+  private formatDateParams(startDate?: Date, endDate?: Date): string {
+    const params = new URLSearchParams();
+    
+    if (startDate) {
+      params.append('startDate', startDate.toISOString());
+    }
+    
+    if (endDate) {
+      params.append('endDate', endDate.toISOString());
+    }
+    
+    return params.toString();
+  };
 
   /**
    * Make a request to the server
@@ -679,3 +735,32 @@ export class PolarisServer {
 
 // Export a singleton instance
 export default new PolarisServer();
+
+
+interface StatisticsReponse {
+  statistics: StatisticEntity[]
+}
+
+export interface StatisticEntity {
+  id: string;
+
+  userId: string;
+
+  characterName: string;
+
+  modelId: string;
+
+  providerId: string;
+
+  providerName: string;
+
+  promptTokens: number;
+
+  completionTokens: number;
+
+  totalTokens: number;
+
+  duration: number; // in milliseconds
+
+  timestamp: Date;
+} 
