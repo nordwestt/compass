@@ -384,6 +384,8 @@ export default function Statistics() {
             style={{ borderRadius: 16, }}
             fromZero
             showValuesOnTopOfBars
+            yAxisLabel="Tokens"
+            yAxisSuffix=" tokens"
           />
         </ScrollView>
       </View>
@@ -413,6 +415,8 @@ export default function Statistics() {
             style={{ borderRadius: 16 }}
             fromZero
             showValuesOnTopOfBars
+            yAxisLabel="Tokens"
+            yAxisSuffix=" tokens"
           />
         </ScrollView>
       </View>
