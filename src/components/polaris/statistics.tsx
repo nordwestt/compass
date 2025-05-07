@@ -87,6 +87,12 @@ const getMockModelDistribution = () => {
   ];
 };
 
+const getMockCharacterDistribution = () => {
+  return [
+    { name: 'GPT-4', tokens: 1250000, color: '#FF6384' },
+  ];
+};
+
 const getMockUserEngagement = () => {
   return {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -126,7 +132,7 @@ export default function Statistics() {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [activeTab, setActiveTab] = useState<'usage' | 'models' | 'users' | 'performance'>('usage');
+  const [activeTab, setActiveTab] = useState<'usage' | 'models' | 'characters' | 'users' | 'performance'>('usage');
   const [isLoading, setIsLoading] = useState(false);
   
   const screenWidth = Dimensions.get("window").width - 40; // Adjust for padding
@@ -290,17 +296,24 @@ export default function Statistics() {
       className="mb-4"
     >
       <TouchableOpacity 
-        onPress={() => setActiveTab('usage')}
-        className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'usage' ? 'bg-primary' : 'bg-surface'}`}
+        onPress={() => setActiveTab('characters')}
+        className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'characters' ? 'bg-primary' : 'bg-surface'}`}
       >
-        <Text className={activeTab === 'usage' ? 'text-white' : 'text-text'}>Token Usage</Text>
+        <Text className={activeTab === 'characters' ? 'text-white' : 'text-text'}>Character Distribution</Text>
       </TouchableOpacity>
-      
+
       <TouchableOpacity 
         onPress={() => setActiveTab('models')}
         className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'models' ? 'bg-primary' : 'bg-surface'}`}
       >
         <Text className={activeTab === 'models' ? 'text-white' : 'text-text'}>Model Distribution</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        onPress={() => setActiveTab('usage')}
+        className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'usage' ? 'bg-primary' : 'bg-surface'}`}
+      >
+        <Text className={activeTab === 'usage' ? 'text-white' : 'text-text'}>Token Usage</Text>
       </TouchableOpacity>
       
       <TouchableOpacity 
@@ -447,6 +460,54 @@ export default function Statistics() {
               <View className="flex-row items-center">
                 <Text className="text-secondary mr-2">{model.tokens.toLocaleString()} tokens</Text>
                 <Text className="text-primary">({((model.tokens / totalTokens) * 100).toFixed(1)}%)</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  };
+
+  const renderCharacterDistributionChart = () => {
+    const characterData = getMockCharacterDistribution();
+    
+    // Calculate percentages for the pie chart
+    const totalTokens = characterData.reduce((sum, character) => sum + character.tokens, 0);
+    const chartData = characterData.map(character => ({
+      name: character.name,
+      population: character.tokens,
+      color: character.color,
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    }));
+    
+    return (
+      <View className="bg-surface p-4 rounded-lg mb-6">
+        <Text className="text-text font-bold mb-4">Character Distribution by Token Usage</Text>
+        <View className="items-center">
+          <PieChart
+            data={chartData}
+            width={screenWidth}
+            height={220}
+            chartConfig={chartConfig}
+            accessor="population"
+            backgroundColor="transparent"
+            paddingLeft="15"
+            absolute={false}
+          />
+        </View>
+        
+        <View className="mt-6">
+          <Text className="text-text font-bold mb-2">Character Usage Breakdown</Text>
+          {characterData.map((character, index) => (
+            <View key={index} className="flex-row justify-between items-center mb-2 p-2 bg-background/30 rounded-lg">
+              <View className="flex-row items-center">
+                <View style={{ width: 12, height: 12, backgroundColor: character.color, borderRadius: 6, marginRight: 8 }} />
+                <Text className="text-text">{character.name}</Text>
+              </View>
+              <View className="flex-row items-center">
+                <Text className="text-secondary mr-2">{character.tokens.toLocaleString()} tokens</Text>
+                <Text className="text-primary">({((character.tokens / totalTokens) * 100).toFixed(1)}%)</Text>
               </View>
             </View>
           ))}
@@ -612,6 +673,7 @@ export default function Statistics() {
           <>
             {activeTab === 'usage' && renderUsageChart()}
             {activeTab === 'models' && renderModelDistributionChart()}
+            {activeTab === 'characters' && renderCharacterDistributionChart()}
             {activeTab === 'users' && renderUserEngagementChart()}
             {activeTab === 'performance' && renderPerformanceMetricsChart()}
           </>
