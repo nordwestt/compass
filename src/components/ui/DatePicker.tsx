@@ -144,7 +144,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                 tempDate.getMonth() === date.getMonth() && 
                 tempDate.getFullYear() === date.getFullYear()
                   ? 'bg-primary rounded-full'
-                  : ''
+                  : 'hover:bg-gray-200 rounded-full'
               }`}
               disabled={!date || isDateDisabled(date)}
             >
@@ -156,7 +156,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                     tempDate.getFullYear() === date.getFullYear()
                       ? 'text-white font-bold'
                       : isDateDisabled(date)
-                        ? 'text-secondary/50'
+                        ? 'opacity-50'
                         : 'text-text'
                   }`}
                 >
