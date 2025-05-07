@@ -9,6 +9,7 @@ import { toastService } from "@/src/services/toastService";
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useLocalization } from "@/src/hooks/useLocalization";
+import DatePicker from "@/src/components/ui/DatePicker";
 
 // Helper function to format dates
 const formatDate = (date: Date): string => {
@@ -253,41 +254,23 @@ export default function Statistics() {
     <View className="flex-row justify-between items-center mb-4 bg-surface p-4 rounded-lg">
       <View className="flex-row items-center">
         <Text className="text-text mr-2">From:</Text>
-        <TouchableOpacity 
-          onPress={() => setShowStartDatePicker(true)}
-          className="bg-primary/10 px-3 py-2 rounded-lg"
-        >
-          <Text className="text-primary">{formatDate(startDate)}</Text>
-        </TouchableOpacity>
-        {showStartDatePicker && (
-          <DateTimePicker
-            value={startDate}
-            mode="date"
-            display="default"
-            onChange={handleStartDateChange}
-            maximumDate={endDate}
-          />
-        )}
+        <DatePicker
+          value={startDate}
+          onChange={setStartDate}
+          maximumDate={endDate}
+          className="min-w-[120px]"
+        />
       </View>
       
       <View className="flex-row items-center">
         <Text className="text-text mr-2">To:</Text>
-        <TouchableOpacity 
-          onPress={() => setShowEndDatePicker(true)}
-          className="bg-primary/10 px-3 py-2 rounded-lg"
-        >
-          <Text className="text-primary">{formatDate(endDate)}</Text>
-        </TouchableOpacity>
-        {showEndDatePicker && (
-          <DateTimePicker
-            value={endDate}
-            mode="date"
-            display="default"
-            onChange={handleEndDateChange}
-            minimumDate={startDate}
-            maximumDate={new Date()}
-          />
-        )}
+        <DatePicker
+          value={endDate}
+          onChange={setEndDate}
+          minimumDate={startDate}
+          maximumDate={new Date()}
+          className="min-w-[120px]"
+        />
       </View>
       
       <TouchableOpacity 
