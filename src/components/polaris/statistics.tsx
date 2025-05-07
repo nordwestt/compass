@@ -545,20 +545,22 @@ export default function Statistics() {
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
         <Text className="text-text font-bold mb-4">Average Response Time by Model (seconds)</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-lg">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-xl">
           <BarChart
             data={performanceData}
-            width={Math.max(screenWidth, performanceData.labels.length * 60)}
+            width={Math.max(1000, performanceData.labels.length * 60)}
             height={220}
             chartConfig={{
               ...chartConfig,
               color: (opacity = 1) => `rgba(50, 205, 50, ${opacity})`,
-              
+              style:{
+                borderRadius: 16               
+              },
             }}
-            style={{ borderRadius: 16 }}
+            
             fromZero
             showValuesOnTopOfBars
-            yAxisLabel="Response Time (s)"
+            yAxisLabel=""
             yAxisSuffix="s"
           />
         </ScrollView>
