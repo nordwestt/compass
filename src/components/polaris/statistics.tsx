@@ -347,17 +347,20 @@ export default function Statistics() {
       label: item.label,
       dataPointText: item.completionTokens.toString(),
     }));
+
+    const barData = data.map(item=>({
+      value: item.totalTokens
+    }));
     
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
-        <Text className="text-text font-bold mb-4">Token Usage Over Time</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-lg">
+        <Text className="text-primary font-bold mb-4 ms-auto">Token Usage Over Time</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-lg flex-1">
           <LineChart
             data={totalTokensData}
             data2={promptTokensData}
             data3={completionTokensData}
             height={220}
-            width={Math.max(screenWidth, data.length * 50)}
             spacing={40}
             initialSpacing={20}
             color1="#8441f4"
@@ -371,6 +374,7 @@ export default function Statistics() {
             endFillColor2="rgba(65, 105, 225, 0.0)"
             endFillColor3="rgba(50, 205, 50, 0.0)"
             curved
+            areaChart
             hideDataPoints
             xAxisColor="gray"
             yAxisColor="gray"
