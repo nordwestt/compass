@@ -4040,6 +4040,11 @@ gh-pages@^6.3.0:
     fs-extra "^11.1.1"
     globby "^11.1.0"
 
+gifted-charts-core@0.1.63:
+  version "0.1.63"
+  resolved "https://registry.yarnpkg.com/gifted-charts-core/-/gifted-charts-core-0.1.63.tgz#c552bd6f5a007c6b7559a96e2f16b3f3251e87c5"
+  integrity sha512-e5sJwI2RIcdnJ4p4ozUHfpbVUXyHn2CJj2h8BpmeugjgF7k7KvL0QI22M4pVQIIIRei3exjEhv8HwXaFtAx/dA==
+
 glob-parent@^5.1.2, glob-parent@~5.1.2:
   version "5.1.2"
   resolved "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz"
@@ -6025,6 +6030,13 @@ react-native-gesture-handler@~2.20.2:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-gifted-charts@^1.4.61:
+  version "1.4.61"
+  resolved "https://registry.yarnpkg.com/react-native-gifted-charts/-/react-native-gifted-charts-1.4.61.tgz#ada268c336e273fd40ca9c60ac5757bb2d25835e"
+  integrity sha512-UCNZDntpvqJV0x8iBhx9fMTjFLUb3PI3V77Wni10HFJgMwM6SA3Xg/VpkRmIGT4r4PRWGcsFTInyR3eu8XYuTQ==
+  dependencies:
+    gifted-charts-core "0.1.63"
 
 react-native-helmet-async@2.0.4:
   version "2.0.4"
