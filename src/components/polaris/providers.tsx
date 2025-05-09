@@ -48,20 +48,11 @@ export default function Providers({ className }: ProvidersProps) {
   const [scanning, setScanning] = useState(false);
   const [polarisServer, setPolarisServer] = useAtom(polarisServerAtom);
 
-  const handleSave = async (provider: Provider) => {
-    if (provider.isServerResource) {
-      // Update existing server provider
-      await PolarisServer.updateProvider(provider);
-    } else {
-      // Create new server provider
-      await PolarisServer.createProvider(provider);
-    }
-
+  const loadProvidersAndModels = async () =>{
     const providers = await PolarisServer.getProviders();
     await setProviders(providers);
 
     let models = await PolarisServer.getModels();
-    console.log(providers);
     models.forEach((x) => {
       const provider = providers.find((y) => y.id == x.providerId);
       if (provider) {
@@ -75,6 +66,18 @@ export default function Providers({ className }: ProvidersProps) {
       }
     });
     setModels(models);
+  }
+
+  const handleSave = async (provider: Provider) => {
+    if (provider.isServerResource) {
+      // Update existing server provider
+      await PolarisServer.updateProvider(provider);
+    } else {
+      // Create new server provider
+      await PolarisServer.createProvider(provider);
+    }
+
+    await loadProvidersAndModels();
 
     setEditingProvider(undefined);
     setShowModal(false);
@@ -99,8 +102,7 @@ export default function Providers({ className }: ProvidersProps) {
         description: `Failed to delete provider: ${provider.name}`,
       });
     }
-    await setProviders(await PolarisServer.getProviders());
-    setModels(await PolarisServer.getModels());
+    await loadProvidersAndModels();
   };
 
   const handleEdit = (provider: Provider) => {
@@ -112,7 +114,7 @@ export default function Providers({ className }: ProvidersProps) {
   const handleRefresh = async (provider: Provider) => {
     const res = await PolarisServer.syncAllModels();
     if (res) {
-      setModels(await PolarisServer.getModels());
+      await loadProvidersAndModels();
       toastService.success({
         title: "Success",
         description: "Providers and models refreshed successfully",
@@ -127,9 +129,7 @@ export default function Providers({ className }: ProvidersProps) {
 
   const handleAuthSuccess = async () => {
     // Refresh providers and models after successful authentication
-    const providers = await PolarisServer.getProviders();
-    await setProviders(providers);
-    setModels(await PolarisServer.getModels());
+    await loadProvidersAndModels();
   };
 
   return (

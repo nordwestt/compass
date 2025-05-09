@@ -81,6 +81,7 @@ export default function AdminCharactersPanel({}: AdminCharactersPanelProps) {
     <View className={`flex-1 bg-background flex-row`}>
       <CharactersList
         characters={characters}
+        setCharacters={setCharacters}
         onCharacterPress={handleEdit}
         onAddCharacter={handleAdd}
         title="Characters"

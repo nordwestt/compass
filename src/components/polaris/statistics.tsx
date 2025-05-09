@@ -7,7 +7,6 @@ import { polarisServerAtom } from "@/src/hooks/atoms";
 import PolarisServer, { CharacterDailyUsageDto, StatisticEntity } from "@/src/services/polaris/PolarisServer";
 import { toastService } from "@/src/services/toastService";
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { useLocalization } from "@/src/hooks/useLocalization";
 import DatePicker from "@/src/components/ui/DatePicker";
 
@@ -149,7 +148,7 @@ export default function Statistics() {
       setIsLoading(true);
       const stats = await PolarisServer.getStatistics(startDate, endDate);
       const charStats = await PolarisServer.getCharacterDailyStatistics(startDate, endDate);
-      
+      console.log("Character statists",charStats);
       setStatistics(stats || []);
       setCharacterStatistics(charStats || []);
     } catch (error) {
@@ -469,7 +468,25 @@ export default function Statistics() {
   };
 
   const renderCharacterDistributionChart = () => {
-    const characterData = getMockCharacterDistribution();
+
+    
+
+    // group by characterName and sum the totalTokens
+    const groupedData = characterStatistics.reduce((acc: { [key: string]: number }, character) => {
+      acc[character.characterName] = (acc[character.characterName] || 0) + character.totalTokens;
+      return acc;
+    }, {});
+
+    // convert groupedData to an array of objects
+    const characterData = Object.entries(groupedData).map(([characterName, totalTokens]) => ({
+      name: characterName,
+      tokens: totalTokens,
+      color: `hsl(${Math.abs(characterName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
+    }));
+    
+    console.log("Character stats",characterData);
+
+    //const characterData = getMockCharacterDistribution();
     
     // Calculate percentages for the pie chart
     const totalTokens = characterData.reduce((sum, character) => sum + character.tokens, 0);
