@@ -757,7 +757,7 @@ export class PolarisServer {
 // Export a singleton instance
 export default new PolarisServer();
 
-export interface CharacterDailyUsageDto {
+export interface DailyUsageDto {
   date: string;           // Format: 'YYYY-MM-DD'
   characterName: string;
   modelId: string;

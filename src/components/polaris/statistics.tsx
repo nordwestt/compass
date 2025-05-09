@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
 import { polarisServerAtom } from "@/src/hooks/atoms";
-import PolarisServer, { CharacterDailyUsageDto, StatisticEntity } from "@/src/services/polaris/PolarisServer";
+import PolarisServer, { DailyUsageDto, StatisticEntity } from "@/src/services/polaris/PolarisServer";
 import { toastService } from "@/src/services/toastService";
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
 import { useLocalization } from "@/src/hooks/useLocalization";
@@ -58,7 +58,7 @@ const groupByModel = (statistics: StatisticEntity[]) => {
 };
 
 // Helper function to group statistics by character
-const groupByCharacter = (statistics: CharacterDailyUsageDto[]) => {
+const groupByCharacter = (statistics: DailyUsageDto[]) => {
   const grouped = statistics.reduce((acc, stat) => {
     if (!acc[stat.characterName]) {
       acc[stat.characterName] = {
@@ -122,16 +122,13 @@ export default function Statistics() {
   const { t } = useLocalization();
   const [polarisServerInfo] = useAtom(polarisServerAtom);
   const [statistics, setStatistics] = useState<StatisticEntity[]>([]);
-  const [characterStatistics, setCharacterStatistics] = useState<CharacterDailyUsageDto[]>([]);
-  const [dailyStatistics, setDailyStatistics] = useState<CharacterDailyUsageDto[]>([]);
+  const [dailyStatistics, setDailyStatistics] = useState<DailyUsageDto[]>([]);
   const [startDate, setStartDate] = useState<Date>(() => {
     const date = new Date();
     date.setDate(date.getDate() - 30); // Default to last 30 days
     return date;
   });
   const [endDate, setEndDate] = useState<Date>(new Date());
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [activeTab, setActiveTab] = useState<'usage' | 'models' | 'characters' | 'users' | 'performance'>('usage');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -151,7 +148,7 @@ export default function Statistics() {
       const charStats = await PolarisServer.getCharacterDailyStatistics(startDate, endDate);
       console.log("Character statists",charStats);
       setStatistics(stats || []);
-      setCharacterStatistics(charStats || []);
+      setDailyStatistics(charStats || []);
     } catch (error) {
       toastService.danger({
         title: "Error",
@@ -159,20 +156,6 @@ export default function Statistics() {
       });
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleStartDateChange = (event: any, selectedDate?: Date) => {
-    setShowStartDatePicker(false);
-    if (selectedDate) {
-      setStartDate(selectedDate);
-    }
-  };
-
-  const handleEndDateChange = (event: any, selectedDate?: Date) => {
-    setShowEndDatePicker(false);
-    if (selectedDate) {
-      setEndDate(selectedDate);
     }
   };
 
@@ -205,42 +188,39 @@ export default function Statistics() {
   };
 
   // Prepare data for character usage chart
-  const prepareCharacterChartData = () => {
-    const groupedData = groupByCharacter(characterStatistics);
-    const characters = Object.keys(groupedData).sort((a, b) => 
-      groupedData[b].totalTokens - groupedData[a].totalTokens
-    ).slice(0, 10); // Top 10 characters
+  const prepareCharacterData = () => {
+    // group by characterName and sum the totalTokens
+    const groupedData = dailyStatistics.reduce((acc: { [key: string]: number }, character) => {
+      acc[character.characterName] = (acc[character.characterName] || 0) + character.totalTokens;
+      return acc;
+    }, {});
+
+    // convert groupedData to an array of objects
+    const characterData = Object.entries(groupedData).map(([characterName, totalTokens]) => ({
+      name: characterName,
+      tokens: totalTokens,
+      color: `hsl(${Math.abs(characterName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
+    }));
     
-    return {
-      labels: characters.map(name => name.length > 10 ? name.substring(0, 10) + '...' : name),
-      datasets: [
-        {
-          data: characters.map(char => groupedData[char].totalTokens),
-          color: (opacity = 1) => `rgba(50, 205, 50, ${opacity})`,
-        }
-      ]
-    };
+    return characterData;
   };
 
   // Prepare data for model usage chart
-  const prepareModelChartData = () => {
-    const groupedData = groupByModel(statistics);
-    const models = Object.keys(groupedData).sort((a, b) => 
-      groupedData[b].totalTokens - groupedData[a].totalTokens
-    ).slice(0, 10); // Top 10 models
+  const prepareModelData = () => {
+    // group by characterName and sum the totalTokens
+    const groupedData = dailyStatistics.reduce((acc: { [key: string]: number }, character) => {
+      acc[character.modelId] = (acc[character.modelId] || 0) + character.totalTokens;
+      return acc;
+    }, {});
+
+    // convert groupedData to an array of objects
+    const modelData = Object.entries(groupedData).map(([modelId, totalTokens]) => ({
+      name: modelId,
+      tokens: totalTokens,
+      color: `hsl(${Math.abs(modelId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
+    }));
     
-    return {
-      labels: models.map(id => {
-        const shortId = id.split('/').pop() || id;
-        return shortId.length > 10 ? shortId.substring(0, 10) + '...' : shortId;
-      }),
-      datasets: [
-        {
-          data: models.map(model => groupedData[model].totalTokens),
-          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
-        }
-      ]
-    };
+    return modelData;
   };
 
   const chartConfig = {
@@ -422,18 +402,7 @@ export default function Statistics() {
 
   const renderModelDistributionChart = () => {
 
-    // group by characterName and sum the totalTokens
-    const groupedData = characterStatistics.reduce((acc: { [key: string]: number }, character) => {
-      acc[character.modelId] = (acc[character.modelId] || 0) + character.totalTokens;
-      return acc;
-    }, {});
-
-    // convert groupedData to an array of objects
-    const modelData = Object.entries(groupedData).map(([modelId, totalTokens]) => ({
-      name: modelId,
-      tokens: totalTokens,
-      color: `hsl(${Math.abs(modelId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
-    }));
+    const modelData = prepareModelData();
     
     // Calculate percentages for the pie chart
     const totalTokens = modelData.reduce((sum, model) => sum + model.tokens, 0);
@@ -482,19 +451,8 @@ export default function Statistics() {
 
   const renderCharacterDistributionChart = () => {
 
-    // group by characterName and sum the totalTokens
-    const groupedData = characterStatistics.reduce((acc: { [key: string]: number }, character) => {
-      acc[character.characterName] = (acc[character.characterName] || 0) + character.totalTokens;
-      return acc;
-    }, {});
+    const characterData = prepareCharacterData();
 
-    // convert groupedData to an array of objects
-    const characterData = Object.entries(groupedData).map(([characterName, totalTokens]) => ({
-      name: characterName,
-      tokens: totalTokens,
-      color: `hsl(${Math.abs(characterName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
-    }));
-    
     // Calculate percentages for the pie chart
     const totalTokens = characterData.reduce((sum, character) => sum + character.tokens, 0);
     const chartData = characterData.map(character => ({
