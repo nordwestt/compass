@@ -10,7 +10,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { TabBarIcon } from "@/src/components/navigation/TabBarIcon";
 import AdminCharactersPanel from "@/src/components/polaris/characters";
-import { Character } from "@/src/types/core";
 import Documents from "@/src/components/polaris/documents";
 import Providers from "@/src/components/polaris/providers";
 import PolarisServer from "@/src/services/polaris/PolarisServer";
@@ -22,11 +21,7 @@ import {
   polarisServerAtom,
 } from "@/src/hooks/atoms";
 import { useAtom, useAtomValue } from "jotai";
-import CharacterService from "@/src/services/character/CharacterService";
-import ProviderService from "@/src/services/provider/ProviderService";
-import { DocumentService } from "@/src/services/document/DocumentService";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { toastService } from "@/src/services/toastService";
 import Statistics from "@/src/components/polaris/statistics";
 
@@ -105,6 +100,7 @@ export default function PolarisSettingScreen() {
             value={polarisEndpoint}
             placeholderTextColor="#9CA3AF"
             textAlignVertical="top"
+            onSubmitEditing={onPolarisLogin}
           />
           <TextInput
             className="mt-2 border border-border flex-1 h-[40px] py-2 rounded-lg px-4 bg-surface text-text"
@@ -114,6 +110,7 @@ export default function PolarisSettingScreen() {
             placeholderTextColor="#9CA3AF"
             textAlignVertical="top"
             secureTextEntry
+            onSubmitEditing={onPolarisLogin}
           />
           <TouchableOpacity
             className="flex-row items-center gap-2 bg-primary hover:opacity-80 rounded-lg p-4 border border-border mt-2"
