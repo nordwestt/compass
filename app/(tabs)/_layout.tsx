@@ -33,10 +33,10 @@ export const routes = [
 
 export default function TabLayout() {
   const isDesktop = Platform.OS === 'web' && window.innerWidth >= 768;
-  const { colorScheme } = useColorScheme();
   const layout = useWindowDimensions();
   const [index, setIndex] = useAtom(currentIndexAtom);
 
+  const { colorScheme } = useColorScheme();
   const { themePreset } = useThemePreset();
   let theme = {} as any;
   if(!rawThemes[themePreset]){

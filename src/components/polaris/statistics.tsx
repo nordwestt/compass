@@ -6,9 +6,12 @@ import { useAtom } from "jotai";
 import { polarisServerAtom } from "@/src/hooks/atoms";
 import PolarisServer, { DailyUsageDto, StatisticEntity } from "@/src/services/polaris/PolarisServer";
 import { toastService } from "@/src/services/toastService";
-import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
+import { BarChart, LineChart, PieChart } from "react-native-gifted-charts";
 import { useLocalization } from "@/src/hooks/useLocalization";
 import DatePicker from "@/src/components/ui/DatePicker";
+import { rawThemes } from "@/constants/themes";
+import { useColorScheme } from "nativewind";
+import { useThemePreset } from "../ui/ThemeProvider";
 
 // Helper function to format dates
 const formatDate = (date: Date): string => {
@@ -118,6 +121,16 @@ export default function Statistics() {
   const screenWidth = Dimensions.get("window").width - 40; // Adjust for padding
   const isWideScreen = screenWidth > 768;
 
+  const { colorScheme } = useColorScheme();
+  const { themePreset } = useThemePreset();
+  let theme = {} as any;
+  if(!rawThemes[themePreset]){
+    theme = rawThemes['default'][colorScheme ?? 'light'];
+  }
+  else{
+    theme = rawThemes[themePreset][colorScheme ?? 'light'];
+  }
+
   useEffect(() => {
     if (polarisServerInfo) {
       fetchStatistics();
@@ -147,27 +160,12 @@ export default function Statistics() {
     const groupedData = groupByDate(statistics);
     const dates = Object.keys(groupedData).sort();
     
-    return {
-      labels: dates.map(date => date.substring(5)), // Show only MM-DD
-      datasets: [
-        {
-          data: dates.map(date => groupedData[date].totalTokens),
-          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
-          strokeWidth: 2
-        },
-        {
-          data: dates.map(date => groupedData[date].promptTokens),
-          color: (opacity = 1) => `rgba(65, 105, 225, ${opacity})`,
-          strokeWidth: 2
-        },
-        {
-          data: dates.map(date => groupedData[date].completionTokens),
-          color: (opacity = 1) => `rgba(50, 205, 50, ${opacity})`,
-          strokeWidth: 2
-        }
-      ],
-      legend: ["Total Tokens", "Prompt Tokens", "Completion Tokens"]
-    };
+    return dates.map(date => ({
+      label: date.substring(5), // Show only MM-DD
+      totalTokens: groupedData[date].totalTokens,
+      promptTokens: groupedData[date].promptTokens,
+      completionTokens: groupedData[date].completionTokens,
+    }));
   };
 
   // Prepare data for character usage chart
@@ -179,13 +177,11 @@ export default function Statistics() {
     }, {});
 
     // convert groupedData to an array of objects
-    const characterData = Object.entries(groupedData).map(([characterName, totalTokens]) => ({
-      name: characterName,
-      tokens: totalTokens,
+    return Object.entries(groupedData).map(([characterName, totalTokens]) => ({
+      value: totalTokens,
+      label: characterName,
       color: `hsl(${Math.abs(characterName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
     }));
-    
-    return characterData;
   };
 
   // Prepare data for model usage chart
@@ -197,13 +193,11 @@ export default function Statistics() {
     }, {});
 
     // convert groupedData to an array of objects
-    const modelData = Object.entries(groupedData).map(([modelId, totalTokens]) => ({
-      name: modelId,
-      tokens: totalTokens,
+    return Object.entries(groupedData).map(([modelId, totalTokens]) => ({
+      value: totalTokens,
+      label: modelId,
       color: `hsl(${Math.abs(modelId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
     }));
-    
-    return modelData;
   };
 
   const chartConfig = {
@@ -335,52 +329,81 @@ export default function Statistics() {
 
     const data = prepareUsageChartData();
     
+    // Create line data for each token type
+    const totalTokensData = data.map(item => ({
+      value: item.totalTokens,
+      label: item.label,
+      dataPointText: item.totalTokens.toString(),
+    }));
+    
+    const promptTokensData = data.map(item => ({
+      value: item.promptTokens,
+      label: item.label,
+      dataPointText: item.promptTokens.toString(),
+    }));
+    
+    const completionTokensData = data.map(item => ({
+      value: item.completionTokens,
+      label: item.label,
+      dataPointText: item.completionTokens.toString(),
+    }));
+    
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
         <Text className="text-text font-bold mb-4">Token Usage Over Time</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-lg">
           <LineChart
-            data={data}
-            width={Math.max(screenWidth, data.labels.length * 50)} // Ensure enough width for all labels
+            data={totalTokensData}
+            data2={promptTokensData}
+            data3={completionTokensData}
             height={220}
-            chartConfig={chartConfig}
-            bezier
-            fromZero
+            width={Math.max(screenWidth, data.length * 50)}
+            spacing={40}
+            initialSpacing={20}
+            color1="#8441f4"
+            color2="#4169e1"
+            color3="#32cd32"
+            thickness={2}
+            startFillColor1="rgba(134, 65, 244, 0.2)"
+            startFillColor2="rgba(65, 105, 225, 0.2)"
+            startFillColor3="rgba(50, 205, 50, 0.2)"
+            endFillColor1="rgba(134, 65, 244, 0.0)"
+            endFillColor2="rgba(65, 105, 225, 0.0)"
+            endFillColor3="rgba(50, 205, 50, 0.0)"
+            curved
+            hideDataPoints
+            xAxisColor="gray"
+            yAxisColor="gray"
+            yAxisTextStyle={{ color: "gray" }}
+            xAxisLabelTextStyle={{ color: "gray", textAlign: 'center' }}
+            hideOrigin
+            animateOnDataChange
+            animationDuration={1000}
           />
         </ScrollView>
         <View className="flex-row justify-center mt-4">
-          {data.legend.map((label, index) => (
-            <View key={label} className="flex-row items-center mr-4">
-              <View 
-                style={{ 
-                  width: 12, 
-                  height: 12, 
-                  backgroundColor: data.datasets[index].color(1),
-                  borderRadius: 6,
-                  marginRight: 4
-                }} 
-              />
-              <Text className="text-secondary text-xs">{label}</Text>
-            </View>
-          ))}
+          <View className="flex-row items-center mr-4">
+            <View style={{ width: 12, height: 12, backgroundColor: "#8441f4", borderRadius: 6, marginRight: 4 }} />
+            <Text className="text-secondary text-xs">Total Tokens</Text>
+          </View>
+          <View className="flex-row items-center mr-4">
+            <View style={{ width: 12, height: 12, backgroundColor: "#4169e1", borderRadius: 6, marginRight: 4 }} />
+            <Text className="text-secondary text-xs">Prompt Tokens</Text>
+          </View>
+          <View className="flex-row items-center">
+            <View style={{ width: 12, height: 12, backgroundColor: "#32cd32", borderRadius: 6, marginRight: 4 }} />
+            <Text className="text-secondary text-xs">Completion Tokens</Text>
+          </View>
         </View>
       </View>
     );
   };
 
   const renderCharacterDistributionChart = () => {
-
     const characterData = prepareCharacterData();
-
-    // Calculate percentages for the pie chart
-    const totalTokens = characterData.reduce((sum, character) => sum + character.tokens, 0);
-    const chartData = characterData.map(character => ({
-      name: character.name,
-      population: character.tokens,
-      color: character.color,
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 12
-    }));
+    
+    // Calculate total tokens for percentage calculation
+    const totalTokens = characterData.reduce((sum, character) => sum + character.value, 0);
     
     return (
       <View className="bg-surface p-4 rounded-lg mb-6 flex-1 overflow-hidden">
@@ -388,51 +411,48 @@ export default function Statistics() {
           <Ionicons name="people" size={24} className="!text-primary" />
           <Text className="text-primary font-bold">Character Usage</Text>
         </View>
-        <View className="items-center">
+        <View className="items-center flex-row justify-around mt-4">
           <PieChart
-            data={chartData}
-            width={screenWidth*0.5}
-            height={220}
-            chartConfig={chartConfig}
-            accessor="population"
-            backgroundColor="transparent"
-            paddingLeft="15"
-            absolute={false}
+            data={characterData}
+            donut
+            showGradient
+            sectionAutoFocus
+            radius={90}
+            innerRadius={60}
+            innerCircleColor={theme.primary}
+            centerLabelComponent={() => (
+              <Text className="text-white text-center font-bold">
+                {characterData.length} Characters
+              </Text>
+            )}
           />
+          <View className="">
+            <Text className="text-text font-bold mb-2">Character Usage Breakdown</Text>
+            {characterData.map((character, index) => (
+              <View key={index} className="flex-row justify-between items-center mb-2 p-2 bg-background/30 rounded-lg">
+                <View className="flex-row items-center">
+                  <View style={{ width: 12, height: 12, backgroundColor: character.color, borderRadius: 6, marginRight: 8 }} />
+                  <Text className="text-text">{character.label}</Text>
+                </View>
+                <View className="flex-row items-center">
+                  <Text className="text-secondary mr-2">{character.value.toLocaleString()} tokens</Text>
+                  <Text className="text-primary">({((character.value / totalTokens) * 100).toFixed(1)}%)</Text>
+                </View>
+              </View>
+            ))}
+        </View>
         </View>
         
-        <View className="mt-6">
-          <Text className="text-text font-bold mb-2">Character Usage Breakdown</Text>
-          {characterData.map((character, index) => (
-            <View key={index} className="flex-row justify-between items-center mb-2 p-2 bg-background/30 rounded-lg">
-              <View className="flex-row items-center">
-                <View style={{ width: 12, height: 12, backgroundColor: character.color, borderRadius: 6, marginRight: 8 }} />
-                <Text className="text-text">{character.name}</Text>
-              </View>
-              <View className="flex-row items-center">
-                <Text className="text-secondary mr-2">{character.tokens.toLocaleString()} tokens</Text>
-                <Text className="text-primary">({((character.tokens / totalTokens) * 100).toFixed(1)}%)</Text>
-              </View>
-            </View>
-          ))}
-        </View>
+        
       </View>
     );
   };
 
   const renderModelDistributionChart = () => {
-
     const modelData = prepareModelData();
     
-    // Calculate percentages for the pie chart
-    const totalTokens = modelData.reduce((sum, model) => sum + model.tokens, 0);
-    const chartData = modelData.map(model => ({
-      name: model.name,
-      population: model.tokens,
-      color: model.color,
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 12
-    }));
+    // Calculate total tokens for percentage calculation
+    const totalTokens = modelData.reduce((sum, model) => sum + model.value, 0);
     
     return (
       <View className="bg-surface p-4 rounded-lg mb-6 flex-1 overflow-hidden">
@@ -440,42 +460,54 @@ export default function Statistics() {
           <Ionicons name="bar-chart" size={24} className="!text-primary" />
           <Text className="text-primary font-bold">Model Usage</Text>
         </View>
-        <View className="items-center">
+        <View className="items-center flex-row justify-around mt-4">
           <PieChart
-            data={chartData}
-            width={screenWidth*0.5}
-            height={220}
-            chartConfig={chartConfig}
-            accessor="population"
-            backgroundColor="transparent"
-            paddingLeft="15"
-            absolute={false}
+            data={modelData}
+            donut
+            showGradient
+            sectionAutoFocus
+            radius={90}
+            innerRadius={60}
+            innerCircleColor={theme.primary}
+            centerLabelComponent={() => (
+              <Text className="text-white text-center font-bold">
+                {modelData.length} Models
+              </Text>
+            )}
           />
-        </View>
-        
-        <View className="mt-6">
+          <View className="">
           <Text className="text-text font-bold mb-2">Model Usage Breakdown</Text>
           {modelData.map((model, index) => (
             <View key={index} className="flex-row justify-between items-center mb-2 p-2 bg-background/30 rounded-lg">
               <View className="flex-row items-center">
                 <View style={{ width: 12, height: 12, backgroundColor: model.color, borderRadius: 6, marginRight: 8 }} />
-                <Text className="text-text">{model.name}</Text>
+                <Text className="text-text">{model.label}</Text>
               </View>
               <View className="flex-row items-center">
-                <Text className="text-secondary mr-2">{model.tokens.toLocaleString()} tokens</Text>
-                <Text className="text-primary">({((model.tokens / totalTokens) * 100).toFixed(1)}%)</Text>
+                <Text className="text-secondary mr-2">{model.value.toLocaleString()} tokens</Text>
+                <Text className="text-primary">({((model.value / totalTokens) * 100).toFixed(1)}%)</Text>
               </View>
             </View>
           ))}
         </View>
+        </View>
+        
+        
       </View>
     );
   };
 
-  
-
   const renderUserEngagementChart = () => {
-    const userData = getMockUserEngagement();
+    // Mock data for user engagement
+    const userData = [
+      { value: 120, label: 'Mon', dataPointText: '120' },
+      { value: 145, label: 'Tue', dataPointText: '145' },
+      { value: 132, label: 'Wed', dataPointText: '132' },
+      { value: 158, label: 'Thu', dataPointText: '158' },
+      { value: 142, label: 'Fri', dataPointText: '142' },
+      { value: 85, label: 'Sat', dataPointText: '85' },
+      { value: 78, label: 'Sun', dataPointText: '78' },
+    ];
     
     // Additional mock data for user metrics
     const userMetrics = {
@@ -491,11 +523,22 @@ export default function Statistics() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <LineChart
             data={userData}
-            width={Math.max(screenWidth, userData.labels.length * 50)}
             height={220}
-            chartConfig={chartConfig}
-            bezier
-            style={{ borderRadius: 16 }}
+            width={Math.max(screenWidth, userData.length * 60)}
+            spacing={40}
+            initialSpacing={20}
+            color="#8441f4"
+            thickness={2}
+            startFillColor="rgba(134, 65, 244, 0.2)"
+            endFillColor="rgba(134, 65, 244, 0.0)"
+            curved
+            xAxisColor="gray"
+            yAxisColor="gray"
+            yAxisTextStyle={{ color: "gray" }}
+            xAxisLabelTextStyle={{ color: "gray", textAlign: 'center' }}
+            hideOrigin
+            animateOnDataChange
+            animationDuration={1000}
           />
         </ScrollView>
         
@@ -525,7 +568,14 @@ export default function Statistics() {
   };
 
   const renderPerformanceMetricsChart = () => {
-    const performanceData = getMockPerformanceMetrics();
+    // Mock data for performance metrics
+    const performanceData = [
+      { value: 2.1, label: 'GPT-4', frontColor: '#32cd32' },
+      { value: 1.8, label: 'Claude 3', frontColor: '#32cd32' },
+      { value: 3.2, label: 'Llama 3', frontColor: '#32cd32' },
+      { value: 2.7, label: 'Mistral', frontColor: '#32cd32' },
+      { value: 1.5, label: 'GPT-3.5', frontColor: '#32cd32' },
+    ];
     
     // Additional mock data for performance metrics
     const errorRates = {
@@ -550,20 +600,27 @@ export default function Statistics() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-xl">
           <BarChart
             data={performanceData}
-            width={Math.max(1000, performanceData.labels.length * 60)}
+            width={Math.max(screenWidth, performanceData.length * 80)}
             height={220}
-            chartConfig={{
-              ...chartConfig,
-              color: (opacity = 1) => `rgba(50, 205, 50, ${opacity})`,
-              style:{
-                borderRadius: 16               
-              },
-            }}
-            
-            fromZero
-            showValuesOnTopOfBars
-            yAxisLabel=""
-            yAxisSuffix="s"
+            barWidth={40}
+            spacing={20}
+            initialSpacing={20}
+            barBorderRadius={4}
+            showGradient
+            xAxisColor="gray"
+            yAxisColor="gray"
+            yAxisTextStyle={{ color: "gray" }}
+            xAxisLabelTextStyle={{ color: "gray", textAlign: 'center' }}
+            hideOrigin
+            animationDuration={1000}
+            yAxisLabelTexts={['0s', '1s', '2s', '3s', '4s']}
+            maxValue={4}
+            noOfSections={4}
+            renderTooltip={(item: any, index: any) => (
+              <View className="bg-primary p-2 rounded-lg">
+                <Text className="text-white">{item.value}s</Text>
+              </View>
+            )}
           />
         </ScrollView>
         
@@ -594,8 +651,8 @@ export default function Statistics() {
               
               <View>
                 <Text className="text-secondary mb-2">Response Time (s)</Text>
-                {performanceData.datasets[0].data.map((time, index) => (
-                  <Text key={index} className="text-text py-2">{time.toFixed(1)}s</Text>
+                {performanceData.map((item, index) => (
+                  <Text key={index} className="text-text py-2">{item.value.toFixed(1)}s</Text>
                 ))}
               </View>
             </View>
