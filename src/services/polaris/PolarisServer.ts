@@ -666,7 +666,7 @@ export class PolarisServer {
   async getCharacterDailyStatistics(startDate?:Date, endDate?:Date) : Promise<CharacterDailyUsageDto[]> {
     try {
       const params = this.formatDateParams(startDate, endDate);
-      const response = await this.makeRequest(`/api/admin/statistics/character-daily-usage${params?`?${params}`:""}`, "GET");
+      const response = await this.makeRequest(`/api/admin/statistics/characters/daily${params?`?${params}`:""}`, "GET");
       return response.characterDailyUsage;
     } catch (error) {
       if (error instanceof Error) {
@@ -760,6 +760,7 @@ export default new PolarisServer();
 export interface CharacterDailyUsageDto {
   date: string;           // Format: 'YYYY-MM-DD'
   characterName: string;
+  modelId: string;
   requestCount: number;
   totalTokens: number;
   promptTokens: number;

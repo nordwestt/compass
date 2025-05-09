@@ -123,6 +123,7 @@ export default function Statistics() {
   const [polarisServerInfo] = useAtom(polarisServerAtom);
   const [statistics, setStatistics] = useState<StatisticEntity[]>([]);
   const [characterStatistics, setCharacterStatistics] = useState<CharacterDailyUsageDto[]>([]);
+  const [dailyStatistics, setDailyStatistics] = useState<CharacterDailyUsageDto[]>([]);
   const [startDate, setStartDate] = useState<Date>(() => {
     const date = new Date();
     date.setDate(date.getDate() - 30); // Default to last 30 days
@@ -420,7 +421,19 @@ export default function Statistics() {
   };
 
   const renderModelDistributionChart = () => {
-    const modelData = getMockModelDistribution();
+
+    // group by characterName and sum the totalTokens
+    const groupedData = characterStatistics.reduce((acc: { [key: string]: number }, character) => {
+      acc[character.modelId] = (acc[character.modelId] || 0) + character.totalTokens;
+      return acc;
+    }, {});
+
+    // convert groupedData to an array of objects
+    const modelData = Object.entries(groupedData).map(([modelId, totalTokens]) => ({
+      name: modelId,
+      tokens: totalTokens,
+      color: `hsl(${Math.abs(modelId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
+    }));
     
     // Calculate percentages for the pie chart
     const totalTokens = modelData.reduce((sum, model) => sum + model.tokens, 0);
@@ -469,8 +482,6 @@ export default function Statistics() {
 
   const renderCharacterDistributionChart = () => {
 
-    
-
     // group by characterName and sum the totalTokens
     const groupedData = characterStatistics.reduce((acc: { [key: string]: number }, character) => {
       acc[character.characterName] = (acc[character.characterName] || 0) + character.totalTokens;
@@ -483,10 +494,6 @@ export default function Statistics() {
       tokens: totalTokens,
       color: `hsl(${Math.abs(characterName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
     }));
-    
-    console.log("Character stats",characterData);
-
-    //const characterData = getMockCharacterDistribution();
     
     // Calculate percentages for the pie chart
     const totalTokens = characterData.reduce((sum, character) => sum + character.tokens, 0);
