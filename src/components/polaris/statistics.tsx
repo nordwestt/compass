@@ -74,23 +74,6 @@ const groupByCharacter = (statistics: DailyUsageDto[]) => {
   return grouped;
 };
 
-// Mock data functions
-const getMockModelDistribution = () => {
-  return [
-    { name: 'GPT-4', tokens: 1250000, color: '#FF6384' },
-    { name: 'Claude 3', tokens: 980000, color: '#36A2EB' },
-    { name: 'Llama 3', tokens: 750000, color: '#FFCE56' },
-    { name: 'Mistral', tokens: 420000, color: '#4BC0C0' },
-    { name: 'GPT-3.5', tokens: 350000, color: '#9966FF' },
-    { name: 'Other', tokens: 180000, color: '#C9CBCF' },
-  ];
-};
-
-const getMockCharacterDistribution = () => {
-  return [
-    { name: 'GPT-4', tokens: 1250000, color: '#FF6384' },
-  ];
-};
 
 const getMockUserEngagement = () => {
   return {
@@ -276,24 +259,10 @@ export default function Statistics() {
       className="mb-4"
     >
       <TouchableOpacity 
-        onPress={() => setActiveTab('characters')}
-        className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'characters' ? 'bg-primary' : 'bg-surface'}`}
-      >
-        <Text className={activeTab === 'characters' ? 'text-white' : 'text-text'}>Character Distribution</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity 
-        onPress={() => setActiveTab('models')}
-        className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'models' ? 'bg-primary' : 'bg-surface'}`}
-      >
-        <Text className={activeTab === 'models' ? 'text-white' : 'text-text'}>Model Distribution</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity 
         onPress={() => setActiveTab('usage')}
         className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'usage' ? 'bg-primary' : 'bg-surface'}`}
       >
-        <Text className={activeTab === 'usage' ? 'text-white' : 'text-text'}>Token Usage</Text>
+        <Text className={activeTab === 'usage' ? 'text-white' : 'text-text'}>Usage</Text>
       </TouchableOpacity>
       
       <TouchableOpacity 
@@ -369,14 +338,13 @@ export default function Statistics() {
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
         <Text className="text-text font-bold mb-4">Token Usage Over Time</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-lg">
           <LineChart
             data={data}
             width={Math.max(screenWidth, data.labels.length * 50)} // Ensure enough width for all labels
             height={220}
             chartConfig={chartConfig}
             bezier
-            style={{ borderRadius: 16 }}
             fromZero
           />
         </ScrollView>
@@ -400,6 +368,58 @@ export default function Statistics() {
     );
   };
 
+  const renderCharacterDistributionChart = () => {
+
+    const characterData = prepareCharacterData();
+
+    // Calculate percentages for the pie chart
+    const totalTokens = characterData.reduce((sum, character) => sum + character.tokens, 0);
+    const chartData = characterData.map(character => ({
+      name: character.name,
+      population: character.tokens,
+      color: character.color,
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    }));
+    
+    return (
+      <View className="bg-surface p-4 rounded-lg mb-6 flex-1 overflow-hidden">
+        <View className="flex flex-row gap-4 items-center">
+          <Ionicons name="people" size={24} className="!text-primary" />
+          <Text className="text-primary font-bold">Character Usage</Text>
+        </View>
+        <View className="items-center">
+          <PieChart
+            data={chartData}
+            width={screenWidth*0.5}
+            height={220}
+            chartConfig={chartConfig}
+            accessor="population"
+            backgroundColor="transparent"
+            paddingLeft="15"
+            absolute={false}
+          />
+        </View>
+        
+        <View className="mt-6">
+          <Text className="text-text font-bold mb-2">Character Usage Breakdown</Text>
+          {characterData.map((character, index) => (
+            <View key={index} className="flex-row justify-between items-center mb-2 p-2 bg-background/30 rounded-lg">
+              <View className="flex-row items-center">
+                <View style={{ width: 12, height: 12, backgroundColor: character.color, borderRadius: 6, marginRight: 8 }} />
+                <Text className="text-text">{character.name}</Text>
+              </View>
+              <View className="flex-row items-center">
+                <Text className="text-secondary mr-2">{character.tokens.toLocaleString()} tokens</Text>
+                <Text className="text-primary">({((character.tokens / totalTokens) * 100).toFixed(1)}%)</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  };
+
   const renderModelDistributionChart = () => {
 
     const modelData = prepareModelData();
@@ -415,12 +435,15 @@ export default function Statistics() {
     }));
     
     return (
-      <View className="bg-surface p-4 rounded-lg mb-6">
-        <Text className="text-text font-bold mb-4">Model Distribution by Token Usage</Text>
+      <View className="bg-surface p-4 rounded-lg mb-6 flex-1 overflow-hidden">
+        <View className="flex flex-row gap-4 items-center">
+          <Ionicons name="bar-chart" size={24} className="!text-primary" />
+          <Text className="text-primary font-bold">Model Usage</Text>
+        </View>
         <View className="items-center">
           <PieChart
             data={chartData}
-            width={screenWidth}
+            width={screenWidth*0.5}
             height={220}
             chartConfig={chartConfig}
             accessor="population"
@@ -449,54 +472,7 @@ export default function Statistics() {
     );
   };
 
-  const renderCharacterDistributionChart = () => {
-
-    const characterData = prepareCharacterData();
-
-    // Calculate percentages for the pie chart
-    const totalTokens = characterData.reduce((sum, character) => sum + character.tokens, 0);
-    const chartData = characterData.map(character => ({
-      name: character.name,
-      population: character.tokens,
-      color: character.color,
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 12
-    }));
-    
-    return (
-      <View className="bg-surface p-4 rounded-lg mb-6">
-        <Text className="text-text font-bold mb-4">Character Distribution by Token Usage</Text>
-        <View className="items-center">
-          <PieChart
-            data={chartData}
-            width={screenWidth}
-            height={220}
-            chartConfig={chartConfig}
-            accessor="population"
-            backgroundColor="transparent"
-            paddingLeft="15"
-            absolute={false}
-          />
-        </View>
-        
-        <View className="mt-6">
-          <Text className="text-text font-bold mb-2">Character Usage Breakdown</Text>
-          {characterData.map((character, index) => (
-            <View key={index} className="flex-row justify-between items-center mb-2 p-2 bg-background/30 rounded-lg">
-              <View className="flex-row items-center">
-                <View style={{ width: 12, height: 12, backgroundColor: character.color, borderRadius: 6, marginRight: 8 }} />
-                <Text className="text-text">{character.name}</Text>
-              </View>
-              <View className="flex-row items-center">
-                <Text className="text-secondary mr-2">{character.tokens.toLocaleString()} tokens</Text>
-                <Text className="text-primary">({((character.tokens / totalTokens) * 100).toFixed(1)}%)</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      </View>
-    );
-  };
+  
 
   const renderUserEngagementChart = () => {
     const userData = getMockUserEngagement();
@@ -653,9 +629,15 @@ export default function Statistics() {
           </View>
         ) : (
           <>
-            {activeTab === 'usage' && renderUsageChart()}
-            {activeTab === 'models' && renderModelDistributionChart()}
-            {activeTab === 'characters' && renderCharacterDistributionChart()}
+            {activeTab === 'usage' && (
+              <View className="flex flex-col gap-4">
+              <View className="flex flex-row gap-4">
+                {renderCharacterDistributionChart()}
+                {renderModelDistributionChart()}
+              </View>
+              {renderUsageChart()}
+              </View>
+            )}
             {activeTab === 'users' && renderUserEngagementChart()}
             {activeTab === 'performance' && renderPerformanceMetricsChart()}
           </>
