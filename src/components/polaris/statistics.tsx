@@ -145,10 +145,10 @@ export default function Statistics() {
     try {
       setIsLoading(true);
       const stats = await PolarisServer.getStatistics(startDate, endDate);
-      const charStats = await PolarisServer.getCharacterDailyStatistics(startDate, endDate);
-      console.log("Character statists",charStats);
+      const dailyStats = await PolarisServer.getDailyUsageStatistics(startDate, endDate);
+      console.log("Character statists",dailyStats);
       setStatistics(stats || []);
-      setDailyStatistics(charStats || []);
+      setDailyStatistics(dailyStats || []);
     } catch (error) {
       toastService.danger({
         title: "Error",

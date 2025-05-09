@@ -663,10 +663,10 @@ export class PolarisServer {
     return [];
   }
 
-  async getCharacterDailyStatistics(startDate?:Date, endDate?:Date) : Promise<CharacterDailyUsageDto[]> {
+  async getDailyUsageStatistics(startDate?:Date, endDate?:Date) : Promise<DailyUsageDto[]> {
     try {
       const params = this.formatDateParams(startDate, endDate);
-      const response = await this.makeRequest(`/api/admin/statistics/characters/daily${params?`?${params}`:""}`, "GET");
+      const response = await this.makeRequest(`/api/admin/statistics/daily-usage${params?`?${params}`:""}`, "GET");
       return response.characterDailyUsage;
     } catch (error) {
       if (error instanceof Error) {
