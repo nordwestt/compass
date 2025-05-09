@@ -349,39 +349,29 @@ export default function Statistics() {
     }));
 
     const barData = data.map(item=>({
-      value: item.totalTokens
+      value: item.totalTokens,
+      label: item.label,
+      color: theme.primary,
     }));
     
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
         <Text className="text-primary font-bold mb-4 ms-auto">Token Usage Over Time</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-lg flex-1">
-          <LineChart
-            data={totalTokensData}
-            data2={promptTokensData}
-            data3={completionTokensData}
+          <BarChart
+            data={barData}
             height={220}
             spacing={40}
             initialSpacing={20}
-            color1="#8441f4"
-            color2="#4169e1"
-            color3="#32cd32"
-            thickness={2}
-            startFillColor1="rgba(134, 65, 244, 0.2)"
-            startFillColor2="rgba(65, 105, 225, 0.2)"
-            startFillColor3="rgba(50, 205, 50, 0.2)"
-            endFillColor1="rgba(134, 65, 244, 0.0)"
-            endFillColor2="rgba(65, 105, 225, 0.0)"
-            endFillColor3="rgba(50, 205, 50, 0.0)"
-            curved
-            areaChart
-            hideDataPoints
+            frontColor="#8441f4"
+            barWidth={22}
             xAxisColor="gray"
             yAxisColor="gray"
             yAxisTextStyle={{ color: "gray" }}
             xAxisLabelTextStyle={{ color: "gray", textAlign: 'center' }}
+            barBorderTopLeftRadius={8}
+            barBorderTopRightRadius={8}
             hideOrigin
-            animateOnDataChange
             animationDuration={1000}
           />
         </ScrollView>
