@@ -228,12 +228,6 @@ export default function Providers({ className }: ProvidersProps) {
         onSave={handleSave}
         initialProvider={editingProvider}
       />
-      <MicrosoftAuthModal
-        visible={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={handleAuthSuccess}
-        initialEndpoint={polarisServer?.endpoint || "http://localhost:3000"}
-      />
     </View>
   );
 }
