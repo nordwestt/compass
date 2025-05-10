@@ -405,7 +405,7 @@ export default function Statistics() {
             startFillColor2="orange"
             startOpacity={0.7}
             endOpacity={0.2}
-            initialSpacing={0}
+            initialSpacing={20}
             noOfSections={4}
             yAxisThickness={0}
             rulesType="solid"
