@@ -142,7 +142,6 @@ export default function Statistics() {
       setIsLoading(true);
       const stats = await PolarisServer.getStatistics(startDate, endDate);
       const dailyStats = await PolarisServer.getDailyUsageStatistics(startDate, endDate);
-      console.log("Character statists",dailyStats);
       setStatistics(stats || []);
       setDailyStatistics(dailyStats || []);
     } catch (error) {
@@ -161,7 +160,7 @@ export default function Statistics() {
     const dates = Object.keys(groupedData).sort();
     
     return dates.map(date => ({
-      label: date.substring(5), // Show only MM-DD
+      label: `${date.substring(8)}-${date.substring(5,7)}`, // Show as DD-MM
       totalTokens: groupedData[date].totalTokens,
       promptTokens: groupedData[date].promptTokens,
       completionTokens: groupedData[date].completionTokens,
@@ -353,24 +352,67 @@ export default function Statistics() {
       label: item.label,
       color: theme.primary,
     }));
+
+    const data1 = [
+
+      {value: 70},
+
+      {value: 36},
+
+      {value: 50},
+
+      {value: 40},
+
+      {value: 18},
+
+      {value: 38},
+
+    ];
+
+    const data2 = [
+
+      {value: 50},
+
+      {value: 10},
+
+      {value: 45},
+
+      {value: 30},
+
+      {value: 45},
+
+      {value: 18},
+
+    ];
     
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
-        <Text className="text-primary font-bold mb-4 ms-auto">Token Usage Over Time</Text>
+        <Text className="text-primary font-bold mb-4">Token Usage Over Time</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="rounded-lg flex-1">
-          <BarChart
-            data={barData}
+          <LineChart
+            width={screenWidth-40}
+            thickness1={4}
+            thickness2={4}
+            areaChart
+            curved
+            data={promptTokensData}
+            data2={completionTokensData}
+            hideDataPoints
+            spacing={68}
+            color1="#8441f4"
+            color2="#4169e1"
+            startFillColor1={theme.primary}
+            startFillColor2="orange"
+            startOpacity={0.7}
+            endOpacity={0.2}
+            initialSpacing={0}
+            noOfSections={4}
+            yAxisThickness={0}
+            rulesType="solid"
+            rulesColor="lightgray"
             height={220}
-            spacing={40}
-            initialSpacing={20}
-            frontColor="#8441f4"
-            barWidth={22}
-            xAxisColor="gray"
-            yAxisColor="gray"
             yAxisTextStyle={{ color: "gray" }}
-            xAxisLabelTextStyle={{ color: "gray", textAlign: 'center' }}
-            barBorderTopLeftRadius={8}
-            barBorderTopRightRadius={8}
+            xAxisLabelTextStyle={{color:"gray",textAlign:"center"}}
             hideOrigin
             animationDuration={1000}
           />
