@@ -17,7 +17,7 @@ export default function Tools() {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [toolTypes, setToolTypes] = useState<string[]>([]);
+  const [toolTypes, setToolTypes] = useState<Record<string, { paramsSchema: any; configSchema: any }>>({});
 
   // Form states
   const [formData, setFormData] = useState<CreateToolDto>({
@@ -310,12 +310,19 @@ export default function Tools() {
           <View>
             <Text className="text-secondary mb-1">Type *</Text>
             <View className="border border-border rounded-lg p-2 bg-surface">
-              {toolTypes.length > 0 ? (
+              {Object.keys(toolTypes).length > 0 ? (
                 <View className="flex-row flex-wrap gap-2">
-                  {toolTypes.map((type) => (
+                  {Object.keys(toolTypes).map((type) => (
                     <TouchableOpacity
                       key={type}
-                      onPress={() => setFormData({...formData, type})}
+                      onPress={() => {
+                        setFormData({
+                          ...formData, 
+                          type,
+                          config: toolTypes[type].configSchema || formData.config,
+                          schema: toolTypes[type].paramsSchema || formData.schema
+                        });
+                      }}
                       className={`px-3 py-1 rounded-full ${formData.type === type ? 'bg-primary' : 'bg-primary/10'}`}
                     >
                       <Text className={`${formData.type === type ? 'text-white' : 'text-primary'}`}>
@@ -421,12 +428,18 @@ export default function Tools() {
           <View>
             <Text className="text-secondary mb-1">Type *</Text>
             <View className="border border-border rounded-lg p-2 bg-surface">
-              {toolTypes.length > 0 ? (
+              {Object.keys(toolTypes).length > 0 ? (
                 <View className="flex-row flex-wrap gap-2">
-                  {toolTypes.map((type) => (
+                  {Object.keys(toolTypes).map((type) => (
                     <TouchableOpacity
                       key={type}
-                      onPress={() => setFormData({...formData, type})}
+                      onPress={() => {
+                        setFormData({
+                          ...formData, 
+                          type,
+                          schema: toolTypes[type].paramsSchema || formData.schema
+                        });
+                      }}
                       className={`px-3 py-1 rounded-full ${formData.type === type ? 'bg-primary' : 'bg-primary/10'}`}
                     >
                       <Text className={`${formData.type === type ? 'text-white' : 'text-primary'}`}>

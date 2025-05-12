@@ -992,13 +992,13 @@ export class PolarisServer {
   /**
    * Get available tool types from the server
    */
-  async getToolTypes(): Promise<string[]> {
+  async getToolTypes(): Promise<Record<string, { paramsSchema: any; configSchema: any }>> {
     try {
       const response = await this.makeRequest(
         `/api/admin/tools/types`,
         "GET",
       );
-      return response.types || [];
+      return response.types || {};
     } catch (error) {
       if (error instanceof Error) {
         toastService.danger({
@@ -1011,7 +1011,7 @@ export class PolarisServer {
           description: "Unknown error",
         });
       }
-      return [];
+      return {};
     }
   }
 
