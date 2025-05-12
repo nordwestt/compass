@@ -16,6 +16,8 @@ import LogService from "@/utils/LogService";
 import { toastService } from "@/src/services/toastService";
 import { DocumentService } from "../services/document/DocumentService";
 import { DropdownElement } from "@/src/components/ui/Dropdown";
+import { User } from "@/src/types/user";
+
 export const createDefaultThread = (name: string = "New thread"): Thread => {
   // Get the first custom prompt if available, otherwise use the first predefined prompt
   const defaultCharacter =
@@ -552,3 +554,5 @@ export const localeAtom = atomWithAsyncStorage<string>(
   "locale",
   "en",
 );
+
+export const polarisUsersAtom = atom<User[]>([]);

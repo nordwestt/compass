@@ -4,6 +4,7 @@ import LogService from "@/utils/LogService";
 import { getProxyUrl } from "@/src/utils/proxy";
 import { Document } from "@/src/types/core";
 import { Platform } from "react-native";
+import { CreateUserDto, UpdateUserDto, User } from "@/src/types/user";
 /**
  * PolarisServer handles communication with the Compass server
  * for syncing characters, providers, and models.
@@ -703,6 +704,235 @@ export class PolarisServer {
       }
     }
     return [];
+  }
+
+  // ===== USER OPERATIONS =====
+
+  /**
+   * Get all users from the server
+   */
+  async getUsers(): Promise<User[]> {
+    try {
+      const response = await this.makeRequest("/api/admin/users", "GET");
+      return response.users.map((user: any) => ({
+        ...user,
+        isServerResource: true,
+      }));
+    } catch (error) {
+      if (error instanceof Error) {
+        LogService.log(
+          error,
+          { component: "PolarisServer", function: "getUsers" },
+          "error",
+        );
+      }
+      return [];
+    }
+  }
+
+  /**
+   * Get a specific user from the server
+   */
+  async getUser(id: string): Promise<User | null> {
+    try {
+      const response = await this.makeRequest(
+        `/api/admin/users/${id}`,
+        "GET",
+      );
+      return {
+        ...response.user,
+        isServerResource: true,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Create a new user on the server
+   */
+  async createUser(user: CreateUserDto): Promise<User | null> {
+    try {
+      const response = await this.makeRequest(
+        "/api/admin/users",
+        "POST",
+        user,
+      );
+
+      return {
+        id: response.id,
+        ...user,
+        isServerResource: true,
+        isActive: true,
+        isAdmin: user.isAdmin || false,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Update an existing user on the server
+   */
+  async updateUser(id: string, user: UpdateUserDto): Promise<boolean> {
+    try {
+      await this.makeRequest(
+        `/api/admin/users/${id}`,
+        "PUT",
+        user,
+      );
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Delete a user from the server
+   */
+  async deleteUser(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/users/${id}`, "DELETE");
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Activate a user
+   */
+  async activateUser(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/users/${id}/activate`, "PUT");
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Deactivate a user
+   */
+  async deactivateUser(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/users/${id}/deactivate`, "PUT");
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Promote user to admin
+   */
+  async promoteToAdmin(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/users/${id}/promote`, "PUT");
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Demote user from admin
+   */
+  async demoteFromAdmin(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/users/${id}/demote`, "PUT");
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
   }
 
   // ===== HELPER METHODS =====

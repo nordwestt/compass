@@ -24,6 +24,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { Ionicons } from "@expo/vector-icons";
 import { toastService } from "@/src/services/toastService";
 import Statistics from "@/src/components/polaris/statistics";
+import Users from "@/src/components/polaris/users";
 
 export default function PolarisSettingScreen() {
   const routes = [
@@ -31,6 +32,7 @@ export default function PolarisSettingScreen() {
     { key: "documents", title: "Documents", icon: "document-text" },
     { key: "providers", title: "Providers", icon: "server" },
     { key: "statistics", title: "Statistics", icon: "stats-chart" },
+    { key: "users", title: "Users", icon: "person" },
   ];
   const userProviders = useAtomValue(userProvidersAtom);
 
@@ -172,6 +174,7 @@ export default function PolarisSettingScreen() {
         {currentIndex === 1 && <Documents />}
         {currentIndex === 2 && <Providers />}
         {currentIndex === 3 && <Statistics />}
+        {currentIndex === 4 && <Users />}
       </View>
     </View>
   );
