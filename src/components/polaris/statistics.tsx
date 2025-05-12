@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
 import { polarisServerAtom } from "@/src/hooks/atoms";
-import PolarisServer, { DailyUsageDto, StatisticEntity } from "@/src/services/polaris/PolarisServer";
+import PolarisServer, { DailyUsageStatsDto, DailyModelStatsDto, StatisticEntity } from "@/src/services/polaris/PolarisServer";
 import { toastService } from "@/src/services/toastService";
 import { BarChart, LineChart, PieChart } from "react-native-gifted-charts";
 import { useLocalization } from "@/src/hooks/useLocalization";
@@ -43,72 +43,13 @@ const groupByDate = (statistics: StatisticEntity[]) => {
   return grouped;
 };
 
-// Helper function to group statistics by model
-const groupByModel = (statistics: StatisticEntity[]) => {
-  const grouped = statistics.reduce((acc, stat) => {
-    if (!acc[stat.modelId]) {
-      acc[stat.modelId] = {
-        totalTokens: 0,
-        count: 0,
-      };
-    }
-    acc[stat.modelId].totalTokens += stat.totalTokens;
-    acc[stat.modelId].count += 1;
-    return acc;
-  }, {} as Record<string, { totalTokens: number, count: number }>);
-  
-  return grouped;
-};
-
-// Helper function to group statistics by character
-const groupByCharacter = (statistics: DailyUsageDto[]) => {
-  const grouped = statistics.reduce((acc, stat) => {
-    if (!acc[stat.characterName]) {
-      acc[stat.characterName] = {
-        totalTokens: 0,
-        count: 0,
-      };
-    }
-    acc[stat.characterName].totalTokens += stat.totalTokens;
-    acc[stat.characterName].count += 1;
-    return acc;
-  }, {} as Record<string, { totalTokens: number, count: number }>);
-  
-  return grouped;
-};
-
-
-const getMockUserEngagement = () => {
-  return {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        data: [120, 145, 132, 158, 142, 85, 78],
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
-        strokeWidth: 2
-      }
-    ],
-    legend: ["Active Users"]
-  };
-};
-
-const getMockPerformanceMetrics = () => {
-  return {
-    labels: ["GPT-4", "Claude 3", "Llama 3", "Mistral", "GPT-3.5"],
-    datasets: [
-      {
-        data: [2.1, 1.8, 3.2, 2.7, 1.5],
-        color: (opacity = 1) => `rgba(50, 205, 50, ${opacity})`,
-      }
-    ]
-  };
-};
 
 export default function Statistics() {
   const { t } = useLocalization();
   const [polarisServerInfo] = useAtom(polarisServerAtom);
   const [statistics, setStatistics] = useState<StatisticEntity[]>([]);
-  const [dailyStatistics, setDailyStatistics] = useState<DailyUsageDto[]>([]);
+  const [dailyModelStatistics, setDailyModelStatistics] = useState<DailyModelStatsDto[]>([]);
+  const [dailyUsageStatistics, setDailyUsageStatistics] = useState<DailyUsageStatsDto[]>([]);
   const [startDate, setStartDate] = useState<Date>(() => {
     const date = new Date();
     date.setDate(date.getDate() - 30); // Default to last 30 days
@@ -137,13 +78,22 @@ export default function Statistics() {
     }
   }, [polarisServerInfo, startDate, endDate]);
 
+  const getDateLabel = (date: string) => {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
   const fetchStatistics = async () => {
     try {
       setIsLoading(true);
       const stats = await PolarisServer.getStatistics(startDate, endDate);
-      const dailyStats = await PolarisServer.getDailyUsageStatistics(startDate, endDate);
+      const dailyUsageStats = await PolarisServer.getDailyStatistics(startDate, endDate);
+      
+      const dailyModelStats = await PolarisServer.getDailyModelStatistics(startDate, endDate);
+      console.log("dailyModelStats",dailyModelStats);
       setStatistics(stats || []);
-      setDailyStatistics(dailyStats || []);
+      setDailyUsageStatistics(dailyUsageStats || []);
+      setDailyModelStatistics(dailyModelStats || []);
     } catch (error) {
       toastService.danger({
         title: "Error",
@@ -160,7 +110,7 @@ export default function Statistics() {
     const dates = Object.keys(groupedData).sort();
     
     return dates.map(date => ({
-      label: `${date.substring(8)}-${date.substring(5,7)}`, // Show as DD-MM
+      label: getDateLabel(date),
       totalTokens: groupedData[date].totalTokens,
       promptTokens: groupedData[date].promptTokens,
       completionTokens: groupedData[date].completionTokens,
@@ -170,7 +120,7 @@ export default function Statistics() {
   // Prepare data for character usage chart
   const prepareCharacterData = () => {
     // group by characterName and sum the totalTokens
-    const groupedData = dailyStatistics.reduce((acc: { [key: string]: number }, character) => {
+    const groupedData = dailyModelStatistics.reduce((acc: { [key: string]: number }, character) => {
       acc[character.characterName] = (acc[character.characterName] || 0) + character.totalTokens;
       return acc;
     }, {});
@@ -186,7 +136,7 @@ export default function Statistics() {
   // Prepare data for model usage chart
   const prepareModelData = () => {
     // group by characterName and sum the totalTokens
-    const groupedData = dailyStatistics.reduce((acc: { [key: string]: number }, character) => {
+    const groupedData = dailyModelStatistics.reduce((acc: { [key: string]: number }, character) => {
       acc[character.modelId] = (acc[character.modelId] || 0) + character.totalTokens;
       return acc;
     }, {});
@@ -197,19 +147,6 @@ export default function Statistics() {
       label: modelId,
       color: `hsl(${Math.abs(modelId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 360}, 70%, 50%)`,
     }));
-  };
-
-  const chartConfig = {
-    backgroundGradientFrom: "#1E2923",
-    backgroundGradientTo: "#08130D",
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    strokeWidth: 2,
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false,
-    decimalPlaces: 0,
-    propsForLabels: {
-      fontSize: 10,
-    },
   };
 
   const renderDatePickers = () => (
@@ -255,37 +192,36 @@ export default function Statistics() {
         onPress={() => setActiveTab('usage')}
         className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'usage' ? 'bg-primary' : 'bg-surface'}`}
       >
-        <Text className={activeTab === 'usage' ? 'text-white' : 'text-text'}>Usage</Text>
+        <Text className={activeTab === 'usage' ? 'text-white' : 'text-text'}>General</Text>
       </TouchableOpacity>
       
       <TouchableOpacity 
         onPress={() => setActiveTab('users')}
         className={`px-4 py-2 rounded-lg mr-2 ${activeTab === 'users' ? 'bg-primary' : 'bg-surface'}`}
       >
-        <Text className={activeTab === 'users' ? 'text-white' : 'text-text'}>User Engagement</Text>
+        <Text className={activeTab === 'users' ? 'text-white' : 'text-text'}>Token Usage</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity 
+      {/* <TouchableOpacity 
         onPress={() => setActiveTab('performance')}
         className={`px-4 py-2 rounded-lg ${activeTab === 'performance' ? 'bg-primary' : 'bg-surface'}`}
       >
         <Text className={activeTab === 'performance' ? 'text-white' : 'text-text'}>Performance</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </ScrollView>
   );
 
   const renderSummary = () => {
     const totalTokens = statistics.reduce((sum, stat) => sum + stat.totalTokens, 0);
-    const totalPromptTokens = statistics.reduce((sum, stat) => sum + stat.promptTokens, 0);
-    const totalCompletionTokens = statistics.reduce((sum, stat) => sum + stat.completionTokens, 0);
-    const totalRequests = statistics.length;
+    const totalRequests = dailyUsageStatistics.reduce((sum, stat) => sum + stat.messageCount, 0);
     const avgDuration = statistics.length > 0 
       ? statistics.reduce((sum, stat) => sum + stat.duration, 0) / statistics.length / 1000 
       : 0;
     
     // Mock data for additional metrics
-    const activeUsers = 325;
-    const costEstimate = (totalTokens * 0.000002).toFixed(2); // Simplified cost calculation
+    const activeUsers = 200;
+    //const costEstimate = (totalTokens * 0.000002).toFixed(2); // Simplified cost calculation
+    const costEstimate = dailyModelStatistics.reduce((sum, stat) => sum + stat.totalCost, 0).toFixed(2);
     
     return (
       <View className={`flex-row flex-wrap justify-between mb-6`}>
@@ -347,44 +283,11 @@ export default function Statistics() {
       dataPointText: item.completionTokens.toString(),
     }));
 
-    const barData = data.map(item=>({
-      value: item.totalTokens,
-      label: item.label,
-      color: theme.primary,
-    }));
-
-    const data1 = [
-
-      {value: 70},
-
-      {value: 36},
-
-      {value: 50},
-
-      {value: 40},
-
-      {value: 18},
-
-      {value: 38},
-
-    ];
-
-    const data2 = [
-
-      {value: 50},
-
-      {value: 10},
-
-      {value: 45},
-
-      {value: 30},
-
-      {value: 45},
-
-      {value: 18},
-
-    ];
+    const totalTokens = dailyUsageStatistics.reduce((sum, stat) => sum + stat.totalTokens, 0);
     
+
+    const avgTokensPerDay = totalTokens / dailyUsageStatistics.length;
+
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
         <Text className="text-primary font-bold mb-4">Token Usage Over Time</Text>
@@ -395,14 +298,17 @@ export default function Statistics() {
             thickness2={4}
             areaChart
             curved
-            data={promptTokensData}
-            data2={completionTokensData}
+            data={totalTokensData}
+            data2={promptTokensData}
+            data3={completionTokensData}
             hideDataPoints
             spacing={68}
             color1="#8441f4"
             color2="#4169e1"
+            color3="#32cd32"
             startFillColor1={theme.primary}
             startFillColor2="orange"
+            startFillColor3="green"
             startOpacity={0.7}
             endOpacity={0.2}
             initialSpacing={20}
@@ -431,6 +337,17 @@ export default function Statistics() {
             <Text className="text-secondary text-xs">Completion Tokens</Text>
           </View>
         </View>
+        <View className={`mt-6 flex-row flex-wrap justify-between`}>
+          <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1 mr-2">
+            <Text className="text-secondary text-xs">Avg Tokens/Day</Text>
+            <Text className="text-primary text-lg font-bold">{avgTokensPerDay}</Text>
+          </View>
+          
+          {/* <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1 mr-2">
+            <Text className="text-secondary text-xs">Avg Messages/User</Text>
+            <Text className="text-primary text-lg font-bold">{userMetrics.avgMessagesPerUser}</Text>
+          </View> */}
+        </View>
       </View>
     );
   };
@@ -440,6 +357,8 @@ export default function Statistics() {
     
     // Calculate total tokens for percentage calculation
     const totalTokens = characterData.reduce((sum, character) => sum + character.value, 0);
+
+    console.log("character data", characterData);
     
     return (
       <View className="bg-surface p-4 rounded-lg mb-6 flex-1 overflow-hidden">
@@ -485,10 +404,26 @@ export default function Statistics() {
   };
 
   const renderModelDistributionChart = () => {
-    const modelData = prepareModelData();
+    //let modelData = prepareModelData();
+
+    let modelData = [
+      {
+        "value": 102,
+        "text": "Test",
+        "color": "#ff0000"
+      },
+      {
+        "value": 763,
+        "text": "Bimbo",
+        "color": "#00ff00"
+      }
+    ];
     
     // Calculate total tokens for percentage calculation
     const totalTokens = modelData.reduce((sum, model) => sum + model.value, 0);
+
+    console.log("model data", modelData);
+    
     
     return (
       <View className="bg-surface p-4 rounded-lg mb-6 flex-1 overflow-hidden">
@@ -517,7 +452,7 @@ export default function Statistics() {
             <View key={index} className="flex-row justify-between items-center mb-2 p-2 bg-background/30 rounded-lg">
               <View className="flex-row items-center">
                 <View style={{ width: 12, height: 12, backgroundColor: model.color, borderRadius: 6, marginRight: 8 }} />
-                <Text className="text-text">{model.label}</Text>
+                <Text className="text-text">{model.text}</Text>
               </View>
               <View className="flex-row items-center">
                 <Text className="text-secondary mr-2">{model.value.toLocaleString()} tokens</Text>
@@ -534,62 +469,67 @@ export default function Statistics() {
   };
 
   const renderUserEngagementChart = () => {
-    // Mock data for user engagement
-    const userData = [
-      { value: 120, label: 'Mon', dataPointText: '120' },
-      { value: 145, label: 'Tue', dataPointText: '145' },
-      { value: 132, label: 'Wed', dataPointText: '132' },
-      { value: 158, label: 'Thu', dataPointText: '158' },
-      { value: 142, label: 'Fri', dataPointText: '142' },
-      { value: 85, label: 'Sat', dataPointText: '85' },
-      { value: 78, label: 'Sun', dataPointText: '78' },
-    ];
-    
+
+    const userData = dailyUsageStatistics.map(item => ({
+      value: item.messageCount,
+      label: getDateLabel(item.date),
+      dataPointText: item.messageCount.toString(),
+    }));
+
+    console.log(userData);
+    const totalMessages = dailyUsageStatistics.reduce((sum, stat) => sum + stat.messageCount, 0);
+    const totalUsers = dailyUsageStatistics.length;
+
     // Additional mock data for user metrics
     const userMetrics = {
-      avgSessionsPerUser: 3.7,
-      avgMessagesPerSession: 12.5,
-      retentionRate: 78.5,
-      newUsers: 42
+      avgMessagesPerUser: totalMessages / totalUsers,
+      avgMessagesPerDay: totalMessages / dailyUsageStatistics.length,
     };
     
     return (
       <View className="bg-surface p-4 rounded-lg mb-6">
-        <Text className="text-text font-bold mb-4">Daily Active Users</Text>
+        <Text className="text-primary font-bold mb-4">Daily Messages</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <LineChart
-            data={userData}
-            height={220}
-            width={Math.max(screenWidth, userData.length * 60)}
-            spacing={40}
-            initialSpacing={20}
-            color="#8441f4"
-            thickness={2}
-            startFillColor="rgba(134, 65, 244, 0.2)"
-            endFillColor="rgba(134, 65, 244, 0.0)"
+            width={screenWidth-40}
+            thickness1={4}
+            thickness2={4}
+            areaChart
             curved
-            xAxisColor="gray"
-            yAxisColor="gray"
+            data={userData}
+            hideDataPoints
+            spacing={68}
+            color1="#8441f4"
+            color2="#4169e1"
+            startFillColor1={theme.primary}
+            startFillColor2="orange"
+            startOpacity={0.7}
+            endOpacity={0.2}
+            initialSpacing={25}
+            noOfSections={4}
+            yAxisThickness={0}
+            rulesType="solid"
+            rulesColor="lightgray"
+            height={220}
             yAxisTextStyle={{ color: "gray" }}
-            xAxisLabelTextStyle={{ color: "gray", textAlign: 'center' }}
+            xAxisLabelTextStyle={{color:"gray",textAlign:"center"}}
             hideOrigin
-            animateOnDataChange
             animationDuration={1000}
           />
         </ScrollView>
         
         <View className={`mt-6 flex-row flex-wrap justify-between`}>
           <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1 mr-2">
-            <Text className="text-secondary text-xs">Avg Sessions/User</Text>
-            <Text className="text-primary text-lg font-bold">{userMetrics.avgSessionsPerUser}</Text>
+            <Text className="text-secondary text-xs">Avg Messages/Day</Text>
+            <Text className="text-primary text-lg font-bold">{userMetrics.avgMessagesPerDay}</Text>
           </View>
           
           <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1 mr-2">
-            <Text className="text-secondary text-xs">Avg Messages/Session</Text>
-            <Text className="text-primary text-lg font-bold">{userMetrics.avgMessagesPerSession}</Text>
+            <Text className="text-secondary text-xs">Avg Messages/User</Text>
+            <Text className="text-primary text-lg font-bold">{userMetrics.avgMessagesPerUser}</Text>
           </View>
           
-          <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1">
+          {/* <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1">
             <Text className="text-secondary text-xs">Retention Rate</Text>
             <Text className="text-primary text-lg font-bold">{userMetrics.retentionRate}%</Text>
           </View>
@@ -597,7 +537,7 @@ export default function Statistics() {
           <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1">
             <Text className="text-secondary text-xs">New Users (30d)</Text>
             <Text className="text-primary text-lg font-bold">{userMetrics.newUsers}</Text>
-          </View>
+          </View> */}
         </View>
       </View>
     );
@@ -728,10 +668,10 @@ export default function Statistics() {
                 {renderCharacterDistributionChart()}
                 {renderModelDistributionChart()}
               </View>
-              {renderUsageChart()}
+              {renderUserEngagementChart()}
               </View>
             )}
-            {activeTab === 'users' && renderUserEngagementChart()}
+            {activeTab === 'users' && renderUsageChart()}
             {activeTab === 'performance' && renderPerformanceMetricsChart()}
           </>
         )}

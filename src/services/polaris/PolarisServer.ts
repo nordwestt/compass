@@ -663,11 +663,32 @@ export class PolarisServer {
     return [];
   }
 
-  async getDailyUsageStatistics(startDate?:Date, endDate?:Date) : Promise<DailyUsageDto[]> {
+  async getDailyStatistics(startDate?:Date, endDate?:Date) : Promise<DailyUsageStatsDto[]> {
+    try {
+      const params = this.formatDateParams(startDate, endDate);
+      const response = await this.makeRequest(`/api/admin/statistics/daily-stats${params?`?${params}`:""}`, "GET");
+      return response.dailyStats;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+    }
+    return [];
+  }
+
+  async getDailyModelStatistics(startDate?:Date, endDate?:Date) : Promise<DailyModelStatsDto[]> {
     try {
       const params = this.formatDateParams(startDate, endDate);
       const response = await this.makeRequest(`/api/admin/statistics/daily-usage${params?`?${params}`:""}`, "GET");
-      return response.characterDailyUsage;
+      return response.dailyUsage;
     } catch (error) {
       if (error instanceof Error) {
         toastService.danger({
@@ -757,11 +778,23 @@ export class PolarisServer {
 // Export a singleton instance
 export default new PolarisServer();
 
-export interface DailyUsageDto {
+export interface DailyModelStatsDto {
   date: string;           // Format: 'YYYY-MM-DD'
   characterName: string;
   modelId: string;
   requestCount: number;
+  totalTokens: number;
+  promptTokens: number;
+  completionTokens: number;
+  inputCost: number;
+  outputCost: number;
+  totalCost: number;
+}
+
+export interface DailyUsageStatsDto {
+  date: string;
+  messageCount: number;
+  activeUsers: number;
   totalTokens: number;
   promptTokens: number;
   completionTokens: number;

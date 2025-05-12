@@ -26,6 +26,8 @@ export interface Model {
   name: string;
   providerId: string;
   provider: Provider;
+  pricePerMillionInputTokens: number;
+  pricePerMillionOutputTokens: number;
 }
 
 export interface AllowedModel {

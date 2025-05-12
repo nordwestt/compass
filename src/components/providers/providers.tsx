@@ -176,7 +176,7 @@ export default function Providers({ className }: ProvidersProps) {
         <View className="flex-row justify-between items-center mb-4">
           <View className="flex-row items-center p-4">
             <Ionicons
-              name="server"
+              name="git-branch"
               size={32}
               className="!text-primary mr-2 pb-2"
             />

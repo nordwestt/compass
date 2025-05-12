@@ -60,7 +60,7 @@ export default function SettingsScreen() {
         <SettingItem
           title={t('settings.providers.title')}
           description={t('settings.providers.description')}
-          icon="server"
+          icon="git-branch"
           onPress={() => router.push("/settings/providers")}
         />
 
