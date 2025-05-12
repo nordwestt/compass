@@ -153,6 +153,57 @@ export default function Tools() {
     }
   };
 
+  const ConfigForm = ({ 
+    schema, 
+    values, 
+    onChange 
+  }: { 
+    schema: Record<string, any>; 
+    values: Record<string, any>; 
+    onChange: (newValues: Record<string, any>) => void;
+  }) => {
+    if (!schema || Object.keys(schema).length === 0) {
+      return (
+        <Text className="text-secondary italic p-2">No configuration fields available</Text>
+      );
+    }
+
+    const handleFieldChange = (key: string, value: any) => {
+      onChange({
+        ...values,
+        [key]: value
+      });
+    };
+
+    return (
+      <View className="space-y-3">
+        {Object.entries(schema).map(([key, field]) => {
+          const fieldType = typeof field === 'object' ? field.type : 'string';
+          const fieldDescription = typeof field === 'object' ? field.description : '';
+          const isSecret = fieldType === 'password' || key.toLowerCase().includes('secret') || key.toLowerCase().includes('token');
+          
+          return (
+            <View key={key}>
+              <View className="flex-row justify-between items-center mb-1">
+                <Text className="text-secondary">{key}</Text>
+                {fieldDescription && (
+                  <Text className="text-xs text-secondary/70 italic">{fieldDescription}</Text>
+                )}
+              </View>
+              <TextInput
+                className="border border-border rounded-lg p-2 bg-surface text-text"
+                placeholder={`Enter ${key}`}
+                value={values[key] || ''}
+                onChangeText={(text) => handleFieldChange(key, text)}
+                secureTextEntry={isSecret}
+              />
+            </View>
+          );
+        })}
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 p-4">
@@ -344,13 +395,23 @@ export default function Tools() {
           
           <View>
             <Text className="text-secondary mb-1">Configuration</Text>
-            <View className="border border-border rounded-lg bg-surface overflow-hidden">
-              <CodeEditor
-                value={formatJson(formData.config)}
-                onChangeText={(text: string) => setFormData({...formData, config: parseJsonSafely(text)})}
-                language="json"
-                style={{ height: 150 }}
-              />
+            <View className="border border-border rounded-lg bg-surface p-3">
+              {formData.type && toolTypes[formData.type]?.configSchema ? (
+                <ConfigForm 
+                  schema={toolTypes[formData.type].configSchema} 
+                  values={formData.config} 
+                  onChange={(newConfig) => setFormData({...formData, config: newConfig})}
+                />
+              ) : (
+                <View className="border border-border rounded-lg bg-surface overflow-hidden">
+                  <CodeEditor
+                    value={formatJson(formData.config)}
+                    onChangeText={(text: string) => setFormData({...formData, config: parseJsonSafely(text)})}
+                    language="json"
+                    style={{ height: 150 }}
+                  />
+                </View>
+              )}
             </View>
           </View>
           
@@ -461,13 +522,23 @@ export default function Tools() {
           
           <View>
             <Text className="text-secondary mb-1">Configuration</Text>
-            <View className="border border-border rounded-lg bg-surface overflow-hidden">
-              <CodeEditor
-                value={formatJson(formData.config)}
-                onChangeText={(text: string) => setFormData({...formData, config: parseJsonSafely(text)})}
-                language="json"
-                style={{ height: 150 }}
-              />
+            <View className="border border-border rounded-lg bg-surface p-3">
+              {formData.type && toolTypes[formData.type]?.configSchema ? (
+                <ConfigForm 
+                  schema={toolTypes[formData.type].configSchema} 
+                  values={formData.config} 
+                  onChange={(newConfig) => setFormData({...formData, config: newConfig})}
+                />
+              ) : (
+                <View className="border border-border rounded-lg bg-surface overflow-hidden">
+                  <CodeEditor
+                    value={formatJson(formData.config)}
+                    onChangeText={(text: string) => setFormData({...formData, config: parseJsonSafely(text)})}
+                    language="json"
+                    style={{ height: 150 }}
+                  />
+                </View>
+              )}
             </View>
           </View>
           
