@@ -219,7 +219,6 @@ export default function Statistics() {
       : 0;
     
     // Mock data for additional metrics
-    const activeUsers = 200;
     //const costEstimate = (totalTokens * 0.000002).toFixed(2); // Simplified cost calculation
     const costEstimate = dailyModelStatistics.reduce((sum, stat) => sum + stat.totalCost, 0).toFixed(2);
     
@@ -240,10 +239,10 @@ export default function Statistics() {
           <Text className="text-primary text-xl font-bold">{avgDuration.toFixed(2)}s</Text>
         </View>
 
-        <View className="bg-surface p-4 rounded-lg flex-1 mr-2 mb-2 min-w-[150px]">
+        {/* <View className="bg-surface p-4 rounded-lg flex-1 mr-2 mb-2 min-w-[150px]">
           <Text className="text-secondary text-sm">Active Users</Text>
           <Text className="text-primary text-xl font-bold">{activeUsers}</Text>
-        </View>
+        </View> */}
         
         <View className="bg-surface p-4 rounded-lg flex-1 mb-2 min-w-[150px]">
           <Text className="text-secondary text-sm">Est. Cost ($)</Text>
@@ -404,20 +403,8 @@ export default function Statistics() {
   };
 
   const renderModelDistributionChart = () => {
-    //let modelData = prepareModelData();
+    let modelData = prepareModelData();
 
-    let modelData = [
-      {
-        "value": 102,
-        "text": "Test",
-        "color": "#ff0000"
-      },
-      {
-        "value": 763,
-        "text": "Bimbo",
-        "color": "#00ff00"
-      }
-    ];
     
     // Calculate total tokens for percentage calculation
     const totalTokens = modelData.reduce((sum, model) => sum + model.value, 0);
@@ -452,7 +439,7 @@ export default function Statistics() {
             <View key={index} className="flex-row justify-between items-center mb-2 p-2 bg-background/30 rounded-lg">
               <View className="flex-row items-center">
                 <View style={{ width: 12, height: 12, backgroundColor: model.color, borderRadius: 6, marginRight: 8 }} />
-                <Text className="text-text">{model.text}</Text>
+                <Text className="text-text">{model.label}</Text>
               </View>
               <View className="flex-row items-center">
                 <Text className="text-secondary mr-2">{model.value.toLocaleString()} tokens</Text>
