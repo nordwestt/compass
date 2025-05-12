@@ -422,27 +422,18 @@ export default function Tools() {
             </View>
           </View>
           
-          <View>
+          {formData.type && toolTypes[formData.type]?.configSchema && (<View>
             <Text className="text-secondary mb-1">Configuration</Text>
             <View className="border border-border rounded-lg bg-surface p-3">
-              {formData.type && toolTypes[formData.type]?.configSchema ? (
+              
                 <ConfigForm 
                   schema={toolTypes[formData.type].configSchema} 
                   values={formData.config || {}} 
                   onChange={(newConfig) => setFormData({...formData, config: newConfig})}
                 />
-              ) : (
-                <View className="border border-border rounded-lg bg-surface overflow-hidden">
-                  <CodeEditor
-                    value={formatJson(formData.config)}
-                    onChangeText={(text: string) => setFormData({...formData, config: parseJsonSafely(text)})}
-                    language="json"
-                    style={{ height: 150 }}
-                  />
-                </View>
-              )}
+              
             </View>
-          </View>
+          </View>) }
           
           <View className="flex-row items-center justify-between">
             <Text className="text-secondary">Enabled</Text>
@@ -537,27 +528,18 @@ export default function Tools() {
             </View>
           </View>
           
-          <View>
+          {formData.type && toolTypes[formData.type]?.configSchema && (<View>
             <Text className="text-secondary mb-1">Configuration</Text>
             <View className="border border-border rounded-lg bg-surface p-3">
-              {formData.type && toolTypes[formData.type]?.configSchema ? (
+              
                 <ConfigForm 
                   schema={toolTypes[formData.type].configSchema} 
                   values={formData.config || {}} 
                   onChange={(newConfig) => setFormData({...formData, config: newConfig})}
                 />
-              ) : (
-                <View className="border border-border rounded-lg bg-surface overflow-hidden">
-                  <CodeEditor
-                    value={formatJson(formData.config)}
-                    onChangeText={(text: string) => setFormData({...formData, config: parseJsonSafely(text)})}
-                    language="json"
-                    style={{ height: 150 }}
-                  />
-                </View>
-              )}
+              
             </View>
-          </View>
+          </View>) }
           
           <View className="flex-row items-center justify-between">
             <Text className="text-secondary">Enabled</Text>
