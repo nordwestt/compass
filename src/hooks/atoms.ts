@@ -9,6 +9,7 @@ import {
   Voice,
   Document,
 } from "@/src/types/core";
+import { Tool } from "@/src/types/tools";
 import { PREDEFINED_PROMPTS } from "@/constants/characters";
 import { CharacterService } from "@/src/services/character/CharacterService";
 import { ProviderService } from "@/src/services/provider/ProviderService";
@@ -556,3 +557,6 @@ export const localeAtom = atomWithAsyncStorage<string>(
 );
 
 export const polarisUsersAtom = atom<User[]>([]);
+
+// Add this with your other atoms
+export const polarisToolsAtom = atom<Tool[]>([]);

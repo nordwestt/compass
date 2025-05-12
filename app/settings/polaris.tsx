@@ -25,12 +25,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { toastService } from "@/src/services/toastService";
 import Statistics from "@/src/components/polaris/statistics";
 import Users from "@/src/components/polaris/users";
+import Tools from "@/src/components/polaris/tools";
 
 export default function PolarisSettingScreen() {
   const routes = [
     { key: "characters", title: "Characters", icon: "people" },
     { key: "documents", title: "Documents", icon: "document-text" },
     { key: "providers", title: "Providers", icon: "git-branch" },
+    { key: "tools", title: "Tools", icon: "construct" },
     { key: "statistics", title: "Statistics", icon: "stats-chart" },
     { key: "users", title: "Users", icon: "person" },
   ];
@@ -173,8 +175,9 @@ export default function PolarisSettingScreen() {
         {currentIndex === 0 && <AdminCharactersPanel />}
         {currentIndex === 1 && <Documents />}
         {currentIndex === 2 && <Providers />}
-        {currentIndex === 3 && <Statistics />}
-        {currentIndex === 4 && <Users />}
+        {currentIndex === 3 && <Tools />}
+        {currentIndex === 4 && <Statistics />}
+        {currentIndex === 5 && <Users />}
       </View>
     </View>
   );
