@@ -5,6 +5,7 @@ import { getProxyUrl } from "@/src/utils/proxy";
 import { Document } from "@/src/types/core";
 import { Platform } from "react-native";
 import { CreateUserDto, UpdateUserDto, User } from "@/src/types/user";
+import { Tool, CreateToolDto, UpdateToolDto } from "@/src/types/tools";
 /**
  * PolarisServer handles communication with the Compass server
  * for syncing characters, providers, and models.
@@ -918,6 +919,163 @@ export class PolarisServer {
   async demoteFromAdmin(id: string): Promise<boolean> {
     try {
       await this.makeRequest(`/api/admin/users/${id}/demote`, "PUT");
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
+  }
+
+  // ===== TOOL OPERATIONS =====
+
+  /**
+   * Get all tools from the server
+   */
+  async getTools(): Promise<Tool[]> {
+    try {
+      const response = await this.makeRequest("/api/admin/tools", "GET");
+      return response.tools.map((tool: any) => ({
+        ...tool,
+        isServerResource: true,
+      }));
+    } catch (error) {
+      if (error instanceof Error) {
+        LogService.log(
+          error,
+          { component: "PolarisServer", function: "getTools" },
+          "error",
+        );
+      }
+      return [];
+    }
+  }
+
+  /**
+   * Get a specific tool from the server
+   */
+  async getTool(id: string): Promise<Tool | null> {
+    try {
+      const response = await this.makeRequest(
+        `/api/admin/tools/${id}`,
+        "GET",
+      );
+      return {
+        ...response.tool,
+        isServerResource: true,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Get available tool types from the server
+   */
+  async getToolTypes(): Promise<string[]> {
+    try {
+      const response = await this.makeRequest(
+        `/api/admin/tools/types`,
+        "GET",
+      );
+      return response.types || [];
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return [];
+    }
+  }
+
+  /**
+   * Create a new tool on the server
+   */
+  async createTool(tool: CreateToolDto): Promise<string | null> {
+    try {
+      const response = await this.makeRequest(
+        "/api/admin/tools",
+        "POST",
+        tool,
+      );
+
+      return response.id;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Update an existing tool on the server
+   */
+  async updateTool(id: string, tool: UpdateToolDto): Promise<boolean> {
+    try {
+      await this.makeRequest(
+        `/api/admin/tools/${id}`,
+        "PUT",
+        tool,
+      );
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.danger({
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toastService.danger({
+          title: "Error",
+          description: "Unknown error",
+        });
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Delete a tool from the server
+   */
+  async deleteTool(id: string): Promise<boolean> {
+    try {
+      await this.makeRequest(`/api/admin/tools/${id}`, "DELETE");
       return true;
     } catch (error) {
       if (error instanceof Error) {
