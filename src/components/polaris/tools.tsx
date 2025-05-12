@@ -162,25 +162,53 @@ export default function Tools() {
     values: Record<string, any>; 
     onChange: (newValues: Record<string, any>) => void;
   }) => {
+    // Create a ref to track if we've initialized the local state
+    const initializedRef = React.useRef(false);
+    
+    // Create local state completely separate from parent state
+    const [localValues, setLocalValues] = React.useState<Record<string, string>>({});
+    
+    // Initialize local values only once when component mounts or schema changes
+    React.useEffect(() => {
+      if (!initializedRef.current || Object.keys(localValues).length === 0) {
+        const initialValues: Record<string, string> = {};
+        Object.keys(schema).forEach(key => {
+          // Ensure we're starting with empty strings, not object representations
+          initialValues[key] = typeof values[key] === 'string' ? values[key] : '';
+        });
+        setLocalValues(initialValues);
+        initializedRef.current = true;
+      }
+    }, [schema]);
+    
+    // Update parent state only when form is "done" - we'll do this on blur
+    const handleBlur = () => {
+      onChange(localValues);
+    };
+    
     if (!schema || Object.keys(schema).length === 0) {
       return (
         <Text className="text-secondary italic p-2">No configuration fields available</Text>
       );
     }
 
-    const handleFieldChange = (key: string, value: any) => {
-      onChange({
-        ...values,
+    const handleFieldChange = (key: string, value: string) => {
+      // Only update local state to maintain focus
+      setLocalValues(prev => ({
+        ...prev,
         [key]: value
-      });
+      }));
     };
 
     return (
       <View className="space-y-3">
         {Object.entries(schema).map(([key, field]) => {
-          const fieldType = typeof field === 'object' ? field.type : 'string';
-          const fieldDescription = typeof field === 'object' ? field.description : '';
-          const isSecret = fieldType === 'password' || key.toLowerCase().includes('secret') || key.toLowerCase().includes('token');
+          // Extract field type and description
+          const fieldConfig = typeof field === 'object' ? field : { type: 'string' };
+          const fieldDescription = fieldConfig.description || '';
+          const isSecret = fieldConfig.type === 'password' || 
+                           key.toLowerCase().includes('secret') || 
+                           key.toLowerCase().includes('token');
           
           return (
             <View key={key}>
@@ -193,8 +221,9 @@ export default function Tools() {
               <TextInput
                 className="border border-border rounded-lg p-2 bg-surface text-text"
                 placeholder={`Enter ${key}`}
-                value={values[key] || ''}
+                value={localValues[key] || ''}
                 onChangeText={(text) => handleFieldChange(key, text)}
+                onBlur={handleBlur}
                 secureTextEntry={isSecret}
               />
             </View>
@@ -371,7 +400,7 @@ export default function Tools() {
                           ...formData, 
                           type,
                           config: toolTypes[type].configSchema || formData.config,
-                          schema: toolTypes[type].paramsSchema || formData.schema
+                          schema: formData.schema
                         });
                       }}
                       className={`px-3 py-1 rounded-full ${formData.type === type ? 'bg-primary' : 'bg-primary/10'}`}
@@ -399,7 +428,7 @@ export default function Tools() {
               {formData.type && toolTypes[formData.type]?.configSchema ? (
                 <ConfigForm 
                   schema={toolTypes[formData.type].configSchema} 
-                  values={formData.config} 
+                  values={formData.config || {}} 
                   onChange={(newConfig) => setFormData({...formData, config: newConfig})}
                 />
               ) : (
@@ -412,18 +441,6 @@ export default function Tools() {
                   />
                 </View>
               )}
-            </View>
-          </View>
-          
-          <View>
-            <Text className="text-secondary mb-1">Schema</Text>
-            <View className="border border-border rounded-lg bg-surface overflow-hidden">
-              <CodeEditor
-                value={formatJson(formData.schema)}
-                onChangeText={(text: string) => setFormData({...formData, schema: parseJsonSafely(text)})}
-                language="json"
-                style={{ height: 150 }}
-              />
             </View>
           </View>
           
@@ -498,7 +515,7 @@ export default function Tools() {
                         setFormData({
                           ...formData, 
                           type,
-                          schema: toolTypes[type].paramsSchema || formData.schema
+                          schema: formData.schema
                         });
                       }}
                       className={`px-3 py-1 rounded-full ${formData.type === type ? 'bg-primary' : 'bg-primary/10'}`}
@@ -526,7 +543,7 @@ export default function Tools() {
               {formData.type && toolTypes[formData.type]?.configSchema ? (
                 <ConfigForm 
                   schema={toolTypes[formData.type].configSchema} 
-                  values={formData.config} 
+                  values={formData.config || {}} 
                   onChange={(newConfig) => setFormData({...formData, config: newConfig})}
                 />
               ) : (
@@ -539,18 +556,6 @@ export default function Tools() {
                   />
                 </View>
               )}
-            </View>
-          </View>
-          
-          <View>
-            <Text className="text-secondary mb-1">Schema</Text>
-            <View className="border border-border rounded-lg bg-surface overflow-hidden">
-              <CodeEditor
-                value={formatJson(formData.schema)}
-                onChangeText={(text: string) => setFormData({...formData, schema: parseJsonSafely(text)})}
-                language="json"
-                style={{ height: 150 }}
-              />
             </View>
           </View>
           
