@@ -30,7 +30,7 @@ export default function PolarisSettingScreen() {
   const routes = [
     { key: "characters", title: "Characters", icon: "people" },
     { key: "documents", title: "Documents", icon: "document-text" },
-    { key: "providers", title: "Providers", icon: "server" },
+    { key: "providers", title: "Providers", icon: "git-branch" },
     { key: "statistics", title: "Statistics", icon: "stats-chart" },
     { key: "users", title: "Users", icon: "person" },
   ];

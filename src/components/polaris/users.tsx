@@ -191,7 +191,7 @@ export default function Users() {
           <View className="flex-1 bg-surface rounded-lg flex-row items-center px-3 py-2">
             <Ionicons name="search" size={20} className="!text-secondary mr-2" />
             <TextInput
-              className="flex-1 text-text"
+              className="flex-1 text-text outline-none"
               placeholder="Search users..."
               placeholderTextColor="#9CA3AF"
               value={searchQuery}
