@@ -153,86 +153,6 @@ export default function Tools() {
     }
   };
 
-  const ConfigForm = ({ 
-    schema, 
-    values, 
-    onChange 
-  }: { 
-    schema: Record<string, any>; 
-    values: Record<string, any>; 
-    onChange: (newValues: Record<string, any>) => void;
-  }) => {
-    // Create a ref to track if we've initialized the local state
-    const initializedRef = React.useRef(false);
-    
-    // Create local state completely separate from parent state
-    const [localValues, setLocalValues] = React.useState<Record<string, string>>({});
-    
-    // Initialize local values only once when component mounts or schema changes
-    React.useEffect(() => {
-      if (!initializedRef.current || Object.keys(localValues).length === 0) {
-        const initialValues: Record<string, string> = {};
-        Object.keys(schema).forEach(key => {
-          // Ensure we're starting with empty strings, not object representations
-          initialValues[key] = typeof values[key] === 'string' ? values[key] : '';
-        });
-        setLocalValues(initialValues);
-        initializedRef.current = true;
-      }
-    }, [schema]);
-    
-    // Update parent state only when form is "done" - we'll do this on blur
-    const handleBlur = () => {
-      onChange(localValues);
-    };
-    
-    if (!schema || Object.keys(schema).length === 0) {
-      return (
-        <Text className="text-secondary italic p-2">No configuration fields available</Text>
-      );
-    }
-
-    const handleFieldChange = (key: string, value: string) => {
-      // Only update local state to maintain focus
-      setLocalValues(prev => ({
-        ...prev,
-        [key]: value
-      }));
-    };
-
-    return (
-      <View className="space-y-3">
-        {Object.entries(schema).map(([key, field]) => {
-          // Extract field type and description
-          const fieldConfig = typeof field === 'object' ? field : { type: 'string' };
-          const fieldDescription = fieldConfig.description || '';
-          const isSecret = fieldConfig.type === 'password' || 
-                           key.toLowerCase().includes('secret') || 
-                           key.toLowerCase().includes('token');
-          
-          return (
-            <View key={key}>
-              <View className="flex-row justify-between items-center mb-1">
-                <Text className="text-secondary">{key}</Text>
-                {fieldDescription && (
-                  <Text className="text-xs text-secondary/70 italic">{fieldDescription}</Text>
-                )}
-              </View>
-              <TextInput
-                className="border border-border rounded-lg p-2 bg-surface text-text"
-                placeholder={`Enter ${key}`}
-                value={localValues[key] || ''}
-                onChangeText={(text) => handleFieldChange(key, text)}
-                onBlur={handleBlur}
-                secureTextEntry={isSecret}
-              />
-            </View>
-          );
-        })}
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 p-4">
@@ -424,14 +344,43 @@ export default function Tools() {
           
           {formData.type && toolTypes[formData.type]?.configSchema && (<View>
             <Text className="text-secondary mb-1">Configuration</Text>
-            <View className="border border-border rounded-lg bg-surface p-3">
+            <View className="border border-border rounded-lg bg-surface p-3 space-y-3">
+              {Object.keys(toolTypes[formData.type].configSchema || {}).slice(0, 5).map((key) => {
+                const schema = toolTypes[formData.type].configSchema;
+                const fieldConfig = typeof schema[key] === 'object' ? schema[key] : { type: 'string' };
+                const description = fieldConfig.description || '';
+                const isSecret = fieldConfig.type === 'password' || 
+                                key.toLowerCase().includes('secret') || 
+                                key.toLowerCase().includes('token');
+                
+                return (
+                  <View key={key}>
+                    <View className="flex-row justify-between items-center mb-1">
+                      <Text className="text-secondary">{key}</Text>
+                      {description && (
+                        <Text className="text-xs text-secondary/70 italic">{description}</Text>
+                      )}
+                    </View>
+                    <TextInput
+                      className="border border-border rounded-lg p-2 bg-surface text-text"
+                      placeholder={`Enter ${key}`}
+                      value={(formData.config || {})[key] || ""}
+                      onChangeText={(text) => setFormData({
+                        ...formData, 
+                        config: {
+                          ...(formData.config || {}),
+                          [key]: text
+                        }
+                      })}
+                      secureTextEntry={isSecret}
+                    />
+                  </View>
+                );
+              })}
               
-                <ConfigForm 
-                  schema={toolTypes[formData.type].configSchema} 
-                  values={formData.config || {}} 
-                  onChange={(newConfig) => setFormData({...formData, config: newConfig})}
-                />
-              
+              {Object.keys(toolTypes[formData.type].configSchema || {}).length === 0 && (
+                <Text className="text-secondary italic p-2">No configuration fields available</Text>
+              )}
             </View>
           </View>) }
           
@@ -530,14 +479,43 @@ export default function Tools() {
           
           {formData.type && toolTypes[formData.type]?.configSchema && (<View>
             <Text className="text-secondary mb-1">Configuration</Text>
-            <View className="border border-border rounded-lg bg-surface p-3">
+            <View className="border border-border rounded-lg bg-surface p-3 space-y-3">
+              {Object.keys(toolTypes[formData.type].configSchema || {}).slice(0, 5).map((key) => {
+                const schema = toolTypes[formData.type].configSchema;
+                const fieldConfig = typeof schema[key] === 'object' ? schema[key] : { type: 'string' };
+                const description = fieldConfig.description || '';
+                const isSecret = fieldConfig.type === 'password' || 
+                                key.toLowerCase().includes('secret') || 
+                                key.toLowerCase().includes('token');
+                
+                return (
+                  <View key={key}>
+                    <View className="flex-row justify-between items-center mb-1">
+                      <Text className="text-secondary">{key}</Text>
+                      {description && (
+                        <Text className="text-xs text-secondary/70 italic">{description}</Text>
+                      )}
+                    </View>
+                    <TextInput
+                      className="border border-border rounded-lg p-2 bg-surface text-text"
+                      placeholder={`Enter ${key}`}
+                      value={(formData.config || {})[key] || ""}
+                      onChangeText={(text) => setFormData({
+                        ...formData, 
+                        config: {
+                          ...(formData.config || {}),
+                          [key]: text
+                        }
+                      })}
+                      secureTextEntry={isSecret}
+                    />
+                  </View>
+                );
+              })}
               
-                <ConfigForm 
-                  schema={toolTypes[formData.type].configSchema} 
-                  values={formData.config || {}} 
-                  onChange={(newConfig) => setFormData({...formData, config: newConfig})}
-                />
-              
+              {Object.keys(toolTypes[formData.type].configSchema || {}).length === 0 && (
+                <Text className="text-secondary italic p-2">No configuration fields available</Text>
+              )}
             </View>
           </View>) }
           
