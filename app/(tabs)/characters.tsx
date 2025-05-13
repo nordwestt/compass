@@ -138,6 +138,7 @@ export default function CharactersScreen() {
       {editingCharacter && (
         <View className="flex-1 m-4 relative">
           <EditCharacter
+            availableTools={[]}
             availableDocuments={availableDocuments}
             availableModels={availableModels}
             existingCharacter={editingCharacter}

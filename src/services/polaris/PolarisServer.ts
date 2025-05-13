@@ -140,7 +140,7 @@ export class PolarisServer {
         documentIds: character.documentIds,
         allowedModels: character.allowedModels,
         exposeAsModel: character.exposeAsModel,
-        tools: character.toolIds,
+        toolIds: character.toolIds,
       };
 
       const response = await this.makeRequest(
@@ -186,7 +186,7 @@ export class PolarisServer {
         documentIds: character.documentIds,
         allowedModels: character.allowedModels,
         exposeAsModel: character.exposeAsModel,
-        tools: character.toolIds,
+        toolIds: character.toolIds,
       };
 
       await this.makeRequest(

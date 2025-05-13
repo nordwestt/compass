@@ -7,5 +7,5 @@ export default function EditCharacterScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   
-  return <EditCharacter id={id} onSave={() => router.back()} />;
+  return <EditCharacter availableTools={[]} id={id} onSave={() => router.back()} />;
 } 

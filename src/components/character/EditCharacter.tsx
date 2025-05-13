@@ -27,10 +27,13 @@ import { Document } from "@/src/types/core";
 import { useLocalization } from "@/src/hooks/useLocalization";
 import { TemplateVariableSelector } from './TemplateVariableSelector';
 import { modalService } from "@/src/services/modalService";
+import { Tool } from "@/src/types/tools";
+import { ToolSelector } from "./ToolSelector";
 
 interface EditCharacterProps {
   availableModels: Model[];
   availableDocuments: Document[];
+  availableTools: Tool[];
   existingCharacter: Character;
   onSave: (character: Character) => void;
   onDelete: (character: Character) => void;
@@ -45,6 +48,7 @@ export default function EditCharacter({
   className,
   availableModels,
   availableDocuments,
+  availableTools,
   showCharacterExposeAsModel = false,
 }: EditCharacterProps) {
   const [character, setCharacter] = useState<Character | null>(null);
@@ -112,6 +116,22 @@ export default function EditCharacter({
       ...character,
       allowedModels: character.allowedModels.filter((p) => p.id !== model.id),
     });
+  };
+
+  const handleToolToggle = (toolId: string) => {
+    if (character?.toolIds?.includes(toolId)) {
+      // Remove the tool if it's already selected
+      setCharacter({
+        ...character!,
+        toolIds: character.toolIds.filter((id) => id !== toolId),
+      });
+    } else {
+      // Add the tool if it's not already selected
+      setCharacter({
+        ...character!,
+        toolIds: [...(character?.toolIds || []), toolId],
+      });
+    }
   };
 
   const saveCharacter = async () => {
@@ -299,6 +319,13 @@ export default function EditCharacter({
             selectedDocIds={character?.documentIds || []}
             onSelectDoc={handleDocumentToggle}
             onRemoveDoc={handleDocumentToggle}
+          />
+
+          <ToolSelector
+            tools={availableTools}
+            selectedToolIds={character?.toolIds || []}
+            onSelectTool={handleToolToggle}
+            onRemoveTool={handleToolToggle}
           />
         </View>
       </ScrollView>

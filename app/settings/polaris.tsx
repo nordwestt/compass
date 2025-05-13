@@ -19,6 +19,7 @@ import {
   polarisDocumentsAtom,
   polarisProvidersAtom,
   polarisServerAtom,
+  polarisToolsAtom,
 } from "@/src/hooks/atoms";
 import { useAtom, useAtomValue } from "jotai";
 import { Ionicons } from "@expo/vector-icons";
@@ -41,6 +42,7 @@ export default function PolarisSettingScreen() {
   const [characters, setCharacters] = useAtom(polarisCharactersAtom);
   const [providers, setProviders] = useAtom(polarisProvidersAtom);
   const [documents, setDocuments] = useAtom(polarisDocumentsAtom);
+  const [tools, setTools] = useAtom(polarisToolsAtom);
   const [polarisServerInfo, setPolarisServerInfo] = useAtom(polarisServerAtom);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -59,6 +61,7 @@ export default function PolarisSettingScreen() {
     setCharacters(await PolarisServer.getCharacters());
     setProviders(await PolarisServer.getProviders());
     setDocuments(await PolarisServer.getDocuments());
+    setTools(await PolarisServer.getTools());
   };
 
   const onPolarisLogin = async () => {
