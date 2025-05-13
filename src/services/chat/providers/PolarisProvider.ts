@@ -66,7 +66,7 @@ export class PolarisProvider implements ChatProvider {
             if (chunk.result.message) {
               console.log("Tool call result", chunk.result.message);
               toolCallResults.push(chunk.result.message);
-              return chunk.result.message;
+              return null;
             }
           }
           return null;
