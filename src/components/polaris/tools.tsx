@@ -364,7 +364,7 @@ export default function Tools() {
                     <TextInput
                       className="border border-border rounded-lg p-2 bg-surface text-text"
                       placeholder={`Enter ${key}`}
-                      value={(formData.config || {})[key] || ""}
+                      value={typeof (formData.config || {})[key] === 'string' ? (formData.config || {})[key] : ''}
                       onChangeText={(text) => setFormData({
                         ...formData, 
                         config: {
@@ -499,7 +499,7 @@ export default function Tools() {
                     <TextInput
                       className="border border-border rounded-lg p-2 bg-surface text-text"
                       placeholder={`Enter ${key}`}
-                      value={(formData.config || {})[key] || ""}
+                      value={typeof (formData.config || {})[key] === 'string' ? (formData.config || {})[key] : ''}
                       onChangeText={(text) => setFormData({
                         ...formData, 
                         config: {
