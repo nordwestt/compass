@@ -45,17 +45,10 @@ export class PolarisProvider implements ChatProvider {
       let url = `${model.provider.endpoint}/api/chat/stream`;
       if (PlatformCust.isTauri) url = await getProxyUrl(url);
       console.log("Sending request to", url);
-      // let response = await fetch(url, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.provider.apiKey}` },
-      //   body: JSON.stringify({
-      //     model: model.id,
-      //     messages: newMessages,
-      //     stream: false
-      //   })
-      // });
-      // let data = await response.json();
-      // return data.message.content;
+      
+      // Track tool call results to include in the response
+      const toolCallResults: string[] = [];
+      
       yield* streamPolarisResponse(
         url,
         {
@@ -66,12 +59,32 @@ export class PolarisProvider implements ChatProvider {
         {
           Authorization: `Bearer ${this.provider.apiKey}`,
         },
+        // Add a callback to handle tool call results
+        (chunk: any) => {
+          // Check if this is a tool call result
+          if (chunk && chunk.toolCallId && chunk.result) {
+            if (chunk.result.message) {
+              console.log("Tool call result", chunk.result.message);
+              toolCallResults.push(chunk.result.message);
+              return chunk.result.message;
+            }
+          }
+          return null;
+        }
       );
+      
+      // If we have tool call results, yield them
+      if (toolCallResults.length > 0) {
+        console.log("Tool call results", toolCallResults);
+        for (const result of toolCallResults) {
+          //yield result;
+        }
+      }
     } catch (error: any) {
       LogService.log(
         error,
         {
-          component: "OllamaProvider",
+          component: "PolarisProvider",
           function: `sendMessage: ${model.provider.endpoint}`,
         },
         "error",

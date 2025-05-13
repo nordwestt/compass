@@ -117,7 +117,7 @@ export async function* streamPolarisResponse(
   url: string,
   payload: any,
   headers?: Record<string, string>,
-  parseChunk: (parsed: any) => string = (parsed) =>
+  parseChunk: (parsed: any) => string | null = (parsed) =>
     parsed.message?.content || "",
   signal?: AbortSignal,
 ): AsyncGenerator<string> {
@@ -143,7 +143,25 @@ export async function* streamPolarisResponse(
     const chunk = new TextDecoder().decode(value);
     let lines = chunk.split("\n");
     for (let line of lines) {
-      if (line.startsWith("0:")) yield line.substring(3, line.length - 1);
+      if (line.startsWith("0:")) {
+        // Text content
+        yield line.substring(3, line.length - 1);
+      } else if (line.startsWith("9:") || line.startsWith("a:")) {
+        // Tool call or tool call result
+        try {
+          const jsonStart = line.indexOf(":");
+          if (jsonStart !== -1) {
+            const jsonStr = line.substring(jsonStart + 1);
+            const parsed = JSON.parse(jsonStr);
+            const result = parseChunk(parsed);
+            if (result) {
+              yield result;
+            }
+          }
+        } catch (error) {
+          console.error("Error parsing tool call:", error, line);
+        }
+      }
     }
   }
 }
