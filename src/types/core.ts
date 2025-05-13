@@ -46,6 +46,7 @@ export interface Character {
   voice?: Voice;
   allowedModels?: AllowedModel[];
   exposeAsModel?: boolean;
+  toolIds?: string[];
 }
 
 export interface Voice {
