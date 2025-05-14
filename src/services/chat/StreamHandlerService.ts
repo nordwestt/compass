@@ -4,6 +4,7 @@ import { Thread } from '@/src/types/core';
 import { Readable } from 'stream';
 import LogService from '@/utils/LogService';
 import { toastService } from '../toastService';
+import { ModelNotFoundException } from './streamUtils';
 
 export class StreamHandlerService {
   constructor(private tts: any) {}
@@ -39,6 +40,11 @@ export class StreamHandlerService {
 
     } 
     catch(error:any){
+
+      if(error instanceof ModelNotFoundException){
+        throw error;
+      }
+      
       console.log('error', error);
       const vercelErrorResponse = error?.error?.lastError?.responseBody;
       if(vercelErrorResponse){

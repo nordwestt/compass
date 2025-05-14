@@ -1,5 +1,5 @@
 import { getDefaultStore, useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { currentThreadAtom, threadActionsAtom, ThreadAction, searchEnabledAtom, documentsAtom } from './atoms';
+import { currentThreadAtom, threadActionsAtom, ThreadAction, searchEnabledAtom, documentsAtom, availableModelsAtom } from './atoms';
 import { useRef } from 'react';
 import { MentionedCharacter } from '@/src/components/chat/ChatInput';
 import { useTTS } from './useTTS';
@@ -11,6 +11,7 @@ import { Character, ChatMessage, Thread, Document, Model, Provider } from '@/src
 import LogService from '@/utils/LogService';
 import { toastService } from '@/src/services/toastService';
 import { MessageContext, MessageTransformPipeline, relevantPassagesTransform, urlContentTransform, webSearchTransform, threadUpdateTransform, firstMessageTransform, documentContextTransform, templateVariableTransform } from './pipelines';
+import { ModelNotFoundException } from '@/src/services/chat/streamUtils';
 
 export function useChat() {
   const currentThread = useAtomValue(currentThreadAtom);
@@ -20,6 +21,7 @@ export function useChat() {
   const abortController = useRef<AbortController | null>(null);
   const { search } = useSearch();
   const tts = useTTS();
+  const [models, setModels] = useAtom(availableModelsAtom);
 
   const contextManager = new CharacterContextManager();
   const streamHandler = new StreamHandlerService(tts);
@@ -96,10 +98,27 @@ export function useChat() {
 
     } catch (error: any) {
       console.log('error', error);
-      toastService.danger({
-        title: 'Error sending message',
-        description: error.message
-      });
+      
+      if (error instanceof ModelNotFoundException && currentThread.selectedModel) {
+        
+        const updatedModels = models.filter(
+          (m: Model) => !(m.id === currentThread.selectedModel?.id && 
+                         m.provider.id === currentThread.selectedModel?.provider.id)
+        );
+        
+        setModels(updatedModels);
+        
+        toastService.danger({
+          title: 'Model Not Available',
+          description: `The model "${currentThread.selectedModel.id}" is no longer available. It has been removed from your models list.`
+        });
+      } else {
+        toastService.danger({
+          title: 'Error sending message',
+          description: error.message
+        });
+      }
+      
       LogService.log(error, {component: 'useChat', function: 'handleSend'}, 'error');
     } finally {
       abortController.current = null;

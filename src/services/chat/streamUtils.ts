@@ -5,6 +5,14 @@ export interface streamOptions {
   signal?: AbortSignal;
   parseChunk?: (parsed: any) => string;
 }
+
+export class ModelNotFoundException extends Error {
+  constructor(modelId: string) {
+    super(`Model "${modelId}" not found or no longer available`);
+    this.name = "ModelNotFoundException";
+  }
+}
+
 export async function* streamOpenAIResponse(
   url: string,
   payload: any,
@@ -32,6 +40,18 @@ export async function* streamOpenAIResponse(
       stream: true,
     }),
   } as any);
+  
+  // Check for 404 status and throw ModelNotFoundException
+  if (response.status === 404) {
+    throw new ModelNotFoundException(payload.model);
+  }
+  
+  // Check for other error responses
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`API error (${response.status}): ${errorText}`);
+  }
+  
   const reader = response.body?.getReader();
   if (!reader) {
     throw new Error("No reader available");
@@ -84,6 +104,18 @@ export async function* streamOllamaResponse(
       stream: true,
     }),
   } as any);
+  
+  // Check for 404 status and throw ModelNotFoundException
+  if (response.status === 404) {
+    throw new ModelNotFoundException(payload.model);
+  }
+  
+  // Check for other error responses
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`API error (${response.status}): ${errorText}`);
+  }
+  
   const reader = response.body?.getReader();
   if (!reader) {
     throw new Error("No reader available");
@@ -130,6 +162,18 @@ export async function* streamPolarisResponse(
       stream: true,
     }),
   } as any);
+  
+  // Check for 404 status and throw ModelNotFoundException
+  if (response.status === 404) {
+    throw new ModelNotFoundException(payload.model);
+  }
+  
+  // Check for other error responses
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`API error (${response.status}): ${errorText}`);
+  }
+  
   const reader = response.body?.getReader();
   if (!reader) {
     throw new Error("No reader available");

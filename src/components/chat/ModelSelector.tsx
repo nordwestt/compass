@@ -131,6 +131,11 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
     setDropdownOptions(options);
 
+    // if model is not available, try to set the first available model
+    if(!models.find((m) => m.id === thread.selectedModel?.id)){
+      onModelSelect(models.find(x=>true));
+    }
+
   }, [characters, models]);
 
   useEffect(() => {

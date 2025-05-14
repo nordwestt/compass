@@ -4,8 +4,8 @@ import Markdown from 'react-native-markdown-display';
 import { useColorScheme } from 'nativewind';
 import { Character } from '@/src/types/core';
 import { Text } from 'react-native';
-import { currentThreadAtom, editingMessageIndexAtom, fontPreferencesAtom } from '@/src/hooks/atoms';
-import { useAtomValue } from 'jotai';
+import { currentThreadAtom, editingMessageIndexAtom, fontPreferencesAtom, isGeneratingAtom } from '@/src/hooks/atoms';
+import { useAtom, useAtomValue } from 'jotai';
 import { InteractionManager, Clipboard } from 'react-native';
 import { toastService } from '@/src/services/toastService';
 import { Ionicons } from '@expo/vector-icons';
@@ -75,6 +75,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
   const preferences = useAtomValue(fontPreferencesAtom);
   const editingMessageIndex = useAtomValue(editingMessageIndexAtom);
   const isDark = colorScheme === 'dark';
+  const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
 
   const markdownStyles = {
     body: {
@@ -198,7 +199,7 @@ export const Message: React.FC<MessageProps> = ({ content, isUser, character, in
           </Text>
         </View>
       )} */}
-      { !isUser && displayContent.length == 0 && (
+      { !isUser && displayContent.length == 0 && isGenerating && (
             <View className="relative">
               <View className="bg-surface border border-border w-10 h-10 rounded-full items-center justify-center shadow-md">
                 <Ionicons 

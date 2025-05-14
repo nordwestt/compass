@@ -13,6 +13,7 @@ import { embed } from "ai";
 
 import { Platform as PlatformCust } from "@/src/utils/platform";
 import { streamPolarisResponse } from "@/src/services/chat/streamUtils";
+import { ModelNotFoundException } from "@/src/services/chat/streamUtils";
 
 export class PolarisProvider implements ChatProvider {
   provider: Provider;
@@ -70,7 +71,8 @@ export class PolarisProvider implements ChatProvider {
             }
           }
           return null;
-        }
+        },
+        signal
       );
       
       // If we have tool call results, yield them
@@ -81,6 +83,11 @@ export class PolarisProvider implements ChatProvider {
         }
       }
     } catch (error: any) {
+      // Rethrow ModelNotFoundException to be handled by useChat
+      if (error instanceof ModelNotFoundException) {
+        throw error;
+      }
+      
       LogService.log(
         error,
         {
