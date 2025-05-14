@@ -9,7 +9,7 @@ export const PREDEFINED_PROVIDERS = {
       tts: false,
       stt: false,
     },
-    logo: "https://nordwestt.com/compass/favicon.ico",
+    logo: "sparkles",
     keyRequired: true,
     signupUrl: "https://nordwestt.com/compass/signup",
   } as Provider,

@@ -6,12 +6,14 @@ import { TextInput } from "react-native-gesture-handler";
 import { useAtom } from 'jotai';
 import { keyboardEventAtom } from '../../hooks/useKeyboardShortcuts';
 import { Ionicons } from "@expo/vector-icons";
+import LogoRenderer from "./LogoRenderer";
 
 export interface DropdownElement {
     title: string;
     id: string;
     image?: string;
     icon?: string;
+    logo?: string;
 }
 
 interface DropdownProps {
@@ -118,11 +120,8 @@ export const Dropdown = ({
                 index === highlightedIndex ? 'bg-surface' : ''
               } hover:bg-surface ${dropdownOptionClassName}`}
             >
-              {child.image && (
-                <Image source={{uri: child.image as any}} className={`!h-[24px] !w-[24px] rounded-full mr-3  ${selected?.id === child.id ? "border-primary border-4" : ""}`}/>
-              )}
-              {!child.image && child.icon && (
-                <Ionicons name={child.icon as any} size={24} className="!text-primary mr-3 !h-[24px] !w-[24px]" />
+              {child.logo && (
+                <LogoRenderer logo={child.logo} size={24} className="mr-3 !text-primary " />
               )}
 
               <View className="flex-1">
@@ -145,13 +144,10 @@ export const Dropdown = ({
         }}
         className={`flex-row items-center px-2 h-12 py-2 rounded-lg bg-background hover:opacity-70 border border-border ${className}`}
       >
-        {selected?.image && (
-          <Image source={selected.image as any} className="!h-[32px] !w-[32px] rounded-full mr-3"/>
+        {selected?.logo && (
+          <LogoRenderer logo={selected.logo} size={24} className="mr-3 !text-primary" />
         )}
-        {!selected?.image && selected?.icon && (
-          <Ionicons name={selected.icon as any} size={24} className="!text-primary mr-3 !h-[24px] !w-[24px]" />
-        )}
-        <Text className="font-medium text-black dark:text-white truncate" numberOfLines={1}>
+        <Text className="font-medium text-text truncate" numberOfLines={1}>
           {selected?.title}
         </Text>
         <View className="ml-auto">

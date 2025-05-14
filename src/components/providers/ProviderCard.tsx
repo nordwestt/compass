@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Provider } from "@/src/types/core";
 import { PROVIDER_LOGOS } from "@/src/constants/logos";
+import LogoRenderer from "../ui/LogoRenderer";
 
 interface ProviderCardProps {
   provider: Provider;
@@ -23,10 +24,7 @@ export function ProviderCard({
       <View className="flex-row items-center justify-between h-14">
         <View className="flex-row items-center p-2">
           {provider.logo && (
-            <Image
-              source={{ uri: provider.logo }}
-              className="mr-2 !h-[48px] !w-[48px]"
-            />
+            <LogoRenderer logo={provider.logo} size={32} className="mr-2 !text-primary" />
           )}
           <Text className="text-lg font-semibold text-text">
             {provider.name}

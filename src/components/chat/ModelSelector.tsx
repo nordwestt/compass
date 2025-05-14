@@ -116,6 +116,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       id: model.id,
       title: model.name,
       image: model.provider.logo,
+      logo: model.provider.logo,
       model: model,
     })));
 
@@ -124,6 +125,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       title: character.name,
       image: character.image,
       icon: character.icon,
+      logo: character.icon,
       character: character,
     })));
 
@@ -140,7 +142,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         id: character.id,
         title: character.name,
         image: character.image,
-        icon: character.icon
+        icon: character.icon,
+        logo: character.icon,
       });
 
       const model = getCharacterModel(character);
@@ -153,7 +156,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       setSelectedDropdownOption({
         id: thread.selectedModel.id,
         title: thread.selectedModel.name,
-        image: thread.selectedModel.provider.logo
+        image: thread.selectedModel.provider.logo,
+        logo: thread.selectedModel.provider.logo,
       });
     }
   }, [thread.selectedModel, thread.character]);

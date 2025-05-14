@@ -5,6 +5,7 @@ import { Provider } from "@/src/types/core";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
 import { useState, useEffect } from "react";
 import { useLocalization } from "@/src/hooks/useLocalization";
+import LogoRenderer from "../ui/LogoRenderer";
 
 interface ProviderTypeSelectorProps {
   selectedProvider: Provider;
@@ -98,10 +99,7 @@ export function ProviderTypeSelector({
             >
               <View className="flex-row items-center mb-1">
                 {provider.logo && (
-                  <Image
-                    source={{ uri: provider.logo }}
-                    className="!w-[24px] !h-[24px] rounded-full mr-2"
-                  />
+                  <LogoRenderer logo={provider.logo} size={24} className="mr-2 !text-primary" />
                 )}
                 <Text className="text-text flex-1">{provider.name}</Text>
               </View>
