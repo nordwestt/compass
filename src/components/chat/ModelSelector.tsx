@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
   availableModelsAtom,
   charactersAtom,
   selectedChatDropdownOptionAtom,
+  currentThreadAtom,
 } from "@/src/hooks/atoms";
 import { PROVIDER_LOGOS } from "@/src/constants/logos";
 import { Provider } from "@/src/types/core";
@@ -69,6 +70,17 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const [dropdownOptions, setDropdownOptions] = useState<DropdownElement[]>([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState<DropdownElement>();
+  const [currentThread, setCurrentThread] = useAtom(currentThreadAtom);
+  const previousThreadId = useRef(currentThread.id);
+
+  const findCharacterOrModelWithId = (id: string | undefined) => {
+    if(!id) return null;
+    const model = models.find(x=>x.id == id);
+    if(model) return {type: 'model', value: model};
+    const character = characters.find(x=>x.id == id);
+    if(character) return {type: 'character', value: character};
+    return null;
+  }
 
 
   const getCharacterModel = (character: Character) => {
@@ -78,6 +90,23 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     // use first model if no models are available
     return models.find(x=>true);
   }
+
+
+  // When thread changes, if thread has no model or character, use the selected dropdown option
+  useEffect(() => {
+    if (previousThreadId.current !== currentThread.id) {
+      previousThreadId.current = currentThread.id;
+      const item = findCharacterOrModelWithId(selectedDropdownOption?.id);
+      if(item){
+        if(item.type == 'model'){
+          onModelSelect(item.value as Model);
+        } else if(item.type == 'character'){
+          onCharacterSelect(item.value as Character);
+        }
+      }
+    }
+
+  }, [currentThread.id]);
 
   useEffect(() => {
     // Check if character has a required model
