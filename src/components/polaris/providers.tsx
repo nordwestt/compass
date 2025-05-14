@@ -138,7 +138,7 @@ export default function Providers({ className }: ProvidersProps) {
         <View className="flex-row justify-between items-center mb-4">
           <View className="flex-row items-center p-4">
             <Ionicons
-              name="server"
+              name="git-branch"
               size={32}
               className="!text-primary mr-2 pb-2"
             />
@@ -177,33 +177,6 @@ export default function Providers({ className }: ProvidersProps) {
             generation, image generation, search, and more.
           </Text>
         </View>
-
-        {polarisServer && (
-          <View className="flex-row items-center py-2 mb-4 bg-primary/10 rounded-lg p-2">
-            <Ionicons
-              name="checkmark-circle"
-              size={20}
-              className="!text-primary mr-2"
-            />
-            <Text className="text-text flex-1 font-medium">
-              Connected to Polaris at {polarisServer.endpoint}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                setPolarisServer(null);
-                setProviders([]);
-                setModels([]);
-                toastService.success({
-                  title: "Disconnected",
-                  description: "Disconnected from Polaris server",
-                });
-              }}
-              className="bg-surface px-3 py-1 rounded-lg"
-            >
-              <Text className="text-danger">Disconnect</Text>
-            </TouchableOpacity>
-          </View>
-        )}
 
         <View className="md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {providers.map((provider, index) => (
