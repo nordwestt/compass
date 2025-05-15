@@ -18,8 +18,8 @@ export const ThreadsSidebar = () => {
       onMouseLeave={() => setIsSidebarVisible(false)}
     >
       <View 
-        className={`h-full border-r-2 border-border bg-surface m-2 rounded-lg p-1 my-4 transition-all duration-200 ${
-          isSidebarVisible ? 'w-64 shadow-lg' : 'w-10'
+        className={`h-full border-r-2 border-border bg-surface m-2  p-1 my-4 transition-all duration-200 ${
+          isSidebarVisible ? 'w-64 shadow-lg rounded-lg' : 'w-10 rounded-lg'
         }`}
       >
         {isSidebarVisible ? (
