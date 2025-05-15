@@ -85,7 +85,7 @@ export const currentThreadAtom = atomWithAsyncStorage<Thread>(
   "currentThread",
   createDefaultThread("Your first thread"),
 );
-export const sidebarVisibleAtom = atom(true);
+export const sidebarVisibleAtom = atom(false);
 
 // Derived atoms
 export const currentThreadMessagesAtom = atom(
