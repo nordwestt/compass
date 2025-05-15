@@ -4,6 +4,9 @@ import { Modal } from '@/src/components/ui/Modal';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom } from 'jotai';
 import { hasSeenOnboardingAtom } from '@/src/hooks/atoms';
+import { useProviders } from "@/src/hooks/useProviders";
+import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
+
 
 const ONBOARDING_PAGES = [
   {
@@ -32,10 +35,19 @@ export function WelcomeIntroduction() {
   const [isVisible, setIsVisible] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [, setHasSeenOnboarding] = useAtom(hasSeenOnboardingAtom);
+  const {
+    addUpdateProvider,
+  } = useProviders();
 
   const handleClose = () => {
     setIsVisible(false);
     setHasSeenOnboarding(true);
+    // get the polaris provider
+    addUpdateProvider({
+      ...PREDEFINED_PROVIDERS.compass,
+      id: crypto.randomUUID(),
+      apiKey: "user_api_key_here"
+    });
   };
 
   const handleNext = () => {
