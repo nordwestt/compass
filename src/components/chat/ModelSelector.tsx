@@ -131,9 +131,17 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
     setDropdownOptions(options);
 
+    console.log("dropdownOptions", models);
+
     // if model is not available, try to set the first available model
-    if(!models.find((m) => m.id === thread.selectedModel?.id)){
+    if(!models.find((m) => m.id === thread.selectedModel?.id) && models.length > 0){
       onModelSelect(models.find(x=>true));
+      setSelectedDropdownOption({
+        id: models.find(x=>true)!.id,
+        title: models.find(x=>true)!.name,
+        image: models.find(x=>true)!.provider.logo,
+        logo: models.find(x=>true)!.provider.logo,
+      });
     }
 
   }, [characters, models]);
