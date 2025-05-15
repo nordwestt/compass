@@ -11,8 +11,8 @@ export const ThreadsSidebar = () => {
 
   return (
     <View 
-      className={`group absolute left-0 top-20 h-[70%] my-auto z-[1] transition-all duration-200 ${
-        isSidebarVisible ? 'w-64' : 'w-10'
+      className={`group absolute left-0 my-auto z-[1] transition-all duration-200 ${
+        isSidebarVisible ? 'w-64 top-20 h-[70%]' : 'w-10 h-[20%] top-40'
       }`}
       onMouseEnter={() => setIsSidebarVisible(true)}
       onMouseLeave={() => setIsSidebarVisible(false)}
@@ -33,7 +33,7 @@ export const ThreadsSidebar = () => {
           </>
         ) : (
           <View className="flex items-center justify-center h-full">
-            <Ionicons name="chevron-forward" size={24} className="!text-text" />
+            <Ionicons name="chatbubbles" size={24} className="!text-primary" />
           </View>
         )}
       </View>
