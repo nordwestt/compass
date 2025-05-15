@@ -3,7 +3,7 @@ import { PROVIDER_LOGOS } from "@/src/constants/logos";
 export const PREDEFINED_PROVIDERS = {
   compass:{
     name: "Polaris",
-    endpoint: "http://localhost:3000",
+    endpoint: "https://polaris.compass-ai.chat",
     capabilities: {
       llm: true,
       tts: false,
@@ -11,7 +11,7 @@ export const PREDEFINED_PROVIDERS = {
     },
     logo: "sparkles",
     keyRequired: true,
-    signupUrl: "https://nordwestt.com/compass/signup",
+    signupUrl: "",
   } as Provider,
   ollama: {
     name: "Ollama",

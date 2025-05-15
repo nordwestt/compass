@@ -61,6 +61,9 @@ export function ProviderFormFields({
     p => p.endpoint === formData.endpoint
   );
 
+  const selectedProviderName = selectedProvider.name?.toLowerCase();
+  const allowCustomUrl = selectedProviderName?.includes('ollama') || selectedProviderName?.includes('polaris');
+
   const onMicrosoftAuthSuccess = async (apiKey: string) => {
     console.log("Microsoft auth success", apiKey);
     setAuthSuccess(true);
@@ -220,7 +223,7 @@ export function ProviderFormFields({
         </View>)}
       </View>
 
-      {(isCustom || selectedProvider.name?.toLowerCase().includes('ollama')) && (
+      {allowCustomUrl && (
         <View>
           <Text className="text-sm font-medium text-text mb-2">
             {t('settings.providers.form.endpoint_url')}
