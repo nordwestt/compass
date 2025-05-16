@@ -131,6 +131,9 @@ export const Dropdown = ({
               </View>
             </TouchableOpacity>
           ))}
+          {filteredChildren.length === 0 && (
+            <Text className="text-text p-3">No results found</Text>
+          )}
         </ScrollView>
       )
     }
@@ -139,6 +142,12 @@ export const Dropdown = ({
   
   <View className="">
     <TouchableOpacity 
+        onMouseEnter={() => {
+          setIsOpen(true)
+        }}
+        onMouseLeave={() => {
+          setIsOpen(false)
+        }}
         onPress={() => {
           setIsOpen(!isOpen)
         }}
@@ -154,7 +163,14 @@ export const Dropdown = ({
           <Ionicons name={isOpen ? iconOpen : iconClosed as any} size={iconSize} className="text-text" />
         </View>
       </TouchableOpacity>
-      {isOpen && <View className={`z-200 ${position === "left" ? "" : "right-0"} absolute ${openUpwards ? "bottom-12" : "mt-12"} rounded-lg overflow-hidden max-h-64 bg-background border border-border shadow-lg`}>
+      {isOpen && <View 
+      onMouseEnter={() => {
+        setIsOpen(true)
+      }}
+      onMouseLeave={() => {
+        setIsOpen(false)
+      }}
+      className={`z-200 ${position === "left" ? "" : "right-0"} absolute ${openUpwards ? "bottom-12" : "mt-12"} rounded-lg overflow-hidden max-h-64 bg-background border border-border shadow-lg`}>
       {showSearch && (
             <View className="p-2 border-b border-border flex-row items-center bg-surface m-2 rounded-md">
               <Ionicons name="search-outline" size={20} className="text-text mr-1" />
