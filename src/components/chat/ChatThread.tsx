@@ -13,12 +13,8 @@ import {
   editingMessageIndexAtom,
   isGeneratingAtom,
   availableProvidersAtom,
-  ttsEnabledAtom,
-  defaultVoiceAtom,
   previewCodeAtom,
   sidebarVisibleAtom,
-  polarisUserAtom,
-  availableModelsAtom
 } from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
 import { CodePreview } from './CodePreview';
