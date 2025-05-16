@@ -103,21 +103,6 @@ export const ChatThread: React.FC = () => {
     }
   };
 
-
-  const handleSelectModel = (model: Model | undefined) => {
-    dispatchThread({
-      type: 'update',
-      payload: { ...currentThread, selectedModel: model }
-    });
-  };
-
-  const handleSelectCharacter = (character: Character) => {
-    dispatchThread({
-      type: 'update',
-      payload: { ...currentThread, character: character }
-    });
-  };
-
   const handleMessagePress = (index: number, message: ChatMessage) =>{
     if (message.isUser) {
       console.log("User pressed message", message, index);
