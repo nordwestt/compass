@@ -33,6 +33,7 @@
     },
     "characters":{
         "characters": "Characters",
+        "no_characters": "You have no characters. Create a character to get started.",
         "new_character": "New character",
         "reset_to_default": "Reset to default",
         "edit_character":{

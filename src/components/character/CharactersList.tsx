@@ -54,7 +54,7 @@ export default function CharactersList({
           <Ionicons name="refresh" size={20} className="text-primary" />
           <Text className="text-primary ml-2 font-medium">{t('characters.reset_to_default')}</Text>
         </TouchableOpacity>
-        {showAddButton && onAddCharacter && (
+        {showAddButton && onAddCharacter && characters.length > 0 && (
           <TouchableOpacity
             onPress={onAddCharacter}
             className="bg-primary px-4 py-2 rounded-lg flex-row items-center hover:opacity-80"
@@ -64,7 +64,7 @@ export default function CharactersList({
           </TouchableOpacity>
         )}
       </View>
-      <ScrollView className="flex-1 p-4">
+      {characters.length > 0 && (<ScrollView className="flex-1 p-4">
         <View className="md:gap-4 gap-2 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {characters.map((character) => (
             <TouchableOpacity
@@ -101,7 +101,21 @@ export default function CharactersList({
             </TouchableOpacity>
           ))}
         </View>
-      </ScrollView>
+      </ScrollView>)}
+      {characters.length == 0 && (
+        <View className="flex-1 justify-center items-center">
+          {showAddButton && onAddCharacter && (
+          <TouchableOpacity
+            onPress={onAddCharacter}
+            className="bg-primary px-4 py-4 rounded-lg flex-row items-center hover:opacity-80"
+          >
+            <Ionicons name="add" size={20} color="white" />
+            <Text className="text-white ml-2 font-medium">{t('characters.new_character')}</Text>
+          </TouchableOpacity>
+        )}
+          <Text className="text-gray-500 mt-4">{t('characters.no_characters')}</Text>
+        </View>
+      )}
     </View>
   );
 }

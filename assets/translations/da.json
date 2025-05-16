@@ -33,6 +33,7 @@
     },
     "characters":{
         "characters": "Karakterer",
+        "no_characters": "Du har ingen karakterer. Opret en karakter for at komme i gang.",
         "new_character": "Ny karakter",
         "reset_to_default": "Nulstil til standard",
         "edit_character":{

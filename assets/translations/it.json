@@ -33,6 +33,7 @@
     },
     "characters":{
         "characters": "Personaggi",
+        "no_characters": "Non hai personaggi. Crea un personaggio per iniziare.",
         "new_character": "Nuovo personaggio",
         "reset_to_default": "Ripristina ai valori predefiniti",
         "edit_character":{
