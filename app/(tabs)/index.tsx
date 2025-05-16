@@ -27,7 +27,6 @@ export default function HomeScreen() {
   if (isDesktop) {
     return (
       <View className="bg-background flex-1 flex-row">
-        <ThreadsSidebar />
         <View className="flex-1 bg-background rounded-t-xl">
           <ChatThread />
         </View>

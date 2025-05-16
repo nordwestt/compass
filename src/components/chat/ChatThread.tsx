@@ -34,6 +34,7 @@ import { useWindowDimensions } from 'react-native';
 import { Settings } from './Settings';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalization } from '@/src/hooks/useLocalization';
+import { ThreadsSidebar } from '../web/ThreadsSidebar';
 
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
@@ -205,7 +206,6 @@ export const ChatThread: React.FC = () => {
 
     <View className="flex-1 bg-background">
       <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
-      
         <ModelSelector 
               onModelSelect={handleSelectModel}
               onCharacterSelect={handleSelectCharacter}
@@ -232,6 +232,7 @@ export const ChatThread: React.FC = () => {
         </View>
         
       </View>
+      <ThreadsSidebar />
       
       {isEmpty ? (
         <View className="flex-1 items-center justify-center">
