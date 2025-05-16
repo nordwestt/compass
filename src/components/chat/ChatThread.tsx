@@ -2,13 +2,9 @@ import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { View, ScrollView, Platform, TouchableOpacity, Text, FlatList } from 'react-native';
 import { Message } from './Message';
 import { ChatInput, ChatInputRef } from './ChatInput';
-import { ChatSelection, ModelSelector } from './ModelSelector';
-import { useModels } from '@/src/hooks/useModels';
 import { useChat } from '@/src/hooks/useChat';
-import { CharacterSelector } from '@/src/components/character/CharacterSelector';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Model, Character, ChatMessage } from '@/src/types/core';
-import { Platform as PlatformCustom } from '@/src/utils/platform';
 
 import { 
   currentThreadAtom, 
@@ -25,16 +21,14 @@ import {
   availableModelsAtom
 } from '@/src/hooks/atoms';
 import { MentionedCharacter } from './ChatInput';
-import { FlashList } from '@shopify/flash-list';
-import { VoiceSelector } from './VoiceSelector';
 import { CodePreview } from './CodePreview';
 import { parseCodeBlocks } from '@/src/utils/codeParser';
 import { Modal } from '@/src/components/ui/Modal';
 import { useWindowDimensions } from 'react-native';
-import { Settings } from './Settings';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalization } from '@/src/hooks/useLocalization';
 import { ThreadsSidebar } from '../web/ThreadsSidebar';
+import { ChatTopbar } from './ChatTopbar';
 
 export const ChatThread: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
@@ -44,18 +38,12 @@ export const ChatThread: React.FC = () => {
   const [isGenerating, setIsGenerating] = useAtom(isGeneratingAtom);
   const dispatchThread = useSetAtom(threadActionsAtom);
   const [providers] = useAtom(availableProvidersAtom);
-  const [ttsEnabled, setTtsEnabled] = useAtom(ttsEnabledAtom);
-  const [selectedVoice, setSelectedVoice] = useAtom(defaultVoiceAtom);
-  const [models] = useAtom(availableModelsAtom);
   const [sidebarVisible, setSidebarVisible] = useAtom(sidebarVisibleAtom);
-  const [polarisUser] = useAtom(polarisUserAtom);
   const previousThreadId = useRef(currentThread.id);
 
   const [editingMessageIndex, setEditingMessageIndex] = useAtom(editingMessageIndexAtom);
 
   const [previewCode, setPreviewCode] = useAtom(previewCodeAtom);
-
-  const [contentHeight, setContentHeight] = useState(50);
 
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width >= 768;
@@ -125,7 +113,6 @@ export const ChatThread: React.FC = () => {
       type: 'update',
       payload: { ...currentThread, selectedModel: model }
     });
-
   };
 
   const handleSelectCharacter = (character: Character) => {
@@ -205,33 +192,7 @@ export const ChatThread: React.FC = () => {
     <View className="flex-row flex-1">
 
     <View className="flex-1 bg-background">
-      <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
-        <ModelSelector 
-              onModelSelect={handleSelectModel}
-              onCharacterSelect={handleSelectCharacter}
-              thread={currentThread}
-              character={currentThread.character}
-              className=''
-            />
-        <View className="flex-row items-center gap-2">
-          {polarisUser && (
-            <View className="flex-row items-center gap-2">
-              <Text className="text-sm text-text">{polarisUser.firstName}</Text>
-            </View>
-          )}
-        
-            <Settings thread={currentThread}></Settings>
-          
-          
-          {ttsEnabled && (
-            <VoiceSelector
-              selectedVoice={selectedVoice}
-              onSelectVoice={setSelectedVoice}
-            />
-          )}
-        </View>
-        
-      </View>
+      <ChatTopbar />
       <ThreadsSidebar />
       
       {isEmpty ? (
