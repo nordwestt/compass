@@ -44,6 +44,7 @@ interface ModelDropdownElement extends DropdownElement {
 }
 
 interface ModelSelectorProps {
+  openUpwards?: boolean;
   thread: Thread;
   character?: Character;
   className?: string;
@@ -52,6 +53,7 @@ interface ModelSelectorProps {
 }
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({
+  openUpwards = false,
   thread,
   character,
   onModelSelect,
@@ -318,6 +320,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   return (
     <View className={`flex-row gap-2 items-center ${className}`}>
       <Dropdown
+        openUpwards={openUpwards}
         showSearch={true}
         selected={selectedDropdownOption}
         onSelect={handleDropdownSelect}

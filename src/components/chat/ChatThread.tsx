@@ -173,7 +173,7 @@ export const ChatThread: React.FC = () => {
     <View className="flex-row flex-1">
 
     <View className="flex-1 bg-background">
-      <ChatTopbar />
+      {Platform.OS != 'web' || true && (<ChatTopbar />)}
       <ThreadsSidebar />
       
       {isEmpty ? (

@@ -32,7 +32,7 @@ export const ChatTopbar: React.FC = () => {
 
 
     return (
-        <View className="p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 mx-2 z-10">
+        <View className="absolute top-0 left-0 right-0 w-[25%] mx-auto p-2 flex-row justify-between items-center border-b border-border bg-surface shadow-2xl rounded-xl mt-2 z-10 opacity-60 hover:opacity-100 transition-all duration-200">
         <ModelSelector 
             onModelSelect={handleSelectModel}
             onCharacterSelect={handleSelectCharacter}

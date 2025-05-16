@@ -113,6 +113,7 @@ export function ModelPreferenceSelector({
       <Modal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
+        className="w-2/3"
       >
         <View className="p-4 bg-surface rounded-lg">
           <Text className="text-lg font-bold text-text mb-4 text-center">
