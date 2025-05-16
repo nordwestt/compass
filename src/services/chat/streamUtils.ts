@@ -188,8 +188,9 @@ export async function* streamPolarisResponse(
     let lines = chunk.split("\n");
     for (let line of lines) {
       if (line.startsWith("0:")) {
-        // Text content
-        yield line.substring(3, line.length - 1);
+        // Text content - replace escaped newlines with actual newlines
+        const content = line.substring(3, line.length - 1);
+        yield content.replace(/\\n/g, '\n');
       } else if (line.startsWith("9:") || line.startsWith("a:")) {
         // Tool call or tool call result
         try {
