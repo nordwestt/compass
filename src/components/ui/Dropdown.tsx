@@ -117,8 +117,8 @@ export const Dropdown = ({
                 setIsOpen(false);
               }}
               className={`flex-row items-center p-3 ${
-                index === highlightedIndex ? 'bg-surface' : ''
-              } hover:bg-surface ${dropdownOptionClassName}`}
+                (index === highlightedIndex && index > 0) ? 'bg-surface' : ''
+              } hover:opacity-70 ${dropdownOptionClassName}`}
             >
               {child.logo && (
                 <LogoRenderer logo={child.logo} size={24} className="mr-3 !text-primary " />
