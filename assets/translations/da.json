@@ -8,7 +8,9 @@
         "add": "Tilføj",
         "shortcut": "Genvej",
         "confirm_delete": "Bekræft sletning",
-        "confirm_delete_message": "Er du sikker på, at du vil slette {{name}}?"
+        "confirm_delete_message": "Er du sikker på, at du vil slette {{name}}?",
+        "select": "Vælg",
+        "model": "Model"
     },
     "chats":{
         "start_a_conversation_with_character": "Start en samtale med {{character}}",
@@ -59,7 +61,11 @@
             "character_deleted": "Karakter slettet",
             "character_deleted_success": "Karakter slettet med succes",
             "error_deleting_character": "Fejl ved sletning af karakter",
-            "error_deleting_character_description": "Fejl ved sletning af karakter: {{error}}"
+            "error_deleting_character_description": "Fejl ved sletning af karakter: {{error}}",
+            "no_model_selected": "Ingen model valgt - standardmodellen vil blive brugt",
+            "preferred_model": "Foretrukken model",
+            "select_preferred_model": "Vælg Foretrukken Model",
+            "change_model": "Skift Model"
         }
     },
     "images":{

@@ -8,7 +8,9 @@
         "add": "Add",
         "shortcut": "Shortcut",
         "confirm_delete": "Confirm Delete",
-        "confirm_delete_message": "Are you sure you want to delete {{name}}?"
+        "confirm_delete_message": "Are you sure you want to delete {{name}}?",
+        "select": "Select",
+        "model": "Model"
     },
     "chats": {
         "start_a_conversation_with_character": "Start a conversation with {{character}}",
@@ -59,7 +61,11 @@
             "character_deleted": "Character deleted",
             "character_deleted_success": "Character deleted successfully",
             "error_deleting_character": "Error deleting character",
-            "error_deleting_character_description": "Error deleting character: {{error}}"
+            "error_deleting_character_description": "Error deleting character: {{error}}",
+            "no_model_selected": "No model selected - the default model will be used",
+            "preferred_model": "Preferred model",
+            "select_preferred_model": "Select Preferred Model",
+            "change_model": "Change Model"
         }
     },
     "images":{

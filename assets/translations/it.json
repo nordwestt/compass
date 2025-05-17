@@ -8,7 +8,9 @@
         "add": "Aggiungi",
         "shortcut": "Scorciatoia",
         "confirm_delete": "Conferma eliminazione",
-        "confirm_delete_message": "Sei sicuro di voler eliminare {{name}}?"
+        "confirm_delete_message": "Sei sicuro di voler eliminare {{name}}?",
+        "select": "Seleziona",
+        "model": "Modello"
     },
     "chats": {
         "start_a_conversation_with_character": "Inizia una conversazione con {{character}}",
@@ -59,7 +61,11 @@
             "character_deleted": "Personaggio eliminato",
             "character_deleted_success": "Personaggio eliminato con successo",
             "error_deleting_character": "Errore nell'eliminare il personaggio",
-            "error_deleting_character_description": "Errore nell'eliminare il personaggio: {{error}}"
+            "error_deleting_character_description": "Errore nell'eliminare il personaggio: {{error}}",
+            "no_model_selected": "Nessun modello selezionato - verrà utilizzato il modello predefinito",
+            "preferred_model": "Modello preferito",
+            "select_preferred_model": "Seleziona Modello Preferito",
+            "change_model": "Cambia Modello"
         }
     },
     "images":{

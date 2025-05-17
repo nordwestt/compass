@@ -24,8 +24,12 @@ export function ModelPreferenceSelector({
   const [selectedModelId, setSelectedModelId] = useState<string | null>(null);
 
   const handleAddPreference = () => {
-    console.log({ availableModels, selectedModelId });
     if (selectedModelId) {
+      // Remove any existing preferences first to ensure only one model is selected
+      if (selectedPreferences.length > 0) {
+        selectedPreferences.forEach(pref => onRemovePreference(pref));
+      }
+      
       onAddPreference({
         id: selectedModelId,
         providerId:
@@ -49,13 +53,13 @@ export function ModelPreferenceSelector({
   return (
     <View className="mb-4">
       <Text className="text-base font-medium mb-2 text-text">
-        {t('characters.edit_character.available_models')}
+        {t('common.model')}
       </Text>
 
       <View className="bg-surface p-4 rounded-lg border-2 border-border">
         {selectedPreferences.length === 0 ? (
           <Text className="text-secondary italic">
-            {t('characters.edit_character.no_requirements')}
+            {t('characters.edit_character.no_model_selected')}
           </Text>
         ) : (
           <View className="space-y-2">
@@ -81,7 +85,7 @@ export function ModelPreferenceSelector({
                         <View
                           className={`w-2 h-2 rounded-full bg-green-500 mr-1`}
                         />
-                        <Text className="text-secondary text-xs">{t('characters.edit_character.allowed')}</Text>
+                        <Text className="text-secondary text-xs">{t('characters.edit_character.preferred_model')}</Text>
                       </View>
                     </View>
                   </View>
@@ -106,7 +110,11 @@ export function ModelPreferenceSelector({
           className="mt-4 p-3 bg-primary rounded-lg flex-row items-center justify-center"
         >
           <Ionicons name="add" size={20} color="white" className="mr-2" />
-          <Text className="text-white font-medium">{t('characters.edit_character.add_model')}</Text>
+          <Text className="text-white font-medium">
+            {selectedPreferences.length === 0 
+              ? t('characters.edit_character.select_model') 
+              : t('characters.edit_character.change_model')}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -117,12 +125,9 @@ export function ModelPreferenceSelector({
       >
         <View className="p-4 bg-surface rounded-lg">
           <Text className="text-lg font-bold text-text mb-4 text-center">
-            {t('characters.edit_character.add_model_requirement')}
+            {t('characters.edit_character.select_preferred_model')}
           </Text>
 
-          <Text className="text-base font-medium mb-2 text-text">
-            {t('characters.edit_character.select_model')}
-          </Text>
           <ScrollView className="max-h-60 mb-4">
             <View className="space-y-2">
               {availableModels.map((model) => (
@@ -161,7 +166,7 @@ export function ModelPreferenceSelector({
               }`}
               disabled={!selectedModelId}
             >
-              <Text className="text-white text-center">{t('common.add')}</Text>
+              <Text className="text-white text-center">{t('common.select')}</Text>
             </TouchableOpacity>
           </View>
         </View>
