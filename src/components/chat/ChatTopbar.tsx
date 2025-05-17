@@ -5,6 +5,11 @@ import { VoiceSelector } from './VoiceSelector';
 import { useAtom, useSetAtom } from 'jotai';
 import { currentThreadAtom, defaultVoiceAtom, polarisUserAtom, threadActionsAtom, ttsEnabledAtom } from '@/src/hooks/atoms';
 import { Character, Model } from '@/src/types/core';
+import { useCallback } from 'react';
+import { useColorScheme } from 'nativewind';
+import Tooltip from '../ui/Tooltip';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useLocalization } from '@/src/hooks/useLocalization';
 
 
 export const ChatTopbar: React.FC = () => {
@@ -13,6 +18,15 @@ export const ChatTopbar: React.FC = () => {
     const [ttsEnabled, setTtsEnabled] = useAtom(ttsEnabledAtom);
     const dispatchThread = useSetAtom(threadActionsAtom);
     const [selectedVoice, setSelectedVoice] = useAtom(defaultVoiceAtom);
+    const { colorScheme, toggleColorScheme } = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const { t } = useLocalization();
+
+
+
+    const toggleDark = useCallback(() => {
+      toggleColorScheme();
+    }, [toggleColorScheme]);
 
 
 
@@ -47,6 +61,16 @@ export const ChatTopbar: React.FC = () => {
             </View>
         )}
         
+          <TouchableOpacity 
+            onPress={toggleDark}
+            className="p-2 rounded-full bg-surface hover:bg-background"
+          >
+            <Ionicons 
+              name={isDarkMode ? 'sunny' : 'moon'} 
+              size={24}
+              className="!text-text"
+            />
+          </TouchableOpacity>
             <Settings thread={currentThread}></Settings>
         
         
