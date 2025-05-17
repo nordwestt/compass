@@ -27,17 +27,17 @@ export const ThreadsSidebar = () => {
   };
 
   // Common sidebar classes
-  const sidebarWidthClass = isSidebarVisible ? 'w-64 h-[70%] shadow-lg' : 'w-10 h-32';
+  const sidebarWidthClass = isSidebarVisible ? 'w-64 h-[70%] shadow-lg' : 'w-10';
   
   return (
     <View className='absolute left-0 my-auto z-[1] flex flex-col top-20'>
       <View 
-        className={`p-1 bg-surface border-r-2 border-border rounded-lg group transition-all duration-200 ${sidebarWidthClass}`}
+        className={`h-32 bg-surface border-r-2 border-border rounded-lg group transition-all duration-200 ${sidebarWidthClass}`}
         onMouseEnter={() => setIsSidebarVisible(true)}
         onMouseLeave={() => setIsSidebarVisible(false)}
       >
           {isSidebarVisible ? (
-            <View>
+            <View className="p-1">
               <View className="flex-row justify-between items-center p-4">
                 <Text className="text-center text-lg font-bold text-text">
                   {t('chats.chats')}
@@ -46,7 +46,7 @@ export const ThreadsSidebar = () => {
               <ChatThreads />
             </View>
           ) : (
-            <View className="flex items-center justify-center my-auto">
+            <View className="flex items-center justify-center my-auto h-32">
               <Ionicons name="chatbubbles" size={24} className="!text-primary" />
             </View>
           )}
