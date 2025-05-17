@@ -7,6 +7,7 @@ interface TooltipProps {
   position?: 'top' | 'bottom' | 'left' | 'right';
   webOnly?: boolean;
   className?: string;
+  tooltipClassName?: string;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({ 
@@ -14,7 +15,8 @@ const Tooltip: React.FC<TooltipProps> = ({
   children, 
   position = 'top',
   webOnly = true,
-  className
+  className,
+  tooltipClassName
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -47,8 +49,11 @@ const Tooltip: React.FC<TooltipProps> = ({
       </View>
       
       {shouldShowTooltip && (
-        <View className={`${getPositionStyles()} bg-surface dark:bg-gray-800 px-2 py-1 rounded shadow-md z-50`}>
-          <Text className="text-text text-xs">{text}</Text>
+        <View 
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        className={`${getPositionStyles()} bg-surface dark:bg-gray-800 px-2 py-1 rounded shadow-md z-50 ${tooltipClassName}`}>
+          <Text className="text-text text-xs text-center">{text}</Text>
         </View>
       )}
     </View>
