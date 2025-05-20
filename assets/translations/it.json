@@ -209,6 +209,30 @@
             "saved_description": "URL Proxy salvato con successo"
         }
     },
+    "onboarding": {
+        "skip": "Salta",
+        "next": "Avanti",
+        "back": "Indietro",
+        "get_started": "Inizia",
+        "pages": {
+            "welcome": {
+                "title": "Benvenuto su Compass",
+                "description": "Il tuo compagno personale di chat AI. Iniziamo con le basi."
+            },
+            "add_provider": {
+                "title": "Aggiungi un Provider",
+                "description": "Prima, dovrai aggiungere un provider AI. Consiglio vivamente di configurare Ollama poiché è gratuito e privato. Vai su Impostazioni > Aiuto per vedere come configurarlo. In alternativa, puoi usare OpenAI o altri provider."
+            },
+            "choose_character": {
+                "title": "Scegli un Personaggio",
+                "description": "Seleziona o crea un personaggio con cui chattare. Ci sono 8 personaggi iniziali tra cui scegliere, ognuno con la propria personalità."
+            },
+            "start_chatting": {
+                "title": "Inizia a Chattare",
+                "description": "Ecco fatto! Sei pronto per iniziare a chattare. Puoi incollare URL nella chat per chiedere informazioni, o semplicemente iniziare a chattare con il tuo computer. Puoi sempre rivedere questo tutorial andando su Impostazioni > Aiuto."
+            }
+        }
+    },
     "models": {
         "loading_models": "Caricamento modelli...",
         "no_compatible_model": "Nessun modello compatibile trovato",

@@ -6,38 +6,39 @@ import { useAtom } from 'jotai';
 import { hasSeenOnboardingAtom } from '@/src/hooks/atoms';
 import { useProviders } from "@/src/hooks/useProviders";
 import { PREDEFINED_PROVIDERS } from "@/src/constants/providers";
-
-
-const ONBOARDING_PAGES = [
-  {
-    title: 'Welcome to Compass',
-    description: 'Your personal AI chat companion. Let\'s get you started with the basics.',
-    icon: 'compass'
-  },
-  {
-    title: 'Add a Provider',
-    description: "First, you'll need to add an AI provider. I highly recommend setting up Ollama as it's free and private. Go to Settings > Help to see how to set it up. Alternatively, you can use OpenAI or other providers.",
-    icon: 'server'
-  },
-  {
-    title: 'Choose a Character',
-    description: 'Select or create a character to chat with. There are 8 starter characters to choose from, each with their own personality.',
-    icon: 'people'
-  },
-  {
-    title: 'Start Chatting',
-    description: "That's it! You're ready to start chatting. You can paste URLs into the chat to ask about it, or just start chatting with your computer. You can always revisit this onboarding by going to Settings > Help.",
-    icon: 'chatbubbles'
-  }
-];
+import { useTranslation } from 'react-i18next';
 
 export function WelcomeIntroduction() {
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [, setHasSeenOnboarding] = useAtom(hasSeenOnboardingAtom);
   const {
     addUpdateProvider,
   } = useProviders();
+
+  const ONBOARDING_PAGES = [
+    {
+      title: t('onboarding.pages.welcome.title'),
+      description: t('onboarding.pages.welcome.description'),
+      icon: 'compass'
+    },
+    {
+      title: t('onboarding.pages.add_provider.title'),
+      description: t('onboarding.pages.add_provider.description'),
+      icon: 'server'
+    },
+    {
+      title: t('onboarding.pages.choose_character.title'),
+      description: t('onboarding.pages.choose_character.description'),
+      icon: 'people'
+    },
+    {
+      title: t('onboarding.pages.start_chatting.title'),
+      description: t('onboarding.pages.start_chatting.description'),
+      icon: 'chatbubbles'
+    }
+  ];
 
   const handleClose = () => {
     setIsVisible(false);
@@ -76,7 +77,7 @@ export function WelcomeIntroduction() {
           onPress={handleClose}
           className="absolute right-4 top-4"
         >
-          <Text className="!text-primary">Skip</Text>
+          <Text className="!text-primary">{t('onboarding.skip')}</Text>
         </TouchableOpacity>
 
         <View className="items-center mb-8">
@@ -119,7 +120,7 @@ export function WelcomeIntroduction() {
               >
                 <Ionicons name="arrow-back" size={20} className="!text-primary" />
                 <Text className="text-primary font-medium ml-2">
-                  Back
+                  {t('onboarding.back')}
                 </Text>
               </TouchableOpacity>
             )}
@@ -129,7 +130,7 @@ export function WelcomeIntroduction() {
               className="bg-primary px-6 py-3 rounded-lg flex-row items-center outline-none"
             >
               <Text className="text-white font-medium mr-2">
-                {currentPage === ONBOARDING_PAGES.length - 1 ? 'Get Started' : 'Next'}
+                {currentPage === ONBOARDING_PAGES.length - 1 ? t('onboarding.get_started') : t('onboarding.next')}
               </Text>
               <Ionicons name="arrow-forward" size={20} className='!text-white' />
             </TouchableOpacity>

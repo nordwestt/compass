@@ -209,6 +209,30 @@
             "saved_description": "Proxy URL gemt med succes"
         }
     },
+    "onboarding": {
+        "skip": "Spring over",
+        "next": "Næste",
+        "back": "Tilbage",
+        "get_started": "Kom i gang",
+        "pages": {
+            "welcome": {
+                "title": "Velkommen til Compass",
+                "description": "Din personlige AI-chatledsager. Lad os komme i gang med det grundlæggende."
+            },
+            "add_provider": {
+                "title": "Tilføj en Udbyder",
+                "description": "Først skal du tilføje en AI-udbyder. Jeg anbefaler stærkt at opsætte Ollama, da det er gratis og privat. Gå til Indstillinger > Hjælp for at se, hvordan du opsætter det. Alternativt kan du bruge OpenAI eller andre udbydere."
+            },
+            "choose_character": {
+                "title": "Vælg en Karakter",
+                "description": "Vælg eller opret en karakter at chatte med. Der er 8 starter-karakterer at vælge imellem, hver med deres egen personlighed."
+            },
+            "start_chatting": {
+                "title": "Start med at Chatte",
+                "description": "Det var det! Du er klar til at begynde at chatte. Du kan indsætte URL'er i chatten for at spørge om dem, eller bare begynde at chatte med din computer. Du kan altid genbesøge denne introduktion ved at gå til Indstillinger > Hjælp."
+            }
+        }
+    },
     "models": {
         "loading_models": "Indlæser modeller...",
         "no_compatible_model": "Ingen kompatibel model fundet",
