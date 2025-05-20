@@ -508,12 +508,12 @@ export default function Statistics() {
         <View className={`mt-6 flex-row flex-wrap justify-between`}>
           <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1 mr-2">
             <Text className="text-secondary text-xs">Avg Messages/Day</Text>
-            <Text className="text-primary text-lg font-bold">{userMetrics.avgMessagesPerDay}</Text>
+            <Text className="text-primary text-lg font-bold">{userMetrics.avgMessagesPerDay.toFixed(2)}</Text>
           </View>
           
           <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1 mr-2">
             <Text className="text-secondary text-xs">Avg Messages/User</Text>
-            <Text className="text-primary text-lg font-bold">{userMetrics.avgMessagesPerUser}</Text>
+            <Text className="text-primary text-lg font-bold">{userMetrics.avgMessagesPerUser.toFixed(2)}</Text>
           </View>
           
           {/* <View className="bg-background/30 p-3 rounded-lg mb-2 min-w-[150px] flex-1">
