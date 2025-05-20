@@ -105,7 +105,7 @@ export class PolarisProvider implements ChatProvider {
     model: Model,
     systemPrompt: string,
   ): Promise<string> {
-    return "Test message";
+    return "Demo chat";
   }
 
   async sendJSONMessage(
