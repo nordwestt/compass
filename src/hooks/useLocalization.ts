@@ -45,7 +45,7 @@ export const useLocalization = () => {
 
   // Use the t function from react-i18next but maintain backward compatibility
   const t = (key: string, options?: any) => {
-    return reactI18nextT(key, options);
+    return reactI18nextT(key, options) as string;
   };
 
   return {
