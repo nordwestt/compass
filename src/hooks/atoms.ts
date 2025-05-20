@@ -408,9 +408,11 @@ const getDefaultProxyUrl = () => {
   if (typeof window !== "undefined") {
     // Check if we're running on the GitHub Pages deployment
     if (window.location.hostname === "nordwestt.com") {
-      return "https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/";
+      return "";
+      //return "https://workers-playground-delicate-bread-86d5.thomas-180.workers.dev/";
     }
   }
+  return "";
   // Default for Docker and local development
   return "http://localhost/proxy/";
 };
