@@ -25,6 +25,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ProxyUrlSync } from "@/src/components/ProxyUrlSync";
 import { localeAtom } from '@/src/hooks/atoms';
 import { setupAuthCallbackListener, checkStoredAuthToken } from '@/src/utils/authCallback';
+import '@/i18n';
 
 SplashScreen.preventAutoHideAsync();
 

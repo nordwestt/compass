@@ -555,7 +555,7 @@ export const syncToPolarisAtom = atomWithAsyncStorage<boolean>(
 
 export const localeAtom = atomWithAsyncStorage<string>(
   "locale",
-  "en",
+  "",
 );
 
 export const polarisUsersAtom = atom<User[]>([]);

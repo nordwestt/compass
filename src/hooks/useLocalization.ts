@@ -2,55 +2,58 @@ import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { I18nManager } from 'react-native';
 import { localeAtom } from './atoms';
+import { useTranslation } from 'react-i18next';
+import i18n, { changeLanguage, i18nJs } from '../../i18n';
+import LanguageDetector from '@os-team/i18next-react-native-language-detector';
 
-import * as Localization from 'expo-localization';
-import { I18n } from 'i18n-js';
-
-import en from '@/assets/translations/en.json';
-import it from '@/assets/translations/it.json';
-import da from '@/assets/translations/da.json';
-
-// Create the translations object
-const translations = {
-  en,
-  it,
-  da,
-};
-
-// Create the i18n instance
-const i18n = new I18n(translations);
-export default i18n; 
 
 /**
  * Hook for handling localization in the app
  * Returns the current locale and a function to change it
  */
 export const useLocalization = () => {
-
-  useEffect(()=>{
-    // Set the locale from device settings by default
-    i18n.locale = locale || 'en';
-
-    // Fallback to English if translation is missing
-    i18n.enableFallback = true;
-    i18n.defaultLocale = 'en';
-  }, [])
-
   const [locale, setLocale] = useAtom(localeAtom);
+  const { t: reactI18nextT } = useTranslation();
+
+  useEffect(() => {
+    // Set the locale from atom state
+    if (locale) {
+      changeLanguage(locale);
+    }
+    else{
+      try{
+        const language = LanguageDetector.detect();
+        console.log('Language detected:', language);
+        if(language && typeof language === 'string'){
+          setLocale(language);
+          console.log('Locale set to:', language);
+        }
+      }
+      catch(error){
+        console.error('Error detecting language:', error);
+      }
+    }
+  }, [locale]);
 
   // Function to change the locale
   const changeLocale = async (newLocale: string) => {
     if (newLocale) {
-      i18n.locale = newLocale;
+      await changeLanguage(newLocale);
       setLocale(newLocale);
     }
+  };
 
+  // Use the t function from react-i18next but maintain backward compatibility
+  const t = (key: string, options?: any) => {
+    return reactI18nextT(key, options);
   };
 
   return {
     locale,
     changeLocale,
-    t: (key: string, options?: object) => i18n.t(key, options),
+    t,
     i18n, // Export the i18n instance for direct access if needed
   };
-}; 
+};
+
+export default i18nJs; 

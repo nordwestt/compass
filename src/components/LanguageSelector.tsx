@@ -22,7 +22,7 @@ export function LanguageSelector({ className }: { className?: string }) {
       iconOpen=''
       iconClosed=''
         children={languages}
-        selected={languages.find((lang) => lang.code === currentLocale) || null}
+        selected={languages.find((lang) => lang.code === currentLocale) || undefined}
         onSelect={(value) => changeLocale(value.id)}
         className='w-full text-center border-none'
         dropdownOptionClassName=''
