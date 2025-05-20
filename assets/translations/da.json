@@ -10,7 +10,16 @@
         "confirm_delete": "Bekræft sletning",
         "confirm_delete_message": "Er du sikker på, at du vil slette {{name}}?",
         "select": "Vælg",
-        "model": "Model"
+        "model": "Model",
+        "yes": "Ja",
+        "no": "Nej",
+        "ok": "OK",
+        "error": "Fejl",
+        "warning": "Advarsel",
+        "info": "Info",
+        "success": "Succes",
+        "close": "Luk",
+        "confirm": "Bekræft"
     },
     "chats":{
         "start_a_conversation_with_character": "Start en samtale med {{character}}",
@@ -31,7 +40,9 @@
         "export_successful": "Eksport vellykket",
         "chat_exported_successfully": "Din samtale er blevet eksporteret med succes",
         "export_mobile_not_supported": "Mobil eksport",
-        "export_mobile_not_supported_description": "Eksport understøttes i øjeblikket kun på web. Brug venligst webversionen til at eksportere dine samtaler."
+        "export_mobile_not_supported_description": "Eksport understøttes i øjeblikket kun på web. Brug venligst webversionen til at eksportere dine samtaler.",
+        "sensitive_info_warning_title": "Sensitive Information Warning",
+        "sensitive_info_warning_message": "This message contains sensitive information. Are you sure you want to send it?"
     },
     "characters":{
         "characters": "Karakterer",

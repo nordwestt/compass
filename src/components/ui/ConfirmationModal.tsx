@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Modal, TextInput, Platform } from 'react-native';
 import { modalService } from '@/src/services/modalService';
+import { useLocalization } from '@/src/hooks/useLocalization';
 
 interface ModalState {
   isVisible: boolean;
@@ -11,6 +12,8 @@ interface ModalState {
 }
 
 export const ConfirmationModal = () => {
+  const { t } = useLocalization();
+
   const [modalState, setModalState] = useState<ModalState>({
     isVisible: false,
     title: '',
@@ -64,7 +67,7 @@ export const ConfirmationModal = () => {
           onPress={() => modalService.handleResponse(null)}
           className="px-4 py-2 rounded-lg bg-surface text-text w-1/2 mr-2"
         >
-          <Text className="text-black dark:text-white text-center">Cancel</Text>
+          <Text className="text-black dark:text-white text-center">{t('common.cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           ref={confirmButtonRef}
@@ -74,7 +77,7 @@ export const ConfirmationModal = () => {
           className="px-4 py-2 rounded-lg bg-primary w-1/2"
         >
           <Text className="text-white text-center">
-            {modalState.type === 'prompt' ? 'Save' : 'Confirm'}
+            {modalState.type === 'prompt' ? t('common.save') : t('common.confirm')}
           </Text>
         </TouchableOpacity>
       </View>

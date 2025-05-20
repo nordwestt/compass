@@ -6,6 +6,9 @@ import { useAtom, useAtomValue } from 'jotai';
 import { CharacterMentionPopup } from '@/src/components/character/CharacterMentionPopup';
 import { Character } from '@/src/types/core';
 import { useLocalization } from '@/src/hooks/useLocalization';
+import { scanForSensitiveInfo } from '@/src/utils/privacyScanner';
+import { modalService } from "@/src/services/modalService";
+
 
 interface ChatInputProps {
   onSend: (message: string, mentionedCharacters: MentionedCharacter[]) => void;
@@ -90,33 +93,45 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({ onSend, isG
     setShowMentionPopup(false);
   };
 
-  const handleSend = () => {
-    if (message.trim() && !isGenerating) {
-      onSend(message.trim(), mentionedCharacters);
-      setMentionedCharacters([]);
-      setIsEditing(false);
+  const handleSend = async () => {
+    if(!message.trim() || isGenerating) return;
+
+
+
+    const result = scanForSensitiveInfo(message.trim());
+
+    if(result.hasSensitiveInfo){
+      let confirmed = await modalService.confirm({
+        title: t('chats.sensitive_info_warning_title'),
+        message: t('chats.sensitive_info_warning_message'),
+      });
+
+      if(!confirmed) return;
+    }
+    onSend(message.trim(), mentionedCharacters);
+    setMentionedCharacters([]);
+    setIsEditing(false);
+    
+    // Clear the message and reset input height
+    handleChangeText('');
+    
+    // Force blur and then focus to reset cursor position
+    if (inputRef.current) {
+      inputRef.current?.blur();
       
-      // Clear the message and reset input height
-      handleChangeText('');
-      
-      // Force blur and then focus to reset cursor position
-      if (inputRef.current) {
-        inputRef.current?.blur();
+      // Small delay to ensure state updates have processed
+      setTimeout(() => {
+        inputRef.current?.focus();
         
-        // Small delay to ensure state updates have processed
-        setTimeout(() => {
-          inputRef.current?.focus();
-          
-          // For web, we can try to directly manipulate the DOM element
-          if (Platform.OS === 'web' && inputRef.current) {
-            const inputElement = inputRef.current as any;
-            if (inputElement._inputElement) {
-              inputElement._inputElement.selectionStart = 0;
-              inputElement._inputElement.selectionEnd = 0;
-            }
+        // For web, we can try to directly manipulate the DOM element
+        if (Platform.OS === 'web' && inputRef.current) {
+          const inputElement = inputRef.current as any;
+          if (inputElement._inputElement) {
+            inputElement._inputElement.selectionStart = 0;
+            inputElement._inputElement.selectionEnd = 0;
           }
-        }, 50);
-      }
+        }
+      }, 50);
     }
   };
 

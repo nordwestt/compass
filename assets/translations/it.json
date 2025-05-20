@@ -10,7 +10,16 @@
         "confirm_delete": "Conferma eliminazione",
         "confirm_delete_message": "Sei sicuro di voler eliminare {{name}}?",
         "select": "Seleziona",
-        "model": "Modello"
+        "model": "Modello",
+        "yes": "Si",
+        "no": "No",
+        "ok": "OK",
+        "error": "Errore",
+        "warning": "Attenzione",
+        "info": "Info",
+        "success": "Successo",
+        "close": "Chiudi",
+        "confirm": "Conferma"
     },
     "chats": {
         "start_a_conversation_with_character": "Inizia una conversazione con {{character}}",
@@ -31,7 +40,9 @@
         "export_successful": "Esportazione riuscita",
         "chat_exported_successfully": "La tua conversazione è stata esportata con successo",
         "export_mobile_not_supported": "Esportazione su mobile",
-        "export_mobile_not_supported_description": "L'esportazione è attualmente supportata solo sul web. Utilizza la versione web per esportare le tue conversazioni."
+        "export_mobile_not_supported_description": "L'esportazione è attualmente supportata solo sul web. Utilizza la versione web per esportare le tue conversazioni.",
+        "sensitive_info_warning_title": "Attenzione: Informazioni Sensitive",
+        "sensitive_info_warning_message": "Questo messaggio contiene informazioni sensibili. Sei sicuro di voler inviarlo?"
     },
     "characters":{
         "characters": "Personaggi",
