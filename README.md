@@ -25,13 +25,13 @@ Try it out [here](https://nordwestt.com/compass) (only for demo)
 - 📁 **Image Gallery**: View images that have been generated
 - 🖥️ **Desktop Shortcut**: Alt + N to open a new chat
 - 📝 **Code Preview**: Preview generated html, css and javascript in a separate window
+- 🔍 **RAG Support**: Upload documents and attach these to characters, who can then use them for their conversations
 
 ## Roadmap
 
 - 🎤 **Speech-to-Text (STT)**: Voice input capabilities
 - 📞 **Voice Calls**: Real-time voice conversations with AI
 - 📸 **Vision Integration**: Camera support for vision model capabilities
-- 🔍 **RAG Support**: Document analysis
 - ⚙️ **Custom Filters**: Self-programmable filters and data processing pipes
 - 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses (currently only supports ElevenLabs)
 
