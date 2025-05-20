@@ -64,7 +64,7 @@ It is recommended that you install Ollama and open up access, following the [gui
 2. Start the app
 
    ```bash
-   nvm use 18.19.0
+   nvm use 22.11.0
    npx expo start
    ```
 
