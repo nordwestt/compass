@@ -3,7 +3,7 @@
 Compass is a modern, open-source Large Language Model (LLM) client designed to provide a seamless AI chat experience across multiple platforms. Built with React Native and Expo, it offers a rich set of features while maintaining high performance and user experience.
 The goal is to promote private, decentralized AI - whilst also maintaining access to cloud-based AI through API's for those who need or prefer it.
 
-Try it out [here](https://nordwestt.com/compass) (only for visual demo, since browsers have CORS-restrictions)
+Try it out [here](https://nordwestt.com/compass) (only for demo)
 
 <p align="center">
 <img src="https://github.com/user-attachments/assets/f95389af-4378-466f-87e2-142638c1f422" alt="Compass Desktop" height="300" />
@@ -19,22 +19,21 @@ Try it out [here](https://nordwestt.com/compass) (only for visual demo, since br
 - 🤖 **Multiple LLM Providers**: Support for OpenAI, Anthropic, Ollama, and more
 - 👥 **Character System**: Built-in characters and support for custom character creation
 - 💬 **Chat History**: Persistent conversation tracking and management
-- 🤝 **Inter-Character Communication**: Tag (@) characters in chats for multi-agent interactions
 - 🎨 **Modern UI**: Clean, responsive interface with multiple themes built in
 - 🔍 **Web search**: Paste URL's into chat to ask question about them. Automatic web search integration using SearxNg
-- 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses (currently only supports ElevenLabs)
 - 🖼️ **Image Generation**: Generate images from text prompts (currently only supports Replicate)
 - 📁 **Image Gallery**: View images that have been generated
 - 🖥️ **Desktop Shortcut**: Alt + N to open a new chat
 - 📝 **Code Preview**: Preview generated html, css and javascript in a separate window
+- 🔍 **RAG Support**: Upload documents and attach these to characters, who can then use them for their conversations
 
 ## Roadmap
 
 - 🎤 **Speech-to-Text (STT)**: Voice input capabilities
 - 📞 **Voice Calls**: Real-time voice conversations with AI
 - 📸 **Vision Integration**: Camera support for vision model capabilities
-- 🔍 **RAG Support**: Document analysis
 - ⚙️ **Custom Filters**: Self-programmable filters and data processing pipes
+- 🗣️ **Text-to-Speech (TTS)**: Natural voice output for AI responses (currently only supports ElevenLabs)
 
 # Installation 
 
@@ -65,7 +64,7 @@ It is recommended that you install Ollama and open up access, following the [gui
 2. Start the app
 
    ```bash
-   nvm use 18.19.0
+   nvm use 22.11.0
    npx expo start
    ```
 
