@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18.19.0-alpine AS builder
+FROM node:22.11.0-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN PUBLIC_URL=/compass npm run build:web
 
 # Proxy stage
-FROM node:18.19.0-alpine AS proxy
+FROM node:22.11.0-alpine AS proxy
 
 WORKDIR /app
 
